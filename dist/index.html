@@ -201,6 +201,7 @@ const GRADIENTES=['linear-gradient(135deg,#536039,#8B966E)','linear-gradient(135
 
 let lang='es', moodActivo=null;
 const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function render(){
   document.documentElement.lang=lang;
@@ -229,12 +230,12 @@ function render(){
   $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
   /* nav — Adicionales se muestra como banda, no en nav */
   const catsNav=CATS.filter(c=>c.cod!=='ADI');
-  $('navcat').innerHTML=catsNav.map(c=>`<a href="#${c.cod}">${c.nom[lang]}</a>`).join('');
+  $('navcat').innerHTML=catsNav.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
     const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join(' ');
-    return `<article class="dcard"><div class="foto" style="background:${GRADIENTES[i%3]}"><span class="inicial">${p.n[lang].charAt(0)}</span></div>
-      <div class="cuerpo">${bd}<h4>${p.n[lang]}</h4><p>${p.d[lang]}</p></div></article>`;
+    return `<article class="dcard"><div class="foto" style="background:${GRADIENTES[i%3]}"><span class="inicial">${esc(p.n[lang].charAt(0))}</span></div>
+      <div class="cuerpo">${bd}<h4>${esc(p.n[lang])}</h4><p>${esc(p.d[lang])}</p></div></article>`;
   }).join('');
   /* secciones */
   $('menu').innerHTML=catsNav.map(cat=>{
@@ -244,11 +245,11 @@ function render(){
     const cards=items.map(p=>{
       const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
       const et=bd?`<div class="etiquetas">${bd}</div>`:'';
-      const precio=PRECIOS[p.id]?`<span class="precio">${PRECIOS[p.id]}</span>`:'';
+      const precio=PRECIOS[p.id]?`<span class="precio">${esc(PRECIOS[p.id])}</span>`:'';
       return `<article class="prod ${p.dest?'destacada':''}" data-moods="${p.m.join(',')}">
-        ${et}<div class="fila"><h4>${p.n[lang]}</h4>${precio}</div><p>${p.d[lang]}</p></article>`;
+        ${et}<div class="fila"><h4>${esc(p.n[lang])}</h4>${precio}</div><p>${esc(p.d[lang])}</p></article>`;
     }).join('');
-    return `<section class="cat" id="${cat.cod}"><header><h3>${cat.nom[lang]}</h3>${nota}</header>
+    return `<section class="cat" id="${esc(cat.cod)}"><header><h3>${esc(cat.nom[lang])}</h3>${nota}</header>
       <div class="lista">${cards}</div><p class="vacio">${UI.vacio[lang]}</p></section>`;
   }).join('');
   /* banda adicionales */
@@ -256,7 +257,7 @@ function render(){
   const catAdi=CATS.find(c=>c.cod==='ADI');
   $('adicEyebrow').textContent=UI.adicEyebrow[lang];
   $('adicTitle').textContent=catAdi?catAdi.nom[lang]:'';
-  $('adicLista').innerHTML=adi.map(p=>`<li><b>${p.n[lang]}</b><span class="det">${p.d[lang]}</span></li>`).join('');
+  $('adicLista').innerHTML=adi.map(p=>`<li><b>${esc(p.n[lang])}</b><span class="det">${esc(p.d[lang])}</span></li>`).join('');
   observarNav();
 }
 function aplicarFiltro(){
