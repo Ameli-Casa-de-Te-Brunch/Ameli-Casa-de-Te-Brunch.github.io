@@ -12,15 +12,21 @@ DEFAULT_OUT = HERE.parent / "dist" / "index.html"
 PLACEHOLDER_WSP = "549XXXXXXXXXX"  # mismo placeholder que traía el HTML a mano
 
 
+def _safe_json(obj) -> str:
+    """json.dumps no escapa '</', así que un texto del Excel con '</script>' literal
+    cerraría el <script> del template antes de tiempo e inyectaría HTML arbitrario."""
+    return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+
+
 def render(data: dict, template: str) -> str:
     cfg = data["config"]
     wsp_number = (cfg.get("whatsapp") or PLACEHOLDER_WSP).replace(" ", "").replace("+", "")
     ig_handle = (cfg.get("instagram") or "@ameli").lstrip("@")
 
     out = template
-    out = out.replace("__CATS_JSON__", json.dumps(data["cats"], ensure_ascii=False))
-    out = out.replace("__PRODS_JSON__", json.dumps(data["prods"], ensure_ascii=False))
-    out = out.replace("__PRECIOS_JSON__", json.dumps(data["precios"], ensure_ascii=False))
+    out = out.replace("__CATS_JSON__", _safe_json(data["cats"]))
+    out = out.replace("__PRODS_JSON__", _safe_json(data["prods"]))
+    out = out.replace("__PRECIOS_JSON__", _safe_json(data["precios"]))
     out = out.replace("__WSP_NUMBER__", wsp_number)
     out = out.replace("__IG_URL__", f"https://instagram.com/{ig_handle}")
     return out
