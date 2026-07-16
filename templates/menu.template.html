@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Amelí · Casa de Té & Brunch — Menú</title>
+<meta name="description" content="Menú digital de Amelí, casa de té y brunch en Malargüe, Mendoza. Digital menu in 5 languages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#536039; --verde-osc:#3E4829; --verde-suave:#8B966E;
+  --crema:#F2EAE1; --blanco:#FFFDF7; --marron:#8B2F2F;
+  --rosa:#E7D2CE; --manteca:#E5DACC; --tinta:#000000;
+  --sombra:0 6px 24px rgba(83,96,57,.10); --radio:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
+::selection{background:var(--rosa)}
+.hero{background:var(--verde);color:var(--blanco);padding:56px 24px 84px;text-align:center;position:relative;overflow:hidden}
+.hero svg.botanica{position:absolute;opacity:.14;pointer-events:none}
+.hero .b1{top:-30px;left:-40px;width:190px;transform:rotate(15deg)}
+.hero .b2{bottom:-20px;right:-45px;width:220px;transform:rotate(190deg)}
+.hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:500;letter-spacing:.04em;line-height:1}
+.hero .marca em{font-style:italic}
+.hero .sub{margin-top:10px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--manteca);font-weight:500}
+.hero .lugar{margin-top:22px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,253,247,.85)}
+.hero .hoja-div{width:52px;height:1px;background:var(--rosa);margin:18px auto 0;position:relative}
+.hero .hoja-div::after{content:'❧';position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);background:var(--verde);padding:0 8px;color:var(--rosa);font-size:13px}
+.langs{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
+.langs button{background:rgba(255,253,247,.12);border:1px solid rgba(255,253,247,.3);color:var(--crema);font-family:'Karla',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;padding:6px 10px;border-radius:999px;cursor:pointer;transition:all .2s}
+.langs button.activo{background:var(--blanco);color:var(--verde);border-color:var(--blanco)}
+.momentos{margin:-52px 16px 0;background:var(--blanco);border-radius:var(--radio);box-shadow:var(--sombra);padding:20px 18px 22px;position:relative;z-index:5}
+.momentos h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:22px;text-align:center;color:var(--verde-osc)}
+.momentos h2 em{font-style:italic}
+.momentos p.hint{text-align:center;font-size:12px;color:#8a8271;margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chip{border:1.5px solid var(--verde-suave);background:transparent;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
+.chip .em{margin-right:5px}
+.chip.activo{background:var(--verde);border-color:var(--verde);color:var(--blanco);transform:scale(1.04)}
+.chip:active{transform:scale(.95)}
+.limpiar{display:none;margin:12px auto 0;background:none;border:none;color:var(--marron);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.limpiar.visible{display:block}
+.navcat{position:sticky;top:0;z-index:20;background:rgba(242,234,225,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0 12px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(83,96,57,.12);margin-top:26px}
+.navcat::-webkit-scrollbar{display:none}
+.navcat a{flex:0 0 auto;text-decoration:none;font-size:13px;font-weight:600;color:var(--marron);background:var(--blanco);border:1px solid rgba(139,47,47,.22);padding:8px 14px;border-radius:999px;transition:all .2s}
+.navcat a.actual{background:var(--marron);color:var(--blanco);border-color:var(--marron)}
+.navcat a:last-child{margin-right:16px}
+.destacados{padding:26px 0 6px}
+.eyebrow{padding:0 20px;font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--marron)}
+.destacados h3{padding:2px 20px 0;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--verde-osc)}
+.carrusel{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 10px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.carrusel::-webkit-scrollbar{display:none}
+.dcard{flex:0 0 78%;scroll-snap-align:start;background:var(--blanco);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden}
+.dcard .foto{height:130px;position:relative;display:flex;align-items:center;justify-content:center}
+.dcard .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:60px;color:rgba(255,253,247,.55)}
+.dcard .cuerpo{padding:14px 16px 18px}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
+.badge.fav{background:var(--marron);color:var(--blanco)}
+.badge.reco{background:var(--manteca);color:var(--marron)}
+.badge.pedido{background:var(--manteca);color:var(--marron)}
+.badge.nuevo{background:var(--verde);color:var(--blanco)}
+.badge.sintacc{background:#EFE7DA;color:#6b6252;border:1px dashed #b3a48b}
+.dcard h4{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--tinta);line-height:1.1}
+.dcard p{font-size:13px;color:#6f6a5d;margin-top:5px;line-height:1.45}
+section.cat{padding:30px 20px 4px;scroll-margin-top:64px}
+section.cat header{margin-bottom:14px}
+section.cat h3{font-family:'Cormorant Garamond',serif;font-size:29px;font-weight:500;color:var(--verde-osc);line-height:1.05}
+section.cat p.desc-cat{color:#8a8271;margin-top:4px;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px}
+.lista{display:flex;flex-direction:column;gap:12px}
+.prod{background:var(--blanco);border-radius:16px;padding:16px 16px 15px;box-shadow:0 2px 10px rgba(83,96,57,.06);transition:opacity .3s, transform .3s;position:relative}
+.prod.oculto{display:none}
+.prod .fila{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prod h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;line-height:1.15}
+.prod .precio{font-weight:700;font-size:15px;color:var(--verde-osc);white-space:nowrap}
+.prod p{font-size:13px;color:#6f6a5d;margin-top:5px;line-height:1.45}
+.prod .etiquetas{margin-bottom:6px;display:flex;gap:6px;flex-wrap:wrap}
+.prod .etiquetas .badge{margin-bottom:0}
+.prod.destacada{border:1.5px solid var(--rosa);background:linear-gradient(180deg,#FFFDF8, var(--blanco))}
+.adic-banda{margin:30px 20px 0;background:var(--verde);border-radius:var(--radio);padding:20px;color:var(--blanco);position:relative;overflow:hidden}
+.adic-banda svg{position:absolute;right:-30px;bottom:-30px;width:150px;opacity:.15;transform:rotate(200deg)}
+.adic-banda .eyebrow{padding:0;color:var(--rosa)}
+.adic-banda h3{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:500;margin-top:2px}
+.adic-banda ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.adic-banda li b{font-weight:600;font-family:'Cormorant Garamond',serif;font-size:17.5px}
+.adic-banda li span.det{display:block;font-size:12.5px;color:var(--manteca);font-weight:400;margin-top:2px}
+footer{margin-top:44px;background:var(--verde-osc);color:var(--crema);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
+footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
+footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500}
+footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;margin-top:6px;color:var(--rosa)}
+.redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
+.redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--crema);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600}
+footer .datos{margin-top:22px;font-size:12.5px;color:rgba(242,234,225,.7);line-height:1.7}
+.wsp{position:fixed;bottom:18px;right:16px;z-index:40;background:#3BA55D;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 8px 22px rgba(0,0,0,.22);transition:transform .2s}
+.wsp:active{transform:scale(.94)}
+@media(min-width:481px){.wsp{right:calc(50% - 224px)}}
+.vacio{display:none;text-align:center;padding:8px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;color:#a49a80;font-size:16px}
+section.cat.sin-resultados .vacio{display:block}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="langs" id="langs" role="group" aria-label="Idioma / Language"></div>
+  <svg class="botanica b1" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 95 C50 60 50 40 50 5 M50 80 C35 75 25 65 22 50 M50 80 C65 75 75 65 78 50 M50 60 C38 56 30 48 28 36 M50 60 C62 56 70 48 72 36 M50 40 C41 37 35 31 33 22 M50 40 C59 37 65 31 67 22" stroke="#FFFDF7" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+  <svg class="botanica b2" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 95 C50 60 50 40 50 5 M50 80 C35 75 25 65 22 50 M50 80 C65 75 75 65 78 50 M50 60 C38 56 30 48 28 36 M50 60 C62 56 70 48 72 36 M50 40 C41 37 35 31 33 22 M50 40 C59 37 65 31 67 22" stroke="#FFFDF7" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+  <h1 class="marca">Amel<em>í</em></h1>
+  <p class="sub" id="heroSub"></p>
+  <div class="hoja-div"></div>
+  <p class="lugar" id="heroLugar"></p>
+</header>
+
+<div class="momentos" id="momentos">
+  <h2 id="momTitle"></h2>
+  <p class="hint" id="momHint"></p>
+  <div class="chips" id="chips" role="group"></div>
+  <button class="limpiar" id="limpiar"></button>
+</div>
+
+<nav class="navcat" id="navcat" aria-label="Categorías"></nav>
+
+<div class="destacados" id="destacados">
+  <p class="eyebrow" id="destEyebrow"></p>
+  <h3 id="destTitle"></h3>
+  <div class="carrusel" id="carrusel"></div>
+</div>
+
+<main id="menu"></main>
+
+<div class="adic-banda" id="adicBanda">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 95 C50 60 50 40 50 5 M50 80 C35 75 25 65 22 50 M50 80 C65 75 75 65 78 50 M50 60 C38 56 30 48 28 36 M50 60 C62 56 70 48 72 36" stroke="#FFFDF7" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+  <p class="eyebrow" id="adicEyebrow"></p>
+  <h3 id="adicTitle"></h3>
+  <ul id="adicLista"></ul>
+</div>
+
+<footer>
+  <svg class="botanica" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 95 C50 60 50 40 50 5 M50 80 C35 75 25 65 22 50 M50 80 C65 75 75 65 78 50 M50 60 C38 56 30 48 28 36 M50 60 C62 56 70 48 72 36 M50 40 C41 37 35 31 33 22 M50 40 C59 37 65 31 67 22" stroke="#F2EAE1" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+  <p class="marca">Amelí</p>
+  <p class="grx" id="footGrx"></p>
+  <div class="redes">
+    <a href="__IG_URL__" target="_blank" rel="noopener">◈ Instagram</a>
+    <a href="https://maps.google.com/?q=Malargüe,Mendoza" target="_blank" rel="noopener" id="footMaps"></a>
+  </div>
+  <p class="datos" id="footDatos"></p>
+</footer>
+
+<a class="wsp" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener" id="wspBtn">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.1 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9 5 5 0 0 0 3 .9 2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3Z"/></svg>
+  <span id="wspTxt"></span>
+</a>
+
+<script>
+/* ============ DATOS (generados desde Ameli_Menu_Maestro_V2.xlsx) ============ */
+const CATS = __CATS_JSON__;
+const PRODS = __PRODS_JSON__;
+const PRECIOS = __PRECIOS_JSON__;
+const LANGS = ['es','en','pt','fr','it'];
+const UI = {
+ sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de Thé · Brunch',it:'Casa da Tè · Brunch'},
+ lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.',fr:'Malargüe, Mendoza — fait maison, chaque jour.',it:'Malargüe, Mendoza — fatto in casa, ogni giorno.'},
+ momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí',fr:'Choisissez votre <em>moment</em> Amelí',it:'Scegli il tuo <em>momento</em> Amelí'},
+ momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade',fr:'Touchez-en un et le menu s’adapte à votre envie',it:'Toccane uno e il menù si adatta alla tua voglia'},
+ limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menù'},
+ destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí',fr:'Aujourd’hui chez Amelí',it:'Oggi da Amelí'},
+ destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'I piatti forti della casa'},
+ vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
+ adicEyebrow:{es:'Personalizá tu bebida',en:'Customise your drink',pt:'Personalize a sua bebida',fr:'Personnalisez votre boisson',it:'Personalizza la tua bevanda'},
+ grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
+ maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar',fr:'◈ Nous trouver',it:'◈ Come arrivare'},
+ datos:{es:'Malargüe, Mendoza, Argentina<br>Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
+        en:'Malargüe, Mendoza, Argentina<br>Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
+        pt:'Malargüe, Mendoza, Argentina<br>Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
+        fr:'Malargüe, Mendoza, Argentine<br>Du mardi au samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
+        it:'Malargüe, Mendoza, Argentina<br>Da martedì a sabato · 9–13 e 17:30–21<br>Domenica · 17:30–21'},
+ wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
+ title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu',fr:'Amelí · Maison de Thé & Brunch — Menu',it:'Amelí · Casa da Tè & Brunch — Menù'},
+};
+const CHIPS = [
+ {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Une douceur',it:'Qualcosa di dolce'}},
+ {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Une fraîcheur',it:'Qualcosa di fresco'}},
+ {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
+ {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Une boisson chaude',it:'Qualcosa di caldo'}},
+ {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
+];
+const BADGES = {
+ fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Coup de cœur',it:'Preferito della casa'}},
+ reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
+ pedido:{c:'pedido', t:{es:'Más pedido',en:'Most ordered',pt:'Mais pedido',fr:'Le plus demandé',it:'Più richiesto'}},
+ nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo',fr:'Nouveau',it:'Novità'}},
+ sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten',fr:'Sans gluten',it:'Senza glutine'}},
+};
+const CAT_NOTAS = {
+ BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra',fr:'Au verre ou en carafe',it:'Al bicchiere o in caraffa'},
+ STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado',fr:'Produit externalisé',it:'Prodotto di terzi'},
+};
+const GRADIENTES=['linear-gradient(135deg,#536039,#8B966E)','linear-gradient(135deg,#8B2F2F,#A85450)','linear-gradient(135deg,#3E4829,#536039)'];
+
+let lang='es', moodActivo=null;
+const $=id=>document.getElementById(id);
+
+function render(){
+  document.documentElement.lang=lang;
+  document.title=UI.title[lang];
+  $('heroSub').textContent=UI.sub[lang];
+  $('heroLugar').textContent=UI.lugar[lang];
+  $('momTitle').innerHTML=UI.momTitle[lang];
+  $('momHint').textContent=UI.momHint[lang];
+  $('limpiar').textContent=UI.limpiar[lang];
+  $('destEyebrow').textContent=UI.destEyebrow[lang];
+  $('destTitle').textContent=UI.destTitle[lang];
+  $('footGrx').textContent=UI.grx[lang];
+  $('footMaps').textContent=UI.maps[lang];
+  $('footDatos').innerHTML=UI.datos[lang];
+  $('wspTxt').textContent=UI.wsp[lang];
+  /* selector de idioma */
+  $('langs').innerHTML=LANGS.map(l=>`<button data-l="${l}" class="${l===lang?'activo':''}" aria-pressed="${l===lang}">${l.toUpperCase()}</button>`).join('');
+  document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.l;render();aplicarFiltro();}));
+  /* chips */
+  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}"><span class="em">${ch.em}</span>${ch.t[lang]}</button>`).join('');
+  document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+    moodActivo = moodActivo===ch.dataset.mood ? null : ch.dataset.mood;
+    render(); aplicarFiltro();
+    if(moodActivo) $('menu').scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+  $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
+  /* nav — Adicionales se muestra como banda, no en nav */
+  const catsNav=CATS.filter(c=>c.cod!=='ADI');
+  $('navcat').innerHTML=catsNav.map(c=>`<a href="#${c.cod}">${c.nom[lang]}</a>`).join('');
+  /* carrusel destacados */
+  $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
+    const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join(' ');
+    return `<article class="dcard"><div class="foto" style="background:${GRADIENTES[i%3]}"><span class="inicial">${p.n[lang].charAt(0)}</span></div>
+      <div class="cuerpo">${bd}<h4>${p.n[lang]}</h4><p>${p.d[lang]}</p></div></article>`;
+  }).join('');
+  /* secciones */
+  $('menu').innerHTML=catsNav.map(cat=>{
+    const items=PRODS.filter(p=>p.cat===cat.cod);
+    if(!items.length) return '';
+    const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${CAT_NOTAS[cat.cod][lang]}</p>`:'';
+    const cards=items.map(p=>{
+      const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
+      const et=bd?`<div class="etiquetas">${bd}</div>`:'';
+      const precio=PRECIOS[p.id]?`<span class="precio">${PRECIOS[p.id]}</span>`:'';
+      return `<article class="prod ${p.dest?'destacada':''}" data-moods="${p.m.join(',')}">
+        ${et}<div class="fila"><h4>${p.n[lang]}</h4>${precio}</div><p>${p.d[lang]}</p></article>`;
+    }).join('');
+    return `<section class="cat" id="${cat.cod}"><header><h3>${cat.nom[lang]}</h3>${nota}</header>
+      <div class="lista">${cards}</div><p class="vacio">${UI.vacio[lang]}</p></section>`;
+  }).join('');
+  /* banda adicionales */
+  const adi=PRODS.filter(p=>p.cat==='ADI');
+  const catAdi=CATS.find(c=>c.cod==='ADI');
+  $('adicEyebrow').textContent=UI.adicEyebrow[lang];
+  $('adicTitle').textContent=catAdi?catAdi.nom[lang]:'';
+  $('adicLista').innerHTML=adi.map(p=>`<li><b>${p.n[lang]}</b><span class="det">${p.d[lang]}</span></li>`).join('');
+  observarNav();
+}
+function aplicarFiltro(){
+  document.querySelectorAll('.prod').forEach(p=>{
+    const moods=(p.dataset.moods||'').split(',');
+    p.classList.toggle('oculto', !!moodActivo && !moods.includes(moodActivo));
+  });
+  document.querySelectorAll('section.cat').forEach(sec=>{
+    sec.classList.toggle('sin-resultados', sec.querySelectorAll('.prod:not(.oculto)').length===0);
+  });
+  $('limpiar').classList.toggle('visible', !!moodActivo);
+}
+let observer;
+function observarNav(){
+  if(observer) observer.disconnect();
+  const links=document.querySelectorAll('.navcat a');
+  observer=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        links.forEach(l=>l.classList.toggle('actual', l.getAttribute('href')==='#'+en.target.id));
+        const a=document.querySelector('.navcat a.actual');
+        if(a) a.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('section.cat').forEach(s=>observer.observe(s));
+}
+render(); aplicarFiltro();
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "_comentario": "Momentos que no se pueden derivar mecánicamente del maestro y requieren criterio gastronómico/editorial. 'calentito'/'fresco' salen de 05_Gastronomía(Temperatura), 'llevar'/'compartir' de 05(Formato de servicio) + reglas de categoría — pero 'dulce' no tiene columna propia, y hay excepciones puntuales (ej. un combo 'Mixta' que en la práctica es un plato frío). Sumá acá el ID y los momentos extra cuando el criterio automático no alcance. Ideal a futuro: agregar columna 'Dulce (Sí/No)' en la hoja 05 del maestro y reducir este archivo a las excepciones reales.",
+  "extra": {
+    "DEL004": ["dulce"],
+    "DEL005": ["dulce"],
+    "DEL007": ["dulce"],
+    "ESP001": ["dulce"],
+    "CCL007": ["dulce"],
+    "CFR003": ["dulce"],
+    "STC001": ["dulce"],
+    "STC002": ["dulce"],
+    "STC003": ["dulce"],
+    "STC004": ["dulce"],
+    "TYT001": ["dulce"],
+    "TYT002": ["dulce"],
+    "TYT003": ["dulce"],
+    "TYT004": ["dulce"],
+    "TYT005": ["dulce"],
+    "TYT006": ["dulce"],
+    "TYT007": ["dulce"],
+    "DYM004": ["fresco"]
+  }
+}
