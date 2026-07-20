@@ -140,6 +140,21 @@ def load_gastronomia(wb):
     return out
 
 
+def load_multimedia(wb):
+    """ID -> URL de imagen principal (o None si la hoja todavía no la tiene cargada)."""
+    ws = _sheet(wb, "10_Multimedia_SEO")
+    out = {}
+    r = 5
+    while True:
+        idv = ws.cell(row=r, column=1).value
+        if idv is None:
+            break
+        url = ws.cell(row=r, column=3).value
+        out[idv] = url or None
+        r += 1
+    return out
+
+
 def load_precios(wb):
     """ID -> precio local formateado (solo si está cargado)."""
     ws = _sheet(wb, "04_Precios")
@@ -215,6 +230,7 @@ def extract(xlsx_path: Path) -> dict:
     master = load_productos_master(wb)
     gastro = load_gastronomia(wb)
     precios = load_precios(wb)
+    multimedia = load_multimedia(wb)
     config = load_config(wb)
     overrides = json.loads(OVERRIDES_MOMENTOS.read_text(encoding="utf-8"))["extra"]
 
@@ -234,6 +250,7 @@ def extract(xlsx_path: Path) -> dict:
             "d": traducciones["d"],
             "m": moments_for(prod_id, flags["cat"], gastro, overrides),
             "b": badges_for(flags, flags["cat"]),
+            "img": multimedia.get(prod_id),
         })
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 
