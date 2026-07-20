@@ -24,6 +24,13 @@ jobs:
           python-version: "3.12"
       - run: pip install openpyxl
       - run: python build.py
+      - name: Generar config.js con el endpoint de votos
+        env:
+          VOTOS_ENDPOINT: ${{ secrets.VOTOS_ENDPOINT }}
+        run: |
+          cat > dist/config.js <<EOF
+          window.AMELI_CONFIG = { votosEndpoint: "${VOTOS_ENDPOINT}" };
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
