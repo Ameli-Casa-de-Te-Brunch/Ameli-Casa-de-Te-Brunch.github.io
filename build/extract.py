@@ -72,7 +72,7 @@ def load_categorias(wb):
 
 
 def load_menu_multilingue(wb):
-    """ID -> {n:{lang}, d:{lang}, estado_traduccion}"""
+    """ID -> {n:{lang}, d:{lang}, estado_traduccion, _fila}"""
     ws = _sheet(wb, "01_Menú_Multilingüe")
     out = {}
     r = 5
@@ -96,6 +96,7 @@ def load_menu_multilingue(wb):
                 "it": ws.cell(row=r, column=13).value,
             },
             "estado_traduccion": ws.cell(row=r, column=14).value,
+            "_fila": r,
         }
         r += 1
     return out
@@ -119,6 +120,7 @@ def load_productos_master(wb):
             "recomendado": ws.cell(row=r, column=12).value == "Sí",
             "mas_vendido": ws.cell(row=r, column=13).value == "Sí",
             "nuevo": ws.cell(row=r, column=14).value == "Sí",
+            "_fila": r,
         }
         r += 1
     return out
@@ -168,6 +170,20 @@ def load_precios(wb):
         precio = ws.cell(row=r, column=4).value
         if precio not in (None, ""):
             out[idv] = f"$ {precio:,.0f}".replace(",", ".")
+        r += 1
+    return out
+
+
+def load_filas_precios(wb):
+    """ID -> número de fila en 04_Precios (para mensajes de validación)."""
+    ws = _sheet(wb, "04_Precios")
+    out = {}
+    r = 5
+    while True:
+        idv = ws.cell(row=r, column=1).value
+        if idv is None:
+            break
+        out[idv] = r
         r += 1
     return out
 
@@ -265,11 +281,27 @@ def extract(xlsx_path: Path) -> dict:
     master = load_productos_master(wb)
     gastro = load_gastronomia(wb)
     precios = load_precios(wb)
+    filas_precios = load_filas_precios(wb)
     multimedia = load_multimedia(wb)
     config = load_config(wb)
     overrides = json.loads(OVERRIDES_MOMENTOS.read_text(encoding="utf-8"))["extra"]
 
     prods = []
+    meta = {}
+    # metadata de TODOS los productos de la hoja 02 (activos o no), para que el
+    # validador pueda señalar filas concretas incluso en productos inactivos
+    for prod_id, flags in master.items():
+        traducciones = menu.get(prod_id)
+        meta[prod_id] = {
+            "fila_02": flags["_fila"],
+            "fila_01": traducciones["_fila"] if traducciones else None,
+            "fila_04": filas_precios.get(prod_id),
+            "cat": flags["cat"],
+            "activo": flags["activo"],
+            "destacado": flags["destacado"],
+            "nombre_es": (traducciones["n"]["es"] if traducciones else None) or prod_id,
+        }
+
     for prod_id, flags in master.items():
         if not flags["activo"]:
             continue
@@ -296,6 +328,7 @@ def extract(xlsx_path: Path) -> dict:
         "prods": prods,
         "precios": precios,
         "config": config,
+        "_meta": meta,
     }
 
 

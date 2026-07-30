@@ -1,4 +1,10 @@
 __pycache__/
 *.pyc
 config.js
-dist/config.js
+
+# dist/ lo genera build.py en cada corrida y el workflow de GitHub Actions lo
+# regenera de cero en cada deploy (nunca lee lo que esté commiteado acá) —
+# versionarlo era decorativo y agregaba la tentación de tocarlo a mano.
+# Nunca se edita dist/ a mano: si necesitás cambiar algo, se edita el Excel
+# maestro (o el template) y se corre build.py de nuevo.
+dist/
