@@ -258,16 +258,17 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-o
   <p class="marca">Amelí</p>
   <p class="grx" id="footGrx"></p>
   <div class="redes">
-    <a href="__IG_URL__" target="_blank" rel="noopener">◈ Instagram</a>
-    <a href="https://maps.google.com/?q=Malargüe,Mendoza" target="_blank" rel="noopener" id="footMaps"></a>
+    <!--IG_START--><a href="__IG_URL__" target="_blank" rel="noopener">◈ Instagram</a><!--IG_END-->
+    <!--MAPS_START--><a href="__MAPS_URL__" target="_blank" rel="noopener" id="footMaps"></a><!--MAPS_END-->
   </div>
+  <!--DIRECCION_START--><p class="datos" id="footDireccion">__DIRECCION__</p><!--DIRECCION_END-->
   <p class="datos" id="footDatos"></p>
 </footer>
 
-<a class="wsp" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener" id="wspBtn">
+<!--WSP_START--><a class="wsp" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener" id="wspBtn">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.1 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9 5 5 0 0 0 3 .9 2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3Z"/></svg>
   <span id="wspTxt"></span>
-</a>
+</a><!--WSP_END-->
 
 <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetNombre" hidden tabindex="-1">
@@ -316,11 +317,11 @@ const UI = {
  adicEyebrow:{es:'Personalizá tu bebida',en:'Customise your drink',pt:'Personalize a sua bebida',fr:'Personnalisez votre boisson',it:'Personalizza la tua bevanda'},
  grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
  maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar',fr:'◈ Nous trouver',it:'◈ Come arrivare'},
- datos:{es:'Malargüe, Mendoza, Argentina<br>Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
-        en:'Malargüe, Mendoza, Argentina<br>Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
-        pt:'Malargüe, Mendoza, Argentina<br>Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
-        fr:'Malargüe, Mendoza, Argentine<br>Du mardi au samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
-        it:'Malargüe, Mendoza, Argentina<br>Da martedì a sabato · 9–13 e 17:30–21<br>Domenica · 17:30–21'},
+ datos:{es:'Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
+        en:'Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
+        pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
+        fr:'Du mardi au samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
+        it:'Da martedì a sabato · 9–13 e 17:30–21<br>Domenica · 17:30–21'},
  wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
  title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu',fr:'Amelí · Maison de Thé & Brunch — Menu',it:'Amelí · Casa da Tè & Brunch — Menù'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
@@ -479,9 +480,14 @@ function abrirDetalle(id){
   else { foto.style.backgroundImage='none'; foto.style.background=GRADIENTES[Math.abs(hashId(p.id))%3]; $('sheetInicial').style.display=''; $('sheetInicial').textContent=p.n[lang].charAt(0); }
   actualizarLikeSheet(id);
   $('sheetLike').setAttribute('aria-label', `${UI.megusta[lang]} ${p.n[lang]}`);
-  const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
-  $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
-  $('sheetPedirTxt').textContent = UI.wsp[lang];
+  if(WSP_NUMBER){
+    const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
+    $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
+    $('sheetPedirTxt').textContent = UI.wsp[lang];
+    $('sheetPedir').style.display='';
+  } else {
+    $('sheetPedir').style.display='none';
+  }
   $('sheetCerrar').setAttribute('aria-label', UI.cerrarSheet[lang]);
 
   $('sheetBackdrop').hidden=false; $('sheet').hidden=false;
@@ -604,9 +610,9 @@ function render(){
   $('destEyebrow').textContent=UI.destEyebrow[lang];
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
-  $('footMaps').textContent=UI.maps[lang];
+  if($('footMaps')) $('footMaps').textContent=UI.maps[lang];
   $('footDatos').innerHTML=UI.datos[lang];
-  $('wspTxt').textContent=UI.wsp[lang];
+  if($('wspTxt')) $('wspTxt').textContent=UI.wsp[lang];
   $('carPrev').setAttribute('aria-label', UI.anterior[lang]);
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
   pintarEstado();

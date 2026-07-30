@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """xlsx (Ameli_Menu_Maestro) -> data.json (CATS/PRODS/PRECIOS/CONFIG)."""
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -171,6 +172,25 @@ def load_precios(wb):
     return out
 
 
+def _normalizar_whatsapp(valor):
+    """La celda puede venir como número (Excel la interpreta así si son solo dígitos)
+    o como texto con espacios/guiones. Siempre devolvemos solo dígitos, o None."""
+    if valor in (None, ""):
+        return None
+    if isinstance(valor, float) and valor.is_integer():
+        valor = int(valor)
+    solo_digitos = re.sub(r"\D", "", str(valor))
+    return solo_digitos or None
+
+
+def _es_placeholder(valor):
+    """Detecta placeholders obvios tipo 'XXXXXXXX' o 'ejemplo' que no deberían publicarse."""
+    if valor in (None, ""):
+        return False
+    texto = str(valor).strip().lower()
+    return "xxx" in texto or texto in ("ejemplo", "pendiente", "completar", "tbd", "n/a")
+
+
 def load_config(wb):
     ws = _sheet(wb, "13_Configuración")
     params = {}
@@ -181,12 +201,27 @@ def load_config(wb):
             break
         params[nombre] = ws.cell(row=r, column=2).value
         r += 1
+
+    whatsapp = _normalizar_whatsapp(params.get("WhatsApp de pedidos"))
+    instagram = params.get("Instagram")
+    direccion = params.get("Dirección")
+    url_base = params.get("URL base del menú")
+
+    if _es_placeholder(whatsapp) or _es_placeholder(params.get("WhatsApp de pedidos")):
+        whatsapp = None
+    if _es_placeholder(instagram):
+        instagram = None
+    if _es_placeholder(direccion):
+        direccion = None
+    if _es_placeholder(url_base):
+        url_base = None
+
     return {
         "moneda": params.get("Moneda local") or "ARS",
-        "whatsapp": params.get("WhatsApp de pedidos"),
-        "instagram": params.get("Instagram"),
-        "direccion": params.get("Dirección"),
-        "url_base": params.get("URL base del menú"),
+        "whatsapp": whatsapp,
+        "instagram": instagram,
+        "direccion": direccion,
+        "url_base": url_base,
     }
 
 
