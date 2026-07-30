@@ -2,11 +2,18 @@
 
 Pipeline que genera el menú publicado en
 **https://ameli-casa-de-te-brunch.github.io/** a partir de un único archivo:
-`data/Ameli_Menu_Maestro_V2.1.xlsx`.
+el Excel maestro (`Ameli_Menu_Maestro_V2.1.xlsx`).
 
 **Regla de oro: nunca se edita el sitio a mano.** Todo cambio entra por el
 Excel. `dist/` (el HTML final) se genera solo — no está versionado en git
 porque GitHub Actions lo reconstruye de cero en cada publicación.
+
+**El Excel maestro no vive en este repo.** Tiene costos y márgenes por
+producto, y este repo es público — ver la sección
+["Qué es público y qué no"](#qué-es-público-y-qué-no) para el detalle y el
+porqué. Vive en tu PC (con respaldo en OneDrive). Lo que sí está versionado
+es `data/menu.json`, una copia derivada que solo tiene lo que el sitio
+realmente publica.
 
 ## Instalación (una sola vez)
 
@@ -15,32 +22,41 @@ porque GitHub Actions lo reconstruye de cero en cada publicación.
    ```
    pip install openpyxl
    ```
+3. El pipeline busca el Excel en, en este orden: el flag `--xlsx`, la
+   variable de entorno `AMELI_XLSX_PATH`, un archivo `.env` en la raíz del
+   repo (no se sube a git) con la línea `AMELI_XLSX_PATH=...`, o si ninguna
+   de esas está, en la ubicación de OneDrive donde vive hoy. Si tu archivo
+   está en esa ubicación no tenés que configurar nada.
 
 ## Cómo publicar un cambio
 
-1. Editar `data/Ameli_Menu_Maestro_V2.1.xlsx` con Excel o Google Sheets.
+1. Editar el Excel maestro con Excel o Google Sheets.
 2. Guardar el archivo.
-3. Doble clic en **`menu.bat`** (o, en una terminal, `python build.py`).
+3. Doble clic en **`menu.bat`** — valida y arma el sitio en tu PC (no publica
+   todavía). Revisá que no haya `[ERROR]` en la salida.
+4. Doble clic en **`publicar.bat`** — te muestra exactamente qué archivo va a
+   subir (solo `data/menu.json`, nunca el Excel) y te pide que escribas
+   `si` para confirmar. Recién ahí commitea y pushea.
 
-Eso valida el Excel, arma el sitio y lo publica solo (commit + push). A los
-2-3 minutos el cambio está visible en la URL de arriba — GitHub Actions lo
-reconstruye automáticamente.
+A los 2-3 minutos de publicar, el cambio está visible en la URL de arriba —
+GitHub Actions reconstruye el sitio solo a partir de `data/menu.json`.
 
-Si el validador encuentra un error, **no se publica nada**: corregís lo que
-te indica en el Excel y volvés a correr `menu.bat`.
+Si el validador encuentra un error, **`menu.bat` no genera nada** y
+**`publicar.bat` no tiene nada para subir**: corregís lo que te indica en el
+Excel y volvés a correr `menu.bat`.
 
 ### Otras formas de correrlo
 
 ```
-python build.py --dry-run    # solo revisa el Excel y te dice qué está mal, no publica nada
-python build.py --no-push    # arma el sitio en dist/ para verlo en tu PC, pero no lo publica
-python build.py --xlsx otra_version.xlsx   # probar con otro archivo
+python build.py                # valida y arma dist/ en tu PC, no toca git
+python build.py --dry-run      # solo revisa el Excel y te dice qué está mal
+python build.py --publicar     # arma el sitio y ofrece publicar (pide "si")
+python build.py --xlsx otra_version.xlsx
 ```
 
-Para ver el resultado en tu PC antes de publicar (con `--no-push` o
-`--dry-run` fallido): abrí `dist/index.html` con doble clic, o si querés
-verlo como se va a ver online, corré `python -m http.server 8000` dentro de
-`dist/` y entrá a `http://localhost:8000`.
+Para ver el resultado en tu PC: abrí `dist/index.html` con doble clic, o si
+querés verlo como se va a ver online, corré `python -m http.server 8000`
+dentro de `dist/` y entrá a `http://localhost:8000`.
 
 ## Qué hoja editar para cada cosa
 
@@ -49,7 +65,7 @@ verlo como se va a ver online, corré `python -m http.server 8000` dentro de
 | Nombre o descripción de un producto (en cualquiera de los 5 idiomas) | `01_Menú_Multilingüe` | Nombre: D-H · Descripción: I-M |
 | Si un producto está activo / destacado / recomendado / nuevo | `02_Productos_MASTER` | J, K, L, M, N |
 | Categorías, orden en el menú, si una categoría se muestra | `03_Categorías` | — |
-| Precios | `04_Precios` | D (precio local) |
+| Precios (de venta) | `04_Precios` | D (precio local) |
 | Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `05_Gastronomía` | D, E |
 | Fotos de producto | `10_Multimedia_SEO` | C (URL imagen principal) — si está vacío, se muestra el patrón botánico en vez de una foto rota |
 | WhatsApp, Instagram, dirección, URL del QR | `13_Configuración` | B |
@@ -78,15 +94,17 @@ Después de corregir el Excel, volvé a correr `menu.bat` (o `python build.py
 ## Estructura del proyecto
 
 ```
-data/    Ameli_Menu_Maestro_V2.1.xlsx     ← fuente de verdad, versionada en git
-build/   extract.py    xlsx -> dist/data.json
-         validate.py   reglas de calidad (IDs, traducciones, categorías, slugs, contacto)
-         render.py     data.json + template -> dist/index.html
+(fuera del repo)  Ameli_Menu_Maestro_V2.1.xlsx   ← fuente de verdad, en tu PC/OneDrive
+data/    menu.json                        ← derivado del Excel, SOLO campos públicos, versionado
+build/   extract.py       xlsx -> data/menu.json (filtrado) + datos completos en memoria
+         validate.py      reglas de calidad (IDs, traducciones, categorías, slugs, contacto)
+         render.py        menu.json + template -> dist/index.html
+         config_local.py  resuelve dónde está el Excel en esta máquina
 templates/menu.template.html              ← el HTML, separado de los datos
 backend/apps-script/                      ← backend del sistema de "me gusta" (Google Apps Script)
-dist/                                     ← generado por build.py, NO versionado en git
-build.py                                  ← el comando único: extract -> validate -> render -> publicar
-menu.bat                                  ← doble clic para correr build.py en Windows
+dist/                                     ← generado, NO versionado en git
+build.py                                  ← construir (extract -> validate -> render) y, si pedís, publicar
+menu.bat / publicar.bat                   ← doble clic en Windows para cada paso
 ```
 
 (El prompt original sugería una carpeta `template/` en singular; usé
@@ -96,19 +114,55 @@ cosmético.)
 
 ## Decisiones de diseño
 
-- **`dist/` no está versionado.** El deploy de GitHub Actions corre
-  `python build.py` de cero en cada push y sube ese resultado — nunca lee lo
-  que esté commiteado en `dist/`. Versionarlo era decorativo y agregaba la
-  tentación de editarlo a mano por error.
-- **El Excel completo sí está versionado**, aunque el repo es público. Hoy
-  no tiene datos sensibles (se auditó). El día que se carguen costos o
-  márgenes reales en `04_Precios` o `09_Ingeniería_Menú`, hay que revisar de
-  nuevo esta decisión — probablemente separando esas hojas a otro lugar
-  antes de que eso pase, no versionando el Excel completo con costos.
+- **El Excel completo NO está versionado.** Tiene columnas de costo unitario
+  y margen (hojas `04_Precios` y `09_Ingeniería_Menú`) que son información de
+  negocio, no algo para un repo público. Vive en tu PC. `data/menu.json` es
+  lo que sí se versiona: una proyección filtrada a mano en `extract.py`
+  (función `datos_publicos()`) que solo puede contener nombre, descripción,
+  categoría, badges, momentos, precio de venta y los datos de contacto — si
+  alguna vez agregás un campo a esa función, pensalo dos veces antes de
+  agregar algo que no debería ser público.
+- **La ruta del Excel es configurable** (flag, variable de entorno, o
+  `.env` gitignoreado) porque cada máquina donde esto se corra va a tenerlo
+  en un lugar distinto.
+- **GitHub Actions nunca ve el Excel.** El workflow de deploy solo lee
+  `data/menu.json` (ya commiteado) y corre `render.py` — no instala
+  `openpyxl` ni tiene forma de leer un Excel que no existe en el runner.
+  Validar (`extract.py` + `validate.py`) pasa únicamente en tu PC.
+- **`dist/` no está versionado.** El deploy reconstruye el HTML de cero en
+  cada push a partir de `data/menu.json` — nunca lee lo que esté commiteado
+  en `dist/`. Versionarlo era decorativo y agregaba la tentación de editarlo
+  a mano por error.
 - **Datos de contacto (WhatsApp, Instagram, dirección) salen siempre del
   Excel**, nunca hardcodeados en el HTML. Si falta alguno, el pipeline oculta
   el botón o enlace correspondiente en vez de publicar un link roto.
-- **`menu.bat` publica solo** (commit + push) cuando el Excel cambió y no
-  hay errores de validación. Solo lo hace parado en la rama `main` — en
-  cualquier otra rama, avisa y no toca nada, para no interferir con trabajo
-  de desarrollo en curso.
+- **Construir y publicar son pasos separados.** `python build.py` (o
+  `menu.bat`) solo valida y arma el sitio en tu PC — nunca toca git.
+  Publicar requiere `--publicar` (o `publicar.bat`), que además te muestra
+  el archivo exacto que va a subir y espera que escribas `si`. Nunca
+  commitea nada que no haya listado antes.
+
+## Qué es público y qué no
+
+**Regla:** al sitio publicado solo sale lo que un cliente necesita para
+elegir algo y venir — carta (nombres, descripciones, categorías), precios
+de venta, fotos, horarios, dirección y contacto. Todo lo demás es interno
+y nunca debe cruzar a `data/menu.json`, al HTML generado, ni a ningún commit.
+
+**Nunca subir al repo (ni al Excel siquiera si algún día se lo versiona
+de nuevo, ni a ningún archivo versionado):**
+- El Excel maestro completo (`.xlsx`/`.xlsm`) — está en `.gitignore` a propósito.
+- Costo unitario, margen, proveedor (hojas `04` más allá del precio de
+  venta, `09`).
+- Ingredientes internos, notas operativas, reglas de personalización
+  (hojas `06`, `08`).
+- Estadísticas de ventas o de tráfico interno (hoja `12`).
+- Cualquier credencial, token o URL de backend con permisos de escritura,
+  en texto plano, en cualquier archivo versionado. Van en secrets de GitHub
+  Actions o en archivos gitignoreados (`config.js`, `.env`).
+- Capturas de pantalla, rutas locales (`C:\Users\...`), o cualquier dato
+  personal que no sea el contacto de negocio de Amelí.
+
+**Si tenés dudas sobre si algo puede publicarse:** no lo subas y preguntá
+primero. Es mucho más fácil agregar un dato después que sacarlo de un repo
+público una vez que salió.

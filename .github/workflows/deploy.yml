@@ -22,8 +22,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install openpyxl
-      - run: python build.py
+      - name: Verificar que data/menu.json esté presente
+        run: |
+          test -f data/menu.json || {
+            echo "Falta data/menu.json. El Excel maestro vive fuera del repo (a propósito)";
+            echo "y se publica corriendo 'python build.py --publicar' en la PC del dueño,";
+            echo "no desde acá.";
+            exit 1;
+          }
+      # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, así que
+      # nunca corre extract.py ni validate.py — eso pasa en la PC del dueño.
+      - run: python build/render.py
       - name: Generar config.js con el endpoint de votos
         env:
           VOTOS_ENDPOINT: ${{ secrets.VOTOS_ENDPOINT }}

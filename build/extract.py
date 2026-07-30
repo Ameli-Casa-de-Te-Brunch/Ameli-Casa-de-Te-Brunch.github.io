@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""xlsx (Ameli_Menu_Maestro) -> data.json (CATS/PRODS/PRECIOS/CONFIG)."""
+"""xlsx (Ameli_Menu_Maestro, fuera del repo) -> data/menu.json (solo campos públicos)."""
 import json
 import re
 import sys
@@ -7,11 +7,13 @@ from pathlib import Path
 
 import openpyxl
 
+import config_local
+
 LANGS = ["es", "en", "pt", "fr", "it"]
 LANG_COLS = {"es": 0, "en": 1, "pt": 2, "fr": 3, "it": 4}  # offset from first name/desc column
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_XLSX = HERE.parent / "data" / "Ameli_Menu_Maestro_V2.1.xlsx"
+DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
 
@@ -332,12 +334,36 @@ def extract(xlsx_path: Path) -> dict:
     }
 
 
+# Campos que SÍ salen al sitio público. Todo lo demás (costos, márgenes,
+# proveedores, ingredientes internos, notas operativas, estadísticas,
+# fila/columna de origen) se queda afuera de lo que se versiona y se publica.
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
+_CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
+
+
+def datos_publicos(data: dict) -> dict:
+    """Proyección de extract() con solo lo que un visitante del menú necesita ver.
+    Esto es lo que se escribe a disco y se versiona — nunca el dict completo
+    (que trae _meta: filas de origen, flags internos, etc. útiles solo para
+    que validate.py arme sus mensajes en el mismo proceso)."""
+    return {
+        "cats": data["cats"],
+        "prods": [{k: p[k] for k in _CAMPOS_PROD_PUBLICOS} for p in data["prods"]],
+        "precios": data["precios"],
+        "config": {k: data["config"].get(k) for k in _CAMPOS_CONFIG_PUBLICOS},
+    }
+
+
 def main():
-    xlsx_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_XLSX
-    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE.parent / "dist" / "data.json"
+    xlsx_arg = sys.argv[1] if len(sys.argv) > 1 else None
+    xlsx_path = config_local.resolver_ruta_xlsx(xlsx_arg)
+    if not xlsx_path.exists():
+        print(config_local.mensaje_no_encontrado(xlsx_path))
+        sys.exit(1)
+    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUT
     data = extract(xlsx_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    out_path.write_text(json.dumps(datos_publicos(data), ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"OK: {len(data['prods'])} productos activos, {len(data['cats'])} categorías -> {out_path}")
 
 

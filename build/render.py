@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_JSON = HERE.parent / "dist" / "data.json"
+DEFAULT_JSON = HERE.parent / "data" / "menu.json"
 DEFAULT_TEMPLATE = HERE.parent / "templates" / "menu.template.html"
 DEFAULT_OUT = HERE.parent / "dist" / "index.html"
 

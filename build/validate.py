@@ -8,7 +8,6 @@ y dónde.
 Errores -> bloquean el build (build.py corta y no genera dist/index.html).
 Warnings -> se listan pero no bloquean (ej. todavía no hay precios cargados).
 """
-import json
 import re
 import sys
 from pathlib import Path
@@ -16,9 +15,10 @@ from pathlib import Path
 import openpyxl
 from openpyxl.utils import get_column_letter
 
+import config_local
+import extract
+
 HERE = Path(__file__).resolve().parent
-DEFAULT_XLSX = HERE.parent / "data" / "Ameli_Menu_Maestro_V2.1.xlsx"
-DEFAULT_JSON = HERE.parent / "dist" / "data.json"
 
 LANGS = ["es", "en", "pt", "fr", "it"]
 IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués", "fr": "francés", "it": "italiano"}
@@ -183,9 +183,12 @@ def validate(data: dict, xlsx_path: Path):
 
 
 def main():
-    json_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_JSON
-    xlsx_path = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_XLSX
-    data = json.loads(json_path.read_text(encoding="utf-8"))
+    xlsx_arg = sys.argv[1] if len(sys.argv) > 1 else None
+    xlsx_path = config_local.resolver_ruta_xlsx(xlsx_arg)
+    if not xlsx_path.exists():
+        print(config_local.mensaje_no_encontrado(xlsx_path))
+        sys.exit(1)
+    data = extract.extract(xlsx_path)  # incluye _meta, necesario para las filas de los mensajes
     errors, warnings = validate(data, xlsx_path)
 
     for w in warnings:

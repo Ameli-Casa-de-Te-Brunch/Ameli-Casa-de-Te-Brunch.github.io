@@ -1,5 +1,6 @@
 @echo off
-REM Doble clic para publicar el menu: valida el Excel y, si esta todo bien, actualiza el sitio.
+REM Doble clic: valida el Excel y arma el sitio en tu PC (dist/index.html).
+REM Esto NO publica nada. Para publicar de verdad, usa publicar.bat.
 cd /d "%~dp0"
 python build.py
 echo.
