@@ -9,8 +9,10 @@ import openpyxl
 
 import config_local
 
-LANGS = ["es", "en", "pt", "fr", "it"]
-LANG_COLS = {"es": 0, "en": 1, "pt": 2, "fr": 3, "it": 4}  # offset from first name/desc column
+# Solo 3 idiomas activos (turismo real de Malargüe). Francés e italiano
+# quedan escritos en las columnas G/H (nombre) y L/M (descripción) del
+# maestro para el futuro, pero ni se extraen ni el validador los exige.
+LANGS = ["es", "en", "pt"]
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUT = HERE.parent / "data" / "menu.json"
@@ -27,24 +29,6 @@ def _sheet(wb, name):
         if candidate.startswith(prefix + "_"):
             return wb[candidate]
     raise KeyError(f"No se encontró la hoja {name!r}")
-
-
-def _row_dict(ws, header_row=4, id_col=1, first_data_row=5):
-    """Yield {id: {col_letter_index: value}} keyed by row, stopping at first empty ID."""
-    rows = {}
-    r = first_data_row
-    while True:
-        idv = ws.cell(row=r, column=id_col).value
-        if idv is None:
-            if r - first_data_row > 200:  # safety valve, sheet is capped at row ~60
-                break
-            r += 1
-            if ws.cell(row=r, column=id_col).value is None and r > first_data_row + 5:
-                break
-            continue
-        rows[idv] = r
-        r += 1
-    return rows
 
 
 def load_categorias(wb):
@@ -64,8 +48,7 @@ def load_categorias(wb):
                 "es": ws.cell(row=r, column=8).value,
                 "en": ws.cell(row=r, column=9).value,
                 "pt": ws.cell(row=r, column=10).value,
-                "fr": ws.cell(row=r, column=11).value,
-                "it": ws.cell(row=r, column=12).value,
+                # K/L (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
         })
         r += 1
@@ -87,15 +70,13 @@ def load_menu_multilingue(wb):
                 "es": ws.cell(row=r, column=4).value,
                 "en": ws.cell(row=r, column=5).value,
                 "pt": ws.cell(row=r, column=6).value,
-                "fr": ws.cell(row=r, column=7).value,
-                "it": ws.cell(row=r, column=8).value,
+                # G/H (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
             "d": {
                 "es": ws.cell(row=r, column=9).value,
                 "en": ws.cell(row=r, column=10).value,
                 "pt": ws.cell(row=r, column=11).value,
-                "fr": ws.cell(row=r, column=12).value,
-                "it": ws.cell(row=r, column=13).value,
+                # L/M (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
             "estado_traduccion": ws.cell(row=r, column=14).value,
             "_fila": r,

@@ -33,13 +33,6 @@ jobs:
       # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, así que
       # nunca corre extract.py ni validate.py — eso pasa en la PC del dueño.
       - run: python build/render.py
-      - name: Generar config.js con el endpoint de votos
-        env:
-          VOTOS_ENDPOINT: ${{ secrets.VOTOS_ENDPOINT }}
-        run: |
-          cat > dist/config.js <<EOF
-          window.AMELI_CONFIG = { votosEndpoint: "${VOTOS_ENDPOINT}" };
-          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -1,6 +1,5 @@
 __pycache__/
 *.pyc
-config.js
 .env
 
 # El Excel maestro NUNCA se versiona: tiene columnas de costo unitario y

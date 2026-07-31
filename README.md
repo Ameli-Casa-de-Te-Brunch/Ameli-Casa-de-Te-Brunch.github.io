@@ -74,9 +74,14 @@ dentro de `dist/` y entrá a `http://localhost:8000`.
 
 ## Qué hoja editar para cada cosa
 
+El sitio muestra **3 idiomas: español, inglés, portugués** (el turismo real
+de Malargüe). Francés e italiano tienen columnas propias en el maestro —
+podés seguir completándolas si querés, pero el validador no las exige ni el
+sitio las muestra.
+
 | Querés cambiar... | Hoja | Columna |
 |---|---|---|
-| Nombre o descripción de un producto (en cualquiera de los 5 idiomas) | `01_Menú_Multilingüe` | Nombre: D-H · Descripción: I-M |
+| Nombre o descripción de un producto (ES/EN/PT) | `01_Menú_Multilingüe` | Nombre: D-F · Descripción: I-K |
 | Si un producto está activo / destacado / recomendado / nuevo | `02_Productos_MASTER` | J, K, L, M, N |
 | Categorías, orden en el menú, si una categoría se muestra | `03_Categorías` | — |
 | Precios (de venta) | `04_Precios` | D (precio local) |
@@ -84,9 +89,28 @@ dentro de `dist/` y entrá a `http://localhost:8000`.
 | Fotos de producto | `10_Multimedia_SEO` | C (URL imagen principal) — si está vacío, se muestra el patrón botánico en vez de una foto rota |
 | WhatsApp, Instagram, dirección, URL del QR | `13_Configuración` | B |
 
-Si agregás un producto nuevo, tiene que tener fila en **las 5 hojas** de
-arriba (01, 02, 04, 05, 10) con el mismo ID, y el ID tiene que seguir el
-formato de los que ya existen (3 letras + 3 números, ej. `TYT008`).
+### Hojas en uso vs. hojas sin usar
+
+El pipeline lee **7 hojas**: `01`, `02`, `03`, `04`, `05`, `10`, `13`. Un
+producto nuevo necesita fila en esas 7 (mismo ID en cada una), y el ID tiene
+que seguir el formato de los que ya existen (3 letras + 3 números, ej.
+`TYT008`).
+
+Las hojas `06_Ingredientes`, `07_Alérgenos_Dietas`, `08_Personalización`,
+`09_Ingeniería_Menú`, `11_Canales_QR` y `12_Estadísticas` **existen en el
+maestro pero el pipeline no las lee ni el validador las exige**. Quedan ahí
+para cuando se retomen (ver "Fuera de alcance por ahora" y la sección legal
+sobre alérgenos más abajo) — no son "pendientes rotos", son simplemente
+hojas que hoy no alimentan el sitio.
+
+### Si ves errores de `#REF!` en los desplegables del Excel
+
+La hoja oculta `99_Listas` (de donde salen los rangos con nombre que arman
+los desplegables de las hojas 02/05/07/08) puede romperse al guardar desde
+Excel. El validador te avisa si detecta un rango roto, pero **no bloquea la
+publicación** — el pipeline lee valores de celda directamente, nunca los
+rangos con nombre, así que un `#REF!` ahí no afecta el sitio. Es un
+problema del Excel para quien lo edita, no del menú publicado.
 
 ## Qué hacer si el validador se queja
 
@@ -112,10 +136,10 @@ Después de corregir el Excel, volvé a correr `menu.bat` (o `python build.py
 data/    menu.json                        ← derivado del Excel, SOLO campos públicos, versionado
 build/   extract.py       xlsx -> data/menu.json (filtrado) + datos completos en memoria
          validate.py      reglas de calidad (IDs, traducciones, categorías, slugs, contacto)
-         render.py        menu.json + template -> dist/index.html
+         render.py        menu.json + template -> dist/index.html (copia assets/ también)
          config_local.py  resuelve dónde está el Excel en esta máquina
 templates/menu.template.html              ← el HTML, separado de los datos
-backend/apps-script/                      ← backend del sistema de "me gusta" (Google Apps Script)
+assets/fonts/                             ← Cormorant Garamond + Karla, self-hosteadas
 dist/                                     ← generado, NO versionado en git
 build.py                                  ← construir (extract -> validate -> render) y, si pedís, publicar
 menu.bat / publicar.bat                   ← doble clic en Windows para cada paso
@@ -155,6 +179,20 @@ cosmético.)
   Publicar requiere `--publicar` (o `publicar.bat`), que además te muestra
   el archivo exacto que va a subir y espera que escribas `si`. Nunca
   commitea nada que no haya listado antes.
+- **Sin sistema de votos.** Existió un botón de "me gusta" con backend en
+  Google Apps Script; se sacó por completo (ver "Fuera de alcance por
+  ahora"). Obligaba a un endpoint público sin autenticación y a mantener
+  claves — y como el voto es manipulable desde el navegador, tampoco iba a
+  servir como dato real para decidir la carta.
+- **Fuentes self-hosteadas, no Google Fonts.** `assets/fonts/` tiene los
+  dos tipos de letra (`Cormorant Garamond`, `Karla`) en `.woff2`, subset
+  `latin` (cubre todos los acentos de ES/EN/PT). Antes, cada visitante le
+  mandaba su IP a Google solo por cargar la tipografía; ahora no sale
+  ningún request a un tercero para eso, y además carga más rápido en 3G.
+- **El mapa nunca fue un embed.** El botón "Cómo llegar" siempre fue un
+  link `<a href>` a Google Maps que solo se activa si la persona lo toca —
+  no hay ningún iframe cargando de fondo. Se deja documentado acá porque
+  es fácil asumir lo contrario.
 
 ## Qué es público y qué no
 
@@ -173,7 +211,9 @@ de nuevo, ni a ningún archivo versionado):**
 - Estadísticas de ventas o de tráfico interno (hoja `12`).
 - Cualquier credencial, token o URL de backend con permisos de escritura,
   en texto plano, en cualquier archivo versionado. Van en secrets de GitHub
-  Actions o en archivos gitignoreados (`config.js`, `.env`).
+  Actions o en un archivo gitignoreado (`.env`) — hoy el sitio no tiene
+  ningún backend propio (se sacó el sistema de votos), así que esto no
+  aplica a nada actual, pero queda como regla para lo que venga.
 - Capturas de pantalla, rutas locales (`C:\Users\...`), o cualquier dato
   personal que no sea el contacto de negocio de Amelí.
 

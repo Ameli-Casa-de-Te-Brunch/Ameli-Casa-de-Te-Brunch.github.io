@@ -20,10 +20,11 @@ import extract
 
 HERE = Path(__file__).resolve().parent
 
-LANGS = ["es", "en", "pt", "fr", "it"]
-IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués", "fr": "francés", "it": "italiano"}
-COL_NOMBRE = {"es": 4, "en": 5, "pt": 6, "fr": 7, "it": 8}       # 01_Menú_Multilingüe, D-H
-COL_DESC = {"es": 9, "en": 10, "pt": 11, "fr": 12, "it": 13}     # 01_Menú_Multilingüe, I-M
+# Solo 3 idiomas exigidos por el validador — ver la misma nota en extract.py.
+LANGS = ["es", "en", "pt"]
+IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués"}
+COL_NOMBRE = {"es": 4, "en": 5, "pt": 6}       # 01_Menú_Multilingüe, D-F
+COL_DESC = {"es": 9, "en": 10, "pt": 11}       # 01_Menú_Multilingüe, I-K
 COL_PRECIO_LOCAL = 4                                             # 04_Precios, D
 COL_CATEGORIA_COD = 5                                             # 02_Productos_MASTER, E
 
@@ -93,6 +94,19 @@ def validate(data: dict, xlsx_path: Path):
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     meta = data.get("_meta", {})
     cat_codes = {c["cod"] for c in data["cats"]}
+
+    # --- rangos con nombre rotos (ej. si se perdió la hoja oculta 99_Listas al
+    # guardar desde Excel). El pipeline no depende de estos rangos para nada —
+    # lee valores de celda directamente — pero rompen los desplegables del
+    # Excel para quien lo edita, así que vale la pena avisar. ---
+    for nombre, rango in wb.defined_names.items():
+        destino = rango.value if hasattr(rango, "value") else str(rango)
+        if "#REF!" in destino:
+            warnings.append(
+                f"El rango con nombre '{nombre}' está roto (#REF!) — probablemente se perdió "
+                f"la hoja oculta 99_Listas al guardar. No afecta la publicación del menú, pero "
+                f"puede haber roto algún desplegable en el Excel. Revisalo cuando puedas."
+            )
 
     # --- IDs: formato y duplicados (sobre TODAS las filas de la hoja 02, activas o no) ---
     filas_hoja02 = _leer_ids_hoja02(wb)

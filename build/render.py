@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""data.json + templates/menu.template.html -> dist/index.html"""
+"""data/menu.json + templates/menu.template.html -> dist/index.html (+ assets/)"""
 import html as html_mod
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 from urllib.parse import quote
@@ -11,6 +12,15 @@ HERE = Path(__file__).resolve().parent
 DEFAULT_JSON = HERE.parent / "data" / "menu.json"
 DEFAULT_TEMPLATE = HERE.parent / "templates" / "menu.template.html"
 DEFAULT_OUT = HERE.parent / "dist" / "index.html"
+ASSETS_DIR = HERE.parent / "assets"
+
+
+def copiar_assets(destino_dir: Path):
+    """Copia assets/ (fuentes self-hosteadas) junto al index.html generado —
+    tienen que viajar con el HTML para que las rutas relativas del CSS funcionen."""
+    if not ASSETS_DIR.exists():
+        return
+    shutil.copytree(ASSETS_DIR, destino_dir / "assets", dirs_exist_ok=True)
 
 
 def _safe_json(obj) -> str:
@@ -69,6 +79,7 @@ def main():
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html, encoding="utf-8")
+    copiar_assets(out_path.parent)
     print(f"OK: {out_path} ({len(html)} bytes)")
 
 

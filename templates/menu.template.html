@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Amelí · Casa de Té & Brunch — Menú</title>
-<meta name="description" content="Menú digital de Amelí, casa de té y brunch en Malargüe, Mendoza. Digital menu in 5 languages.">
+<meta name="description" content="Menú digital de Amelí, casa de té y brunch en Malargüe, Mendoza.">
 <meta name="theme-color" content="#536039" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1E2117" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="config.js"></script>
 <style>
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 600;font-display:swap;src:url('assets/fonts/cormorant-garamond.woff2') format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 500;font-display:swap;src:url('assets/fonts/cormorant-garamond-italic.woff2') format('woff2')}
+@font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('assets/fonts/karla.woff2') format('woff2')}
 :root{
   --verde:#536039; --verde-osc:#3E4829; --verde-suave:#8B966E;
   --crema:#F2EAE1; --blanco:#FFFDF7; --marron:#8B2F2F;
@@ -43,7 +42,6 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
-body.sheet-abierto{overflow:hidden}
 ::selection{background:var(--rosa)}
 .hero{background:var(--verde);color:var(--sobre-verde);padding:56px 24px 84px;text-align:center;position:relative;overflow:hidden}
 .hero svg.botanica{position:absolute;opacity:.14;pointer-events:none}
@@ -101,9 +99,6 @@ body.sheet-abierto{overflow:hidden}
 .dcard .foto::after{content:'';position:absolute;inset:0;background:var(--scrim)}
 .dcard .foto span.inicial{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:60px;color:rgba(255,253,247,.5);margin-bottom:auto;margin-top:auto}
 .dcard .cuerpo{position:relative;z-index:1;padding:0 16px 16px;margin-top:-64px;width:100%}
-.dcard .mini-like{position:absolute;top:10px;right:10px;z-index:2;width:32px;height:32px;border-radius:50%;border:none;background:rgba(20,22,14,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
-.dcard .mini-like svg{width:17px;height:17px}
-.dcard .mini-like.votado{background:var(--marron)}
 .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
 .badge.fav{background:var(--marron);color:var(--sobre-verde)}
 .badge.reco{background:var(--manteca);color:var(--marron)}
@@ -185,21 +180,9 @@ section.cat.sin-resultados .vacio{display:block}
 .sheet-panel h3{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:var(--tinta)}
 .sheet-panel p{margin-top:8px;font-size:14.5px;line-height:1.6;color:var(--texto-sec)}
 .sheet-acciones{display:flex;gap:10px;margin-top:20px;align-items:stretch}
-.btn-like{position:relative;display:flex;align-items:center;gap:7px;border:1.5px solid var(--verde-suave);background:transparent;padding:0 16px;border-radius:999px;cursor:pointer;color:var(--verde-osc);font-weight:700;font-size:14px;transition:transform .12s ease,background .2s,color .2s}
-.btn-like:active{transform:scale(.95)}
-.btn-like.votado{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde)}
-.btn-like svg{width:20px;height:20px;flex-shrink:0}
-.btn-like .heart-fill{transition:fill .2s}
-.btn-like.votado .heart-fill{fill:var(--sobre-verde)}
-.btn-like.latir svg{animation:latido .4s ease}
-@keyframes latido{0%{transform:scale(1)}30%{transform:scale(1.3)}55%{transform:scale(.92)}100%{transform:scale(1)}}
-.hojita{position:absolute;top:8px;left:50%;pointer-events:none;font-size:13px;opacity:1;animation:flotar .8s ease-out forwards}
-@keyframes flotar{to{transform:translate(var(--dx,0px),-44px) rotate(var(--rot,20deg));opacity:0}}
 .btn-pedir{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#3BA55D;color:#fff;text-decoration:none;padding:0 16px;border-radius:999px;font-weight:700;font-size:14px;transition:transform .12s ease}
 .btn-pedir:active{transform:scale(.96)}
 .btn-pedir svg{width:17px;height:17px}
-.voto-error{position:absolute;left:0;right:0;bottom:100%;margin-bottom:8px;background:var(--marron);color:var(--sobre-verde);font-size:11.5px;padding:6px 10px;border-radius:10px;text-align:center;opacity:0;transition:opacity .25s ease;pointer-events:none}
-.voto-error.visible{opacity:1}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
@@ -282,14 +265,6 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-o
     <h3 id="sheetNombre"></h3>
     <p id="sheetDesc"></p>
     <div class="sheet-acciones">
-      <button class="btn-like" id="sheetLike" aria-pressed="false">
-        <svg class="icono-like" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path class="heart-fill" fill="none" d="M12 20.3C6.2 16.1 2.6 12.3 2.6 8.5 2.6 5.6 5 3.3 7.8 3.3c1.8 0 3.4.9 4.2 2.3.8-1.4 2.4-2.3 4.2-2.3 2.9 0 5.3 2.3 5.3 5.2 0 3.8-3.5 7.6-9.5 11.8Z"/>
-          <path d="M12 6.6v11.6M12 9.2l-2.5 1.7M12 9.2l2.5 1.7M12 13l-2.2 1.5M12 13l2.2 1.5"/>
-        </svg>
-        <span class="conteo" id="sheetLikeConteo">0</span>
-        <span class="voto-error" id="sheetVotoError"></span>
-      </button>
       <a class="btn-pedir" id="sheetPedir" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.1 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9 5 5 0 0 0 3 .9 2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3Z"/></svg>
         <span id="sheetPedirTxt"></span>
@@ -299,61 +274,57 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-o
 </div>
 
 <script>
-/* ============ DATOS (generados desde Ameli_Menu_Maestro_V2.xlsx) ============ */
+/* ============ DATOS (generados desde el Excel maestro) ============ */
 const CATS = __CATS_JSON__;
 const PRODS = __PRODS_JSON__;
 const PRECIOS = __PRECIOS_JSON__;
 const WSP_NUMBER = '__WSP_NUMBER__';
-const LANGS = ['es','en','pt','fr','it'];
+const LANGS = ['es','en','pt'];
 const UI = {
- sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de Thé · Brunch',it:'Casa da Tè · Brunch'},
- lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.',fr:'Malargüe, Mendoza — fait maison, chaque jour.',it:'Malargüe, Mendoza — fatto in casa, ogni giorno.'},
- momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí',fr:'Choisissez votre <em>moment</em> Amelí',it:'Scegli il tuo <em>momento</em> Amelí'},
- momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade',fr:'Touchez-en un et le menu s’adapte à votre envie',it:'Toccane uno e il menù si adatta alla tua voglia'},
- limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menù'},
- destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí',fr:'Aujourd’hui chez Amelí',it:'Oggi da Amelí'},
- destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'I piatti forti della casa'},
- vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
- adicEyebrow:{es:'Personalizá tu bebida',en:'Customise your drink',pt:'Personalize a sua bebida',fr:'Personnalisez votre boisson',it:'Personalizza la tua bevanda'},
- grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
- maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar',fr:'◈ Nous trouver',it:'◈ Come arrivare'},
+ sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch'},
+ lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.'},
+ momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí'},
+ momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade'},
+ limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo'},
+ destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí'},
+ destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa'},
+ vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧'},
+ adicEyebrow:{es:'Personalizá tu bebida',en:'Customise your drink',pt:'Personalize a sua bebida'},
+ grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧'},
+ maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar'},
  datos:{es:'Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
         en:'Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
-        pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
-        fr:'Du mardi au samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
-        it:'Da martedì a sabato · 9–13 e 17:30–21<br>Domenica · 17:30–21'},
- wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
- title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu',fr:'Amelí · Maison de Thé & Brunch — Menu',it:'Amelí · Casa da Tè & Brunch — Menù'},
- abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
- cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
- abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
- cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar',fr:'Fermer',it:'Chiudere'},
- votoError:{es:'No se pudo guardar, probá de nuevo',en:'Could not save, try again',pt:'Não foi possível salvar, tente novamente',fr:'Impossible d’enregistrer, réessayez',it:'Impossibile salvare, riprova'},
- pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
- verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de',fr:'Voir les détails de',it:'Vedi dettagli di'},
- megusta:{es:'Me gusta',en:'Like',pt:'Curtir',fr:'J’aime',it:'Mi piace'},
- anterior:{es:'Anterior',en:'Previous',pt:'Anterior',fr:'Précédent',it:'Precedente'},
- siguiente:{es:'Siguiente',en:'Next',pt:'Próximo',fr:'Suivant',it:'Successivo'},
- irA:{es:'Ir al destacado',en:'Go to highlight',pt:'Ir para o destaque',fr:'Aller au coup de cœur',it:'Vai al piatto forte'},
+        pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h'},
+ wsp:{es:'Pedir',en:'Order',pt:'Pedir'},
+ title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu'},
+ abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora'},
+ cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora'},
+ abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às'},
+ cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar'},
+ pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: '},
+ verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de'},
+ anterior:{es:'Anterior',en:'Previous',pt:'Anterior'},
+ siguiente:{es:'Siguiente',en:'Next',pt:'Próximo'},
+ irA:{es:'Ir al destacado',en:'Go to highlight',pt:'Ir para o destaque'},
 };
-const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
+const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português'};
 const CHIPS = [
- {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Une douceur',it:'Qualcosa di dolce'}},
- {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Une fraîcheur',it:'Qualcosa di fresco'}},
- {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
- {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Une boisson chaude',it:'Qualcosa di caldo'}},
- {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
+ {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce'}},
+ {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco'}},
+ {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar'}},
+ {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho'}},
+ {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar'}},
 ];
 const BADGES = {
- fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Coup de cœur',it:'Preferito della casa'}},
- reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
- pedido:{c:'pedido', t:{es:'Más pedido',en:'Most ordered',pt:'Mais pedido',fr:'Le plus demandé',it:'Più richiesto'}},
- nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo',fr:'Nouveau',it:'Novità'}},
- sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten',fr:'Sans gluten',it:'Senza glutine'}},
+ fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa'}},
+ reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado'}},
+ pedido:{c:'pedido', t:{es:'Más pedido',en:'Most ordered',pt:'Mais pedido'}},
+ nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo'}},
+ sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten'}},
 };
 const CAT_NOTAS = {
- BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra',fr:'Au verre ou en carafe',it:'Al bicchiere o in caraffa'},
- STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado',fr:'Produit externalisé',it:'Prodotto di terzi'},
+ BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra'},
+ STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado'},
 };
 const GRADIENTES=['linear-gradient(135deg,#536039,#8B966E)','linear-gradient(135deg,#8B2F2F,#A85450)','linear-gradient(135deg,#3E4829,#536039)'];
 /* horario: 0=domingo ... 6=sábado. Cada rango es [horaIni,minIni,horaFin,minFin]. */
@@ -366,13 +337,9 @@ const BANDERAS = {
  es:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cAR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cAR)"><rect width="20" height="20" fill="#FFFFFF"/><rect width="20" height="6.7" fill="#75AADB"/><rect y="13.3" width="20" height="6.7" fill="#75AADB"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
  en:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cGB"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cGB)"><rect width="20" height="20" fill="#274B8C"/><rect x="8.2" width="3.6" height="20" fill="#FFFFFF"/><rect y="8.2" width="20" height="3.6" fill="#FFFFFF"/><rect x="9" width="2" height="20" fill="#C8283C"/><rect y="9" width="20" height="2" fill="#C8283C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
  pt:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cBR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cBR)"><rect width="20" height="20" fill="#2E9B4F"/><polygon points="10,3.3 17,10 10,16.7 3,10" fill="#F5D948"/><circle cx="10" cy="10" r="2.8" fill="#2B4B8C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
- fr:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cFR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cFR)"><rect width="20" height="20" fill="#FFFFFF"/><rect width="6.7" height="20" fill="#274B8C"/><rect x="13.3" width="6.7" height="20" fill="#C8283C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
- it:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cIT"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cIT)"><rect width="20" height="20" fill="#FFFFFF"/><rect width="6.7" height="20" fill="#2E9B4F"/><rect x="13.3" width="6.7" height="20" fill="#C8283C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
 };
 
-const CONFIG = (window.AMELI_CONFIG || { votosEndpoint: '' });
 let lang='es', moodActivo=null, sheetProdId=null;
-const VOTOS = {};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -408,63 +375,6 @@ function pintarEstado(){
   }
 }
 
-/* ---------- votos ---------- */
-function yaVoto(id){ return !!localStorage.getItem('votado_'+id); }
-function cargarVotos(){
-  if(!CONFIG.votosEndpoint) return;
-  fetch(CONFIG.votosEndpoint).then(r=>r.json()).then(datos=>{
-    Object.assign(VOTOS, datos);
-    if(sheetProdId) actualizarLikeSheet(sheetProdId);
-  }).catch(()=>{ /* sin red: se sigue con los contadores locales que haya */ });
-}
-function actualizarLikeSheet(id){
-  const btn=$('sheetLike');
-  btn.classList.toggle('votado', yaVoto(id));
-  btn.setAttribute('aria-pressed', String(yaVoto(id)));
-  $('sheetLikeConteo').textContent = VOTOS[id]||0;
-}
-function lanzarHojitas(cont){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  for(let i=0;i<3;i++){
-    const h=document.createElement('span');
-    h.className='hojita'; h.textContent='❧';
-    h.style.setProperty('--dx',(Math.random()*30-15)+'px');
-    h.style.setProperty('--rot',(Math.random()*50-25)+'deg');
-    h.style.left=(45+Math.random()*10)+'%';
-    cont.appendChild(h);
-    h.addEventListener('animationend',()=>h.remove());
-  }
-}
-async function votar(id){
-  if(yaVoto(id)) return;
-  localStorage.setItem('votado_'+id,'1');
-  VOTOS[id]=(VOTOS[id]||0)+1;
-  const btn=$('sheetLike');
-  btn.classList.add('votado','latir');
-  btn.setAttribute('aria-pressed','true');
-  $('sheetLikeConteo').textContent = VOTOS[id];
-  lanzarHojitas(btn);
-  setTimeout(()=>btn.classList.remove('latir'), 420);
-  if(!CONFIG.votosEndpoint) return;
-  try{
-    const r = await fetch(CONFIG.votosEndpoint, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({id})});
-    const datos = await r.json();
-    if(!datos || datos.ok!==true) throw new Error('respuesta inválida');
-    VOTOS[id]=datos.cuenta;
-    $('sheetLikeConteo').textContent = VOTOS[id];
-  }catch(err){
-    VOTOS[id]=Math.max(0,(VOTOS[id]||1)-1);
-    localStorage.removeItem('votado_'+id);
-    btn.classList.remove('votado');
-    btn.setAttribute('aria-pressed','false');
-    $('sheetLikeConteo').textContent = VOTOS[id];
-    const errEl=$('sheetVotoError');
-    errEl.textContent = UI.votoError[lang];
-    errEl.classList.add('visible');
-    setTimeout(()=>errEl.classList.remove('visible'), 2600);
-  }
-}
-
 /* ---------- bottom sheet de detalle ---------- */
 let focoPrevio=null;
 function abrirDetalle(id){
@@ -478,8 +388,6 @@ function abrirDetalle(id){
   const foto=$('sheetFoto');
   if(p.img){ foto.style.backgroundImage=`url("${esc(p.img)}")`; $('sheetInicial').style.display='none'; }
   else { foto.style.backgroundImage='none'; foto.style.background=GRADIENTES[Math.abs(hashId(p.id))%3]; $('sheetInicial').style.display=''; $('sheetInicial').textContent=p.n[lang].charAt(0); }
-  actualizarLikeSheet(id);
-  $('sheetLike').setAttribute('aria-label', `${UI.megusta[lang]} ${p.n[lang]}`);
   if(WSP_NUMBER){
     const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
     $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
@@ -542,7 +450,6 @@ function onSheetKeydown(e){
 })();
 $('sheetCerrar').addEventListener('click', cerrarDetalle);
 $('sheetBackdrop').addEventListener('click', cerrarDetalle);
-$('sheetLike').addEventListener('click', ()=>{ if(sheetProdId) votar(sheetProdId); });
 
 /* ---------- carrusel: flechas, puntos, drag desktop ---------- */
 function initCarrusel(){
@@ -636,27 +543,15 @@ function render(){
     const fotoEstilo = p.img ? `background-image:url('${esc(p.img)}')` : `background:${GRADIENTES[i%3]}`;
     const inicial = p.img ? '' : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
     return `<article class="dcard" style="${fotoEstilo}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
-      <button class="mini-like ${yaVoto(p.id)?'votado':''}" data-mini-like="${esc(p.id)}" aria-pressed="${yaVoto(p.id)}" aria-label="${esc(UI.megusta[lang])} ${esc(p.n[lang])}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3C6.2 16.1 2.6 12.3 2.6 8.5 2.6 5.6 5 3.3 7.8 3.3c1.8 0 3.4.9 4.2 2.3.8-1.4 2.4-2.3 4.2-2.3 2.9 0 5.3 2.3 5.3 5.2 0 3.8-3.5 7.6-9.5 11.8Z" fill="${yaVoto(p.id)?'currentColor':'none'}"/><path d="M12 6.6v11.6M12 9.2l-2.5 1.7M12 9.2l2.5 1.7M12 13l-2.2 1.5M12 13l2.2 1.5"/></svg>
-      </button>
       <div class="foto">${inicial}</div>
       <div class="cuerpo">${bd}<h4>${esc(p.n[lang])}</h4><p>${esc(p.d[lang])}</p></div></article>`;
   }).join('');
   document.querySelectorAll('.dcard').forEach(card=>{
-    card.addEventListener('click', e=>{ if(e.target.closest('[data-mini-like]')) return; abrirDetalle(card.dataset.id); });
+    card.addEventListener('click', ()=>abrirDetalle(card.dataset.id));
     card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); abrirDetalle(card.dataset.id); } });
-  });
-  document.querySelectorAll('[data-mini-like]').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      e.stopPropagation();
-      const id=btn.dataset.miniLike;
-      if(yaVoto(id)) return;
-      votarMini(id, btn);
-    });
   });
   initCarrusel();
   /* secciones */
-  let idxGlobal=0;
   $('menu').innerHTML=catsNav.map(cat=>{
     const items=PRODS.filter(p=>p.cat===cat.cod);
     if(!items.length) return '';
@@ -683,28 +578,6 @@ function render(){
   $('adicLista').innerHTML=adi.map(p=>`<li><b>${esc(p.n[lang])}</b><span class="det">${esc(p.d[lang])}</span></li>`).join('');
   observarNav();
   observarCategorias();
-}
-async function votarMini(id, btn){
-  localStorage.setItem('votado_'+id,'1');
-  VOTOS[id]=(VOTOS[id]||0)+1;
-  btn.classList.add('votado');
-  btn.setAttribute('aria-pressed','true');
-  btn.querySelector('path').setAttribute('fill','currentColor');
-  lanzarHojitas(btn);
-  if(sheetProdId===id) actualizarLikeSheet(id);
-  if(!CONFIG.votosEndpoint) return;
-  try{
-    const r=await fetch(CONFIG.votosEndpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({id})});
-    const datos=await r.json();
-    if(!datos || datos.ok!==true) throw new Error('respuesta inválida');
-    VOTOS[id]=datos.cuenta;
-  }catch(err){
-    VOTOS[id]=Math.max(0,(VOTOS[id]||1)-1);
-    localStorage.removeItem('votado_'+id);
-    btn.classList.remove('votado');
-    btn.setAttribute('aria-pressed','false');
-    btn.querySelector('path').setAttribute('fill','none');
-  }
 }
 function aplicarFiltro(){
   document.querySelectorAll('.prod').forEach(p=>{
@@ -743,7 +616,7 @@ function observarCategorias(){
 }
 window.addEventListener('scroll', ()=>{ $('navcat').classList.toggle('scrolled', window.scrollY>4); }, {passive:true});
 
-render(); aplicarFiltro(); cargarVotos();
+render(); aplicarFiltro();
 </script>
 </body>
 </html>

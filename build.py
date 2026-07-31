@@ -129,15 +129,8 @@ def main():
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(html, encoding="utf-8")
     print(f"      {args.out} ({len(html)} bytes)")
-
-    local_config = ROOT / "config.js"
-    dist_config = args.out.parent / "config.js"
-    if local_config.exists():
-        dist_config.write_text(local_config.read_text(encoding="utf-8"), encoding="utf-8")
-        print(f"      {dist_config} (copiado de config.js local)")
-    elif not dist_config.exists():
-        dist_config.write_text('window.AMELI_CONFIG = { votosEndpoint: "" };\n', encoding="utf-8")
-        print(f"      {dist_config} (sin backend de votos configurado — ver backend/apps-script/README.md)")
+    render.copiar_assets(args.out.parent)
+    print(f"      {args.out.parent / 'assets'} (fuentes)")
 
     if args.publicar:
         publicar()
