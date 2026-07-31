@@ -15,6 +15,20 @@ porqué. Vive en tu PC (con respaldo en OneDrive). Lo que sí está versionado
 es `data/menu.json`, una copia derivada que solo tiene lo que el sitio
 realmente publica.
 
+## Fuera de alcance por ahora
+
+Este repo es **solo el menú digital**. Lo siguiente está congelado a
+propósito — no se retoma hasta resolver privacidad y hosting:
+
+- **Sitio institucional** (una página de marca/presencia separada del menú).
+- **Sistema de "me gusta" / votos** (backend Apps Script, contador en las
+  tarjetas). Se sacó del sitio — ver más abajo por qué.
+- **Dominio propio** (`menu.ameli.com.ar` o similar) y su DNS.
+- **Analytics** de cualquier tipo (visitas, escaneos de QR, etc.).
+
+Si en algún momento se retoma alguno de estos puntos, que sea una decisión
+explícita, no un agregado de paso.
+
 ## Instalación (una sola vez)
 
 1. Instalar [Python 3](https://www.python.org/downloads/) (marcar "Add to PATH" durante la instalación en Windows).
