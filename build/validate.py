@@ -32,6 +32,35 @@ ID_FORMATO = re.compile(r"^[A-Z]{3}\d{3}$")
 
 CAMPOS_CONTACTO = {"WhatsApp de pedidos", "Instagram", "Dirección", "URL base del menú"}
 
+# Si algún día extract.py empieza a leer 07_Alérgenos_Dietas, cualquiera de
+# estas claves apareciendo en un producto público dispara el chequeo de abajo.
+CAMPOS_ALERGENOS_PROHIBIDOS = {
+    "alergenos", "alérgenos", "vegetariano", "vegano", "sin_tacc", "sintacc_real",
+    "contiene_gluten", "contiene_leche", "contiene_huevo", "contiene_soja",
+    "contiene_mani", "contiene_frutos_secos", "contiene_sesamo",
+    "contiene_pescado", "contiene_mariscos",
+}
+
+
+def _hoja07_validada(wb):
+    """True solo si TODAS las filas de 07_Alérgenos_Dietas dicen 'Validado'
+    en la columna de estado. Hoy están todas en 'Pendiente' (o similar) a
+    propósito, hasta que el dueño las revise con recetas/etiquetas reales."""
+    try:
+        ws = wb["07_Alérgenos_Dietas"]
+    except KeyError:
+        return False
+    r = 5
+    while True:
+        idv = ws.cell(row=r, column=1).value
+        if idv is None:
+            break
+        estado = ws.cell(row=r, column=17).value  # columna Q, "Estado de validación"
+        if estado != "Validado":
+            return False
+        r += 1
+    return True
+
 
 def _col(n):
     return get_column_letter(n)
@@ -94,6 +123,21 @@ def validate(data: dict, xlsx_path: Path):
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     meta = data.get("_meta", {})
     cat_codes = {c["cod"] for c in data["cats"]}
+
+    # --- alérgenos: mientras 07_Alérgenos_Dietas no esté 100% validada, no
+    # puede publicarse NINGÚN dato de esa hoja. Esto es una traba de verdad,
+    # no solo un aviso: afirmar mal un alérgeno es un problema de salud, no
+    # un detalle estético. ---
+    if not _hoja07_validada(wb):
+        for p in data["prods"]:
+            campos_encontrados = CAMPOS_ALERGENOS_PROHIBIDOS & set(p.keys())
+            if campos_encontrados:
+                errors.append(
+                    f"{p['id']}: trae datos de alérgenos ({', '.join(sorted(campos_encontrados))}) "
+                    f"pero la hoja 07_Alérgenos_Dietas todavía no está validada (columna Q, "
+                    f"'Estado de validación', tiene que decir 'Validado' en TODAS las filas). "
+                    f"No se puede publicar ningún dato de alérgenos hasta entonces."
+                )
 
     # --- rangos con nombre rotos (ej. si se perdió la hoja oculta 99_Listas al
     # guardar desde Excel). El pipeline no depende de estos rangos para nada —

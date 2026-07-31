@@ -194,6 +194,35 @@ cosmético.)
   no hay ningún iframe cargando de fondo. Se deja documentado acá porque
   es fácil asumir lo contrario.
 
+## Cumplimiento legal (Argentina)
+
+Esto no es asesoramiento legal — son reglas operativas para que el sitio no
+publique algo riesgoso por accidente. Validar con fuentes oficiales antes de
+cualquier decisión real.
+
+- **Alérgenos.** La hoja `07_Alérgenos_Dietas` está toda en "Verificar" —
+  nadie confirmó todavía qué producto tiene qué alérgeno con recetas y
+  etiquetas reales. El pipeline **nunca leyó esa hoja** (no hay ícono ni
+  afirmación de alérgeno en ningún lado del sitio hoy), y ahora además
+  `validate.py` tiene una traba activa: si algún día se agrega un campo de
+  alérgenos a un producto sin que la hoja esté 100% en "Validado" en la
+  columna Q, **el build falla con error**, no con aviso. Probado con un caso
+  simulado antes de este commit.
+- **"Sin TACC".** El menú ya aclara que son productos tercerizados
+  (`Producto tercerizado` / `Outsourced product` / `Produto terceirizado`,
+  categoría `STC`) — no se le agregó la leyenda a ningún producto que no la
+  tuviera antes, y no se va a agregar sin certificación real del proveedor.
+- **Precios.** Se muestran en pesos (`$ X.XXX`) como precio final — el
+  esquema de Monotributo del negocio no discrimina IVA. `validate.py` avisa
+  (warning, no bloquea, porque hoy no hay ningún precio cargado todavía) si
+  un producto activo se publica sin precio — ver la sección de arriba sobre
+  qué hace el validador.
+- **Sin rastreo.** Cero cookies, cero `localStorage`/`sessionStorage`, cero
+  analytics, cero píxeles. Auditado directamente en el HTML generado: no
+  queda ningún request ni ningún guardado de datos del visitante — el único
+  uso de `localStorage` que existió (para no dejar votar dos veces desde el
+  mismo dispositivo) se fue junto con todo el sistema de votos en la Fase 2.
+
 ## Qué es público y qué no
 
 **Regla:** al sitio publicado solo sale lo que un cliente necesita para
