@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""xlsx (Ameli_Menu_Maestro) -> data.json (CATS/PRODS/PRECIOS/CONFIG)."""
+"""xlsx (Ameli_Menu_Maestro, fuera del repo) -> data/menu.json (solo campos públicos)."""
 import json
 import re
 import sys
@@ -7,11 +7,15 @@ from pathlib import Path
 
 import openpyxl
 
-LANGS = ["es", "en", "pt", "fr", "it"]
-LANG_COLS = {"es": 0, "en": 1, "pt": 2, "fr": 3, "it": 4}  # offset from first name/desc column
+import config_local
+
+# Solo 3 idiomas activos (turismo real de Malargüe). Francés e italiano
+# quedan escritos en las columnas G/H (nombre) y L/M (descripción) del
+# maestro para el futuro, pero ni se extraen ni el validador los exige.
+LANGS = ["es", "en", "pt"]
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_XLSX = HERE.parent / "data" / "Ameli_Menu_Maestro_V2.1.xlsx"
+DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
 
@@ -25,24 +29,6 @@ def _sheet(wb, name):
         if candidate.startswith(prefix + "_"):
             return wb[candidate]
     raise KeyError(f"No se encontró la hoja {name!r}")
-
-
-def _row_dict(ws, header_row=4, id_col=1, first_data_row=5):
-    """Yield {id: {col_letter_index: value}} keyed by row, stopping at first empty ID."""
-    rows = {}
-    r = first_data_row
-    while True:
-        idv = ws.cell(row=r, column=id_col).value
-        if idv is None:
-            if r - first_data_row > 200:  # safety valve, sheet is capped at row ~60
-                break
-            r += 1
-            if ws.cell(row=r, column=id_col).value is None and r > first_data_row + 5:
-                break
-            continue
-        rows[idv] = r
-        r += 1
-    return rows
 
 
 def load_categorias(wb):
@@ -62,8 +48,7 @@ def load_categorias(wb):
                 "es": ws.cell(row=r, column=8).value,
                 "en": ws.cell(row=r, column=9).value,
                 "pt": ws.cell(row=r, column=10).value,
-                "fr": ws.cell(row=r, column=11).value,
-                "it": ws.cell(row=r, column=12).value,
+                # K/L (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
         })
         r += 1
@@ -72,7 +57,7 @@ def load_categorias(wb):
 
 
 def load_menu_multilingue(wb):
-    """ID -> {n:{lang}, d:{lang}, estado_traduccion}"""
+    """ID -> {n:{lang}, d:{lang}, estado_traduccion, _fila}"""
     ws = _sheet(wb, "01_Menú_Multilingüe")
     out = {}
     r = 5
@@ -85,17 +70,16 @@ def load_menu_multilingue(wb):
                 "es": ws.cell(row=r, column=4).value,
                 "en": ws.cell(row=r, column=5).value,
                 "pt": ws.cell(row=r, column=6).value,
-                "fr": ws.cell(row=r, column=7).value,
-                "it": ws.cell(row=r, column=8).value,
+                # G/H (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
             "d": {
                 "es": ws.cell(row=r, column=9).value,
                 "en": ws.cell(row=r, column=10).value,
                 "pt": ws.cell(row=r, column=11).value,
-                "fr": ws.cell(row=r, column=12).value,
-                "it": ws.cell(row=r, column=13).value,
+                # L/M (fr/it) existen en el maestro pero no se leen — ver LANGS.
             },
             "estado_traduccion": ws.cell(row=r, column=14).value,
+            "_fila": r,
         }
         r += 1
     return out
@@ -119,6 +103,7 @@ def load_productos_master(wb):
             "recomendado": ws.cell(row=r, column=12).value == "Sí",
             "mas_vendido": ws.cell(row=r, column=13).value == "Sí",
             "nuevo": ws.cell(row=r, column=14).value == "Sí",
+            "_fila": r,
         }
         r += 1
     return out
@@ -168,6 +153,20 @@ def load_precios(wb):
         precio = ws.cell(row=r, column=4).value
         if precio not in (None, ""):
             out[idv] = f"$ {precio:,.0f}".replace(",", ".")
+        r += 1
+    return out
+
+
+def load_filas_precios(wb):
+    """ID -> número de fila en 04_Precios (para mensajes de validación)."""
+    ws = _sheet(wb, "04_Precios")
+    out = {}
+    r = 5
+    while True:
+        idv = ws.cell(row=r, column=1).value
+        if idv is None:
+            break
+        out[idv] = r
         r += 1
     return out
 
@@ -265,11 +264,27 @@ def extract(xlsx_path: Path) -> dict:
     master = load_productos_master(wb)
     gastro = load_gastronomia(wb)
     precios = load_precios(wb)
+    filas_precios = load_filas_precios(wb)
     multimedia = load_multimedia(wb)
     config = load_config(wb)
     overrides = json.loads(OVERRIDES_MOMENTOS.read_text(encoding="utf-8"))["extra"]
 
     prods = []
+    meta = {}
+    # metadata de TODOS los productos de la hoja 02 (activos o no), para que el
+    # validador pueda señalar filas concretas incluso en productos inactivos
+    for prod_id, flags in master.items():
+        traducciones = menu.get(prod_id)
+        meta[prod_id] = {
+            "fila_02": flags["_fila"],
+            "fila_01": traducciones["_fila"] if traducciones else None,
+            "fila_04": filas_precios.get(prod_id),
+            "cat": flags["cat"],
+            "activo": flags["activo"],
+            "destacado": flags["destacado"],
+            "nombre_es": (traducciones["n"]["es"] if traducciones else None) or prod_id,
+        }
+
     for prod_id, flags in master.items():
         if not flags["activo"]:
             continue
@@ -296,15 +311,40 @@ def extract(xlsx_path: Path) -> dict:
         "prods": prods,
         "precios": precios,
         "config": config,
+        "_meta": meta,
+    }
+
+
+# Campos que SÍ salen al sitio público. Todo lo demás (costos, márgenes,
+# proveedores, ingredientes internos, notas operativas, estadísticas,
+# fila/columna de origen) se queda afuera de lo que se versiona y se publica.
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
+_CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
+
+
+def datos_publicos(data: dict) -> dict:
+    """Proyección de extract() con solo lo que un visitante del menú necesita ver.
+    Esto es lo que se escribe a disco y se versiona — nunca el dict completo
+    (que trae _meta: filas de origen, flags internos, etc. útiles solo para
+    que validate.py arme sus mensajes en el mismo proceso)."""
+    return {
+        "cats": data["cats"],
+        "prods": [{k: p[k] for k in _CAMPOS_PROD_PUBLICOS} for p in data["prods"]],
+        "precios": data["precios"],
+        "config": {k: data["config"].get(k) for k in _CAMPOS_CONFIG_PUBLICOS},
     }
 
 
 def main():
-    xlsx_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_XLSX
-    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE.parent / "dist" / "data.json"
+    xlsx_arg = sys.argv[1] if len(sys.argv) > 1 else None
+    xlsx_path = config_local.resolver_ruta_xlsx(xlsx_arg)
+    if not xlsx_path.exists():
+        print(config_local.mensaje_no_encontrado(xlsx_path))
+        sys.exit(1)
+    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUT
     data = extract(xlsx_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    out_path.write_text(json.dumps(datos_publicos(data), ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"OK: {len(data['prods'])} productos activos, {len(data['cats'])} categorías -> {out_path}")
 
 

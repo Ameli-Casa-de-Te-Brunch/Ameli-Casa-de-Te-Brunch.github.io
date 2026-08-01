@@ -1,4 +1,18 @@
 __pycache__/
 *.pyc
-config.js
-dist/config.js
+.env
+
+# El Excel maestro NUNCA se versiona: tiene columnas de costo unitario y
+# margen (hojas 04 y 09) que no son para un repo público. Vive fuera del
+# repo — ver README, sección "Qué es público y qué no". Lo que se versiona
+# es data/menu.json, ya filtrado a solo lo que se publica.
+*.xlsx
+*.xlsm
+~$*
+
+# dist/ lo genera build.py en cada corrida y el workflow de GitHub Actions lo
+# regenera de cero en cada deploy (nunca lee lo que esté commiteado acá) —
+# versionarlo era decorativo y agregaba la tentación de tocarlo a mano.
+# Nunca se edita dist/ a mano: si necesitás cambiar algo, se edita el Excel
+# maestro (o el template) y se corre build.py de nuevo.
+dist/
