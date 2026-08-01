@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """data/menu.json + templates/menu.template.html -> dist/index.html (+ assets/)"""
+import base64
+import hashlib
 import html as html_mod
 import json
 import re
@@ -27,6 +29,33 @@ def _safe_json(obj) -> str:
     """json.dumps no escapa '</', así que un texto del Excel con '</script>' literal
     cerraría el <script> del template antes de tiempo e inyectaría HTML arbitrario."""
     return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+
+
+def _hash_script_csp(contenido: str) -> str:
+    """CSP permite un <script> inline puntual si declarás el hash exacto de su
+    contenido (script-src 'sha256-...'), en vez de abrir la puerta con
+    'unsafe-inline'. El contenido cambia en cada build (trae los datos del
+    Excel), así que el hash se recalcula acá, no se hardcodea."""
+    digest = hashlib.sha256(contenido.encode("utf-8")).digest()
+    return "sha256-" + base64.b64encode(digest).decode("ascii")
+
+
+def _csp_meta(hash_script: str) -> str:
+    """Restrictiva a propósito: el sitio no carga nada de terceros (ver README,
+    sección 'Cabeceras de seguridad'). GitHub Pages no permite mandar cabeceras
+    HTTP, así que esto va como <meta>, que es lo único disponible en ese caso."""
+    politica = "; ".join([
+        "default-src 'none'",
+        f"script-src 'self' '{hash_script}'",
+        "style-src 'self'",
+        "font-src 'self'",
+        "img-src 'self'",
+        "connect-src 'none'",
+        "frame-ancestors 'none'",
+        "base-uri 'none'",
+        "form-action 'none'",
+    ])
+    return f'<meta http-equiv="Content-Security-Policy" content="{politica}">'
 
 
 def _bloque(texto: str, nombre: str, mantener: bool) -> str:
@@ -64,6 +93,14 @@ def render(data: dict, template: str) -> str:
     if direccion:
         out = out.replace("__MAPS_URL__", f"https://maps.google.com/?q={quote(direccion)}")
         out = out.replace("__DIRECCION__", html_mod.escape(direccion))
+
+    match = re.search(r"<script>(.*?)</script>", out, re.S)
+    if not match:
+        raise RuntimeError(
+            "No encontré el <script> inline con los datos — no puedo calcular "
+            "el hash para la Content-Security-Policy."
+        )
+    out = out.replace("__CSP_META__", _csp_meta(_hash_script_csp(match.group(1))))
 
     return out
 
