@@ -142,6 +142,8 @@ build/   extract.py       xlsx -> data/menu.json (filtrado) + datos completos en
          config_local.py  resuelve dónde está el Excel en esta máquina
 templates/menu.template.html              ← el HTML, separado de los datos
 assets/fonts/                             ← Cormorant Garamond + Karla, self-hosteadas
+assets/css/menu.css                       ← todo el CSS, external (no inline)
+assets/js/menu.js                         ← toda la lógica de la página, external (no inline)
 dist/                                     ← generado, NO versionado en git
 build.py                                  ← construir (extract -> validate -> render) y, si pedís, publicar
 menu.bat / publicar.bat                   ← doble clic en Windows para cada paso
@@ -199,6 +201,53 @@ cosmético.)
   link `<a href>` a Google Maps que solo se activa si la persona lo toca —
   no hay ningún iframe cargando de fondo. Se deja documentado acá porque
   es fácil asumir lo contrario.
+
+## Cabeceras de seguridad (Content-Security-Policy)
+
+GitHub Pages sirve archivos estáticos: no hay forma de mandar cabeceras HTTP
+propias (nada de `Content-Security-Policy` real, `X-Frame-Options`, etc.).
+La única herramienta disponible es declarar la política por `<meta>` dentro
+del `<head>` del HTML, que es lo que hace `render.py` en cada build.
+
+La política queda así de restrictiva porque el sitio no necesita nada de
+afuera — sin analytics, sin fuentes de Google, sin mapa embebido, sin
+llamadas a ningún backend:
+
+```
+default-src 'none';
+script-src 'self' 'sha256-<hash del script inline>';
+style-src 'self';
+font-src 'self';
+img-src 'self';
+connect-src 'none';
+frame-ancestors 'none';
+base-uri 'none';
+form-action 'none';
+```
+
+- **`default-src 'none'`**: nada carga salvo lo que se permite explícitamente
+  abajo. Cierra la puerta por defecto en vez de tener que acordarse de
+  bloquear cada cosa nueva.
+- **`frame-ancestors 'none'`**: nadie puede meter el menú en un `<iframe>`
+  ajeno (protección contra clickjacking).
+- **`connect-src 'none'`**: el sitio no llama a ningún backend — ni falta
+  que hace, ni se va a agregar sin querer sin que esto lo bloquee primero.
+- **CSS y JS son archivos externos** (`assets/css/menu.css`,
+  `assets/js/menu.js`), no bloques `<style>`/`<script>` inline — así
+  `style-src` puede ser `'self'` sin necesitar `'unsafe-inline'`.
+- **Un solo `<script>` sigue siendo inline**, a propósito: los 4 datos que
+  salen del Excel en cada build (`CATS`, `PRODS`, `PRECIOS`,
+  `WSP_NUMBER`) tienen que viajar con el HTML. En vez de abrir
+  `script-src` con `'unsafe-inline'` (lo que dejaría correr *cualquier*
+  script inline que se cuele, ej. si algún día una descripción de producto
+  trajera HTML raro), `render.py` calcula el hash SHA-256 exacto de ese
+  bloque en cada build y lo declara en la CSP (`'sha256-...'`). Solo ese
+  contenido exacto puede correr — nada más.
+- **Nada de `unsafe-eval`**, como pidió el dueño del proyecto.
+
+Probado con la CSP puesta: los 3 idiomas, el filtro de momentos, el estado
+abierto/cerrado, el modo oscuro y las fuentes self-hosteadas siguen
+funcionando sin ningún bloqueo (0 errores de consola, 0 avisos de CSP).
 
 ## Cumplimiento legal (Argentina)
 
