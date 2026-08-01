@@ -2,7 +2,8 @@
 
 Pipeline que genera el menú publicado en
 **https://ameli-casa-de-te-brunch.github.io/** a partir de un único archivo:
-el Excel maestro (`Ameli_Menu_Maestro_V2.1.xlsx`).
+el Excel maestro (`Ameli_Menu_Maestro_Vx.x.xlsx` — la versión más reciente
+que tengas en tu carpeta de OneDrive; el pipeline la encuentra solo).
 
 **Regla de oro: nunca se edita el sitio a mano.** Todo cambio entra por el
 Excel. `dist/` (el HTML final) se genera solo — no está versionado en git
@@ -132,7 +133,8 @@ Después de corregir el Excel, volvé a correr `menu.bat` (o `python build.py
 ## Estructura del proyecto
 
 ```
-(fuera del repo)  Ameli_Menu_Maestro_V2.1.xlsx   ← fuente de verdad, en tu PC/OneDrive
+(fuera del repo)  Ameli_Menu_Maestro_Vx.x.xlsx   ← fuente de verdad, en tu PC/OneDrive
+                                                    (el pipeline usa el más reciente por fecha)
 data/    menu.json                        ← derivado del Excel, SOLO campos públicos, versionado
 build/   extract.py       xlsx -> data/menu.json (filtrado) + datos completos en memoria
          validate.py      reglas de calidad (IDs, traducciones, categorías, slugs, contacto)
@@ -189,6 +191,10 @@ cosmético.)
   `latin` (cubre todos los acentos de ES/EN/PT). Antes, cada visitante le
   mandaba su IP a Google solo por cargar la tipografía; ahora no sale
   ningún request a un tercero para eso, y además carga más rápido en 3G.
+  Las dos tienen licencia **SIL Open Font License 1.1** (libre para uso
+  comercial) — el texto de la licencia de cada familia viaja junto a los
+  archivos (`OFL-CormorantGaramond.txt`, `OFL-Karla.txt`), como exige la
+  licencia.
 - **El mapa nunca fue un embed.** El botón "Cómo llegar" siempre fue un
   link `<a href>` a Google Maps que solo se activa si la persona lo toca —
   no hay ningún iframe cargando de fondo. Se deja documentado acá porque

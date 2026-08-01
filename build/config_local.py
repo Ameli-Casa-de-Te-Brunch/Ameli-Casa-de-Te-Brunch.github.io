@@ -7,7 +7,10 @@ busca la ruta en este orden:
   1. Argumento --xlsx pasado por línea de comandos.
   2. Variable de entorno AMELI_XLSX_PATH.
   3. Archivo .env en la raíz del repo (gitignoreado), línea AMELI_XLSX_PATH=...
-  4. Ruta por defecto: la ubicación de OneDrive donde vive hoy en la PC del dueño.
+  4. Carpeta de OneDrive donde vive hoy: el archivo "Ameli_Menu_Maestro_V*.xlsx"
+     con la fecha de modificación más reciente (a propósito, sin hardcodear
+     un número de versión — cuando aparezca un V2.3 esto lo sigue encontrando
+     solo, sin tocar código).
 """
 import os
 from pathlib import Path
@@ -16,9 +19,8 @@ ROOT = Path(__file__).resolve().parent.parent
 ENV_FILE = ROOT / ".env"
 VAR = "AMELI_XLSX_PATH"
 
-RUTA_POR_DEFECTO = (
-    Path.home() / "OneDrive" / "Documentos" / "TRABAJO" / "AMELÍ" / "Ameli_Menu_Maestro_V2.1.xlsx"
-)
+CARPETA_POR_DEFECTO = Path.home() / "OneDrive" / "Documentos" / "TRABAJO" / "AMELÍ"
+PATRON_POR_DEFECTO = "Ameli_Menu_Maestro_V*.xlsx"
 
 
 def _leer_env_file():
@@ -34,6 +36,22 @@ def _leer_env_file():
     return valores
 
 
+def _ruta_por_defecto() -> Path:
+    """Entre todos los Ameli_Menu_Maestro_V*.xlsx de la carpeta, el modificado
+    más recientemente — así no hay que tocar código cada vez que cambia la
+    versión del maestro."""
+    if not CARPETA_POR_DEFECTO.exists():
+        return CARPETA_POR_DEFECTO / "Ameli_Menu_Maestro.xlsx"  # ruta "no encontrada" informativa
+    candidatos = sorted(
+        CARPETA_POR_DEFECTO.glob(PATRON_POR_DEFECTO),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    if candidatos:
+        return candidatos[0]
+    return CARPETA_POR_DEFECTO / "Ameli_Menu_Maestro.xlsx"
+
+
 def resolver_ruta_xlsx(desde_cli=None) -> Path:
     if desde_cli:
         return Path(desde_cli)
@@ -45,7 +63,7 @@ def resolver_ruta_xlsx(desde_cli=None) -> Path:
     if valores_env_file.get(VAR):
         return Path(valores_env_file[VAR])
 
-    return RUTA_POR_DEFECTO
+    return _ruta_por_defecto()
 
 
 def mensaje_no_encontrado(ruta: Path) -> str:
