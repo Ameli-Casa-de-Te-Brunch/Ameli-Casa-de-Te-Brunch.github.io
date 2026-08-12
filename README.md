@@ -75,43 +75,42 @@ dentro de `dist/` y entrá a `http://localhost:8000`.
 
 ## Qué hoja editar para cada cosa
 
+Desde el maestro **V3.0** el archivo tiene **4 hojas** (antes eran 14):
+`Resumen y Configuración`, `Categorías`, `Productos` y `Productos -
+Backoffice`. El pipeline solo lee las primeras tres — Backoffice es
+información interna (ingredientes, alérgenos sin validar, costos, márgenes,
+canales futuros) que el sitio público nunca necesita.
+
 El sitio muestra **3 idiomas: español, inglés, portugués** (el turismo real
-de Malargüe). Francés e italiano tienen columnas propias en el maestro —
-podés seguir completándolas si querés, pero el validador no las exige ni el
-sitio las muestra.
+de Malargüe). Francés e italiano tienen columnas propias en la hoja
+`Productos` — podés seguir completándolas si querés, pero el validador no
+las exige ni el sitio las muestra.
 
 | Querés cambiar... | Hoja | Columna |
 |---|---|---|
-| Nombre o descripción de un producto (ES/EN/PT) | `01_Menú_Multilingüe` | Nombre: D-F · Descripción: I-K |
-| Si un producto está activo / destacado / recomendado / nuevo | `02_Productos_MASTER` | J, K, L, M, N |
-| Categorías, orden en el menú, si una categoría se muestra | `03_Categorías` | — |
-| Precios (de venta) | `04_Precios` | D (precio local) |
-| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `05_Gastronomía` | D, E |
-| Fotos de producto | `10_Multimedia_SEO` | C (URL imagen principal) — si está vacío, se muestra el patrón botánico en vez de una foto rota |
-| WhatsApp, Instagram, dirección, URL del QR | `13_Configuración` | B |
+| Nombre o descripción de un producto (ES/EN/PT) | `Productos` | Nombre: D-F · Descripción: I-K |
+| Si un producto está activo / destacado / recomendado / nuevo | `Productos` | O, P, Q, R, S |
+| Categorías, orden alfabético, si una categoría se muestra | `Categorías` | — |
+| Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | V (precio chico o único) · W (precio grande, solo si el producto tiene dos tamaños) |
+| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | Y, Z |
+| Fotos de producto | `Productos` | AA (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
+| WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 18-27) |
+| Costos, márgenes, ingredientes, alérgenos, canales futuros — todo lo interno | `Productos - Backoffice` | — (nada de esto lo lee el sitio) |
 
-### Hojas en uso vs. hojas sin usar
-
-El pipeline lee **7 hojas**: `01`, `02`, `03`, `04`, `05`, `10`, `13`. Un
-producto nuevo necesita fila en esas 7 (mismo ID en cada una), y el ID tiene
-que seguir el formato de los que ya existen (3 letras + 3 números, ej.
+Un producto nuevo necesita una fila en `Productos` (y opcionalmente otra en
+`Productos - Backoffice` si querés cargarle ingredientes/costos), con un ID
+que siga el formato de los que ya existen (3 letras + 3 números, ej.
 `TYT008`).
 
-Las hojas `06_Ingredientes`, `07_Alérgenos_Dietas`, `08_Personalización`,
-`09_Ingeniería_Menú`, `11_Canales_QR` y `12_Estadísticas` **existen en el
-maestro pero el pipeline no las lee ni el validador las exige**. Quedan ahí
-para cuando se retomen (ver "Fuera de alcance por ahora" y la sección legal
-sobre alérgenos más abajo) — no son "pendientes rotos", son simplemente
-hojas que hoy no alimentan el sitio.
+### Alérgenos: por qué no se publican todavía
 
-### Si ves errores de `#REF!` en los desplegables del Excel
-
-La hoja oculta `99_Listas` (de donde salen los rangos con nombre que arman
-los desplegables de las hojas 02/05/07/08) puede romperse al guardar desde
-Excel. El validador te avisa si detecta un rango roto, pero **no bloquea la
-publicación** — el pipeline lee valores de celda directamente, nunca los
-rangos con nombre, así que un `#REF!` ahí no afecta el sitio. Es un
-problema del Excel para quien lo edita, no del menú publicado.
+La columna "Estado de validación (alérgenos)" de `Productos - Backoffice`
+tiene que decir **"Validado por cocina" o "Validado por proveedor" en
+TODAS las filas** antes de que el sitio pueda mostrar cualquier dato de
+alérgenos — hoy están en "Pendiente" a propósito. (Corregido en esta misma
+versión: el chequeo miraba antes la columna equivocada por error de
+conteo — nunca reconocía nada como validado aunque se completara bien.
+Ya apunta a la columna correcta.)
 
 ## Qué hacer si el validador se queja
 
@@ -245,9 +244,24 @@ form-action 'none';
   contenido exacto puede correr — nada más.
 - **Nada de `unsafe-eval`**, como pidió el dueño del proyecto.
 
-Probado con la CSP puesta: los 3 idiomas, el filtro de momentos, el estado
-abierto/cerrado, el modo oscuro y las fuentes self-hosteadas siguen
-funcionando sin ningún bloqueo (0 errores de consola, 0 avisos de CSP).
+**Limitación real, no un bug:** `frame-ancestors` no tiene ningún efecto
+cuando se declara por `<meta>` — el navegador lo ignora y lo dice por
+consola ("ignored when delivered via a meta element"). Es una regla del
+propio estándar de CSP, no algo que se pueda arreglar desde el HTML.
+GitHub Pages no permite mandar cabeceras HTTP propias, así que **la
+protección contra clickjacking no está activa en la práctica**, aunque la
+política la declare. Se deja igual declarada porque no rompe nada y no
+cuesta nada tenerla, pero hay que saber que es cosmética en este hosting.
+
+**Una vuelta anterior de esto tenía un bug real**: la primera versión de la
+CSP asumía que no había ningún estilo inline dinámico, pero el propio JS
+del sitio sí los generaba (gradientes de los destacados, animación
+escalonada de las tarjetas, el arrastre del panel de detalle) — la CSP los
+bloqueaba en la práctica y rompía esas tres cosas. Se migraron todos a
+clases CSS fijas (o cuantizadas, para el arrastre) y las fotos de producto
+pasan de `background-image` a `<img>` real. Resultado actual, verificado
+en el navegador: **cero errores de consola**, `style-src 'self'` sin
+`'unsafe-inline'` en ningún lado.
 
 ## Cumplimiento legal (Argentina)
 
