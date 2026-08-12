@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""xlsx (Ameli_Menu_Maestro, fuera del repo) -> data/menu.json (solo campos públicos)."""
+"""xlsx (Ameli_Menu_Maestro, fuera del repo) -> data/menu.json (solo campos públicos).
+
+Desde el maestro V3.0 el archivo tiene 4 hojas (antes eran 14):
+'Resumen y Configuración', 'Categorías', 'Productos' y 'Productos - Backoffice'.
+Este módulo solo lee las primeras tres — Backoffice es información interna
+(costos, márgenes, ingredientes, alérgenos sin validar, canales futuros) que
+el sitio público nunca necesita y por lo tanto nunca se lee acá.
+"""
 import json
 import re
 import sys
@@ -10,29 +17,31 @@ import openpyxl
 import config_local
 
 # Solo 3 idiomas activos (turismo real de Malargüe). Francés e italiano
-# quedan escritos en las columnas G/H (nombre) y L/M (descripción) del
-# maestro para el futuro, pero ni se extraen ni el validador los exige.
+# quedan escritos en las columnas F/G (nombre) y L/M (descripción) de la
+# hoja Productos para el futuro, pero ni se extraen ni el validador los exige.
 LANGS = ["es", "en", "pt"]
+
+# Categorías cuyo segundo precio (cuando existe) se etiqueta "Vaso/Jarra" en
+# vez de "Chico/Grande" — así lo pide el menú físico (batidos y jugos).
+CATEGORIAS_VASO_JARRA = {"BYJ"}
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
+FILA_CONFIG_INICIO = 18  # ver hoja "Resumen y Configuración": el bloque de
+FILA_CONFIG_FIN = 27     # config empieza después del resumen automático.
+
 
 def _sheet(wb, name):
     for candidate in wb.sheetnames:
-        if candidate.split("_", 1)[-1] == name or candidate == name:
-            return wb[candidate]
-    # tolerate encoding mismatches on the accented part, match by numeric prefix
-    prefix = name.split("_", 1)[0]
-    for candidate in wb.sheetnames:
-        if candidate.startswith(prefix + "_"):
+        if candidate == name:
             return wb[candidate]
     raise KeyError(f"No se encontró la hoja {name!r}")
 
 
 def load_categorias(wb):
-    ws = _sheet(wb, "03_Categorías")
+    ws = _sheet(wb, "Categorías")
     cats = []
     r = 5
     while True:
@@ -45,10 +54,10 @@ def load_categorias(wb):
             "orden": ws.cell(row=r, column=2).value,
             "visible": visible == "Sí",
             "nom": {
-                "es": ws.cell(row=r, column=8).value,
-                "en": ws.cell(row=r, column=9).value,
-                "pt": ws.cell(row=r, column=10).value,
-                # K/L (fr/it) existen en el maestro pero no se leen — ver LANGS.
+                "es": ws.cell(row=r, column=9).value,
+                "en": ws.cell(row=r, column=10).value,
+                "pt": ws.cell(row=r, column=11).value,
+                # columnas J/K (FR/IT) existen pero no se leen — ver LANGS.
             },
         })
         r += 1
@@ -56,117 +65,61 @@ def load_categorias(wb):
     return cats
 
 
-def load_menu_multilingue(wb):
-    """ID -> {n:{lang}, d:{lang}, estado_traduccion, _fila}"""
-    ws = _sheet(wb, "01_Menú_Multilingüe")
+def _formatear_precio(chico, grande, cat_cod):
+    """Un solo precio -> "$ X". Dos precios -> "Chico $ X · Grande $ Y"
+    (o "Vaso/Jarra" para batidos y jugos), según lo que haya cargado."""
+    if chico in (None, "") and grande in (None, ""):
+        return None
+    et1, et2 = ("Vaso", "Jarra") if cat_cod in CATEGORIAS_VASO_JARRA else ("Chico", "Grande")
+    fmt = lambda v: f"$ {v:,.0f}".replace(",", ".")
+    if grande in (None, ""):
+        return fmt(chico)
+    if chico in (None, ""):
+        return f"{et2} {fmt(grande)}"
+    return f"{et1} {fmt(chico)} · {et2} {fmt(grande)}"
+
+
+def load_productos(wb):
+    """ID -> todos los datos de producto que usa el pipeline, en un solo lugar
+    (antes vivían repartidos en 5 hojas distintas; ahora es una sola fila)."""
+    ws = _sheet(wb, "Productos")
     out = {}
     r = 5
     while True:
         idv = ws.cell(row=r, column=1).value
         if idv is None:
             break
+        cat_cod = ws.cell(row=r, column=2).value
+        chico = ws.cell(row=r, column=22).value
+        grande = ws.cell(row=r, column=23).value
         out[idv] = {
+            "cat": cat_cod,
+            "orden": ws.cell(row=r, column=3).value,
             "n": {
                 "es": ws.cell(row=r, column=4).value,
                 "en": ws.cell(row=r, column=5).value,
                 "pt": ws.cell(row=r, column=6).value,
-                # G/H (fr/it) existen en el maestro pero no se leen — ver LANGS.
+                # columnas G/H (FR/IT) existen pero no se leen — ver LANGS.
             },
             "d": {
                 "es": ws.cell(row=r, column=9).value,
                 "en": ws.cell(row=r, column=10).value,
                 "pt": ws.cell(row=r, column=11).value,
-                # L/M (fr/it) existen en el maestro pero no se leen — ver LANGS.
+                # columnas L/M (FR/IT) existen pero no se leen — ver LANGS.
             },
             "estado_traduccion": ws.cell(row=r, column=14).value,
+            "activo": ws.cell(row=r, column=15).value == "Sí",
+            "destacado": ws.cell(row=r, column=16).value == "Sí",
+            "recomendado": ws.cell(row=r, column=17).value == "Sí",
+            "mas_vendido": ws.cell(row=r, column=18).value == "Sí",
+            "nuevo": ws.cell(row=r, column=19).value == "Sí",
+            "precio": _formatear_precio(chico, grande, cat_cod),
+            "tiene_precio": chico not in (None, "") or grande not in (None, ""),
+            "temperatura": ws.cell(row=r, column=25).value or "",
+            "formato": ws.cell(row=r, column=26).value or "",
+            "img": ws.cell(row=r, column=27).value or None,
             "_fila": r,
         }
-        r += 1
-    return out
-
-
-def load_productos_master(wb):
-    """ID -> flags/orden dict"""
-    ws = _sheet(wb, "02_Productos_MASTER")
-    out = {}
-    r = 5
-    while True:
-        idv = ws.cell(row=r, column=1).value
-        if idv is None:
-            break
-        out[idv] = {
-            "cat": ws.cell(row=r, column=5).value,
-            "orden_cat": ws.cell(row=r, column=6).value,
-            "orden_prod": ws.cell(row=r, column=7).value,
-            "activo": ws.cell(row=r, column=10).value == "Sí",
-            "destacado": ws.cell(row=r, column=11).value == "Sí",
-            "recomendado": ws.cell(row=r, column=12).value == "Sí",
-            "mas_vendido": ws.cell(row=r, column=13).value == "Sí",
-            "nuevo": ws.cell(row=r, column=14).value == "Sí",
-            "_fila": r,
-        }
-        r += 1
-    return out
-
-
-def load_gastronomia(wb):
-    """ID -> {temperatura, formato}"""
-    ws = _sheet(wb, "05_Gastronomía")
-    out = {}
-    r = 5
-    while True:
-        idv = ws.cell(row=r, column=1).value
-        if idv is None:
-            break
-        out[idv] = {
-            "temperatura": ws.cell(row=r, column=4).value or "",
-            "formato": ws.cell(row=r, column=5).value or "",
-        }
-        r += 1
-    return out
-
-
-def load_multimedia(wb):
-    """ID -> URL de imagen principal (o None si la hoja todavía no la tiene cargada)."""
-    ws = _sheet(wb, "10_Multimedia_SEO")
-    out = {}
-    r = 5
-    while True:
-        idv = ws.cell(row=r, column=1).value
-        if idv is None:
-            break
-        url = ws.cell(row=r, column=3).value
-        out[idv] = url or None
-        r += 1
-    return out
-
-
-def load_precios(wb):
-    """ID -> precio local formateado (solo si está cargado)."""
-    ws = _sheet(wb, "04_Precios")
-    out = {}
-    r = 5
-    while True:
-        idv = ws.cell(row=r, column=1).value
-        if idv is None:
-            break
-        precio = ws.cell(row=r, column=4).value
-        if precio not in (None, ""):
-            out[idv] = f"$ {precio:,.0f}".replace(",", ".")
-        r += 1
-    return out
-
-
-def load_filas_precios(wb):
-    """ID -> número de fila en 04_Precios (para mensajes de validación)."""
-    ws = _sheet(wb, "04_Precios")
-    out = {}
-    r = 5
-    while True:
-        idv = ws.cell(row=r, column=1).value
-        if idv is None:
-            break
-        out[idv] = r
         r += 1
     return out
 
@@ -191,15 +144,13 @@ def _es_placeholder(valor):
 
 
 def load_config(wb):
-    ws = _sheet(wb, "13_Configuración")
+    ws = _sheet(wb, "Resumen y Configuración")
     params = {}
-    r = 5
-    while True:
+    for r in range(FILA_CONFIG_INICIO, FILA_CONFIG_FIN + 1):
         nombre = ws.cell(row=r, column=1).value
         if nombre is None:
-            break
+            continue
         params[nombre] = ws.cell(row=r, column=2).value
-        r += 1
 
     whatsapp = _normalizar_whatsapp(params.get("WhatsApp de pedidos"))
     instagram = params.get("Instagram")
@@ -224,9 +175,11 @@ def load_config(wb):
     }
 
 
-def moments_for(prod_id, cat_cod, gastro, overrides):
-    temp = gastro.get(prod_id, {}).get("temperatura", "")
-    formato = gastro.get(prod_id, {}).get("formato", "")
+def moments_for(prod, overrides):
+    temp = prod["temperatura"]
+    formato = prod["formato"]
+    cat_cod = prod["cat"]
+    prod_id = None  # se completa afuera si hace falta (overrides usa el id, no el dict)
     m = []
     if "Caliente" in temp:
         m.append("calentito")
@@ -236,23 +189,20 @@ def moments_for(prod_id, cat_cod, gastro, overrides):
         m.append("compartir")
     if "Unidad" in formato or cat_cod == "STC":
         m.append("llevar")
-    for extra in overrides.get(prod_id, []):
-        if extra not in m:
-            m.append(extra)
     return m
 
 
-def badges_for(flags, cat_cod):
+def badges_for(prod):
     b = []
-    if flags["destacado"]:
+    if prod["destacado"]:
         b.append("fav")
-    elif flags["recomendado"]:
+    elif prod["recomendado"]:
         b.append("reco")
-    elif flags["mas_vendido"]:
+    elif prod["mas_vendido"]:
         b.append("pedido")
-    elif flags["nuevo"]:
+    elif prod["nuevo"]:
         b.append("nuevo")
-    if cat_cod == "STC":
+    if prod["cat"] == "STC":
         b.append("sintacc")
     return b
 
@@ -260,47 +210,43 @@ def badges_for(flags, cat_cod):
 def extract(xlsx_path: Path) -> dict:
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     cats = load_categorias(wb)
-    menu = load_menu_multilingue(wb)
-    master = load_productos_master(wb)
-    gastro = load_gastronomia(wb)
-    precios = load_precios(wb)
-    filas_precios = load_filas_precios(wb)
-    multimedia = load_multimedia(wb)
+    productos = load_productos(wb)
     config = load_config(wb)
     overrides = json.loads(OVERRIDES_MOMENTOS.read_text(encoding="utf-8"))["extra"]
 
     prods = []
+    precios = {}
     meta = {}
-    # metadata de TODOS los productos de la hoja 02 (activos o no), para que el
-    # validador pueda señalar filas concretas incluso en productos inactivos
-    for prod_id, flags in master.items():
-        traducciones = menu.get(prod_id)
+    # metadata de TODOS los productos (activos o no), para que el validador
+    # pueda señalar filas concretas incluso en productos inactivos
+    for prod_id, prod in productos.items():
         meta[prod_id] = {
-            "fila_02": flags["_fila"],
-            "fila_01": traducciones["_fila"] if traducciones else None,
-            "fila_04": filas_precios.get(prod_id),
-            "cat": flags["cat"],
-            "activo": flags["activo"],
-            "destacado": flags["destacado"],
-            "nombre_es": (traducciones["n"]["es"] if traducciones else None) or prod_id,
+            "fila": prod["_fila"],
+            "cat": prod["cat"],
+            "activo": prod["activo"],
+            "destacado": prod["destacado"],
+            "nombre_es": prod["n"]["es"] or prod_id,
         }
 
-    for prod_id, flags in master.items():
-        if not flags["activo"]:
+    for prod_id, prod in productos.items():
+        if not prod["activo"]:
             continue
-        traducciones = menu.get(prod_id)
-        if traducciones is None:
-            continue
+        m = moments_for(prod, overrides)
+        for extra in overrides.get(prod_id, []):
+            if extra not in m:
+                m.append(extra)
+        if prod["precio"]:
+            precios[prod_id] = prod["precio"]
         prods.append({
             "id": prod_id,
-            "cat": flags["cat"],
-            "orden": flags["orden_prod"],
-            "dest": flags["destacado"],
-            "n": traducciones["n"],
-            "d": traducciones["d"],
-            "m": moments_for(prod_id, flags["cat"], gastro, overrides),
-            "b": badges_for(flags, flags["cat"]),
-            "img": multimedia.get(prod_id),
+            "cat": prod["cat"],
+            "orden": prod["orden"],
+            "dest": prod["destacado"],
+            "n": prod["n"],
+            "d": prod["d"],
+            "m": m,
+            "b": badges_for(prod),
+            "img": prod["img"],
         })
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 

@@ -105,15 +105,25 @@ function abrirDetalle(id){
   $('sheetDesc').textContent = p.d[lang];
   $('sheetEtiquetas').innerHTML = p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
   const foto=$('sheetFoto');
-  if(p.img){ foto.style.backgroundImage=`url("${esc(p.img)}")`; $('sheetInicial').style.display='none'; }
-  else { foto.style.backgroundImage='none'; foto.style.background=GRADIENTES[Math.abs(hashId(p.id))%3]; $('sheetInicial').style.display=''; $('sheetInicial').textContent=p.n[lang].charAt(0); }
+  foto.className = 'sheet-foto';
+  foto.querySelector('img')?.remove();
+  if(p.img){
+    const img = document.createElement('img');
+    img.src = p.img; img.alt = '';
+    foto.appendChild(img);
+    $('sheetInicial').hidden = true;
+  } else {
+    foto.classList.add(`grad-${Math.abs(hashId(p.id))%3}`);
+    $('sheetInicial').hidden = false;
+    $('sheetInicial').textContent=p.n[lang].charAt(0);
+  }
   if(WSP_NUMBER){
     const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
     $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
     $('sheetPedirTxt').textContent = UI.wsp[lang];
-    $('sheetPedir').style.display='';
+    $('sheetPedir').hidden = false;
   } else {
-    $('sheetPedir').style.display='none';
+    $('sheetPedir').hidden = true;
   }
   $('sheetCerrar').setAttribute('aria-label', UI.cerrarSheet[lang]);
 
@@ -155,12 +165,16 @@ function onSheetKeydown(e){
   $('sheetDrag').addEventListener('pointermove', e=>{
     if(arrancoY===null) return;
     deltaY=Math.max(0, e.clientY-arrancoY);
-    sheet().style.transform=`translateY(${deltaY}px)`;
+    /* cuantizado a pasos de 8px: la CSP no permite fijar transform por
+       style="" desde JS sin 'unsafe-inline', asi que en vez de un valor
+       continuo se usa una clase de una lista fija predefinida en el CSS. */
+    sheet().className = sheet().className.replace(/\bdrag-\d+\b/g, '').trim();
+    sheet().classList.add(`drag-${Math.min(600, Math.round(deltaY/8)*8)}`);
   });
   function soltar(){
     if(arrancoY===null) return;
     sheet().classList.remove('sin-transicion');
-    sheet().style.transform='';
+    sheet().className = sheet().className.replace(/\bdrag-\d+\b/g, '').trim();
     if(deltaY>90) cerrarDetalle();
     arrancoY=null; deltaY=0;
   }
@@ -259,10 +273,11 @@ function render(){
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
     const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('');
-    const fotoEstilo = p.img ? `background-image:url('${esc(p.img)}')` : `background:${GRADIENTES[i%3]}`;
-    const inicial = p.img ? '' : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
-    return `<article class="dcard" style="${fotoEstilo}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
-      <div class="foto">${inicial}</div>
+    const fotoContenido = p.img
+      ? `<img src="${esc(p.img)}" alt="" loading="lazy">`
+      : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
+    return `<article class="dcard" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
+      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}</div>
       <div class="cuerpo">${bd}<h4>${esc(p.n[lang])}</h4><p>${esc(p.d[lang])}</p></div></article>`;
   }).join('');
   document.querySelectorAll('.dcard').forEach(card=>{
@@ -279,7 +294,7 @@ function render(){
       const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
       const et=bd?`<div class="etiquetas">${bd}</div>`:'';
       const precio=PRECIOS[p.id]?`<span class="precio">${esc(PRECIOS[p.id])}</span>`:'';
-      return `<article class="prod ${p.dest?'destacada':''}" data-moods="${p.m.join(',')}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}" style="transition-delay:${i*40}ms">
+      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
         <div class="prod-inner">${et}<div class="fila"><h4>${esc(p.n[lang])}</h4>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
     }).join('');
     return `<section class="cat" id="${esc(cat.cod)}"><header><h3>${esc(cat.nom[lang])}</h3>${nota}</header>
