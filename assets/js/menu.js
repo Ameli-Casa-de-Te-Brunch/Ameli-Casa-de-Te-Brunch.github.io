@@ -106,6 +106,18 @@ let lang='es', moodActivo=null, sheetProdId=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* precio en pesos siempre; USD como referencia siempre que este cargado
+   (lo pidio el dueño para cualquier idioma); EUR ademas solo para FR/IT,
+   los idiomas de zona euro. Los dos equivalentes son fijos del ultimo
+   build (tasa manual del Excel), no una cotizacion en vivo -- ver README. */
+function textoPrecio(entry){
+  if(!entry) return '';
+  let extra = [];
+  if(entry.usd) extra.push(esc(entry.usd));
+  if(entry.eur && (lang==='fr' || lang==='it')) extra.push(esc(entry.eur));
+  return extra.length ? `${esc(entry.ars)} <small>(${extra.join(' · ')})</small>` : esc(entry.ars);
+}
+
 /* ---------- estado abierto/cerrado (America/Argentina/Mendoza) ---------- */
 function ahoraMendoza(){
   const fmt = new Intl.DateTimeFormat('en-US',{timeZone:'America/Argentina/Mendoza',hour12:false,weekday:'short',hour:'2-digit',minute:'2-digit'});
@@ -364,7 +376,7 @@ function render(){
     const cards=items.map((p,i)=>{
       const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
       const et=bd?`<div class="etiquetas">${bd}</div>`:'';
-      const precio=PRECIOS[p.id]?`<span class="precio">${esc(PRECIOS[p.id])}</span>`:'';
+      const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
       return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
         <div class="prod-inner">${et}<div class="fila"><h4>${esc(p.n[lang])}</h4>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
     }).join('');

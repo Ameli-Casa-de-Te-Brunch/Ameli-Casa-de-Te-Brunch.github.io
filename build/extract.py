@@ -42,7 +42,7 @@ DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
 FILA_CONFIG_INICIO = 16  # ver hoja "Resumen y Configuración": el bloque de
-FILA_CONFIG_FIN = 25     # config empieza después del resumen automático.
+FILA_CONFIG_FIN = 26     # config empieza después del resumen automático.
 
 # Columnas de la hoja "Productos" (1-indexado). Definidas una sola vez acá
 # porque validate.py las necesita también para armar sus mensajes.
@@ -106,6 +106,19 @@ def _formatear_precio(chico, grande, cat_cod):
     if chico in (None, ""):
         return f"{et2} {fmt(grande)}"
     return f"{et1} {fmt(chico)} · {et2} {fmt(grande)}"
+
+
+def _equivalente(precio_ars, tasa, simbolo):
+    """Convierte el precio de referencia (el chico/único, nunca el grande —
+    para no saturar la tarjeta con cuatro números) a otra moneda, usando la
+    tasa manual del Excel. Ninguna llamada externa: es la conversión fija
+    del día que se publicó, no una cotización en vivo (ver README, sección
+    de cabeceras de seguridad, para la razón: no queríamos abrir connect-src
+    a un tercero por esto)."""
+    if precio_ars in (None, "") or tasa in (None, "") or tasa == 0:
+        return None
+    valor = precio_ars / tasa
+    return f"≈ {simbolo} {valor:,.0f}".replace(",", ".")
 
 
 def load_opciones_leche(wb):
@@ -173,6 +186,7 @@ def load_productos(wb):
             "mas_vendido": ws.cell(row=r, column=COL["mas_vendido"]).value == "Sí",
             "nuevo": ws.cell(row=r, column=COL["nuevo"]).value == "Sí",
             "precio": _formatear_precio(chico, grande, cat_cod),
+            "precio_chico_ars": chico if chico not in (None, "") else grande,
             "temperatura": ws.cell(row=r, column=COL["temperatura"]).value or "",
             "formato": ws.cell(row=r, column=COL["formato"]).value or "",
             "img": ws.cell(row=r, column=COL["img"]).value or None,
@@ -228,12 +242,17 @@ def load_config(wb):
     if _es_placeholder(url_base):
         url_base = None
 
+    tasa_usd = params.get("Tipo de cambio ARS/USD")
+    tasa_eur = params.get("Tipo de cambio ARS/EUR")
+
     return {
         "moneda": params.get("Moneda local") or "ARS",
         "whatsapp": whatsapp,
         "instagram": instagram,
         "direccion": direccion,
         "url_base": url_base,
+        "tasa_usd": tasa_usd if isinstance(tasa_usd, (int, float)) else None,
+        "tasa_eur": tasa_eur if isinstance(tasa_eur, (int, float)) else None,
     }
 
 
@@ -297,7 +316,14 @@ def extract(xlsx_path: Path) -> dict:
             if extra not in m:
                 m.append(extra)
         if prod["precio"]:
-            precios[prod_id] = prod["precio"]
+            entrada = {"ars": prod["precio"]}
+            usd = _equivalente(prod["precio_chico_ars"], config["tasa_usd"], "USD")
+            eur = _equivalente(prod["precio_chico_ars"], config["tasa_eur"], "EUR")
+            if usd:
+                entrada["usd"] = usd
+            if eur:
+                entrada["eur"] = eur
+            precios[prod_id] = entrada
         item = {
             "id": prod_id,
             "cat": prod["cat"],

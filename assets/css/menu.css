@@ -142,6 +142,7 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .prod .fila{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .prod h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;line-height:1.15;color:var(--tinta)}
 .prod .precio{font-weight:700;font-size:15px;color:var(--verde-osc);white-space:nowrap}
+.prod .precio small{font-weight:500;font-size:11px;color:var(--texto-sec)}
 .prod p{font-size:13px;color:var(--texto-sec);margin-top:5px;line-height:1.45}
 .prod .etiquetas{margin-bottom:6px;display:flex;gap:6px;flex-wrap:wrap}
 .prod .etiquetas .badge{margin-bottom:0}
