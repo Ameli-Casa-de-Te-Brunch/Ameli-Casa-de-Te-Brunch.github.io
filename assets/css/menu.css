@@ -2,8 +2,8 @@
 @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 500;font-display:swap;src:url('../fonts/cormorant-garamond-italic.woff2') format('woff2')}
 @font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
 :root{
-  --verde:#536039; --verde-osc:#3E4829; --verde-suave:#8B966E;
-  --crema:#F2EAE1; --blanco:#FFFDF7; --marron:#8B2F2F;
+  --verde:#4F6140; --verde-osc:#1E2A1B; --verde-suave:#8B966E;
+  --crema:#F1E6D0; --blanco:#FFFDF7; --marron:#8B2F2F;
   --rosa:#E7D2CE; --manteca:#E5DACC; --tinta:#000000;
   --texto-sec:#5e5849;
   --marron-texto:#8B2F2F;
@@ -15,7 +15,7 @@
   --glass-bg:rgba(255,253,247,.72);
   --glass-border:rgba(255,253,247,.6);
   --stc-bg:#EFE7DA; --stc-border:#b3a48b; --stc-color:#6b6252;
-  --alerg-pos-bg:#E3EBD9; --alerg-pos-color:#3E4829;
+  --alerg-pos-bg:#E3EBD9; --alerg-pos-color:#1E2A1B;
   --alerg-warn-bg:#F5E6D3; --alerg-warn-color:#8a5a1f;
   --scrim:linear-gradient(180deg, rgba(62,72,41,0) 0%, rgba(62,72,41,.38) 45%, rgba(35,41,24,.92) 100%);
 }
@@ -23,6 +23,11 @@
   :root{
     --crema:#1E2117; --blanco:#2A2E20; --tinta:#F2EAE1;
     --texto-sec:#B7AF9C;
+    /* --verde-osc claro es casi negro (tinta del logo) -- en modo oscuro
+       necesita su propio tono, mas claro, o quedaria texto oscuro sobre
+       fondo oscuro (bug real que ya existia antes de este cambio: el
+       verde-osc original tampoco tenia variante oscura). */
+    --verde-osc:#94AC7E;
     --marron-texto:#D98B7B;
     --sombra:0 6px 24px rgba(0,0,0,.4);
     --sombra-nav:0 6px 16px rgba(0,0,0,.45);
@@ -71,7 +76,6 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .momentos p.hint{text-align:center;font-size:12px;color:var(--texto-sec);margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .chip{border:1.5px solid var(--verde-suave);background:transparent;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
-.chip .em{margin-right:5px}
 .chip.activo{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde);transform:scale(1.04)}
 .chip:active{transform:scale(.95)}
 /* clases fijas para reemplazar estilos inline dinamicos (la CSP no permite

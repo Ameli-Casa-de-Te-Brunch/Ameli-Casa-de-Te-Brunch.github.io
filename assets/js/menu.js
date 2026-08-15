@@ -32,11 +32,11 @@ const UI = {
 };
 const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
 const CHIPS = [
- {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Quelque chose de sucré',it:'Qualcosa di dolce'}},
- {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Quelque chose de frais',it:'Qualcosa di fresco'}},
- {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
- {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
- {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
+ {m:'dulce', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Quelque chose de sucré',it:'Qualcosa di dolce'}},
+ {m:'fresco', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Quelque chose de frais',it:'Qualcosa di fresco'}},
+ {m:'compartir', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
+ {m:'calentito', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
+ {m:'llevar', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
 ];
 const BADGES = {
  fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Favori de la maison',it:'Preferito della casa'}},
@@ -345,7 +345,7 @@ function render(){
     if(sheetProdId) abrirDetalle(sheetProdId);  /* si hay un panel de detalle abierto, refrescarlo tambien */
   }));
   /* chips */
-  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}"><span class="em">${ch.em}</span>${ch.t[lang]}</button>`).join('');
+  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}">${ch.t[lang]}</button>`).join('');
   document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
     moodActivo = moodActivo===ch.dataset.mood ? null : ch.dataset.mood;
     render(); aplicarFiltro();
