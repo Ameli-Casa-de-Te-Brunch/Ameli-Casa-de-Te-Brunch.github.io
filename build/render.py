@@ -75,11 +75,24 @@ def render(data: dict, template: str) -> str:
     wsp_number = cfg.get("whatsapp")
     ig_handle = cfg.get("instagram")
     direccion = cfg.get("direccion")
+    url_base = cfg.get("url_base")
 
     out = template
     out = out.replace("__CATS_JSON__", _safe_json(data["cats"]))
     out = out.replace("__PRODS_JSON__", _safe_json(data["prods"]))
     out = out.replace("__PRECIOS_JSON__", _safe_json(data["precios"]))
+
+    # og:url y og:image necesitan URL absoluta para que WhatsApp/Instagram
+    # puedan armar la vista previa al compartir el link — sin "URL base del
+    # menú" cargada en la config no hay forma de saber el dominio, así que
+    # esas etiquetas directamente no se publican (mejor ausentes que rotas).
+    url_base_limpia = url_base.rstrip("/") if url_base else None
+    out = _bloque(out, "OG_URL", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__OG_URL__", f"{url_base_limpia}/")
+    out = _bloque(out, "OG_IMAGE", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__OG_IMAGE_URL__", f"{url_base_limpia}/assets/img/og-image.jpg")
 
     out = _bloque(out, "WSP", bool(wsp_number))
     out = out.replace("__WSP_NUMBER__", wsp_number or "")

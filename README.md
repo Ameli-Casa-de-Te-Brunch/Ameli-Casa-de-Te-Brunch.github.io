@@ -146,6 +146,10 @@ templates/menu.template.html              ← el HTML, separado de los datos
 assets/fonts/                             ← Cormorant Garamond + Karla, self-hosteadas
 assets/css/menu.css                       ← todo el CSS, external (no inline)
 assets/js/menu.js                         ← toda la lógica de la página, external (no inline)
+assets/img/                               ← favicon, apple-touch-icon, imagen de vista previa
+                                             (og:image) — generados del logo, no son fotos de
+                                             producto. Se regeneran a mano si el logo cambia
+                                             (no forman parte del build automático).
 dist/                                     ← generado, NO versionado en git
 build.py                                  ← construir (extract -> validate -> render) y, si pedís, publicar
 menu.bat / publicar.bat                   ← doble clic en Windows para cada paso
