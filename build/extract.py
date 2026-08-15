@@ -15,10 +15,8 @@ import openpyxl
 
 import config_local
 
-# Solo 3 idiomas activos (turismo real de Malargüe). Francés e italiano
-# quedan escritos en las columnas F/G (nombre) y L/M (descripción) de la
-# hoja Productos para el futuro, pero ni se extraen ni el validador los exige.
-LANGS = ["es", "en", "pt"]
+# Los 5 idiomas trabajados en el maestro.
+LANGS = ["es", "en", "pt", "fr", "it"]
 
 # Categorías cuyo segundo precio (cuando existe) se etiqueta "Vaso/Jarra" en
 # vez de "Chico/Grande" — así lo pide el menú físico (batidos y jugos).
@@ -87,7 +85,8 @@ def load_categorias(wb):
                 "es": ws.cell(row=r, column=9).value,
                 "en": ws.cell(row=r, column=10).value,
                 "pt": ws.cell(row=r, column=11).value,
-                # columnas J/K (FR/IT) existen pero no se leen — ver LANGS.
+                "fr": ws.cell(row=r, column=12).value,
+                "it": ws.cell(row=r, column=13).value,
             },
         })
         r += 1
@@ -109,9 +108,39 @@ def _formatear_precio(chico, grande, cat_cod):
     return f"{et1} {fmt(chico)} · {et2} {fmt(grande)}"
 
 
+def load_opciones_leche(wb):
+    """ID -> lista de opciones de leche disponibles ("veg", "lac"), leídas de
+    'Productos - Backoffice' (columnas 'Leche vegetal' / 'Leche sin lactosa').
+    Esto reemplaza a los viejos productos ADI001/ADI002 ("Leche vegetal",
+    "Leche sin lactosa"): no son productos que se pidan solos, son un
+    agregado para las bebidas que ya llevan leche — se muestra en el
+    detalle del producto correspondiente, no como su propia fila de menú."""
+    try:
+        ws = wb["Productos - Backoffice"]
+    except KeyError:
+        return {}
+    COL_LECHE_VEGETAL, COL_LECHE_SIN_LACTOSA = 18, 19
+    out = {}
+    r = 5
+    while True:
+        idv = ws.cell(row=r, column=1).value
+        if idv is None:
+            break
+        ops = []
+        if ws.cell(row=r, column=COL_LECHE_VEGETAL).value == "Sí":
+            ops.append("veg")
+        if ws.cell(row=r, column=COL_LECHE_SIN_LACTOSA).value == "Sí":
+            ops.append("lac")
+        if ops:
+            out[idv] = ops
+        r += 1
+    return out
+
+
 def load_productos(wb):
     """ID -> todos los datos de producto que usa el pipeline, en un solo lugar."""
     ws = _sheet(wb, "Productos")
+    opciones_leche = load_opciones_leche(wb)
     out = {}
     r = 5
     while True:
@@ -135,9 +164,9 @@ def load_productos(wb):
             "cat": cat_cod,
             "orden": ws.cell(row=r, column=COL["orden"]).value,
             "n": {lang: ws.cell(row=r, column=c).value for lang, c in
-                  ((l, COL["nombre"][l]) for l in ("es", "en", "pt"))},
+                  ((l, COL["nombre"][l]) for l in LANGS)},
             "d": {lang: ws.cell(row=r, column=c).value for lang, c in
-                  ((l, COL["desc"][l]) for l in ("es", "en", "pt"))},
+                  ((l, COL["desc"][l]) for l in LANGS)},
             "activo": ws.cell(row=r, column=COL["activo"]).value == "Sí",
             "destacado": ws.cell(row=r, column=COL["destacado"]).value == "Sí",
             "recomendado": ws.cell(row=r, column=COL["recomendado"]).value == "Sí",
@@ -150,6 +179,7 @@ def load_productos(wb):
             "tag": ws.cell(row=r, column=COL["etiqueta_inicial"]).value or None,
             "alerg": alergenos,
             "estado_alergenos": estado_alergenos,
+            "leche": opciones_leche.get(idv, []),
             "_fila": r,
         }
         r += 1
@@ -283,6 +313,8 @@ def extract(xlsx_path: Path) -> dict:
             item["alerg"] = prod["alerg"]
         if prod["tag"]:
             item["tag"] = prod["tag"]
+        if prod["leche"]:
+            item["leche"] = prod["leche"]
         prods.append(item)
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 
@@ -301,7 +333,7 @@ def extract(xlsx_path: Path) -> dict:
 # si su fila individual está validada (ver load_productos) — el resto
 # (costos, ingredientes, personalización, notas operativas, fila/columna
 # de origen) se queda afuera de lo que se versiona y se publica.
-_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag")
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag", "leche")
 _CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
 
 

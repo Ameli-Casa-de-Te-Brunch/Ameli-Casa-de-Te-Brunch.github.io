@@ -25,9 +25,9 @@ import extract
 
 HERE = Path(__file__).resolve().parent
 
-# Solo 3 idiomas exigidos por el validador — ver la misma nota en extract.py.
-LANGS = ["es", "en", "pt"]
-IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués"}
+# Los 5 idiomas trabajados — ver la misma lista en extract.py.
+LANGS = extract.LANGS
+IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués", "fr": "francés", "it": "italiano"}
 
 ID_FORMATO = re.compile(r"^[A-Z]{3}\d{3}$")
 

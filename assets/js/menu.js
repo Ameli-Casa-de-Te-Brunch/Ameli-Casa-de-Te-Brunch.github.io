@@ -1,45 +1,49 @@
-const LANGS = ['es','en','pt'];
+const LANGS = ['es','en','pt','fr','it'];
 const UI = {
- sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch'},
- lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.'},
- momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí'},
- momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade'},
- limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo'},
- destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí'},
- destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa'},
- vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧'},
- adicEyebrow:{es:'Personalizá tu bebida',en:'Customise your drink',pt:'Personalize a sua bebida'},
- grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧'},
- maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar'},
+ sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de thé · Brunch',it:'Casa del tè · Brunch'},
+ lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.',fr:'Malargüe, Mendoza — fait maison, tous les jours.',it:'Malargüe, Mendoza — fatto in casa, tutti i giorni.'},
+ momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí',fr:'Choisissez votre <em>moment</em> Amelí',it:'Scegli il tuo <em>momento</em> Amelí'},
+ momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade',fr:'Touchez-en un et le menu s’adapte à votre envie',it:'Tocca uno e il menu si adatta alla tua voglia'},
+ limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menu'},
+ destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí',fr:'Aujourd’hui chez Amelí',it:'Oggi da Amelí'},
+ destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'Le specialità della casa'},
+ vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien par ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
+ grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
+ maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar',fr:'◈ Comment venir',it:'◈ Come arrivare'},
  datos:{es:'Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
         en:'Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
-        pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h'},
- wsp:{es:'Pedir',en:'Order',pt:'Pedir'},
- title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu'},
- abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora'},
- cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora'},
- abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às'},
- cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar'},
- pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: '},
- verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de'},
- anterior:{es:'Anterior',en:'Previous',pt:'Anterior'},
- siguiente:{es:'Siguiente',en:'Next',pt:'Próximo'},
- irA:{es:'Ir al destacado',en:'Go to highlight',pt:'Ir para o destaque'},
+        pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
+        fr:'Mardi à samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
+        it:'Martedì a sabato · 9:00–13:00 e 17:30–21:00<br>Domenica · 17:30–21:00'},
+ wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
+ title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu',fr:'Amelí · Maison de thé & Brunch — Menu',it:'Amelí · Casa del tè & Brunch — Menu'},
+ abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
+ cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
+ abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
+ cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar',fr:'Fermer',it:'Chiudi'},
+ pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
+ verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de',fr:'Voir le détail de',it:'Vedi dettagli di'},
+ anterior:{es:'Anterior',en:'Previous',pt:'Anterior',fr:'Précédent',it:'Precedente'},
+ siguiente:{es:'Siguiente',en:'Next',pt:'Próximo',fr:'Suivant',it:'Successivo'},
+ irA:{es:'Ir al destacado',en:'Go to highlight',pt:'Ir para o destaque',fr:'Aller à la spécialité',it:'Vai alla specialità'},
+ leche:{es:'Disponible con leche vegetal o sin lactosa',en:'Available with plant-based or lactose-free milk',pt:'Disponível com leite vegetal ou sem lactose',fr:'Disponible avec du lait végétal ou sans lactose',it:'Disponibile con latte vegetale o senza lattosio'},
+ lecheVeg:{es:'Disponible con leche vegetal',en:'Available with plant-based milk',pt:'Disponível com leite vegetal',fr:'Disponible avec du lait végétal',it:'Disponibile con latte vegetale'},
+ lecheLac:{es:'Disponible con leche sin lactosa',en:'Available with lactose-free milk',pt:'Disponível com leite sem lactose',fr:'Disponible avec du lait sans lactose',it:'Disponibile con latte senza lattosio'},
 };
-const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português'};
+const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
 const CHIPS = [
- {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce'}},
- {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco'}},
- {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar'}},
- {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho'}},
- {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar'}},
+ {m:'dulce', em:'🍰', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Quelque chose de sucré',it:'Qualcosa di dolce'}},
+ {m:'fresco', em:'🌿', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Quelque chose de frais',it:'Qualcosa di fresco'}},
+ {m:'compartir', em:'🫶', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
+ {m:'calentito', em:'☕', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
+ {m:'llevar', em:'🧺', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
 ];
 const BADGES = {
- fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa'}},
- reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado'}},
- pedido:{c:'pedido', t:{es:'Más pedido',en:'Most ordered',pt:'Mais pedido'}},
- nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo'}},
- sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten'}},
+ fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Favori de la maison',it:'Preferito della casa'}},
+ reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
+ pedido:{c:'pedido', t:{es:'Más pedido',en:'Most ordered',pt:'Mais pedido',fr:'Le plus commandé',it:'Il più ordinato'}},
+ nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo',fr:'Nouveau',it:'Nuovo'}},
+ sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten',fr:'Sans gluten',it:'Senza glutine'}},
 };
 /* alergenos validados por producto: veg/vgn/tacc/lac son afirmaciones
    positivas (se muestran solo si son true); el resto son "contiene X"
@@ -47,26 +51,26 @@ const BADGES = {
    la cocina valida cada producto en el Excel -- ver extract.py. */
 const ALERG_POSITIVOS = ['veg','vgn','tacc','lac'];
 const ALERG_TXT = {
- veg:{es:'Vegetariano',en:'Vegetarian',pt:'Vegetariano'},
- vgn:{es:'Vegano',en:'Vegan',pt:'Vegano'},
- tacc:{es:'Sin TACC',en:'Gluten-free',pt:'Sem glúten'},
- lac:{es:'Sin lactosa',en:'Lactose-free',pt:'Sem lactose'},
- glu:{es:'Gluten',en:'Gluten',pt:'Glúten'},
- lech:{es:'Leche',en:'Milk',pt:'Leite'},
- huev:{es:'Huevo',en:'Egg',pt:'Ovo'},
- soja:{es:'Soja',en:'Soy',pt:'Soja'},
- mani:{es:'Maní',en:'Peanuts',pt:'Amendoim'},
- fsec:{es:'Frutos secos',en:'Tree nuts',pt:'Frutos secos'},
- ses:{es:'Sésamo',en:'Sesame',pt:'Gergelim'},
- pesc:{es:'Pescado',en:'Fish',pt:'Peixe'},
- mar:{es:'Mariscos',en:'Shellfish',pt:'Frutos do mar'},
- alc:{es:'Alcohol',en:'Alcohol',pt:'Álcool'},
- caf:{es:'Cafeína',en:'Caffeine',pt:'Cafeína'},
+ veg:{es:'Vegetariano',en:'Vegetarian',pt:'Vegetariano',fr:'Végétarien',it:'Vegetariano'},
+ vgn:{es:'Vegano',en:'Vegan',pt:'Vegano',fr:'Végan',it:'Vegano'},
+ tacc:{es:'Sin TACC',en:'Gluten-free',pt:'Sem glúten',fr:'Sans gluten',it:'Senza glutine'},
+ lac:{es:'Sin lactosa',en:'Lactose-free',pt:'Sem lactose',fr:'Sans lactose',it:'Senza lattosio'},
+ glu:{es:'Gluten',en:'Gluten',pt:'Glúten',fr:'Gluten',it:'Glutine'},
+ lech:{es:'Leche',en:'Milk',pt:'Leite',fr:'Lait',it:'Latte'},
+ huev:{es:'Huevo',en:'Egg',pt:'Ovo',fr:'Œuf',it:'Uovo'},
+ soja:{es:'Soja',en:'Soy',pt:'Soja',fr:'Soja',it:'Soia'},
+ mani:{es:'Maní',en:'Peanuts',pt:'Amendoim',fr:'Arachides',it:'Arachidi'},
+ fsec:{es:'Frutos secos',en:'Tree nuts',pt:'Frutos secos',fr:'Fruits à coque',it:'Frutta a guscio'},
+ ses:{es:'Sésamo',en:'Sesame',pt:'Gergelim',fr:'Sésame',it:'Sesamo'},
+ pesc:{es:'Pescado',en:'Fish',pt:'Peixe',fr:'Poisson',it:'Pesce'},
+ mar:{es:'Mariscos',en:'Shellfish',pt:'Frutos do mar',fr:'Fruits de mer',it:'Frutti di mare'},
+ alc:{es:'Alcohol',en:'Alcohol',pt:'Álcool',fr:'Alcool',it:'Alcol'},
+ caf:{es:'Cafeína',en:'Caffeine',pt:'Cafeína',fr:'Caféine',it:'Caffeina'},
 };
-const ALERG_CONTIENE = {es:'Contiene',en:'Contains',pt:'Contém'};
+const ALERG_CONTIENE = {es:'Contiene',en:'Contains',pt:'Contém',fr:'Contient',it:'Contiene'};
 const CAT_NOTAS = {
- BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra'},
- STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado'},
+ BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra',fr:'Verre ou pichet',it:'Bicchiere o caraffa'},
+ STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado',fr:'Produit d’un tiers',it:'Prodotto di terzi'},
 };
 const GRADIENTES=['linear-gradient(135deg,#536039,#8B966E)','linear-gradient(135deg,#8B2F2F,#A85450)','linear-gradient(135deg,#3E4829,#536039)'];
 /* horario: 0=domingo ... 6=sábado. Cada rango es [horaIni,minIni,horaFin,minFin]. */
@@ -77,8 +81,25 @@ const HORARIO = {
 /* banderas SVG minimalistas — círculo con las franjas esenciales de cada bandera */
 const BANDERAS = {
  es:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cAR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cAR)"><rect width="20" height="20" fill="#FFFFFF"/><rect width="20" height="6.7" fill="#75AADB"/><rect y="13.3" width="20" height="6.7" fill="#75AADB"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
- en:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cGB"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cGB)"><rect width="20" height="20" fill="#274B8C"/><rect x="8.2" width="3.6" height="20" fill="#FFFFFF"/><rect y="8.2" width="20" height="3.6" fill="#FFFFFF"/><rect x="9" width="2" height="20" fill="#C8283C"/><rect y="9" width="20" height="2" fill="#C8283C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
+ en:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cEN"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cEN)">
+   <rect x="0" width="10" height="20" fill="#0A247D"/>
+   <rect x="0" y="8.5" width="10" height="3" fill="#FFFFFF"/>
+   <rect x="0" y="9.3" width="10" height="1.4" fill="#CF142B"/>
+   <rect x="4.3" width="1.4" height="20" fill="#FFFFFF"/>
+   <rect x="4.65" width="0.7" height="20" fill="#CF142B"/>
+   <rect x="10" width="10" height="20" fill="#FFFFFF"/>
+   <rect x="10" y="0" width="10" height="2.85" fill="#B22234"/>
+   <rect x="10" y="5.7" width="10" height="2.85" fill="#B22234"/>
+   <rect x="10" y="11.4" width="10" height="2.85" fill="#B22234"/>
+   <rect x="10" y="17.1" width="10" height="2.85" fill="#B22234"/>
+   <rect x="10" y="0" width="5" height="8.5" fill="#3C3B6E"/>
+   <circle cx="11.3" cy="2.3" r="0.5" fill="#FFFFFF"/><circle cx="13.2" cy="2.3" r="0.5" fill="#FFFFFF"/>
+   <circle cx="12.2" cy="4.2" r="0.5" fill="#FFFFFF"/>
+   <circle cx="11.3" cy="6.1" r="0.5" fill="#FFFFFF"/><circle cx="13.2" cy="6.1" r="0.5" fill="#FFFFFF"/>
+ </g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
  pt:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cBR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cBR)"><rect width="20" height="20" fill="#2E9B4F"/><polygon points="10,3.3 17,10 10,16.7 3,10" fill="#F5D948"/><circle cx="10" cy="10" r="2.8" fill="#2B4B8C"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
+ fr:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cFR"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cFR)"><rect width="6.7" height="20" fill="#0055A4"/><rect x="6.7" width="6.6" height="20" fill="#FFFFFF"/><rect x="13.3" width="6.7" height="20" fill="#EF4135"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
+ it:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cIT"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cIT)"><rect width="6.7" height="20" fill="#009246"/><rect x="6.7" width="6.6" height="20" fill="#FFFFFF"/><rect x="13.3" width="6.7" height="20" fill="#CE2B37"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
 };
 
 let lang='es', moodActivo=null, sheetProdId=null;
@@ -146,6 +167,13 @@ function abrirDetalle(id){
   } else {
     alergenos.innerHTML = ''; alergenos.hidden = true;
   }
+  /* opcion de leche vegetal/sin lactosa: agregado para bebidas con leche,
+     no es un producto aparte (ver extract.py, load_opciones_leche) */
+  const sheetLeche = $('sheetLeche');
+  if(p.leche && p.leche.length===2){ sheetLeche.textContent = UI.leche[lang]; sheetLeche.hidden = false; }
+  else if(p.leche && p.leche.includes('veg')){ sheetLeche.textContent = UI.lecheVeg[lang]; sheetLeche.hidden = false; }
+  else if(p.leche && p.leche.includes('lac')){ sheetLeche.textContent = UI.lecheLac[lang]; sheetLeche.hidden = false; }
+  else { sheetLeche.hidden = true; }
   const foto=$('sheetFoto');
   foto.className = 'sheet-foto';
   foto.querySelector('img')?.remove();
@@ -300,7 +328,10 @@ function render(){
   pintarEstado();
   /* selector de idioma */
   $('langs').innerHTML=LANGS.map(l=>`<button data-l="${l}" class="${l===lang?'activo':''}" aria-pressed="${l===lang}" aria-label="${esc(IDIOMA_LABEL[l])}">${BANDERAS[l]}<span>${l.toUpperCase()}</span></button>`).join('');
-  document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.l;render();aplicarFiltro();}));
+  document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{
+    lang=b.dataset.l;render();aplicarFiltro();
+    if(sheetProdId) abrirDetalle(sheetProdId);  /* si hay un panel de detalle abierto, refrescarlo tambien */
+  }));
   /* chips */
   $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}"><span class="em">${ch.em}</span>${ch.t[lang]}</button>`).join('');
   document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
@@ -309,9 +340,7 @@ function render(){
     if(moodActivo) $('menu').scrollIntoView({behavior:'smooth',block:'start'});
   }));
   $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
-  /* nav — Adicionales se muestra como banda, no en nav */
-  const catsNav=CATS.filter(c=>c.cod!=='ADI');
-  $('navcat').innerHTML=catsNav.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
+  $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
     const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('');
@@ -328,7 +357,7 @@ function render(){
   });
   initCarrusel();
   /* secciones */
-  $('menu').innerHTML=catsNav.map(cat=>{
+  $('menu').innerHTML=CATS.map(cat=>{
     const items=PRODS.filter(p=>p.cat===cat.cod);
     if(!items.length) return '';
     const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${CAT_NOTAS[cat.cod][lang]}</p>`:'';
@@ -346,12 +375,6 @@ function render(){
     card.addEventListener('click', ()=>abrirDetalle(card.dataset.id));
     card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); abrirDetalle(card.dataset.id); } });
   });
-  /* banda adicionales */
-  const adi=PRODS.filter(p=>p.cat==='ADI');
-  const catAdi=CATS.find(c=>c.cod==='ADI');
-  $('adicEyebrow').textContent=UI.adicEyebrow[lang];
-  $('adicTitle').textContent=catAdi?catAdi.nom[lang]:'';
-  $('adicLista').innerHTML=adi.map(p=>`<li><b>${esc(p.n[lang])}</b><span class="det">${esc(p.d[lang])}</span></li>`).join('');
   observarNav();
   observarCategorias();
 }

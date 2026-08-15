@@ -75,32 +75,35 @@ dentro de `dist/` y entrá a `http://localhost:8000`.
 
 ## Qué hoja editar para cada cosa
 
-Desde el maestro **V3.0** el archivo tiene **4 hojas** (antes eran 14):
-`Resumen y Configuración`, `Categorías`, `Productos` y `Productos -
-Backoffice`. El pipeline solo lee las primeras tres — Backoffice es
-información interna (ingredientes, alérgenos sin validar, costos, márgenes,
-canales futuros) que el sitio público nunca necesita.
+Desde el maestro **V3.1** el archivo tiene **4 hojas**: `Resumen y
+Configuración`, `Categorías`, `Productos` (nombre, descripción, precio,
+alérgenos — lo esencial del menú) y `Productos - Backoffice` (ingredientes
+y personalización, referencia interna que el sitio nunca lee).
 
-El sitio muestra **3 idiomas: español, inglés, portugués** (el turismo real
-de Malargüe). Francés e italiano tienen columnas propias en la hoja
-`Productos` — podés seguir completándolas si querés, pero el validador no
-las exige ni el sitio las muestra.
+El sitio muestra **los 5 idiomas trabajados: español, inglés, portugués,
+francés e italiano**.
 
 | Querés cambiar... | Hoja | Columna |
 |---|---|---|
-| Nombre o descripción de un producto (ES/EN/PT) | `Productos` | Nombre: D-F · Descripción: I-K |
-| Si un producto está activo / destacado / recomendado / nuevo | `Productos` | O, P, Q, R, S |
+| Nombre o descripción de un producto (ES/EN/PT/FR/IT) | `Productos` | Nombre: D-H · Descripción: I-M |
+| Si un producto está activo / destacado / recomendado / nuevo | `Productos` | N, O, P, Q, R |
 | Categorías, orden alfabético, si una categoría se muestra | `Categorías` | — |
-| Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | V (precio chico o único) · W (precio grande, solo si el producto tiene dos tamaños) |
-| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | Y, Z |
-| Fotos de producto | `Productos` | AA (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
-| WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 18-27) |
-| Costos, márgenes, ingredientes, alérgenos, canales futuros — todo lo interno | `Productos - Backoffice` | — (nada de esto lo lee el sitio) |
+| Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | U (precio chico o único) · V (precio grande, solo si el producto tiene dos tamaños) |
+| Alérgenos (15 banderas + estado de validación) | `Productos` | AF-AT (banderas) · AU (estado de validación) — no se publica nada de un producto hasta que su fila diga "Validado por cocina" o "Validado por proveedor" |
+| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | X, Y |
+| Fotos de producto | `Productos` | Z (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
+| Opción de leche vegetal / sin lactosa en una bebida | `Productos - Backoffice` | columnas "Leche vegetal" / "Leche sin lactosa" (dentro de Personalización) — no es un producto aparte, es un agregado que se muestra en el detalle de la bebida correspondiente |
+| WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 16-25) |
+| Ingredientes, personalización — referencia interna | `Productos - Backoffice` | — (nada de esto lo lee el sitio, salvo leche vegetal/sin lactosa arriba) |
 
 Un producto nuevo necesita una fila en `Productos` (y opcionalmente otra en
-`Productos - Backoffice` si querés cargarle ingredientes/costos), con un ID
-que siga el formato de los que ya existen (3 letras + 3 números, ej.
-`TYT008`).
+`Productos - Backoffice` si querés cargarle ingredientes), con un ID que
+siga el formato de los que ya existen (3 letras + 3 números, ej. `TYT008`).
+
+**"Adicionales" ya no es una categoría del menú.** Leche vegetal y leche
+sin lactosa dejaron de ser productos propios (no tenía sentido pedirlos
+solos) y pasaron a ser un agregado que se muestra en el detalle de cada
+bebida que lleva leche.
 
 ### Alérgenos: por qué no se publican todavía
 
@@ -189,7 +192,7 @@ cosmético.)
   servir como dato real para decidir la carta.
 - **Fuentes self-hosteadas, no Google Fonts.** `assets/fonts/` tiene los
   dos tipos de letra (`Cormorant Garamond`, `Karla`) en `.woff2`, subset
-  `latin` (cubre todos los acentos de ES/EN/PT). Antes, cada visitante le
+  `latin` (cubre todos los acentos de ES/EN/PT/FR/IT). Antes, cada visitante le
   mandaba su IP a Google solo por cargar la tipografía; ahora no sale
   ningún request a un tercero para eso, y además carga más rápido en 3G.
   Las dos tienen licencia **SIL Open Font License 1.1** (libre para uso
