@@ -206,14 +206,19 @@ cosmético.)
   claves — y como el voto es manipulable desde el navegador, tampoco iba a
   servir como dato real para decidir la carta.
 - **Fuentes self-hosteadas, no Google Fonts.** `assets/fonts/` tiene los
-  dos tipos de letra (`Cormorant Garamond`, `Karla`) en `.woff2`, subset
-  `latin` (cubre todos los acentos de ES/EN/PT/FR/IT). Antes, cada visitante le
-  mandaba su IP a Google solo por cargar la tipografía; ahora no sale
-  ningún request a un tercero para eso, y además carga más rápido en 3G.
-  Las dos tienen licencia **SIL Open Font License 1.1** (libre para uso
-  comercial) — el texto de la licencia de cada familia viaja junto a los
-  archivos (`OFL-CormorantGaramond.txt`, `OFL-Karla.txt`), como exige la
-  licencia.
+  tres tipos de letra (`Cormorant Garamond`, `Karla`, `Montserrat`) en
+  `.woff2`, subset `latin` (cubre todos los acentos de ES/EN/PT/FR/IT).
+  Antes, cada visitante le mandaba su IP a Google solo por cargar la
+  tipografía; ahora no sale ningún request a un tercero para eso, y además
+  carga más rápido en 3G. Las tres tienen licencia **SIL Open Font License
+  1.1** (libre para uso comercial) — el texto de la licencia de cada
+  familia viaja junto a los archivos (`OFL-CormorantGaramond.txt`,
+  `OFL-Karla.txt`, `OFL-Montserrat.txt`), como exige la licencia.
+  `Montserrat` se suma para replicar la tipografía real del logo: "AMELÍ"
+  usa `Cormorant Garamond` 600 (SemiBold) en mayúsculas con tracking
+  chico; "CASA DE TÉ & BRUNCH" usa `Montserrat` 300 (Light) en mayúsculas
+  con tracking más generoso — mismos pesos y tracking que especificó el
+  dueño a partir del diseño original.
 - **El mapa nunca fue un embed.** El botón "Cómo llegar" siempre fue un
   link `<a href>` a Google Maps que solo se activa si la persona lo toca —
   no hay ningún iframe cargando de fondo. Se deja documentado acá porque

@@ -1,6 +1,7 @@
 @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 600;font-display:swap;src:url('../fonts/cormorant-garamond.woff2') format('woff2')}
 @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 500;font-display:swap;src:url('../fonts/cormorant-garamond-italic.woff2') format('woff2')}
 @font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/montserrat-light.woff2') format('woff2')}
 :root{
   --verde:#4F6140; --verde-osc:#1E2A1B; --verde-suave:#8B966E;
   --crema:#F1E6D0; --blanco:#FFFDF7; --marron:#8B2F2F;
@@ -48,9 +49,8 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .hero svg.botanica{position:absolute;opacity:.14;pointer-events:none}
 .hero .b1{top:-30px;left:-40px;width:190px;transform:rotate(15deg)}
 .hero .b2{bottom:-20px;right:-45px;width:220px;transform:rotate(190deg)}
-.hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:500;letter-spacing:.04em;line-height:1}
-.hero .marca em{font-style:italic}
-.hero .sub{margin-top:10px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--manteca);font-weight:500}
+.hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:600;letter-spacing:.015em;text-transform:uppercase;line-height:1}
+.hero .sub{margin-top:10px;font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.075em;text-transform:uppercase;color:var(--manteca);font-weight:300}
 .hero .lugar{margin-top:22px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,253,247,.85)}
 .hero .hoja-div{width:52px;height:1px;background:var(--rosa);margin:18px auto 0;position:relative}
 .hero .hoja-div::after{content:'❧';position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);background:var(--verde);padding:0 8px;color:var(--rosa);font-size:13px}
@@ -153,7 +153,7 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .prod.destacada .prod-inner{border:1.5px solid var(--rosa);background:var(--blanco)}
 footer{margin-top:44px;background:var(--verde-osc);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
-footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500}
+footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;letter-spacing:.015em;text-transform:uppercase}
 footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;margin-top:6px;color:var(--rosa)}
 .redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
 .redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600;transition:transform .12s ease}
