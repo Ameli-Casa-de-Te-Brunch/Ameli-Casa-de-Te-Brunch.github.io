@@ -136,7 +136,24 @@
    },
    "m": [],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "ADI001",
@@ -155,7 +172,24 @@
    },
    "m": [],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": true,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ001",
@@ -176,7 +210,24 @@
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ002",
@@ -198,7 +249,24 @@
     "compartir"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ005",
@@ -219,7 +287,24 @@
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ003",
@@ -241,7 +326,24 @@
     "compartir"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ004",
@@ -263,7 +365,24 @@
     "compartir"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ006",
@@ -287,7 +406,24 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BLE001",
@@ -310,7 +446,25 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE002",
@@ -331,7 +485,25 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE003",
@@ -352,7 +524,25 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE004",
@@ -373,7 +563,25 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "CCL001",
@@ -394,7 +602,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL003",
@@ -415,7 +640,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL006",
@@ -436,7 +678,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL002",
@@ -457,7 +716,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL004",
@@ -478,7 +754,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL005",
@@ -499,7 +792,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL007",
@@ -523,7 +833,24 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CFR001",
@@ -544,7 +871,24 @@
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CFR003",
@@ -568,7 +912,24 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CFR002",
@@ -589,7 +950,24 @@
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "DEL002",
@@ -610,7 +988,24 @@
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "DEL001",
@@ -631,7 +1026,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "DEL003",
@@ -653,7 +1065,25 @@
     "llevar"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad Amelí"
   },
   {
    "id": "DEL004",
@@ -676,7 +1106,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "DEL005",
@@ -698,7 +1145,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "DEL006",
@@ -719,7 +1183,25 @@
     "llevar"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad regional"
   },
   {
    "id": "DYM001",
@@ -740,7 +1222,24 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "DYM002",
@@ -759,7 +1258,24 @@
    },
    "m": [],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "DYM003",
@@ -780,7 +1296,25 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Identidad mendocina"
   },
   {
    "id": "DYM004",
@@ -803,7 +1337,24 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "ESP002",
@@ -826,7 +1377,25 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad Amelí"
   },
   {
    "id": "ESP001",
@@ -848,7 +1417,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "SAT001",
@@ -869,7 +1455,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": false,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "SAT002",
@@ -890,7 +1493,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": false,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "SAT003",
@@ -913,7 +1533,25 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Firma Amelí"
   },
   {
    "id": "SAT004",
@@ -936,7 +1574,24 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "STC004",
@@ -960,7 +1615,24 @@
    "b": [
     "sintacc"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "STC002",
@@ -985,7 +1657,24 @@
    "b": [
     "sintacc"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "STC001",
@@ -1010,7 +1699,24 @@
    "b": [
     "sintacc"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "STC003",
@@ -1035,7 +1741,24 @@
    "b": [
     "sintacc"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TEH001",
@@ -1056,7 +1779,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "TIS001",
@@ -1077,7 +1817,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TIS002",
@@ -1098,7 +1855,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TIS003",
@@ -1119,7 +1893,24 @@
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TYT003",
@@ -1142,7 +1933,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TYT007",
@@ -1167,7 +1975,25 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "TYT005",
@@ -1190,7 +2016,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TYT002",
@@ -1215,7 +2058,24 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "TYT004",
@@ -1238,7 +2098,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TYT006",
@@ -1261,7 +2138,24 @@
     "dulce"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "TYT001",
@@ -1286,7 +2180,25 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Producto insignia"
   }
  ],
  "precios": {
@@ -1315,6 +2227,7 @@
   "DEL002": "$ 5.000",
   "DEL001": "$ 5.500",
   "DEL003": "$ 6.000",
+  "DEL004": "$ 800",
   "DEL005": "$ 5.000",
   "DEL006": "$ 600",
   "DYM001": "$ 17.000",
@@ -1348,6 +2261,6 @@
   "whatsapp": "5492604106653",
   "instagram": "ameli.casadete",
   "direccion": "Malargüe, Mendoza, Argentina",
-  "url_base": null
+  "url_base": "https://ameli-casa-de-te-brunch.github.io/"
  }
 }
