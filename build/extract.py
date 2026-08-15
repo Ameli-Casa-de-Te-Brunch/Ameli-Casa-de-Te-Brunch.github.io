@@ -147,6 +147,7 @@ def load_productos(wb):
             "temperatura": ws.cell(row=r, column=COL["temperatura"]).value or "",
             "formato": ws.cell(row=r, column=COL["formato"]).value or "",
             "img": ws.cell(row=r, column=COL["img"]).value or None,
+            "tag": ws.cell(row=r, column=COL["etiqueta_inicial"]).value or None,
             "alerg": alergenos,
             "estado_alergenos": estado_alergenos,
             "_fila": r,
@@ -280,6 +281,8 @@ def extract(xlsx_path: Path) -> dict:
         }
         if prod["alerg"] is not None:
             item["alerg"] = prod["alerg"]
+        if prod["tag"]:
+            item["tag"] = prod["tag"]
         prods.append(item)
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 
@@ -298,7 +301,7 @@ def extract(xlsx_path: Path) -> dict:
 # si su fila individual está validada (ver load_productos) — el resto
 # (costos, ingredientes, personalización, notas operativas, fila/columna
 # de origen) se queda afuera de lo que se versiona y se publica.
-_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg")
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag")
 _CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
 
 

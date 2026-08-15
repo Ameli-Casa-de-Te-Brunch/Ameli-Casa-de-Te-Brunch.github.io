@@ -41,6 +41,29 @@ const BADGES = {
  nuevo:{c:'nuevo', t:{es:'Nuevo',en:'New',pt:'Novo'}},
  sintacc:{c:'sintacc', t:{es:'Sin TACC',en:'Gluten free',pt:'Sem glúten'}},
 };
+/* alergenos validados por producto: veg/vgn/tacc/lac son afirmaciones
+   positivas (se muestran solo si son true); el resto son "contiene X"
+   (se muestra solo si es true). Todo esto llega vacio/ausente hasta que
+   la cocina valida cada producto en el Excel -- ver extract.py. */
+const ALERG_POSITIVOS = ['veg','vgn','tacc','lac'];
+const ALERG_TXT = {
+ veg:{es:'Vegetariano',en:'Vegetarian',pt:'Vegetariano'},
+ vgn:{es:'Vegano',en:'Vegan',pt:'Vegano'},
+ tacc:{es:'Sin TACC',en:'Gluten-free',pt:'Sem glúten'},
+ lac:{es:'Sin lactosa',en:'Lactose-free',pt:'Sem lactose'},
+ glu:{es:'Gluten',en:'Gluten',pt:'Glúten'},
+ lech:{es:'Leche',en:'Milk',pt:'Leite'},
+ huev:{es:'Huevo',en:'Egg',pt:'Ovo'},
+ soja:{es:'Soja',en:'Soy',pt:'Soja'},
+ mani:{es:'Maní',en:'Peanuts',pt:'Amendoim'},
+ fsec:{es:'Frutos secos',en:'Tree nuts',pt:'Frutos secos'},
+ ses:{es:'Sésamo',en:'Sesame',pt:'Gergelim'},
+ pesc:{es:'Pescado',en:'Fish',pt:'Peixe'},
+ mar:{es:'Mariscos',en:'Shellfish',pt:'Frutos do mar'},
+ alc:{es:'Alcohol',en:'Alcohol',pt:'Álcool'},
+ caf:{es:'Cafeína',en:'Caffeine',pt:'Cafeína'},
+};
+const ALERG_CONTIENE = {es:'Contiene',en:'Contains',pt:'Contém'};
 const CAT_NOTAS = {
  BYJ:{es:'Vaso o jarra',en:'By the glass or by the jug',pt:'Copo ou jarra'},
  STC:{es:'Producto tercerizado',en:'Outsourced product',pt:'Produto terceirizado'},
@@ -104,6 +127,25 @@ function abrirDetalle(id){
   $('sheetNombre').textContent = p.n[lang];
   $('sheetDesc').textContent = p.d[lang];
   $('sheetEtiquetas').innerHTML = p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
+  /* "etiqueta inicial" es un texto editorial libre, cargado solo en
+     espanol en el Excel -- se muestra unicamente en ese idioma para no
+     mezclar espanol sin traducir con el resto de la ficha. */
+  const sheetTag = $('sheetTag');
+  if(p.tag && lang==='es'){ sheetTag.textContent = p.tag; sheetTag.hidden = false; }
+  else { sheetTag.hidden = true; }
+  const alergenos = $('sheetAlergenos');
+  if(p.alerg){
+    const positivos = ALERG_POSITIVOS.filter(k=>p.alerg[k]);
+    const contiene = Object.keys(p.alerg).filter(k=>!ALERG_POSITIVOS.includes(k) && p.alerg[k]);
+    let html = positivos.map(k=>`<span class="alerg-tag positivo">${esc(ALERG_TXT[k][lang])}</span>`).join('');
+    if(contiene.length){
+      html += `<span class="alerg-tag advertencia">${esc(ALERG_CONTIENE[lang])}: ${contiene.map(k=>esc(ALERG_TXT[k][lang])).join(', ')}</span>`;
+    }
+    alergenos.innerHTML = html;
+    alergenos.hidden = !html;
+  } else {
+    alergenos.innerHTML = ''; alergenos.hidden = true;
+  }
   const foto=$('sheetFoto');
   foto.className = 'sheet-foto';
   foto.querySelector('img')?.remove();
