@@ -130,9 +130,9 @@
     "pt": "Leite sem lactose"
    },
    "d": {
-    "es": "Opción de leche sin lactosa para personalizar bebidas.",
-    "en": "Lactose-free milk available for customising drinks.",
-    "pt": "Opção de leite sem lactose para personalizar bebidas."
+    "es": "Leche sin lactosa para personalizar la bebida elegida.",
+    "en": "Lactose-free milk for your chosen drink.",
+    "pt": "Leite sem lactose para personalizar a bebida escolhida."
    },
    "m": [],
    "b": [],
@@ -149,9 +149,9 @@
     "pt": "Bebida vegetal"
    },
    "d": {
-    "es": "Opción para reemplazar la leche tradicional. Consultar las variedades disponibles.",
-    "en": "An alternative to dairy milk. Please ask which varieties are available.",
-    "pt": "Opção para substituir o leite tradicional. Consulte as variedades disponíveis."
+    "es": "Alternativa vegetal a la leche tradicional. Variedades según disponibilidad.",
+    "en": "A plant-based alternative to dairy milk. Varieties subject to availability.",
+    "pt": "Alternativa vegetal ao leite tradicional. Variedades conforme disponibilidade."
    },
    "m": [],
    "b": [],
@@ -168,9 +168,9 @@
     "pt": "Vitamina de banana"
    },
    "d": {
-    "es": "Batido cremoso de banana, disponible únicamente en vaso.",
-    "en": "A creamy banana smoothie, available by the glass only.",
-    "pt": "Vitamina cremosa de banana, disponível somente em copo."
+    "es": "Batido de banana, de textura cremosa. Servido en vaso.",
+    "en": "Banana smoothie with a smooth, creamy texture. Served by the glass.",
+    "pt": "Vitamina de banana de textura cremosa. Servida em copo."
    },
    "m": [
     "fresco"
@@ -189,9 +189,9 @@
     "pt": "Vitamina de frutas vermelhas"
    },
    "d": {
-    "es": "Frutos rojos combinados con jugo de naranja.",
-    "en": "Red berries blended with orange juice.",
-    "pt": "Frutas vermelhas batidas com suco de laranja."
+    "es": "Frutos rojos y jugo de naranja.",
+    "en": "Red berries and orange juice.",
+    "pt": "Frutas vermelhas e suco de laranja."
    },
    "m": [
     "fresco",
@@ -211,9 +211,9 @@
     "pt": "Suco de laranja natural"
    },
    "d": {
-    "es": "Jugo de naranja exprimido, disponible únicamente en vaso.",
-    "en": "Freshly squeezed orange juice, available by the glass only.",
-    "pt": "Suco de laranja espremido na hora, disponível somente em copo."
+    "es": "Naranja exprimida. Servido en vaso.",
+    "en": "Freshly squeezed orange. Served by the glass.",
+    "pt": "Laranja espremida. Servido em copo."
    },
    "m": [
     "fresco"
@@ -232,9 +232,9 @@
     "pt": "Limonada detox"
    },
    "d": {
-    "es": "Agua, semillas de chía, jengibre, limón y menta.",
-    "en": "Water, chia seeds, ginger, lemon and mint.",
-    "pt": "Água, sementes de chia, gengibre, limão e hortelã."
+    "es": "Agua, limón, jengibre, menta y semillas de chía.",
+    "en": "Water, lemon, ginger, mint and chia seeds.",
+    "pt": "Água, limão, gengibre, hortelã e sementes de chia."
    },
    "m": [
     "fresco",
@@ -300,8 +300,8 @@
     "pt": "Blend do bosque"
    },
    "d": {
-    "es": "Té negro, cacao y naranja.",
-    "en": "Black tea with cacao and orange.",
+    "es": "Té negro con cacao y naranja.",
+    "en": "Black tea with cocoa and orange.",
     "pt": "Chá preto com cacau e laranja."
    },
    "m": [
@@ -323,7 +323,7 @@
     "pt": "Blend detox"
    },
    "d": {
-    "es": "Té verde, jengibre, limón y menta.",
+    "es": "Té verde con jengibre, limón y menta.",
     "en": "Green tea with ginger, lemon and mint.",
     "pt": "Chá verde com gengibre, limão e hortelã."
    },
@@ -344,7 +344,7 @@
     "pt": "Blend dourado"
    },
    "d": {
-    "es": "Té verde, caléndula, durazno y limón.",
+    "es": "Té verde con caléndula, durazno y limón.",
     "en": "Green tea with calendula, peach and lemon.",
     "pt": "Chá verde com calêndula, pêssego e limão."
    },
@@ -365,9 +365,9 @@
     "pt": "Blend love"
    },
    "d": {
-    "es": "Té pu-erh, hibisco y pomelo.",
-    "en": "Pu-erh tea with hibiscus and grapefruit.",
-    "pt": "Chá pu-erh com hibisco e toranja."
+    "es": "Té rojo con hibisco y pomelo.",
+    "en": "Red tea with hibiscus and grapefruit.",
+    "pt": "Chá vermelho com hibisco e toranja."
    },
    "m": [
     "calentito"
@@ -386,9 +386,9 @@
     "pt": "Café americano"
    },
    "d": {
-    "es": "Un shot de espresso suavizado con agua caliente.",
-    "en": "A shot of espresso lengthened with hot water.",
-    "pt": "Uma dose de espresso suavizada com água quente."
+    "es": "Espresso y agua caliente.",
+    "en": "Espresso and hot water.",
+    "pt": "Espresso e água quente."
    },
    "m": [
     "calentito"
@@ -407,9 +407,9 @@
     "pt": "Café com leite"
    },
    "d": {
-    "es": "Mitad café espresso y mitad leche caliente.",
-    "en": "Equal parts coffee and hot milk.",
-    "pt": "Metade café e metade leite quente."
+    "es": "Espresso y leche caliente, en partes iguales.",
+    "en": "Equal parts espresso and hot milk.",
+    "pt": "Espresso e leite quente, em partes iguais."
    },
    "m": [
     "calentito"
@@ -428,9 +428,9 @@
     "pt": "Cappuccino"
    },
    "d": {
-    "es": "Café, leche caliente y espuma de leche en partes iguales.",
-    "en": "Equal parts coffee, hot milk and milk foam.",
-    "pt": "Café, leite quente e espuma de leite em partes iguais."
+    "es": "Espresso, leche caliente y espuma de leche, en partes iguales.",
+    "en": "Equal parts espresso, hot milk and milk foam.",
+    "pt": "Espresso, leite quente e espuma de leite, em partes iguais."
    },
    "m": [
     "calentito"
@@ -449,8 +449,8 @@
     "pt": "Café cortado"
    },
    "d": {
-    "es": "Café espresso con un toque de leche caliente.",
-    "en": "Espresso with a small amount of hot milk.",
+    "es": "Espresso con un toque de leche caliente.",
+    "en": "Espresso with a touch of hot milk.",
     "pt": "Espresso com um toque de leite quente."
    },
    "m": [
@@ -470,9 +470,9 @@
     "pt": "Café lágrima"
    },
    "d": {
-    "es": "Leche caliente con apenas una lágrima de café.",
-    "en": "Hot milk with just a small dash of coffee.",
-    "pt": "Leite quente com apenas um toque de café."
+    "es": "Leche caliente con una lágrima de café.",
+    "en": "Hot milk with a dash of coffee.",
+    "pt": "Leite quente com um toque de café."
    },
    "m": [
     "calentito"
@@ -491,9 +491,9 @@
     "pt": "Macchiato"
    },
    "d": {
-    "es": "Espresso coronado con una pequeña nube de espuma de leche.",
-    "en": "Espresso topped with a small cloud of milk foam.",
-    "pt": "Espresso finalizado com uma pequena camada de espuma de leite."
+    "es": "Espresso coronado con espuma de leche.",
+    "en": "Espresso topped with milk foam.",
+    "pt": "Espresso finalizado com espuma de leite."
    },
    "m": [
     "calentito"
@@ -512,9 +512,9 @@
     "pt": "Mocha"
    },
    "d": {
-    "es": "Café con chocolate, leche caliente y espuma de leche.",
-    "en": "Coffee with chocolate, hot milk and milk foam.",
-    "pt": "Café com chocolate, leite quente e espuma de leite."
+    "es": "Café, chocolate, leche caliente y espuma de leche.",
+    "en": "Coffee, chocolate, hot milk and milk foam.",
+    "pt": "Café, chocolate, leite quente e espuma de leite."
    },
    "m": [
     "calentito",
@@ -536,8 +536,8 @@
     "pt": "Cold brew"
    },
    "d": {
-    "es": "Café infusionado lentamente en frío.",
-    "en": "Coffee slowly brewed in cold water.",
+    "es": "Café de infusión lenta en frío.",
+    "en": "Coffee slowly steeped in cold water.",
     "pt": "Café extraído lentamente a frio."
    },
    "m": [
@@ -557,9 +557,9 @@
     "pt": "Frappé de café com doce de leite"
    },
    "d": {
-    "es": "Café batido con leche, hielo y dulce de leche.",
-    "en": "Blended coffee with milk, ice and dulce de leche.",
-    "pt": "Café batido com leite, gelo e doce de leite."
+    "es": "Café, leche, hielo y dulce de leche, batidos juntos.",
+    "en": "Coffee, milk, ice and dulce de leche, blended together.",
+    "pt": "Café, leite, gelo e doce de leite, batidos juntos."
    },
    "m": [
     "fresco",
@@ -581,9 +581,9 @@
     "pt": "Iced latte"
    },
    "d": {
-    "es": "Un shot de espresso mezclado con leche fría y hielo.",
-    "en": "A shot of espresso mixed with cold milk and ice.",
-    "pt": "Uma dose de espresso misturada com leite gelado e gelo."
+    "es": "Espresso, leche fría y hielo.",
+    "en": "Espresso, cold milk and ice.",
+    "pt": "Espresso, leite gelado e gelo."
    },
    "m": [
     "fresco"
@@ -602,9 +602,9 @@
     "pt": "Bowl de frutas da estação"
    },
    "d": {
-    "es": "Selección de frutas frescas de estación, servidas en bowl.",
-    "en": "A selection of fresh seasonal fruit, served in a bowl.",
-    "pt": "Seleção de frutas frescas da estação, servidas em bowl."
+    "es": "Frutas frescas de estación, servidas en bowl.",
+    "en": "Fresh seasonal fruit, served in a bowl.",
+    "pt": "Frutas frescas da estação, servidas em bowl."
    },
    "m": [
     "fresco"
@@ -623,9 +623,9 @@
     "pt": "Bowl de ovos"
    },
    "d": {
-    "es": "Huevos preparados al momento y servidos en bowl. Consultar los acompañamientos disponibles.",
-    "en": "Eggs cooked to order and served in a bowl. Please ask about the available accompaniments.",
-    "pt": "Ovos preparados na hora e servidos em bowl. Consulte os acompanhamentos disponíveis."
+    "es": "Huevos preparados al momento. Acompañamientos según disponibilidad.",
+    "en": "Eggs prepared to order. Accompaniments subject to availability.",
+    "pt": "Ovos preparados na hora. Acompanhamentos conforme disponibilidade."
    },
    "m": [
     "calentito"
@@ -644,9 +644,9 @@
     "pt": "Pão de queijo tipo chipá"
    },
    "d": {
-    "es": "Panecillos de almidón de mandioca y queso, suaves por dentro y ligeramente crocantes por fuera.",
-    "en": "Cheese rolls made with cassava starch, soft inside and lightly crisp outside.",
-    "pt": "Pãezinhos de polvilho e queijo, macios por dentro e levemente crocantes por fora."
+    "es": "Almidón de mandioca y queso; suave por dentro, ligeramente crocante por fuera.",
+    "en": "Cassava starch and cheese; soft within, lightly crisp outside.",
+    "pt": "Polvilho de mandioca e queijo; macio por dentro, levemente crocante por fora."
    },
    "m": [
     "calentito",
@@ -666,9 +666,9 @@
     "pt": "Medialunas argentinas"
    },
    "d": {
-    "es": "Medialunas argentinas suaves y hojaldradas. Consultar presentación y cantidad por porción.",
-    "en": "Soft, flaky Argentine croissants. Please ask about serving size and presentation.",
-    "pt": "Medialunas argentinas macias e folhadas. Consulte a quantidade e a apresentação da porção."
+    "es": "Medialunas argentinas, suaves y hojaldradas. Presentación según disponibilidad.",
+    "en": "Soft, flaky Argentinian medialunas. Serving size subject to availability.",
+    "pt": "Medialunas argentinas, macias e folhadas. Apresentação conforme disponibilidade."
    },
    "m": [
     "calentito",
@@ -689,9 +689,9 @@
     "pt": "Mini bolos tipo inglês"
    },
    "d": {
-    "es": "Selección de mini budines artesanales. Consultar los sabores disponibles del día.",
-    "en": "A selection of handmade mini loaf cakes. Please ask about today’s available flavours.",
-    "pt": "Seleção de mini bolos artesanais. Consulte os sabores disponíveis do dia."
+    "es": "Selección de mini budines en los sabores del día.",
+    "en": "A selection of mini loaf cakes in the day’s flavours.",
+    "pt": "Seleção de minibolos nos sabores do dia."
    },
    "m": [
     "llevar",
@@ -711,9 +711,9 @@
     "pt": "Raspaditas mendocinas"
    },
    "d": {
-    "es": "Tortitas saladas tradicionales de Mendoza, de textura firme, ideales para acompañar café, té o mate.",
-    "en": "Traditional savoury baked rounds from Mendoza, with a firm texture and perfect alongside coffee, tea or mate.",
-    "pt": "Tortinhas salgadas tradicionais de Mendoza, de textura firme, ideais para acompanhar café, chá ou mate."
+    "es": "Tortitas saladas mendocinas, de textura firme.",
+    "en": "Traditional savoury Mendoza flatbreads with a firm texture.",
+    "pt": "Tortinhas salgadas tradicionais de Mendoza, de textura firme."
    },
    "m": [
     "llevar"
@@ -732,9 +732,9 @@
     "pt": "Café da manhã com abacate"
    },
    "d": {
-    "es": "Bowl de huevos revueltos y palta, acompañado de dos tostadas, queso crema, café o té y un vaso pequeño de jugo de naranja.",
-    "en": "A bowl of scrambled eggs and avocado, served with two slices of toast, cream cheese, coffee or tea, and a small glass of orange juice.",
-    "pt": "Bowl de ovos mexidos com abacate, acompanhado de duas torradas, cream cheese, café ou chá e um pequeno copo de suco de laranja."
+    "es": "Huevos revueltos y palta, dos tostadas, queso crema, café o té y jugo de naranja.",
+    "en": "Scrambled eggs and avocado, two slices of toast, cream cheese, coffee or tea, and orange juice.",
+    "pt": "Ovos mexidos e abacate, duas torradas, cream cheese, café ou chá e suco de laranja."
    },
    "m": [],
    "b": [
@@ -753,9 +753,9 @@
     "pt": "Café da manhã clássico"
    },
    "d": {
-    "es": "Dos tostadas con queso crema y mermelada, acompañadas de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Two slices of toast with cream cheese and jam, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Duas torradas com cream cheese e geleia, acompanhadas de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Dos tostadas con queso crema y mermelada, café o té y jugo de naranja.",
+    "en": "Two slices of toast with cream cheese and jam, coffee or tea, and orange juice.",
+    "pt": "Duas torradas com cream cheese e geleia, café ou chá e suco de laranja."
    },
    "m": [],
    "b": [],
@@ -772,9 +772,9 @@
     "pt": "Café da manhã mendocino"
    },
    "d": {
-    "es": "Dos raspaditas mendocinas, acompañadas de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Two traditional Mendoza raspaditas, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Duas raspaditas tradicionais de Mendoza, acompanhadas de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Dos raspaditas mendocinas, café o té y jugo de naranja.",
+    "en": "Two traditional Mendoza raspaditas, coffee or tea, and orange juice.",
+    "pt": "Duas raspaditas mendocinas, café ou chá e suco de laranja."
    },
    "m": [],
    "b": [
@@ -793,9 +793,9 @@
     "pt": "Café da manhã saudável"
    },
    "d": {
-    "es": "Yogur con frutas de estación, granola, frutos secos, miel y coco, acompañado de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Yoghurt with seasonal fruit, granola, nuts, honey and coconut, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Iogurte com frutas da estação, granola, castanhas, mel e coco, acompanhado de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Yogur, frutas de estación, granola, frutos secos, miel y coco; café o té y jugo de naranja.",
+    "en": "Yoghurt, seasonal fruit, granola, nuts, honey and coconut; coffee or tea and orange juice.",
+    "pt": "Iogurte, frutas da estação, granola, castanhas, mel e coco; café ou chá e suco de laranja."
    },
    "m": [
     "fresco"
@@ -816,9 +816,9 @@
     "pt": "Golden milk"
    },
    "d": {
-    "es": "Leche especiada con anís estrellado, canela, clavo de olor, cúrcuma, jengibre y pimienta negra.",
-    "en": "Spiced milk with star anise, cinnamon, cloves, turmeric, ginger and black pepper.",
-    "pt": "Leite aromatizado com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino."
+    "es": "Leche con anís estrellado, canela, clavo, cúrcuma, jengibre y pimienta negra.",
+    "en": "Milk with star anise, cinnamon, clove, turmeric, ginger and black pepper.",
+    "pt": "Leite com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino."
    },
    "m": [
     "calentito"
@@ -839,9 +839,9 @@
     "pt": "Submarino argentino"
    },
    "d": {
-    "es": "Leche caliente servida con una barra de chocolate para fundir.",
-    "en": "Hot milk served with a chocolate bar to melt into the drink.",
-    "pt": "Leite quente servido com uma barra de chocolate para derreter na bebida."
+    "es": "Leche caliente y una barra de chocolate para fundir.",
+    "en": "Hot milk with a chocolate bar to melt into it.",
+    "pt": "Leite quente com uma barra de chocolate para derreter."
    },
    "m": [
     "calentito",
@@ -862,8 +862,8 @@
    },
    "d": {
     "es": "Bagel con tomate, panceta, crema de palta, queso y huevo.",
-    "en": "Bagel filled with tomato, bacon, avocado cream, cheese and egg.",
-    "pt": "Bagel recheado com tomate, bacon, creme de abacate, queijo e ovo."
+    "en": "Bagel with tomato, bacon, avocado cream, cheese and egg.",
+    "pt": "Bagel com tomate, bacon, creme de abacate, queijo e ovo."
    },
    "m": [
     "calentito"
@@ -882,9 +882,9 @@
     "pt": "Tostado de presunto e queijo"
    },
    "d": {
-    "es": "Pan de campo tostado con jamón cocido y queso.",
-    "en": "Toasted country-style bread with cooked ham and cheese.",
-    "pt": "Pão rústico tostado com presunto cozido e queijo."
+    "es": "Pan de campo tostado, jamón cocido y queso.",
+    "en": "Toasted country bread with cooked ham and cheese.",
+    "pt": "Pão de campo tostado, presunto cozido e queijo."
    },
    "m": [
     "calentito"
@@ -903,9 +903,9 @@
     "pt": "Tostada aberta Amelí"
    },
    "d": {
-    "es": "Pan de campo con crema de queso azul, peras frescas caramelizadas, nueces y un toque de miel.",
-    "en": "Country-style bread topped with blue cheese cream, caramelised fresh pears, walnuts and a touch of honey.",
-    "pt": "Pão rústico com creme de queijo azul, peras frescas caramelizadas, nozes e um toque de mel."
+    "es": "Pan de campo, crema de queso azul, peras caramelizadas, nueces y miel.",
+    "en": "Country bread, blue cheese cream, caramelised pears, walnuts and honey.",
+    "pt": "Pão de campo, creme de queijo azul, peras caramelizadas, nozes e mel."
    },
    "m": [
     "calentito"
@@ -926,9 +926,9 @@
     "pt": "Tostada aberta de abacate e ovo"
    },
    "d": {
-    "es": "Pan de campo tostado con queso crema, queso danbo, palta, huevo y mix de semillas.",
-    "en": "Toasted country-style bread with cream cheese, Danbo cheese, avocado, egg and mixed seeds.",
-    "pt": "Pão rústico tostado com cream cheese, queijo danbo, abacate, ovo e mix de sementes."
+    "es": "Pan de campo tostado, queso crema, queso danbo, palta, huevo y semillas.",
+    "en": "Toasted country bread, cream cheese, Danbo cheese, avocado, egg and seeds.",
+    "pt": "Pão de campo tostado, cream cheese, queijo danbo, abacate, ovo e sementes."
    },
    "m": [
     "calentito"
@@ -949,9 +949,9 @@
     "pt": "Alfacookie sem glúten"
    },
    "d": {
-    "es": "Dos cookies rellenas con dulce de leche. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "Two cookies filled with dulce de leche. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Duas cookies recheadas com doce de leite. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Dos cookies rellenas de dulce de leche. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Two cookies filled with dulce de leche. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Dois cookies recheados com doce de leite. Produto terceirizado; consulte disponibilidade e condições de manipulação."
    },
    "m": [
     "llevar",
@@ -973,9 +973,9 @@
     "pt": "Pasta frola sem glúten"
    },
    "d": {
-    "es": "Tarta clásica rellena con dulce de membrillo. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "A classic tart filled with quince paste. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Torta clássica recheada com doce de marmelo. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Masa dulce con membrillo. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Sweet pastry with quince paste. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Massa doce com marmelada. Produto terceirizado; consulte disponibilidade e condições de manipulação."
    },
    "m": [
     "fresco",
@@ -998,9 +998,9 @@
     "pt": "Sobremesas sem glúten"
    },
    "d": {
-    "es": "Selección según disponibilidad: cheesecake, lemon pie o chocotorta. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "Selection subject to availability: cheesecake, lemon pie or chocotorta. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Seleção conforme disponibilidade: cheesecake, lemon pie ou chocotorta. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Selección según disponibilidad: cheesecake, lemon pie o chocotorta. Producto tercerizado; consultar condiciones de manipulación.",
+    "en": "A rotating selection of cheesecake, lemon pie or chocotorta. Sourced from a third party; please ask about handling conditions.",
+    "pt": "Seleção conforme disponibilidade: cheesecake, lemon pie ou chocotorta. Produto terceirizado; consulte as condições de manipulação."
    },
    "m": [
     "fresco",
@@ -1023,9 +1023,9 @@
     "pt": "Torta de coco e doce de leite sem glúten"
    },
    "d": {
-    "es": "Base de masa dulce, rellena con dulce de leche y cubierta de coco. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "A sweet pastry base filled with dulce de leche and topped with coconut. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Base de massa doce, recheada com doce de leite e coberta com coco. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Masa dulce, dulce de leche y coco. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Sweet pastry, dulce de leche and coconut. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Massa doce, doce de leite e coco. Produto terceirizado; consulte disponibilidade e condições de manipulação."
    },
    "m": [
     "fresco",
@@ -1048,9 +1048,9 @@
     "pt": "Seleção de chás de folhas soltas"
    },
    "d": {
-    "es": "Té negro, pu-erh o verde, preparado en hebras.",
-    "en": "Black, pu-erh or green tea, brewed from loose leaves.",
-    "pt": "Chá preto, pu-erh ou verde, preparado com folhas soltas."
+    "es": "Té negro, rojo o verde, infusionado en hebras.",
+    "en": "Loose-leaf black, red or green tea.",
+    "pt": "Chá preto, vermelho ou verde, preparado com folhas soltas."
    },
    "m": [
     "calentito"
@@ -1071,7 +1071,7 @@
    "d": {
     "es": "Cedrón, lavanda, manzanilla y melisa.",
     "en": "Lemon verbena, lavender, chamomile and lemon balm.",
-    "pt": "Erva-luísa, lavanda, camomila e melissa."
+    "pt": "Lúcia-lima, lavanda, camomila e melissa."
    },
    "m": [
     "calentito"
@@ -1132,9 +1132,9 @@
     "pt": "Cheesecake de frutas vermelhas"
    },
    "d": {
-    "es": "Base de galletas crocantes, crema suave de queso y cobertura de salsa de frutos rojos.",
-    "en": "A crisp biscuit base with smooth cream cheese filling and red berry sauce.",
-    "pt": "Base crocante de biscoitos, creme suave de queijo e cobertura de calda de frutas vermelhas."
+    "es": "Base crocante de galletas, crema de queso y frutos rojos.",
+    "en": "A crisp biscuit base, cream cheese filling and red berries.",
+    "pt": "Base crocante de biscoitos, creme de queijo e frutas vermelhas."
    },
    "m": [
     "fresco",
@@ -1155,9 +1155,9 @@
     "pt": "Brownie franuí do bosque"
    },
    "d": {
-    "es": "Brownie con dulce de leche, ganache de chocolate blanco y negro, dulce de frambuesa y frambuesas caseras bañadas en chocolate.",
-    "en": "Brownie with dulce de leche, white and dark chocolate ganache, raspberry preserve and house-made chocolate-coated raspberries.",
-    "pt": "Brownie com doce de leite, ganache de chocolate branco e amargo, doce de framboesa e framboesas artesanais cobertas com chocolate."
+    "es": "Brownie con dulce de leche, ganache de chocolate blanco y negro, dulce de frambuesa y frambuesas bañadas en chocolate.",
+    "en": "Brownie with dulce de leche, white and dark chocolate ganache, raspberry preserve and chocolate-coated raspberries.",
+    "pt": "Brownie com doce de leite, ganache de chocolate branco e amargo, doce de framboesa e framboesas cobertas com chocolate."
    },
    "m": [
     "fresco",
@@ -1180,9 +1180,9 @@
     "pt": "Key lime pie"
    },
    "d": {
-    "es": "Tarta de lima con base crocante y crema suave.",
-    "en": "Lime tart with a crisp base and a smooth filling.",
-    "pt": "Torta de lima com base crocante e recheio cremoso."
+    "es": "Base crocante, lima y crema suave.",
+    "en": "A crisp base with lime and a smooth cream filling.",
+    "pt": "Base crocante, limão e creme suave."
    },
    "m": [
     "fresco",
@@ -1203,9 +1203,9 @@
     "pt": "Bolo marquise de chocolate"
    },
    "d": {
-    "es": "Bizcochuelo de chocolate cubierto con dulce de leche, crema chantilly y frutos rojos.",
-    "en": "Chocolate sponge topped with dulce de leche, whipped cream and red berries.",
-    "pt": "Pão de ló de chocolate coberto com doce de leite, chantilly e frutas vermelhas."
+    "es": "Bizcochuelo de chocolate, dulce de leche, crema chantilly y frutos rojos.",
+    "en": "Chocolate sponge, dulce de leche, Chantilly cream and red berries.",
+    "pt": "Pão de ló de chocolate, doce de leite, chantilly e frutas vermelhas."
    },
    "m": [
     "fresco",
@@ -1228,9 +1228,9 @@
     "pt": "Bolo red velvet"
    },
    "d": {
-    "es": "Torta suave de cacao rojo, rellena y cubierta con crema de queso y frutillas.",
-    "en": "A soft red cocoa cake filled and covered with cream cheese frosting and strawberries.",
-    "pt": "Bolo macio de cacau vermelho, recheado e coberto com creme de queijo e morangos."
+    "es": "Bizcochuelo de cacao, crema de queso y frutillas.",
+    "en": "Cocoa sponge, cream cheese frosting and strawberries.",
+    "pt": "Pão de ló de cacau, creme de queijo e morangos."
    },
    "m": [
     "fresco",
@@ -1251,9 +1251,9 @@
     "pt": "Sablée de amêndoas"
    },
    "d": {
-    "es": "Mini torta de dos capas crocantes de almendras tostadas, con dulce de leche, crema y frutillas.",
-    "en": "A mini cake with two crisp toasted-almond layers, dulce de leche, cream and strawberries.",
-    "pt": "Mini bolo com duas camadas crocantes de amêndoas tostadas, doce de leite, creme e morangos."
+    "es": "Dos capas crocantes de almendras tostadas, dulce de leche, crema y frutillas.",
+    "en": "Two crisp layers of toasted almonds, dulce de leche, cream and strawberries.",
+    "pt": "Duas camadas crocantes de amêndoas tostadas, doce de leite, creme e morangos."
    },
    "m": [
     "fresco",
@@ -1274,9 +1274,9 @@
     "pt": "Bolo assinatura Amelí"
    },
    "d": {
-    "es": "Bizcochuelo de vainilla relleno con ganache de chocolate blanco, limón, nueces y leche condensada.",
-    "en": "Vanilla sponge layered with white chocolate ganache, lemon, walnuts and condensed milk.",
-    "pt": "Pão de ló de baunilha recheado com ganache de chocolate branco, limão, nozes e leite condensado."
+    "es": "Bizcochuelo de vainilla, ganache de chocolate blanco, limón, nueces y leche condensada.",
+    "en": "Vanilla sponge, white chocolate ganache, lemon, walnuts and condensed milk.",
+    "pt": "Pão de ló de baunilha, ganache de chocolate branco, limão, nozes e leite condensado."
    },
    "m": [
     "fresco",
@@ -1290,6 +1290,8 @@
   }
  ],
  "precios": {
+  "ADI002": "$ 1.500",
+  "ADI001": "$ 1.500",
   "BYJ001": "$ 6.000",
   "BYJ002": "Vaso $ 7.500 · Jarra $ 16.000",
   "BYJ005": "$ 6.500",

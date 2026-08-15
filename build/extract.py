@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """xlsx (Ameli_Menu_Maestro, fuera del repo) -> data/menu.json (solo campos públicos).
 
-Desde el maestro V3.0 el archivo tiene 4 hojas (antes eran 14):
-'Resumen y Configuración', 'Categorías', 'Productos' y 'Productos - Backoffice'.
-Este módulo solo lee las primeras tres — Backoffice es información interna
-(costos, márgenes, ingredientes, alérgenos sin validar, canales futuros) que
-el sitio público nunca necesita y por lo tanto nunca se lee acá.
+Desde el maestro V3.1 el archivo tiene 4 hojas: 'Resumen y Configuración',
+'Categorías', 'Productos' (nombre, descripción, precio, alérgenos — lo
+esencial del menú) y 'Productos - Backoffice' (ingredientes y
+personalización, referencia interna que el sitio nunca lee).
 """
 import json
 import re
@@ -25,12 +24,43 @@ LANGS = ["es", "en", "pt"]
 # vez de "Chico/Grande" — así lo pide el menú físico (batidos y jugos).
 CATEGORIAS_VASO_JARRA = {"BYJ"}
 
+# Estados de la columna "Estado de validación (alérgenos)" que habilitan
+# publicar los datos de alérgenos de ESE producto puntual. Ver la nota legal
+# en validate.py: mientras un producto diga otra cosa (por defecto,
+# "Pendiente"), sus alérgenos nunca salen en el JSON público.
+ESTADOS_ALERGENOS_VALIDADOS = {"Validado por cocina", "Validado por proveedor"}
+
+# Claves cortas del alérgeno público <- columna del Excel.
+_MAPA_ALERGENOS = [
+    ("veg", "Vegetariano"), ("vgn", "Vegano"), ("tacc", "Sin TACC"), ("lac", "Sin lactosa"),
+    ("glu", "Contiene gluten"), ("lech", "Contiene leche"), ("huev", "Contiene huevo"),
+    ("soja", "Contiene soja"), ("mani", "Contiene maní"), ("fsec", "Contiene frutos secos"),
+    ("ses", "Contiene sésamo"), ("pesc", "Contiene pescado"), ("mar", "Contiene mariscos"),
+    ("alc", "Contiene alcohol"), ("caf", "Contiene cafeína"),
+]
+
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
-FILA_CONFIG_INICIO = 18  # ver hoja "Resumen y Configuración": el bloque de
-FILA_CONFIG_FIN = 27     # config empieza después del resumen automático.
+FILA_CONFIG_INICIO = 16  # ver hoja "Resumen y Configuración": el bloque de
+FILA_CONFIG_FIN = 25     # config empieza después del resumen automático.
+
+# Columnas de la hoja "Productos" (1-indexado). Definidas una sola vez acá
+# porque validate.py las necesita también para armar sus mensajes.
+COL = {
+    "id": 1, "cat": 2, "orden": 3,
+    "nombre": {"es": 4, "en": 5, "pt": 6, "fr": 7, "it": 8},
+    "desc": {"es": 9, "en": 10, "pt": 11, "fr": 12, "it": 13},
+    "activo": 14, "destacado": 15, "recomendado": 16, "mas_vendido": 17, "nuevo": 18,
+    "edicion_limitada": 19, "etiqueta_inicial": 20,
+    "precio_chico": 21, "precio_grande": 22, "moneda": 23,
+    "temperatura": 24, "formato": 25,
+    "img": 26,
+    "slug": {"es": 27, "en": 28, "pt": 29, "fr": 30, "it": 31},
+    "alergenos_inicio": 32, "alergenos_fin": 46,
+    "estado_alergenos": 47, "obs_alergenos": 48, "observaciones": 49,
+}
 
 
 def _sheet(wb, name):
@@ -80,44 +110,45 @@ def _formatear_precio(chico, grande, cat_cod):
 
 
 def load_productos(wb):
-    """ID -> todos los datos de producto que usa el pipeline, en un solo lugar
-    (antes vivían repartidos en 5 hojas distintas; ahora es una sola fila)."""
+    """ID -> todos los datos de producto que usa el pipeline, en un solo lugar."""
     ws = _sheet(wb, "Productos")
     out = {}
     r = 5
     while True:
-        idv = ws.cell(row=r, column=1).value
+        idv = ws.cell(row=r, column=COL["id"]).value
         if idv is None:
             break
-        cat_cod = ws.cell(row=r, column=2).value
-        chico = ws.cell(row=r, column=22).value
-        grande = ws.cell(row=r, column=23).value
+        cat_cod = ws.cell(row=r, column=COL["cat"]).value
+        chico = ws.cell(row=r, column=COL["precio_chico"]).value
+        grande = ws.cell(row=r, column=COL["precio_grande"]).value
+        estado_alergenos = ws.cell(row=r, column=COL["estado_alergenos"]).value
+
+        alergenos = None
+        if estado_alergenos in ESTADOS_ALERGENOS_VALIDADOS:
+            c = COL["alergenos_inicio"]
+            alergenos = {}
+            for clave, _nombre in _MAPA_ALERGENOS:
+                alergenos[clave] = ws.cell(row=r, column=c).value == "Sí"
+                c += 1
+
         out[idv] = {
             "cat": cat_cod,
-            "orden": ws.cell(row=r, column=3).value,
-            "n": {
-                "es": ws.cell(row=r, column=4).value,
-                "en": ws.cell(row=r, column=5).value,
-                "pt": ws.cell(row=r, column=6).value,
-                # columnas G/H (FR/IT) existen pero no se leen — ver LANGS.
-            },
-            "d": {
-                "es": ws.cell(row=r, column=9).value,
-                "en": ws.cell(row=r, column=10).value,
-                "pt": ws.cell(row=r, column=11).value,
-                # columnas L/M (FR/IT) existen pero no se leen — ver LANGS.
-            },
-            "estado_traduccion": ws.cell(row=r, column=14).value,
-            "activo": ws.cell(row=r, column=15).value == "Sí",
-            "destacado": ws.cell(row=r, column=16).value == "Sí",
-            "recomendado": ws.cell(row=r, column=17).value == "Sí",
-            "mas_vendido": ws.cell(row=r, column=18).value == "Sí",
-            "nuevo": ws.cell(row=r, column=19).value == "Sí",
+            "orden": ws.cell(row=r, column=COL["orden"]).value,
+            "n": {lang: ws.cell(row=r, column=c).value for lang, c in
+                  ((l, COL["nombre"][l]) for l in ("es", "en", "pt"))},
+            "d": {lang: ws.cell(row=r, column=c).value for lang, c in
+                  ((l, COL["desc"][l]) for l in ("es", "en", "pt"))},
+            "activo": ws.cell(row=r, column=COL["activo"]).value == "Sí",
+            "destacado": ws.cell(row=r, column=COL["destacado"]).value == "Sí",
+            "recomendado": ws.cell(row=r, column=COL["recomendado"]).value == "Sí",
+            "mas_vendido": ws.cell(row=r, column=COL["mas_vendido"]).value == "Sí",
+            "nuevo": ws.cell(row=r, column=COL["nuevo"]).value == "Sí",
             "precio": _formatear_precio(chico, grande, cat_cod),
-            "tiene_precio": chico not in (None, "") or grande not in (None, ""),
-            "temperatura": ws.cell(row=r, column=25).value or "",
-            "formato": ws.cell(row=r, column=26).value or "",
-            "img": ws.cell(row=r, column=27).value or None,
+            "temperatura": ws.cell(row=r, column=COL["temperatura"]).value or "",
+            "formato": ws.cell(row=r, column=COL["formato"]).value or "",
+            "img": ws.cell(row=r, column=COL["img"]).value or None,
+            "alerg": alergenos,
+            "estado_alergenos": estado_alergenos,
             "_fila": r,
         }
         r += 1
@@ -179,7 +210,6 @@ def moments_for(prod, overrides):
     temp = prod["temperatura"]
     formato = prod["formato"]
     cat_cod = prod["cat"]
-    prod_id = None  # se completa afuera si hace falta (overrides usa el id, no el dict)
     m = []
     if "Caliente" in temp:
         m.append("calentito")
@@ -237,7 +267,7 @@ def extract(xlsx_path: Path) -> dict:
                 m.append(extra)
         if prod["precio"]:
             precios[prod_id] = prod["precio"]
-        prods.append({
+        item = {
             "id": prod_id,
             "cat": prod["cat"],
             "orden": prod["orden"],
@@ -247,7 +277,10 @@ def extract(xlsx_path: Path) -> dict:
             "m": m,
             "b": badges_for(prod),
             "img": prod["img"],
-        })
+        }
+        if prod["alerg"] is not None:
+            item["alerg"] = prod["alerg"]
+        prods.append(item)
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 
     cats_out = [{"cod": c["cod"], "orden": c["orden"], "nom": c["nom"]} for c in cats if c["visible"]]
@@ -261,10 +294,11 @@ def extract(xlsx_path: Path) -> dict:
     }
 
 
-# Campos que SÍ salen al sitio público. Todo lo demás (costos, márgenes,
-# proveedores, ingredientes internos, notas operativas, estadísticas,
-# fila/columna de origen) se queda afuera de lo que se versiona y se publica.
-_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
+# Campos que SÍ salen al sitio público. "alerg" solo aparece en un producto
+# si su fila individual está validada (ver load_productos) — el resto
+# (costos, ingredientes, personalización, notas operativas, fila/columna
+# de origen) se queda afuera de lo que se versiona y se publica.
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg")
 _CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
 
 
@@ -275,7 +309,7 @@ def datos_publicos(data: dict) -> dict:
     que validate.py arme sus mensajes en el mismo proceso)."""
     return {
         "cats": data["cats"],
-        "prods": [{k: p[k] for k in _CAMPOS_PROD_PUBLICOS} for p in data["prods"]],
+        "prods": [{k: p[k] for k in _CAMPOS_PROD_PUBLICOS if k in p} for p in data["prods"]],
         "precios": data["precios"],
         "config": {k: data["config"].get(k) for k in _CAMPOS_CONFIG_PUBLICOS},
     }
