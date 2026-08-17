@@ -170,17 +170,17 @@ cosmético.)
   categoría, badges, momentos, precio de venta y los datos de contacto — si
   alguna vez agregás un campo a esa función, pensalo dos veces antes de
   agregar algo que no debería ser público.
-- **El equivalente en USD/EUR es una conversión fija, no una cotización en
-  vivo.** Se calcula una sola vez, en `extract.py`, con la tasa que cargues
-  a mano en "Tipo de cambio ARS/USD" / "ARS/EUR" (hoja Resumen y
-  Configuración) — queda fija hasta el próximo `python build.py`. La
-  alternativa (pedirle la cotización a una API externa desde el navegador
-  de cada visitante) se descartó a propósito: abriría `connect-src` a un
-  tercero (hoy es `'none'`), y las APIs gratuitas de cotización dan el
-  dólar "oficial", que en Argentina casi nunca es el que un turista
-  termina pagando (blue/MEP/tarjeta) — mostrarlo podría confundir más que
-  ayudar. USD se muestra en cualquier idioma si hay tasa cargada; EUR
-  además solo en francés e italiano.
+- **El equivalente en USD/EUR/BRL es una conversión fija, no una cotización
+  en vivo.** Se calcula una sola vez, en `extract.py`, con la tasa que
+  cargues a mano en "Tipo de cambio ARS/USD" / "ARS/EUR" / "Real" (hoja
+  Resumen y Configuración) — queda fija hasta el próximo `python build.py`.
+  La alternativa (pedirle la cotización a una API externa desde el
+  navegador de cada visitante) se descartó a propósito: abriría
+  `connect-src` a un tercero (hoy es `'none'`), y las APIs gratuitas de
+  cotización dan el dólar "oficial", que en Argentina casi nunca es el que
+  un turista termina pagando (blue/MEP/tarjeta) — mostrarlo podría
+  confundir más que ayudar. USD se muestra en cualquier idioma si hay tasa
+  cargada; EUR además solo en francés e italiano; BRL solo en portugués.
 - **La ruta del Excel es configurable** (flag, variable de entorno, o
   `.env` gitignoreado) porque cada máquina donde esto se corra va a tenerlo
   en un lugar distinto.

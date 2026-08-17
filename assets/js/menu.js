@@ -1,3 +1,15 @@
+/* GitHub Pages no permite mandar cabeceras HTTP propias, así que
+   frame-ancestors del CSP (declarado vía <meta>) queda sin efecto —
+   el navegador lo ignora fuera de una respuesta HTTP real. Intentar
+   navegar la ventana de arriba (el framebuster clásico) tampoco sirve:
+   Chrome lo bloquea si el iframe no es del mismo origen o no hubo un
+   gesto del usuario (probado: tira SecurityError). En cambio, ocultar
+   el contenido si detectamos que estamos embebidos sí funciona siempre
+   — mitiga clickjacking sin depender de una API que puede estar bloqueada. */
+if (window.top !== window.self) {
+  document.documentElement.style.display = 'none';
+}
+
 const LANGS = ['es','en','pt','fr','it'];
 const UI = {
  sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de thé · Brunch',it:'Casa del tè · Brunch'},
@@ -9,7 +21,7 @@ const UI = {
  destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'Le specialità della casa'},
  vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien par ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
  grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
- maps:{es:'◈ Cómo llegar',en:'◈ Find us',pt:'◈ Como chegar',fr:'◈ Comment venir',it:'◈ Come arrivare'},
+ googleReview:{es:'Reseña en Google',en:'Review on Google',pt:'Avaliação no Google',fr:'Avis sur Google',it:'Recensione su Google'},
  datos:{es:'Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
         en:'Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
         pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
@@ -115,6 +127,7 @@ function textoPrecio(entry){
   let extra = [];
   if(entry.usd) extra.push(esc(entry.usd));
   if(entry.eur && (lang==='fr' || lang==='it')) extra.push(esc(entry.eur));
+  if(entry.brl && lang==='pt') extra.push(esc(entry.brl));
   return extra.length ? `${esc(entry.ars)} <small>(${extra.join(' · ')})</small>` : esc(entry.ars);
 }
 
@@ -332,9 +345,8 @@ function render(){
   $('destEyebrow').textContent=UI.destEyebrow[lang];
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
-  if($('footMaps')) $('footMaps').textContent=UI.maps[lang];
+  if($('footGoogleTxt')) $('footGoogleTxt').textContent=UI.googleReview[lang];
   $('footDatos').innerHTML=UI.datos[lang];
-  if($('wspTxt')) $('wspTxt').textContent=UI.wsp[lang];
   $('carPrev').setAttribute('aria-label', UI.anterior[lang]);
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
   pintarEstado();

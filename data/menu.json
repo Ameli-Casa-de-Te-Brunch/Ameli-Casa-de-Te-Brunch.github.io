@@ -56,8 +56,19 @@
    }
   },
   {
-   "cod": "CFR",
+   "cod": "ESP",
    "orden": 6,
+   "nom": {
+    "es": "Especiales",
+    "en": "Hot Specialities",
+    "pt": "Especialidades quentes",
+    "fr": "Spécialités chaudes",
+    "it": "Specialità calde"
+   }
+  },
+  {
+   "cod": "CFR",
+   "orden": 7,
    "nom": {
     "es": "Café Frío",
     "en": "Iced Coffee",
@@ -68,24 +79,13 @@
   },
   {
    "cod": "BYJ",
-   "orden": 7,
+   "orden": 8,
    "nom": {
     "es": "Batidos & Jugos",
     "en": "Smoothies & Juices",
     "pt": "Vitaminas & sucos",
     "fr": "Smoothies & jus",
     "it": "Frullati & succhi"
-   }
-  },
-  {
-   "cod": "ESP",
-   "orden": 8,
-   "nom": {
-    "es": "Especiales",
-    "en": "Hot Specialities",
-    "pt": "Especialidades quentes",
-    "fr": "Spécialités chaudes",
-    "it": "Specialità calde"
    }
   },
   {
@@ -967,6 +967,102 @@
    ]
   },
   {
+   "id": "ESP002",
+   "cat": "ESP",
+   "orden": 34,
+   "dest": true,
+   "n": {
+    "es": "Leche dorada",
+    "en": "Golden Milk",
+    "pt": "Golden milk",
+    "fr": "Lait doré",
+    "it": "Golden milk"
+   },
+   "d": {
+    "es": "Leche con anís estrellado, canela, clavo, cúrcuma, jengibre y pimienta negra.",
+    "en": "Milk with star anise, cinnamon, clove, turmeric, ginger and black pepper.",
+    "pt": "Leite com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino.",
+    "fr": "Lait, anis étoilé, cannelle, clou de girofle, curcuma, gingembre et poivre noir.",
+    "it": "Latte con anice stellato, cannella, chiodi di garofano, curcuma, zenzero e pepe nero."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [
+    "fav"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad Amelí",
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "ESP001",
+   "cat": "ESP",
+   "orden": 35,
+   "dest": false,
+   "n": {
+    "es": "Submarino",
+    "en": "Argentine Submarino",
+    "pt": "Submarino argentino",
+    "fr": "Submarino argentin",
+    "it": "Submarino argentino"
+   },
+   "d": {
+    "es": "Leche caliente y una barra de chocolate para fundir.",
+    "en": "Hot milk with a chocolate bar to melt into it.",
+    "pt": "Leite quente com uma barra de chocolate para derreter.",
+    "fr": "Lait chaud accompagné d’une barre de chocolat à faire fondre.",
+    "it": "Latte caldo con una barretta di cioccolato da sciogliere."
+   },
+   "m": [
+    "calentito",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
    "id": "CFR001",
    "cat": "CFR",
    "orden": 20,
@@ -1360,102 +1456,6 @@
     "alc": false,
     "caf": false
    }
-  },
-  {
-   "id": "ESP002",
-   "cat": "ESP",
-   "orden": 34,
-   "dest": true,
-   "n": {
-    "es": "Leche dorada",
-    "en": "Golden Milk",
-    "pt": "Golden milk",
-    "fr": "Lait doré",
-    "it": "Golden milk"
-   },
-   "d": {
-    "es": "Leche con anís estrellado, canela, clavo, cúrcuma, jengibre y pimienta negra.",
-    "en": "Milk with star anise, cinnamon, clove, turmeric, ginger and black pepper.",
-    "pt": "Leite com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino.",
-    "fr": "Lait, anis étoilé, cannelle, clou de girofle, curcuma, gingembre et poivre noir.",
-    "it": "Latte con anice stellato, cannella, chiodi di garofano, curcuma, zenzero e pepe nero."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [
-    "fav"
-   ],
-   "img": null,
-   "alerg": {
-    "veg": true,
-    "vgn": false,
-    "tacc": true,
-    "lac": false,
-    "glu": false,
-    "lech": true,
-    "huev": false,
-    "soja": false,
-    "mani": false,
-    "fsec": false,
-    "ses": false,
-    "pesc": false,
-    "mar": false,
-    "alc": false,
-    "caf": false
-   },
-   "tag": "Especialidad Amelí",
-   "leche": [
-    "veg",
-    "lac"
-   ]
-  },
-  {
-   "id": "ESP001",
-   "cat": "ESP",
-   "orden": 35,
-   "dest": false,
-   "n": {
-    "es": "Submarino",
-    "en": "Argentine Submarino",
-    "pt": "Submarino argentino",
-    "fr": "Submarino argentin",
-    "it": "Submarino argentino"
-   },
-   "d": {
-    "es": "Leche caliente y una barra de chocolate para fundir.",
-    "en": "Hot milk with a chocolate bar to melt into it.",
-    "pt": "Leite quente com uma barra de chocolate para derreter.",
-    "fr": "Lait chaud accompagné d’une barre de chocolat à faire fondre.",
-    "it": "Latte caldo con una barretta di cioccolato da sciogliere."
-   },
-   "m": [
-    "calentito",
-    "dulce"
-   ],
-   "b": [],
-   "img": null,
-   "alerg": {
-    "veg": true,
-    "vgn": false,
-    "tacc": true,
-    "lac": false,
-    "glu": false,
-    "lech": true,
-    "huev": false,
-    "soja": false,
-    "mani": false,
-    "fsec": false,
-    "ses": false,
-    "pesc": false,
-    "mar": false,
-    "alc": false,
-    "caf": false
-   },
-   "leche": [
-    "veg",
-    "lac"
-   ]
   },
   {
    "id": "DEL002",
@@ -2390,157 +2390,310 @@
  ],
  "precios": {
   "BYJ001": {
-   "ars": "$ 6.000"
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
   },
   "BYJ002": {
-   "ars": "Vaso $ 7.500 · Jarra $ 16.000"
+   "ars": "Vaso $ 7.500 · Jarra $ 16.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 26"
   },
   "BYJ005": {
-   "ars": "$ 6.500"
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
   },
   "BYJ003": {
-   "ars": "Vaso $ 6.000 · Jarra $ 13.000"
+   "ars": "Vaso $ 6.000 · Jarra $ 13.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
   },
   "BYJ004": {
-   "ars": "Vaso $ 7.000 · Jarra $ 14.000"
+   "ars": "Vaso $ 7.000 · Jarra $ 14.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 24"
   },
   "BYJ006": {
-   "ars": "Vaso $ 7.500 · Jarra $ 16.000"
+   "ars": "Vaso $ 7.500 · Jarra $ 16.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 26"
   },
   "BLE001": {
-   "ars": "Chico $ 4.800 · Grande $ 5.600"
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "BLE002": {
-   "ars": "Chico $ 4.800 · Grande $ 5.600"
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "BLE003": {
-   "ars": "Chico $ 4.800 · Grande $ 5.600"
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "BLE004": {
-   "ars": "Chico $ 4.800 · Grande $ 5.600"
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "CCL001": {
-   "ars": "Chico $ 4.000 · Grande $ 5.000"
+   "ars": "Chico $ 4.000 · Grande $ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 14"
   },
   "CCL003": {
-   "ars": "Chico $ 4.700 · Grande $ 6.200"
+   "ars": "Chico $ 4.700 · Grande $ 6.200",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
   },
   "CCL006": {
-   "ars": "$ 6.500"
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
   },
   "CCL002": {
-   "ars": "Chico $ 4.700 · Grande $ 6.000"
+   "ars": "Chico $ 4.700 · Grande $ 6.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
   },
   "CCL004": {
-   "ars": "Chico $ 4.200 · Grande $ 5.000"
+   "ars": "Chico $ 4.200 · Grande $ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 15"
   },
   "CCL005": {
-   "ars": "$ 7.700"
+   "ars": "$ 7.700",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 27"
   },
   "CCL007": {
-   "ars": "$ 6.500"
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
   },
   "CFR001": {
-   "ars": "$ 4.500"
+   "ars": "$ 4.500",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
   },
   "CFR003": {
-   "ars": "$ 6.000"
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
   },
   "CFR002": {
-   "ars": "$ 5.500"
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
   },
   "DEL002": {
-   "ars": "$ 5.000"
+   "ars": "$ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "DEL001": {
-   "ars": "$ 5.500"
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
   },
   "DEL003": {
-   "ars": "$ 6.000"
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
   },
   "DEL004": {
-   "ars": "$ 800"
+   "ars": "$ 1.200",
+   "usd": "≈ USD 1",
+   "eur": "≈ EUR 1",
+   "brl": "≈ R$ 4"
   },
   "DEL005": {
-   "ars": "$ 5.000"
+   "ars": "$ 4.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 14"
   },
   "DEL006": {
-   "ars": "$ 600"
+   "ars": "$ 8.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 5",
+   "brl": "≈ R$ 28"
   },
   "DYM001": {
-   "ars": "$ 17.000"
+   "ars": "$ 17.000",
+   "usd": "≈ USD 11",
+   "eur": "≈ EUR 10",
+   "brl": "≈ R$ 59"
   },
   "DYM002": {
-   "ars": "$ 14.000"
+   "ars": "$ 14.000",
+   "usd": "≈ USD 9",
+   "eur": "≈ EUR 8",
+   "brl": "≈ R$ 48"
   },
   "DYM003": {
-   "ars": "$ 14.600"
+   "ars": "$ 10.100",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 35"
   },
   "DYM004": {
-   "ars": "$ 17.000"
+   "ars": "$ 17.000",
+   "usd": "≈ USD 11",
+   "eur": "≈ EUR 10",
+   "brl": "≈ R$ 59"
   },
   "ESP002": {
-   "ars": "$ 5.500"
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
   },
   "ESP001": {
-   "ars": "$ 6.500"
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
   },
   "SAT001": {
-   "ars": "$ 13.000"
+   "ars": "$ 13.000",
+   "usd": "≈ USD 9",
+   "eur": "≈ EUR 8",
+   "brl": "≈ R$ 45"
   },
   "SAT002": {
-   "ars": "$ 11.000"
+   "ars": "$ 11.000",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 38"
   },
   "SAT003": {
-   "ars": "$ 12.000"
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
   },
   "SAT004": {
-   "ars": "$ 12.000"
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
   },
   "STC004": {
-   "ars": "$ 3.000"
+   "ars": "$ 3.000",
+   "usd": "≈ USD 2",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 10"
   },
   "STC002": {
-   "ars": "$ 6.700"
+   "ars": "$ 6.700",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 23"
   },
   "STC001": {
-   "ars": "$ 6.300"
+   "ars": "$ 6.300",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
   },
   "STC003": {
-   "ars": "$ 7.000"
+   "ars": "$ 7.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 24"
   },
   "TEH001": {
-   "ars": "Chico $ 4.800 · Grande $ 5.600"
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "TIS001": {
-   "ars": "Chico $ 5.000 · Grande $ 5.800"
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "TIS002": {
-   "ars": "Chico $ 5.000 · Grande $ 5.800"
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "TIS003": {
-   "ars": "Chico $ 5.000 · Grande $ 5.800"
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
   },
   "TYT003": {
-   "ars": "$ 9.300"
+   "ars": "$ 9.300",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 5",
+   "brl": "≈ R$ 32"
   },
   "TYT007": {
-   "ars": "$ 12.000"
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
   },
   "TYT005": {
-   "ars": "$ 12.500"
+   "ars": "$ 12.500",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 43"
   },
   "TYT002": {
-   "ars": "$ 9.500"
+   "ars": "$ 9.500",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 33"
   },
   "TYT004": {
-   "ars": "$ 11.500"
+   "ars": "$ 11.500",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 40"
   },
   "TYT006": {
-   "ars": "$ 11.000"
+   "ars": "$ 11.000",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 38"
   },
   "TYT001": {
-   "ars": "$ 9.500"
+   "ars": "$ 9.500",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 33"
   }
  },
  "config": {
@@ -2548,6 +2701,8 @@
   "whatsapp": "5492604106653",
   "instagram": "ameli.casadete",
   "direccion": "Malargüe, Mendoza, Argentina",
-  "url_base": "https://ameli-casa-de-te-brunch.github.io/"
+  "url_base": "https://ameli-casa-de-te-brunch.github.io/",
+  "tripadvisor": "https://www.tripadvisor.com.ar/UserReviewEdit-d34258612?m=68676",
+  "google_resenas": "https://g.page/r/CQ7xLLR2pchDEBM/review"
  }
 }

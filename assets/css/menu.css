@@ -3,9 +3,10 @@
 @font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
 @font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/montserrat-light.woff2') format('woff2')}
 :root{
-  --verde:#4F6140; --verde-osc:#1E2A1B; --verde-suave:#8B966E;
+  --verde:#5B6E4A; --verde-osc:#1E2A1B; --verde-suave:#8B966E; --footer-bg:var(--verde-osc);
   --crema:#F1E6D0; --blanco:#FFFDF7; --marron:#8B2F2F;
-  --rosa:#E7D2CE; --manteca:#E5DACC; --tinta:#000000;
+  --rosa:#E7D2CE; --manteca:#F0E8DE; --tinta:#000000;
+  --dorado:#C4A668; --tostado:#9C7B52;
   --texto-sec:#5e5849;
   --marron-texto:#8B2F2F;
   --sombra:0 6px 24px rgba(83,96,57,.10);
@@ -29,6 +30,10 @@
        fondo oscuro (bug real que ya existia antes de este cambio: el
        verde-osc original tampoco tenia variante oscura). */
     --verde-osc:#94AC7E;
+    /* footer usa --verde-osc como FONDO (no como texto), asi que no puede
+       heredar el valor claro de arriba -- necesita su propio tono oscuro,
+       si no el texto blanco del footer queda casi ilegible encima. */
+    --footer-bg:#141A10;
     --marron-texto:#D98B7B;
     --sombra:0 6px 24px rgba(0,0,0,.4);
     --sombra-nav:0 6px 16px rgba(0,0,0,.45);
@@ -46,9 +51,7 @@ html{scroll-behavior:smooth}
 body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
 ::selection{background:var(--rosa)}
 .hero{background:var(--verde);color:var(--sobre-verde);padding:56px 24px 84px;text-align:center;position:relative;overflow:hidden}
-.hero svg.botanica{position:absolute;opacity:.14;pointer-events:none}
-.hero .b1{top:-30px;left:-40px;width:190px;transform:rotate(15deg)}
-.hero .b2{bottom:-20px;right:-45px;width:220px;transform:rotate(190deg)}
+.hero-wreath{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;max-width:92%;pointer-events:none;z-index:-1}
 .hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:600;letter-spacing:.015em;text-transform:uppercase;line-height:1}
 .hero .sub{margin-top:10px;font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.075em;text-transform:uppercase;color:var(--manteca);font-weight:300}
 .hero .lugar{margin-top:22px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,253,247,.85)}
@@ -151,12 +154,13 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .prod .etiquetas{margin-bottom:6px;display:flex;gap:6px;flex-wrap:wrap}
 .prod .etiquetas .badge{margin-bottom:0}
 .prod.destacada .prod-inner{border:1.5px solid var(--rosa);background:var(--blanco)}
-footer{margin-top:44px;background:var(--verde-osc);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
+footer{margin-top:44px;background:var(--footer-bg);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
 footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;letter-spacing:.015em;text-transform:uppercase}
 footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;margin-top:6px;color:var(--rosa)}
 .redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
 .redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600;transition:transform .12s ease}
+.redes a svg{color:var(--dorado);flex:0 0 auto}
 .redes a:active{transform:scale(.96)}
 footer .datos{margin-top:22px;font-size:12.5px;color:rgba(255,253,247,.7);line-height:1.7}
 .wsp{position:fixed;bottom:18px;right:16px;z-index:40;background:#3BA55D;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 8px 22px rgba(0,0,0,.22);transition:transform .2s}

@@ -10,6 +10,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import openpyxl
 
@@ -42,7 +43,7 @@ DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
 FILA_CONFIG_INICIO = 16  # ver hoja "Resumen y Configuración": el bloque de
-FILA_CONFIG_FIN = 26     # config empieza después del resumen automático.
+FILA_CONFIG_FIN = 29     # config empieza después del resumen automático.
 
 # Columnas de la hoja "Productos" (1-indexado). Definidas una sola vez acá
 # porque validate.py las necesita también para armar sus mensajes.
@@ -219,6 +220,42 @@ def _es_placeholder(valor):
     return "xxx" in texto or texto in ("ejemplo", "pendiente", "completar", "tbd", "n/a")
 
 
+def _url_https_valida(valor, dominios_permitidos=None):
+    """Antes de publicar un link que viene del Excel como texto libre (no un
+    handle ni un teléfono que ya sanitizamos con regex), lo validamos: solo
+    https, y si se pasa una lista de dominios, el host tiene que contener
+    alguno de ellos. Esto es una segunda capa además del escapado HTML en
+    render.py — no confiamos en que la celda del Excel siempre tenga lo que
+    se espera (podría pegarse mal, quedar a medio escribir, etc.), y un
+    esquema no-https (`javascript:`, `data:`, ...) nunca debería llegar a
+    un href publicado, más allá de que el CSP también lo bloquee."""
+    if valor in (None, ""):
+        return False
+    texto = str(valor).strip()
+    try:
+        partes = urlsplit(texto)
+    except ValueError:
+        return False
+    if partes.scheme != "https" or not partes.netloc:
+        return False
+    if dominios_permitidos and not any(d in partes.netloc.lower() for d in dominios_permitidos):
+        return False
+    return True
+
+
+def _handle_instagram_sano(valor):
+    """Los handles de Instagram son solo letras, números, punto y guion bajo.
+    Cualquier otra cosa (comillas, ángulos, espacios) no es un handle válido
+    y no debería terminar pegada sin escapar dentro de un href — se
+    descarta en vez de intentar 'arreglarla'."""
+    if valor in (None, ""):
+        return None
+    texto = str(valor).strip().lstrip("@")
+    if not texto or not re.fullmatch(r"[A-Za-z0-9._]{1,30}", texto):
+        return None
+    return texto
+
+
 def load_config(wb):
     ws = _sheet(wb, "Resumen y Configuración")
     params = {}
@@ -226,12 +263,14 @@ def load_config(wb):
         nombre = ws.cell(row=r, column=1).value
         if nombre is None:
             continue
-        params[nombre] = ws.cell(row=r, column=2).value
+        params[str(nombre).strip()] = ws.cell(row=r, column=2).value
 
     whatsapp = _normalizar_whatsapp(params.get("WhatsApp de pedidos"))
     instagram = params.get("Instagram")
     direccion = params.get("Dirección")
     url_base = params.get("URL base del menú")
+    tripadvisor = params.get("TripAdvisor")
+    google_resenas = params.get("Google (reseñas)")
 
     if _es_placeholder(whatsapp) or _es_placeholder(params.get("WhatsApp de pedidos")):
         whatsapp = None
@@ -241,9 +280,26 @@ def load_config(wb):
         direccion = None
     if _es_placeholder(url_base):
         url_base = None
+    if _es_placeholder(tripadvisor):
+        tripadvisor = None
+    if _es_placeholder(google_resenas):
+        google_resenas = None
+
+    # Segunda capa de validación (además del escapado HTML en render.py):
+    # un handle de Instagram con caracteres raros, o un link que no sea
+    # https con el dominio esperado, no se publica — mejor ausente que
+    # roto o, peor, colado sin escapar en un atributo href.
+    instagram = _handle_instagram_sano(instagram)
+    if not _url_https_valida(url_base):
+        url_base = None
+    if not _url_https_valida(tripadvisor, ("tripadvisor.",)):
+        tripadvisor = None
+    if not _url_https_valida(google_resenas, ("google.com", "g.page")):
+        google_resenas = None
 
     tasa_usd = params.get("Tipo de cambio ARS/USD")
     tasa_eur = params.get("Tipo de cambio ARS/EUR")
+    tasa_brl = params.get("Real")
 
     return {
         "moneda": params.get("Moneda local") or "ARS",
@@ -251,8 +307,11 @@ def load_config(wb):
         "instagram": instagram,
         "direccion": direccion,
         "url_base": url_base,
+        "tripadvisor": tripadvisor,
+        "google_resenas": google_resenas,
         "tasa_usd": tasa_usd if isinstance(tasa_usd, (int, float)) else None,
         "tasa_eur": tasa_eur if isinstance(tasa_eur, (int, float)) else None,
+        "tasa_brl": tasa_brl if isinstance(tasa_brl, (int, float)) else None,
     }
 
 
@@ -319,10 +378,13 @@ def extract(xlsx_path: Path) -> dict:
             entrada = {"ars": prod["precio"]}
             usd = _equivalente(prod["precio_chico_ars"], config["tasa_usd"], "USD")
             eur = _equivalente(prod["precio_chico_ars"], config["tasa_eur"], "EUR")
+            brl = _equivalente(prod["precio_chico_ars"], config["tasa_brl"], "R$")
             if usd:
                 entrada["usd"] = usd
             if eur:
                 entrada["eur"] = eur
+            if brl:
+                entrada["brl"] = brl
             precios[prod_id] = entrada
         item = {
             "id": prod_id,
@@ -360,7 +422,7 @@ def extract(xlsx_path: Path) -> dict:
 # (costos, ingredientes, personalización, notas operativas, fila/columna
 # de origen) se queda afuera de lo que se versiona y se publica.
 _CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag", "leche")
-_CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base")
+_CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base", "tripadvisor", "google_resenas")
 
 
 def datos_publicos(data: dict) -> dict:

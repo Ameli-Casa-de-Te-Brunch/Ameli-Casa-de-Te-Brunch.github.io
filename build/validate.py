@@ -31,7 +31,7 @@ IDIOMA_NOMBRE = {"es": "español", "en": "inglés", "pt": "portugués", "fr": "f
 
 ID_FORMATO = re.compile(r"^[A-Z]{3}\d{3}$")
 
-CAMPOS_CONTACTO = {"WhatsApp de pedidos", "Instagram", "Dirección", "URL base del menú"}
+CAMPOS_CONTACTO = {"WhatsApp de pedidos", "Instagram", "Dirección", "URL base del menú", "TripAdvisor", "Google (reseñas)"}
 
 
 def _col(nombre_campo, lang=None):

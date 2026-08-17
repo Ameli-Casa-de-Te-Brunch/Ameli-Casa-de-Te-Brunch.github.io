@@ -8,7 +8,6 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from urllib.parse import quote
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_JSON = HERE.parent / "data" / "menu.json"
@@ -89,23 +88,31 @@ def render(data: dict, template: str) -> str:
     url_base_limpia = url_base.rstrip("/") if url_base else None
     out = _bloque(out, "OG_URL", bool(url_base_limpia))
     if url_base_limpia:
-        out = out.replace("__OG_URL__", f"{url_base_limpia}/")
+        out = out.replace("__OG_URL__", html_mod.escape(f"{url_base_limpia}/"))
     out = _bloque(out, "OG_IMAGE", bool(url_base_limpia))
     if url_base_limpia:
-        out = out.replace("__OG_IMAGE_URL__", f"{url_base_limpia}/assets/img/og-image.jpg")
+        out = out.replace("__OG_IMAGE_URL__", html_mod.escape(f"{url_base_limpia}/assets/img/og-image.jpg"))
 
     out = _bloque(out, "WSP", bool(wsp_number))
     out = out.replace("__WSP_NUMBER__", wsp_number or "")
 
     out = _bloque(out, "IG", bool(ig_handle))
     if ig_handle:
-        out = out.replace("__IG_URL__", f"https://instagram.com/{ig_handle.lstrip('@')}")
+        out = out.replace("__IG_URL__", html_mod.escape(f"https://instagram.com/{ig_handle}"))
 
-    out = _bloque(out, "MAPS", bool(direccion))
     out = _bloque(out, "DIRECCION", bool(direccion))
     if direccion:
-        out = out.replace("__MAPS_URL__", f"https://maps.google.com/?q={quote(direccion)}")
         out = out.replace("__DIRECCION__", html_mod.escape(direccion))
+
+    tripadvisor_url = cfg.get("tripadvisor")
+    out = _bloque(out, "TA", bool(tripadvisor_url))
+    if tripadvisor_url:
+        out = out.replace("__TRIPADVISOR_URL__", html_mod.escape(tripadvisor_url))
+
+    google_url = cfg.get("google_resenas")
+    out = _bloque(out, "GOOGLE", bool(google_url))
+    if google_url:
+        out = out.replace("__GOOGLE_URL__", html_mod.escape(google_url))
 
     match = re.search(r"<script>(.*?)</script>", out, re.S)
     if not match:
