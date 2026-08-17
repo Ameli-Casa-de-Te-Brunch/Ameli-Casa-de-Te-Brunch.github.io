@@ -8,7 +8,6 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from urllib.parse import quote
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_JSON = HERE.parent / "data" / "menu.json"
@@ -75,24 +74,45 @@ def render(data: dict, template: str) -> str:
     wsp_number = cfg.get("whatsapp")
     ig_handle = cfg.get("instagram")
     direccion = cfg.get("direccion")
+    url_base = cfg.get("url_base")
 
     out = template
     out = out.replace("__CATS_JSON__", _safe_json(data["cats"]))
     out = out.replace("__PRODS_JSON__", _safe_json(data["prods"]))
     out = out.replace("__PRECIOS_JSON__", _safe_json(data["precios"]))
 
+    # og:url y og:image necesitan URL absoluta para que WhatsApp/Instagram
+    # puedan armar la vista previa al compartir el link — sin "URL base del
+    # menú" cargada en la config no hay forma de saber el dominio, así que
+    # esas etiquetas directamente no se publican (mejor ausentes que rotas).
+    url_base_limpia = url_base.rstrip("/") if url_base else None
+    out = _bloque(out, "OG_URL", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__OG_URL__", html_mod.escape(f"{url_base_limpia}/"))
+    out = _bloque(out, "OG_IMAGE", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__OG_IMAGE_URL__", html_mod.escape(f"{url_base_limpia}/assets/img/og-image.jpg"))
+
     out = _bloque(out, "WSP", bool(wsp_number))
     out = out.replace("__WSP_NUMBER__", wsp_number or "")
 
     out = _bloque(out, "IG", bool(ig_handle))
     if ig_handle:
-        out = out.replace("__IG_URL__", f"https://instagram.com/{ig_handle.lstrip('@')}")
+        out = out.replace("__IG_URL__", html_mod.escape(f"https://instagram.com/{ig_handle}"))
 
-    out = _bloque(out, "MAPS", bool(direccion))
     out = _bloque(out, "DIRECCION", bool(direccion))
     if direccion:
-        out = out.replace("__MAPS_URL__", f"https://maps.google.com/?q={quote(direccion)}")
         out = out.replace("__DIRECCION__", html_mod.escape(direccion))
+
+    tripadvisor_url = cfg.get("tripadvisor")
+    out = _bloque(out, "TA", bool(tripadvisor_url))
+    if tripadvisor_url:
+        out = out.replace("__TRIPADVISOR_URL__", html_mod.escape(tripadvisor_url))
+
+    google_url = cfg.get("google_resenas")
+    out = _bloque(out, "GOOGLE", bool(google_url))
+    if google_url:
+        out = out.replace("__GOOGLE_URL__", html_mod.escape(google_url))
 
     match = re.search(r"<script>(.*?)</script>", out, re.S)
     if not match:

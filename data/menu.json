@@ -6,25 +6,31 @@
    "nom": {
     "es": "Desayunos & Meriendas",
     "en": "Breakfast & Afternoon Tea",
-    "pt": "Café da manhã & lanche da tarde"
-   }
-  },
-  {
-   "cod": "DEL",
-   "orden": 2,
-   "nom": {
-    "es": "Delicias",
-    "en": "Bakery & Light Bites",
-    "pt": "Delícias & lanches leves"
+    "pt": "Café da manhã & lanche da tarde",
+    "fr": "Petit-déjeuner & goûter",
+    "it": "Colazione & merenda"
    }
   },
   {
    "cod": "TEH",
-   "orden": 3,
+   "orden": 2,
    "nom": {
     "es": "Té en Hebras",
     "en": "Loose-Leaf Tea",
-    "pt": "Chás de folhas soltas"
+    "pt": "Chás de folhas soltas",
+    "fr": "Thés en feuilles",
+    "it": "Tè in foglia"
+   }
+  },
+  {
+   "cod": "BLE",
+   "orden": 3,
+   "nom": {
+    "es": "Blends",
+    "en": "Signature Tea Blends",
+    "pt": "Blends autorais",
+    "fr": "Mélanges signature",
+    "it": "Miscele d’autore"
    }
   },
   {
@@ -33,16 +39,20 @@
    "nom": {
     "es": "Tisanas",
     "en": "Herbal Infusions",
-    "pt": "Infusões de ervas"
+    "pt": "Infusões de ervas",
+    "fr": "Tisanes",
+    "it": "Tisane"
    }
   },
   {
-   "cod": "BLE",
+   "cod": "CCL",
    "orden": 5,
    "nom": {
-    "es": "Blends",
-    "en": "Signature Tea Blends",
-    "pt": "Blends autorais"
+    "es": "Café Clásico",
+    "en": "Classic Coffee",
+    "pt": "Cafés clássicos",
+    "fr": "Cafés classiques",
+    "it": "Caffè classici"
    }
   },
   {
@@ -51,70 +61,75 @@
    "nom": {
     "es": "Especiales",
     "en": "Hot Specialities",
-    "pt": "Especialidades quentes"
-   }
-  },
-  {
-   "cod": "CCL",
-   "orden": 7,
-   "nom": {
-    "es": "Café Clásico",
-    "en": "Classic Coffee",
-    "pt": "Cafés clássicos"
+    "pt": "Especialidades quentes",
+    "fr": "Spécialités chaudes",
+    "it": "Specialità calde"
    }
   },
   {
    "cod": "CFR",
-   "orden": 8,
+   "orden": 7,
    "nom": {
     "es": "Café Frío",
     "en": "Iced Coffee",
-    "pt": "Cafés gelados"
+    "pt": "Cafés gelados",
+    "fr": "Cafés glacés",
+    "it": "Caffè freddi"
    }
   },
   {
    "cod": "BYJ",
-   "orden": 9,
+   "orden": 8,
    "nom": {
     "es": "Batidos & Jugos",
     "en": "Smoothies & Juices",
-    "pt": "Vitaminas & sucos"
+    "pt": "Vitaminas & sucos",
+    "fr": "Smoothies & jus",
+    "it": "Frullati & succhi"
    }
   },
   {
-   "cod": "ADI",
-   "orden": 10,
+   "cod": "DEL",
+   "orden": 9,
    "nom": {
-    "es": "Adicionales",
-    "en": "Milk Options",
-    "pt": "Opções de leite"
-   }
-  },
-  {
-   "cod": "STC",
-   "orden": 11,
-   "nom": {
-    "es": "Sin TACC",
-    "en": "Gluten-Free Selection",
-    "pt": "Seleção sem glúten"
-   }
-  },
-  {
-   "cod": "TYT",
-   "orden": 12,
-   "nom": {
-    "es": "Tortas & Tartas",
-    "en": "Cakes & Tarts",
-    "pt": "Bolos & tortas"
+    "es": "Delicias",
+    "en": "Bakery & Light Bites",
+    "pt": "Delícias & lanches leves",
+    "fr": "Douceurs & petites bouchées",
+    "it": "Delizie & spuntini"
    }
   },
   {
    "cod": "SAT",
-   "orden": 13,
+   "orden": 10,
    "nom": {
     "es": "Sándwiches & Tostones",
     "en": "Sandwiches & Open Toasts",
-    "pt": "Sanduíches & tostadas"
+    "pt": "Sanduíches & tostadas",
+    "fr": "Sandwichs & tartines",
+    "it": "Panini & bruschette"
+   }
+  },
+  {
+   "cod": "TYT",
+   "orden": 11,
+   "nom": {
+    "es": "Tortas & Tartas",
+    "en": "Cakes & Tarts",
+    "pt": "Bolos & tortas",
+    "fr": "Gâteaux & tartes",
+    "it": "Torte & crostate"
+   }
+  },
+  {
+   "cod": "STC",
+   "orden": 12,
+   "nom": {
+    "es": "Sin TACC",
+    "en": "Gluten-Free Selection",
+    "pt": "Seleção sem glúten",
+    "fr": "Sélection sans gluten",
+    "it": "Selezione senza glutine"
    }
   }
  ],
@@ -122,78 +137,146 @@
   {
    "id": "DYM001",
    "cat": "DYM",
-   "orden": 1,
+   "orden": 30,
    "dest": true,
    "n": {
     "es": "Avocado",
     "en": "Avocado Breakfast",
-    "pt": "Café da manhã com abacate"
+    "pt": "Café da manhã com abacate",
+    "fr": "Petit-déjeuner à l’avocat",
+    "it": "Colazione con avocado"
    },
    "d": {
-    "es": "Bowl de huevos revueltos y palta, acompañado de dos tostadas, queso crema, café o té y un vaso pequeño de jugo de naranja.",
-    "en": "A bowl of scrambled eggs and avocado, served with two slices of toast, cream cheese, coffee or tea, and a small glass of orange juice.",
-    "pt": "Bowl de ovos mexidos com abacate, acompanhado de duas torradas, cream cheese, café ou chá e um pequeno copo de suco de laranja."
+    "es": "Huevos revueltos y palta, dos tostadas, queso crema, café o té y jugo de naranja.",
+    "en": "Scrambled eggs and avocado, two slices of toast, cream cheese, coffee or tea, and orange juice.",
+    "pt": "Ovos mexidos e abacate, duas torradas, cream cheese, café ou chá e suco de laranja.",
+    "fr": "Œufs brouillés et avocat, deux tartines, fromage frais, café ou thé et jus d’orange.",
+    "it": "Uova strapazzate e avocado, due fette di pane tostato, formaggio cremoso, caffè o tè e succo d’arancia."
    },
    "m": [],
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "DYM002",
    "cat": "DYM",
-   "orden": 2,
+   "orden": 31,
    "dest": false,
    "n": {
     "es": "Desayuno clásico",
     "en": "Classic Breakfast",
-    "pt": "Café da manhã clássico"
+    "pt": "Café da manhã clássico",
+    "fr": "Petit-déjeuner classique",
+    "it": "Colazione classica"
    },
    "d": {
-    "es": "Dos tostadas con queso crema y mermelada, acompañadas de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Two slices of toast with cream cheese and jam, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Duas torradas com cream cheese e geleia, acompanhadas de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Dos tostadas con queso crema y mermelada, café o té y jugo de naranja.",
+    "en": "Two slices of toast with cream cheese and jam, coffee or tea, and orange juice.",
+    "pt": "Duas torradas com cream cheese e geleia, café ou chá e suco de laranja.",
+    "fr": "Deux tartines, fromage frais et confiture, café ou thé et jus d’orange.",
+    "it": "Due fette di pane tostato con formaggio cremoso e confettura, caffè o tè e succo d’arancia."
    },
    "m": [],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "DYM003",
    "cat": "DYM",
-   "orden": 3,
+   "orden": 32,
    "dest": false,
    "n": {
     "es": "Desayuno mendocino",
     "en": "Mendoza Breakfast",
-    "pt": "Café da manhã mendocino"
+    "pt": "Café da manhã mendocino",
+    "fr": "Petit-déjeuner mendocin",
+    "it": "Colazione mendocina"
    },
    "d": {
-    "es": "Dos raspaditas mendocinas, acompañadas de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Two traditional Mendoza raspaditas, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Duas raspaditas tradicionais de Mendoza, acompanhadas de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Dos raspaditas mendocinas, café o té y jugo de naranja.",
+    "en": "Two traditional Mendoza raspaditas, coffee or tea, and orange juice.",
+    "pt": "Duas raspaditas mendocinas, café ou chá e suco de laranja.",
+    "fr": "Deux raspaditas de Mendoza, café ou thé et jus d’orange.",
+    "it": "Due raspaditas di Mendoza, caffè o tè e succo d’arancia."
    },
    "m": [],
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Identidad mendocina"
   },
   {
    "id": "DYM004",
    "cat": "DYM",
-   "orden": 4,
+   "orden": 33,
    "dest": false,
    "n": {
     "es": "Desayuno saludable",
     "en": "Healthy Breakfast",
-    "pt": "Café da manhã saudável"
+    "pt": "Café da manhã saudável",
+    "fr": "Petit-déjeuner équilibré",
+    "it": "Colazione salutare"
    },
    "d": {
-    "es": "Yogur con frutas de estación, granola, frutos secos, miel y coco, acompañado de café o té y un vaso pequeño de jugo de naranja.",
-    "en": "Yoghurt with seasonal fruit, granola, nuts, honey and coconut, served with coffee or tea and a small glass of orange juice.",
-    "pt": "Iogurte com frutas da estação, granola, castanhas, mel e coco, acompanhado de café ou chá e um pequeno copo de suco de laranja."
+    "es": "Yogur, frutas de estación, granola, frutos secos, miel y coco; café o té y jugo de naranja.",
+    "en": "Yoghurt, seasonal fruit, granola, nuts, honey and coconut; coffee or tea and orange juice.",
+    "pt": "Iogurte, frutas da estação, granola, castanhas, mel e coco; café ou chá e suco de laranja.",
+    "fr": "Yaourt, fruits de saison, granola, fruits à coque, miel et noix de coco ; café ou thé et jus d’orange.",
+    "it": "Yogurt, frutta di stagione, granola, frutta secca, miele e cocco; caffè o tè e succo d’arancia."
    },
    "m": [
     "fresco"
@@ -201,258 +284,85 @@
    "b": [
     "reco"
    ],
-   "img": null
-  },
-  {
-   "id": "DEL001",
-   "cat": "DEL",
-   "orden": 1,
-   "dest": false,
-   "n": {
-    "es": "Bowl de huevos",
-    "en": "Egg Bowl",
-    "pt": "Bowl de ovos"
-   },
-   "d": {
-    "es": "Huevos preparados al momento y servidos en bowl. Consultar los acompañamientos disponibles.",
-    "en": "Eggs cooked to order and served in a bowl. Please ask about the available accompaniments.",
-    "pt": "Ovos preparados na hora e servidos em bowl. Consulte os acompanhamentos disponíveis."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL002",
-   "cat": "DEL",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Bowl de frutas",
-    "en": "Seasonal Fruit Bowl",
-    "pt": "Bowl de frutas da estação"
-   },
-   "d": {
-    "es": "Selección de frutas frescas de estación, servidas en bowl.",
-    "en": "A selection of fresh seasonal fruit, served in a bowl.",
-    "pt": "Seleção de frutas frescas da estação, servidas em bowl."
-   },
-   "m": [
-    "fresco"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL003",
-   "cat": "DEL",
-   "orden": 3,
-   "dest": false,
-   "n": {
-    "es": "Chipá",
-    "en": "Chipá Cheese Rolls",
-    "pt": "Pão de queijo tipo chipá"
-   },
-   "d": {
-    "es": "Panecillos de almidón de mandioca y queso, suaves por dentro y ligeramente crocantes por fuera.",
-    "en": "Cheese rolls made with cassava starch, soft inside and lightly crisp outside.",
-    "pt": "Pãezinhos de polvilho e queijo, macios por dentro e levemente crocantes por fora."
-   },
-   "m": [
-    "calentito",
-    "llevar"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL004",
-   "cat": "DEL",
-   "orden": 4,
-   "dest": false,
-   "n": {
-    "es": "Medialunas",
-    "en": "Argentine Croissants",
-    "pt": "Medialunas argentinas"
-   },
-   "d": {
-    "es": "Medialunas argentinas suaves y hojaldradas. Consultar presentación y cantidad por porción.",
-    "en": "Soft, flaky Argentine croissants. Please ask about serving size and presentation.",
-    "pt": "Medialunas argentinas macias e folhadas. Consulte a quantidade e a apresentação da porção."
-   },
-   "m": [
-    "calentito",
-    "llevar",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL005",
-   "cat": "DEL",
-   "orden": 5,
-   "dest": false,
-   "n": {
-    "es": "Mini budines",
-    "en": "Mini Loaf Cakes",
-    "pt": "Mini bolos tipo inglês"
-   },
-   "d": {
-    "es": "Selección de mini budines artesanales. Consultar los sabores disponibles del día.",
-    "en": "A selection of handmade mini loaf cakes. Please ask about today’s available flavours.",
-    "pt": "Seleção de mini bolos artesanais. Consulte os sabores disponíveis do dia."
-   },
-   "m": [
-    "llevar",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL006",
-   "cat": "DEL",
-   "orden": 6,
-   "dest": false,
-   "n": {
-    "es": "Raspaditas mendocinas",
-    "en": "Mendoza Raspaditas",
-    "pt": "Raspaditas mendocinas"
-   },
-   "d": {
-    "es": "Tortitas saladas tradicionales de Mendoza, de textura firme, ideales para acompañar café, té o mate.",
-    "en": "Traditional savoury baked rounds from Mendoza, with a firm texture and perfect alongside coffee, tea or mate.",
-    "pt": "Tortinhas salgadas tradicionais de Mendoza, de textura firme, ideais para acompanhar café, chá ou mate."
-   },
-   "m": [
-    "llevar"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "DEL007",
-   "cat": "DEL",
-   "orden": 7,
-   "dest": false,
-   "n": {
-    "es": "Smoothie bowl",
-    "en": "Smoothie Bowl",
-    "pt": "Smoothie bowl"
-   },
-   "d": {
-    "es": "Base cremosa de frutas servida en bowl con toppings. Consultar la combinación disponible del día.",
-    "en": "A creamy fruit base served in a bowl with toppings. Please ask about today’s available combination.",
-    "pt": "Base cremosa de frutas servida em bowl com toppings. Consulte a combinação disponível do dia."
-   },
-   "m": [
-    "fresco",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "TEH001",
    "cat": "TEH",
-   "orden": 1,
+   "orden": 45,
    "dest": false,
    "n": {
     "es": "Selección de té en hebras",
     "en": "Loose-Leaf Tea Selection",
-    "pt": "Seleção de chás de folhas soltas"
+    "pt": "Seleção de chás de folhas soltas",
+    "fr": "Sélection de thés en feuilles",
+    "it": "Selezione di tè in foglia"
    },
    "d": {
-    "es": "Té negro, pu-erh o verde, preparado en hebras.",
-    "en": "Black, pu-erh or green tea, brewed from loose leaves.",
-    "pt": "Chá preto, pu-erh ou verde, preparado com folhas soltas."
+    "es": "Té negro, rojo o verde, infusionado en hebras.",
+    "en": "Loose-leaf black, red or green tea.",
+    "pt": "Chá preto, vermelho ou verde, preparado com folhas soltas.",
+    "fr": "Thé noir, rouge ou vert, infusé en feuilles.",
+    "it": "Tè nero, rosso o verde, preparato in foglia."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
-  },
-  {
-   "id": "TIS001",
-   "cat": "TIS",
-   "orden": 1,
-   "dest": false,
-   "n": {
-    "es": "Tisana 1 · Cedrón & lavanda",
-    "en": "Herbal Infusion 1 · Lemon Verbena & Lavender",
-    "pt": "Infusão 1 · Erva-luísa & lavanda"
-   },
-   "d": {
-    "es": "Cedrón, lavanda, manzanilla y melisa.",
-    "en": "Lemon verbena, lavender, chamomile and lemon balm.",
-    "pt": "Erva-luísa, lavanda, camomila e melissa."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "TIS002",
-   "cat": "TIS",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Tisana 2 · Limón & menta",
-    "en": "Herbal Infusion 2 · Lemon & Mint",
-    "pt": "Infusão 2 · Limão & hortelã"
-   },
-   "d": {
-    "es": "Limón, menta y salvia blanca.",
-    "en": "Lemon, mint and white sage.",
-    "pt": "Limão, hortelã e sálvia-branca."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "TIS003",
-   "cat": "TIS",
-   "orden": 3,
-   "dest": false,
-   "n": {
-    "es": "Tisana 3 · Manzanilla & melisa",
-    "en": "Herbal Infusion 3 · Chamomile & Lemon Balm",
-    "pt": "Infusão 3 · Camomila & melissa"
-   },
-   "d": {
-    "es": "Manzanilla, melisa y menta.",
-    "en": "Chamomile, lemon balm and mint.",
-    "pt": "Camomila, melissa e hortelã."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "BLE001",
    "cat": "BLE",
-   "orden": 1,
+   "orden": 9,
    "dest": true,
    "n": {
     "es": "Del bosque",
     "en": "Forest Blend",
-    "pt": "Blend do bosque"
+    "pt": "Blend do bosque",
+    "fr": "Mélange des bois",
+    "it": "Miscela del bosco"
    },
    "d": {
-    "es": "Té negro, cacao y naranja.",
-    "en": "Black tea with cacao and orange.",
-    "pt": "Chá preto com cacau e laranja."
+    "es": "Té negro con cacao y naranja.",
+    "en": "Black tea with cocoa and orange.",
+    "pt": "Chá preto com cacau e laranja.",
+    "fr": "Thé noir, cacao et orange.",
+    "it": "Tè nero con cacao e arancia."
    },
    "m": [
     "calentito"
@@ -460,256 +370,571 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE002",
    "cat": "BLE",
-   "orden": 2,
+   "orden": 10,
    "dest": false,
    "n": {
     "es": "Detox",
     "en": "Detox Blend",
-    "pt": "Blend detox"
+    "pt": "Blend detox",
+    "fr": "Mélange détox",
+    "it": "Miscela detox"
    },
    "d": {
-    "es": "Té verde, jengibre, limón y menta.",
+    "es": "Té verde con jengibre, limón y menta.",
     "en": "Green tea with ginger, lemon and mint.",
-    "pt": "Chá verde com gengibre, limão e hortelã."
+    "pt": "Chá verde com gengibre, limão e hortelã.",
+    "fr": "Thé vert, gingembre, citron et menthe.",
+    "it": "Tè verde con zenzero, limone e menta."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE003",
    "cat": "BLE",
-   "orden": 3,
+   "orden": 11,
    "dest": false,
    "n": {
     "es": "Dorado",
     "en": "Golden Blend",
-    "pt": "Blend dourado"
+    "pt": "Blend dourado",
+    "fr": "Mélange doré",
+    "it": "Miscela dorata"
    },
    "d": {
-    "es": "Té verde, caléndula, durazno y limón.",
+    "es": "Té verde con caléndula, durazno y limón.",
     "en": "Green tea with calendula, peach and lemon.",
-    "pt": "Chá verde com calêndula, pêssego e limão."
+    "pt": "Chá verde com calêndula, pêssego e limão.",
+    "fr": "Thé vert, calendula, pêche et citron.",
+    "it": "Tè verde con calendula, pesca e limone."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
    "id": "BLE004",
    "cat": "BLE",
-   "orden": 4,
+   "orden": 12,
    "dest": false,
    "n": {
     "es": "Love",
     "en": "Love Blend",
-    "pt": "Blend love"
+    "pt": "Blend love",
+    "fr": "Mélange love",
+    "it": "Miscela love"
    },
    "d": {
-    "es": "Té pu-erh, hibisco y pomelo.",
-    "en": "Pu-erh tea with hibiscus and grapefruit.",
-    "pt": "Chá pu-erh com hibisco e toranja."
+    "es": "Té rojo con hibisco y pomelo.",
+    "en": "Red tea with hibiscus and grapefruit.",
+    "pt": "Chá vermelho com hibisco e toranja.",
+    "fr": "Thé rouge, hibiscus et pamplemousse.",
+    "it": "Tè rosso con ibisco e pompelmo."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
   },
   {
-   "id": "ESP001",
-   "cat": "ESP",
-   "orden": 1,
+   "id": "TIS001",
+   "cat": "TIS",
+   "orden": 46,
    "dest": false,
    "n": {
-    "es": "Submarino",
-    "en": "Argentine Submarino",
-    "pt": "Submarino argentino"
+    "es": "Tisana 1 · Cedrón & lavanda",
+    "en": "Herbal Infusion 1 · Lemon Verbena & Lavender",
+    "pt": "Infusão 1 · Erva-luísa & lavanda",
+    "fr": "Tisane 1 · Verveine citronnée & lavande",
+    "it": "Tisana 1 · Verbena odorosa & lavanda"
    },
    "d": {
-    "es": "Leche caliente servida con una barra de chocolate para fundir.",
-    "en": "Hot milk served with a chocolate bar to melt into the drink.",
-    "pt": "Leite quente servido com uma barra de chocolate para derreter na bebida."
-   },
-   "m": [
-    "calentito",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "ESP002",
-   "cat": "ESP",
-   "orden": 2,
-   "dest": true,
-   "n": {
-    "es": "Leche dorada",
-    "en": "Golden Milk",
-    "pt": "Golden milk"
-   },
-   "d": {
-    "es": "Leche especiada con anís estrellado, canela, clavo de olor, cúrcuma, jengibre y pimienta negra.",
-    "en": "Spiced milk with star anise, cinnamon, cloves, turmeric, ginger and black pepper.",
-    "pt": "Leite aromatizado com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino."
+    "es": "Cedrón, lavanda, manzanilla y melisa.",
+    "en": "Lemon verbena, lavender, chamomile and lemon balm.",
+    "pt": "Lúcia-lima, lavanda, camomila e melissa.",
+    "fr": "Verveine citronnée, lavande, camomille et mélisse.",
+    "it": "Verbena odorosa, lavanda, camomilla e melissa."
    },
    "m": [
     "calentito"
    ],
-   "b": [
-    "fav"
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TIS002",
+   "cat": "TIS",
+   "orden": 47,
+   "dest": false,
+   "n": {
+    "es": "Tisana 2 · Limón & menta",
+    "en": "Herbal Infusion 2 · Lemon & Mint",
+    "pt": "Infusão 2 · Limão & hortelã",
+    "fr": "Tisane 2 · Citron & menthe",
+    "it": "Tisana 2 · Limone & menta"
+   },
+   "d": {
+    "es": "Limón, menta y salvia blanca.",
+    "en": "Lemon, mint and white sage.",
+    "pt": "Limão, hortelã e sálvia-branca.",
+    "fr": "Citron, menthe et sauge blanche.",
+    "it": "Limone, menta e salvia bianca."
+   },
+   "m": [
+    "calentito"
    ],
-   "img": null
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TIS003",
+   "cat": "TIS",
+   "orden": 48,
+   "dest": false,
+   "n": {
+    "es": "Tisana 3 · Manzanilla & melisa",
+    "en": "Herbal Infusion 3 · Chamomile & Lemon Balm",
+    "pt": "Infusão 3 · Camomila & melissa",
+    "fr": "Tisane 3 · Camomille & mélisse",
+    "it": "Tisana 3 · Camomilla & melissa"
+   },
+   "d": {
+    "es": "Manzanilla, melisa y menta.",
+    "en": "Chamomile, lemon balm and mint.",
+    "pt": "Camomila, melissa e hortelã.",
+    "fr": "Camomille, mélisse et menthe.",
+    "it": "Camomilla, melissa e menta."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "CCL001",
    "cat": "CCL",
-   "orden": 1,
+   "orden": 13,
    "dest": false,
    "n": {
     "es": "Americano",
     "en": "Americano",
-    "pt": "Café americano"
+    "pt": "Café americano",
+    "fr": "Café americano",
+    "it": "Caffè americano"
    },
    "d": {
-    "es": "Un shot de espresso suavizado con agua caliente.",
-    "en": "A shot of espresso lengthened with hot water.",
-    "pt": "Uma dose de espresso suavizada com água quente."
+    "es": "Espresso y agua caliente.",
+    "en": "Espresso and hot water.",
+    "pt": "Espresso e água quente.",
+    "fr": "Espresso et eau chaude.",
+    "it": "Espresso e acqua calda."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
-  },
-  {
-   "id": "CCL002",
-   "cat": "CCL",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Cortado",
-    "en": "Cortado",
-    "pt": "Café cortado"
-   },
-   "d": {
-    "es": "Café espresso con un toque de leche caliente.",
-    "en": "Espresso with a small amount of hot milk.",
-    "pt": "Espresso com um toque de leite quente."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CCL003",
    "cat": "CCL",
-   "orden": 3,
+   "orden": 14,
    "dest": false,
    "n": {
     "es": "Café con leche",
     "en": "Café con Leche",
-    "pt": "Café com leite"
+    "pt": "Café com leite",
+    "fr": "Café au lait",
+    "it": "Caffellatte"
    },
    "d": {
-    "es": "Mitad café y mitad leche caliente.",
-    "en": "Equal parts coffee and hot milk.",
-    "pt": "Metade café e metade leite quente."
+    "es": "Espresso y leche caliente, en partes iguales.",
+    "en": "Equal parts espresso and hot milk.",
+    "pt": "Espresso e leite quente, em partes iguais.",
+    "fr": "Espresso et lait chaud, à parts égales.",
+    "it": "Espresso e latte caldo, in parti uguali."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
-  },
-  {
-   "id": "CCL004",
-   "cat": "CCL",
-   "orden": 4,
-   "dest": false,
-   "n": {
-    "es": "Lágrima",
-    "en": "Lágrima Milk Coffee",
-    "pt": "Café lágrima"
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
    },
-   "d": {
-    "es": "Leche caliente con apenas una lágrima de café.",
-    "en": "Hot milk with just a small dash of coffee.",
-    "pt": "Leite quente com apenas um toque de café."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "CCL005",
-   "cat": "CCL",
-   "orden": 5,
-   "dest": false,
-   "n": {
-    "es": "Macchiato",
-    "en": "Macchiato",
-    "pt": "Macchiato"
-   },
-   "d": {
-    "es": "Espresso coronado con una pequeña nube de espuma de leche.",
-    "en": "Espresso topped with a small cloud of milk foam.",
-    "pt": "Espresso finalizado com uma pequena camada de espuma de leite."
-   },
-   "m": [
-    "calentito"
-   ],
-   "b": [],
-   "img": null
+   "leche": [
+    "veg",
+    "lac"
+   ]
   },
   {
    "id": "CCL006",
    "cat": "CCL",
-   "orden": 6,
+   "orden": 15,
    "dest": false,
    "n": {
     "es": "Cappuccino",
     "en": "Cappuccino",
-    "pt": "Cappuccino"
+    "pt": "Cappuccino",
+    "fr": "Cappuccino",
+    "it": "Cappuccino"
    },
    "d": {
-    "es": "Café, leche caliente y espuma de leche en partes iguales.",
-    "en": "Equal parts coffee, hot milk and milk foam.",
-    "pt": "Café, leite quente e espuma de leite em partes iguais."
+    "es": "Espresso, leche caliente y espuma de leche, en partes iguales.",
+    "en": "Equal parts espresso, hot milk and milk foam.",
+    "pt": "Espresso, leite quente e espuma de leite, em partes iguais.",
+    "fr": "Espresso, lait chaud et mousse de lait, à parts égales.",
+    "it": "Espresso, latte caldo e schiuma di latte, in parti uguali."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "CCL002",
+   "cat": "CCL",
+   "orden": 16,
+   "dest": false,
+   "n": {
+    "es": "Cortado",
+    "en": "Cortado",
+    "pt": "Café cortado",
+    "fr": "Cortado",
+    "it": "Caffè macchiato lungo"
+   },
+   "d": {
+    "es": "Espresso con un toque de leche caliente.",
+    "en": "Espresso with a touch of hot milk.",
+    "pt": "Espresso com um toque de leite quente.",
+    "fr": "Espresso relevé d’une touche de lait chaud.",
+    "it": "Espresso con un tocco di latte caldo."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "CCL004",
+   "cat": "CCL",
+   "orden": 17,
+   "dest": false,
+   "n": {
+    "es": "Lágrima",
+    "en": "Lágrima Milk Coffee",
+    "pt": "Café lágrima",
+    "fr": "Lágrima",
+    "it": "Caffè lágrima"
+   },
+   "d": {
+    "es": "Leche caliente con una lágrima de café.",
+    "en": "Hot milk with a dash of coffee.",
+    "pt": "Leite quente com um toque de café.",
+    "fr": "Lait chaud relevé d’une larme de café.",
+    "it": "Latte caldo con una goccia di caffè."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "CCL005",
+   "cat": "CCL",
+   "orden": 18,
+   "dest": false,
+   "n": {
+    "es": "Macchiato",
+    "en": "Macchiato",
+    "pt": "Macchiato",
+    "fr": "Macchiato",
+    "it": "Macchiato"
+   },
+   "d": {
+    "es": "Espresso coronado con espuma de leche.",
+    "en": "Espresso topped with milk foam.",
+    "pt": "Espresso finalizado com espuma de leite.",
+    "fr": "Espresso coiffé d’une mousse de lait.",
+    "it": "Espresso completato da schiuma di latte."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
   },
   {
    "id": "CCL007",
    "cat": "CCL",
-   "orden": 7,
+   "orden": 19,
    "dest": false,
    "n": {
     "es": "Moca",
     "en": "Mocha",
-    "pt": "Mocha"
+    "pt": "Mocha",
+    "fr": "Moka",
+    "it": "Moka"
    },
    "d": {
-    "es": "Café con chocolate, leche caliente y espuma de leche.",
-    "en": "Coffee with chocolate, hot milk and milk foam.",
-    "pt": "Café com chocolate, leite quente e espuma de leite."
+    "es": "Café, chocolate, leche caliente y espuma de leche.",
+    "en": "Coffee, chocolate, hot milk and milk foam.",
+    "pt": "Café, chocolate, leite quente e espuma de leite.",
+    "fr": "Café, chocolat, lait chaud et mousse de lait.",
+    "it": "Caffè, cioccolato, latte caldo e schiuma di latte."
    },
    "m": [
     "calentito",
@@ -718,64 +943,185 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "ESP002",
+   "cat": "ESP",
+   "orden": 34,
+   "dest": true,
+   "n": {
+    "es": "Leche dorada",
+    "en": "Golden Milk",
+    "pt": "Golden milk",
+    "fr": "Lait doré",
+    "it": "Golden milk"
+   },
+   "d": {
+    "es": "Leche con anís estrellado, canela, clavo, cúrcuma, jengibre y pimienta negra.",
+    "en": "Milk with star anise, cinnamon, clove, turmeric, ginger and black pepper.",
+    "pt": "Leite com anis-estrelado, canela, cravo, cúrcuma, gengibre e pimenta-do-reino.",
+    "fr": "Lait, anis étoilé, cannelle, clou de girofle, curcuma, gingembre et poivre noir.",
+    "it": "Latte con anice stellato, cannella, chiodi di garofano, curcuma, zenzero e pepe nero."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [
+    "fav"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad Amelí",
+   "leche": [
+    "veg",
+    "lac"
+   ]
+  },
+  {
+   "id": "ESP001",
+   "cat": "ESP",
+   "orden": 35,
+   "dest": false,
+   "n": {
+    "es": "Submarino",
+    "en": "Argentine Submarino",
+    "pt": "Submarino argentino",
+    "fr": "Submarino argentin",
+    "it": "Submarino argentino"
+   },
+   "d": {
+    "es": "Leche caliente y una barra de chocolate para fundir.",
+    "en": "Hot milk with a chocolate bar to melt into it.",
+    "pt": "Leite quente com uma barra de chocolate para derreter.",
+    "fr": "Lait chaud accompagné d’une barre de chocolat à faire fondre.",
+    "it": "Latte caldo con una barretta di cioccolato da sciogliere."
+   },
+   "m": [
+    "calentito",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
   },
   {
    "id": "CFR001",
    "cat": "CFR",
-   "orden": 1,
+   "orden": 20,
    "dest": false,
    "n": {
     "es": "Cold brew",
     "en": "Cold Brew Coffee",
-    "pt": "Cold brew"
+    "pt": "Cold brew",
+    "fr": "Café cold brew",
+    "it": "Cold brew"
    },
    "d": {
-    "es": "Café infusionado lentamente en frío.",
-    "en": "Coffee slowly brewed in cold water.",
-    "pt": "Café extraído lentamente a frio."
+    "es": "Café de infusión lenta en frío.",
+    "en": "Coffee slowly steeped in cold water.",
+    "pt": "Café extraído lentamente a frio.",
+    "fr": "Café infusé lentement à froid.",
+    "it": "Caffè estratto lentamente a freddo."
    },
    "m": [
     "fresco"
    ],
    "b": [],
-   "img": null
-  },
-  {
-   "id": "CFR002",
-   "cat": "CFR",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Iced latte",
-    "en": "Iced Latte",
-    "pt": "Iced latte"
-   },
-   "d": {
-    "es": "Un shot de espresso mezclado con leche fría y hielo.",
-    "en": "A shot of espresso mixed with cold milk and ice.",
-    "pt": "Uma dose de espresso misturada com leite gelado e gelo."
-   },
-   "m": [
-    "fresco"
-   ],
-   "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
   },
   {
    "id": "CFR003",
    "cat": "CFR",
-   "orden": 3,
+   "orden": 21,
    "dest": true,
    "n": {
     "es": "Frappé de dulce de leche",
     "en": "Dulce de Leche Coffee Frappé",
-    "pt": "Frappé de café com doce de leite"
+    "pt": "Frappé de café com doce de leite",
+    "fr": "Café frappé au dulce de leche",
+    "it": "Frappè al caffè e dulce de leche"
    },
    "d": {
-    "es": "Café batido con leche, hielo y dulce de leche.",
-    "en": "Blended coffee with milk, ice and dulce de leche.",
-    "pt": "Café batido com leite, gelo e doce de leite."
+    "es": "Café, leche, hielo y dulce de leche, batidos juntos.",
+    "en": "Coffee, milk, ice and dulce de leche, blended together.",
+    "pt": "Café, leite, gelo e doce de leite, batidos juntos.",
+    "fr": "Café, lait, glace et dulce de leche, mixés ensemble.",
+    "it": "Caffè, latte, ghiaccio e dulce de leche, frullati insieme."
    },
    "m": [
     "fresco",
@@ -784,94 +1130,159 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
   },
   {
-   "id": "BYJ001",
-   "cat": "BYJ",
-   "orden": 1,
+   "id": "CFR002",
+   "cat": "CFR",
+   "orden": 22,
    "dest": false,
    "n": {
-    "es": "Batido de banana",
-    "en": "Banana Smoothie",
-    "pt": "Vitamina de banana"
+    "es": "Iced latte",
+    "en": "Iced Latte",
+    "pt": "Iced latte",
+    "fr": "Latte glacé",
+    "it": "Iced latte"
    },
    "d": {
-    "es": "Batido cremoso de banana, disponible únicamente en vaso.",
-    "en": "A creamy banana smoothie, available by the glass only.",
-    "pt": "Vitamina cremosa de banana, disponível somente em copo."
+    "es": "Espresso, leche fría y hielo.",
+    "en": "Espresso, cold milk and ice.",
+    "pt": "Espresso, leite gelado e gelo.",
+    "fr": "Espresso, lait froid et glaçons.",
+    "it": "Espresso, latte freddo e ghiaccio."
    },
    "m": [
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "leche": [
+    "veg",
+    "lac"
+   ]
   },
   {
-   "id": "BYJ002",
-   "cat": "BYJ",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Batido de frutos rojos",
-    "en": "Red Berry Smoothie",
-    "pt": "Vitamina de frutas vermelhas"
-   },
-   "d": {
-    "es": "Frutos rojos combinados con jugo de naranja.",
-    "en": "Red berries blended with orange juice.",
-    "pt": "Frutas vermelhas batidas com suco de laranja."
-   },
-   "m": [
-    "fresco",
-    "compartir"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "BYJ003",
+   "id": "BYJ001",
    "cat": "BYJ",
    "orden": 3,
    "dest": false,
    "n": {
-    "es": "Limonada detox",
-    "en": "Detox Lemonade",
-    "pt": "Limonada detox"
+    "es": "Batido de banana",
+    "en": "Banana Smoothie",
+    "pt": "Vitamina de banana",
+    "fr": "Smoothie à la banane",
+    "it": "Frullato alla banana"
    },
    "d": {
-    "es": "Agua, semillas de chía, jengibre, limón y menta.",
-    "en": "Water, chia seeds, ginger, lemon and mint.",
-    "pt": "Água, sementes de chia, gengibre, limão e hortelã."
+    "es": "Batido de banana, de textura cremosa. Servido en vaso.",
+    "en": "Banana smoothie with a smooth, creamy texture. Served by the glass.",
+    "pt": "Vitamina de banana de textura cremosa. Servida em copo.",
+    "fr": "Smoothie à la banane, à la texture onctueuse. Servi au verre.",
+    "it": "Frullato alla banana dalla consistenza cremosa. Servito al bicchiere."
    },
    "m": [
-    "fresco",
-    "compartir"
+    "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "BYJ004",
+   "id": "BYJ002",
    "cat": "BYJ",
    "orden": 4,
    "dest": false,
    "n": {
-    "es": "Limonada Jamaica",
-    "en": "Hibiscus Lemonade",
-    "pt": "Limonada de hibisco"
+    "es": "Batido de frutos rojos",
+    "en": "Red Berry Smoothie",
+    "pt": "Vitamina de frutas vermelhas",
+    "fr": "Smoothie aux fruits rouges",
+    "it": "Frullato ai frutti rossi"
    },
    "d": {
-    "es": "Agua, arándanos, hibisco y limón.",
-    "en": "Water, blueberries, hibiscus and lemon.",
-    "pt": "Água, mirtilos, hibisco e limão."
+    "es": "Frutos rojos y jugo de naranja.",
+    "en": "Red berries and orange juice.",
+    "pt": "Frutas vermelhas e suco de laranja.",
+    "fr": "Fruits rouges et jus d’orange.",
+    "it": "Frutti rossi e succo d’arancia."
    },
    "m": [
     "fresco",
     "compartir"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "BYJ005",
@@ -881,33 +1292,144 @@
    "n": {
     "es": "Jugo de naranja",
     "en": "Fresh Orange Juice",
-    "pt": "Suco de laranja natural"
+    "pt": "Suco de laranja natural",
+    "fr": "Jus d’orange pressé",
+    "it": "Spremuta d’arancia"
    },
    "d": {
-    "es": "Jugo de naranja exprimido, disponible únicamente en vaso.",
-    "en": "Freshly squeezed orange juice, available by the glass only.",
-    "pt": "Suco de laranja espremido na hora, disponível somente em copo."
+    "es": "Naranja exprimida. Servido en vaso.",
+    "en": "Freshly squeezed orange. Served by the glass.",
+    "pt": "Laranja espremida. Servido em copo.",
+    "fr": "Orange pressée. Servie au verre.",
+    "it": "Arancia spremuta. Servita al bicchiere."
    },
    "m": [
     "fresco"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "BYJ006",
+   "id": "BYJ003",
    "cat": "BYJ",
    "orden": 6,
    "dest": false,
    "n": {
+    "es": "Limonada detox",
+    "en": "Detox Lemonade",
+    "pt": "Limonada detox",
+    "fr": "Citronnade détox",
+    "it": "Limonata detox"
+   },
+   "d": {
+    "es": "Agua, limón, jengibre, menta y semillas de chía.",
+    "en": "Water, lemon, ginger, mint and chia seeds.",
+    "pt": "Água, limão, gengibre, hortelã e sementes de chia.",
+    "fr": "Eau, citron, gingembre, menthe et graines de chia.",
+    "it": "Acqua, limone, zenzero, menta e semi di chia."
+   },
+   "m": [
+    "fresco",
+    "compartir"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "BYJ004",
+   "cat": "BYJ",
+   "orden": 7,
+   "dest": false,
+   "n": {
+    "es": "Limonada Jamaica",
+    "en": "Hibiscus Lemonade",
+    "pt": "Limonada de hibisco",
+    "fr": "Citronnade à l’hibiscus",
+    "it": "Limonata all’ibisco"
+   },
+   "d": {
+    "es": "Agua, arándanos, hibisco y limón.",
+    "en": "Water, blueberries, hibiscus and lemon.",
+    "pt": "Água, mirtilos, hibisco e limão.",
+    "fr": "Eau, myrtilles, hibiscus et citron.",
+    "it": "Acqua, mirtilli, ibisco e limone."
+   },
+   "m": [
+    "fresco",
+    "compartir"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "BYJ006",
+   "cat": "BYJ",
+   "orden": 8,
+   "dest": false,
+   "n": {
     "es": "Tropical",
     "en": "Tropical Smoothie",
-    "pt": "Smoothie tropical"
+    "pt": "Smoothie tropical",
+    "fr": "Smoothie tropical",
+    "it": "Frullato tropicale"
    },
    "d": {
     "es": "Mango, maracuyá, ananá y naranja.",
     "en": "Mango, passion fruit, pineapple and orange.",
-    "pt": "Manga, maracujá, abacaxi e laranja."
+    "pt": "Manga, maracujá, abacaxi e laranja.",
+    "fr": "Mangue, fruit de la passion, ananas et orange.",
+    "it": "Mango, frutto della passione, ananas e arancia."
    },
    "m": [
     "fresco",
@@ -916,368 +1438,385 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "ADI001",
-   "cat": "ADI",
-   "orden": 1,
+   "id": "DEL002",
+   "cat": "DEL",
+   "orden": 23,
    "dest": false,
    "n": {
-    "es": "Leche vegetal",
-    "en": "Plant-Based Milk",
-    "pt": "Bebida vegetal"
+    "es": "Bowl de frutas",
+    "en": "Seasonal Fruit Bowl",
+    "pt": "Bowl de frutas da estação",
+    "fr": "Bol de fruits de saison",
+    "it": "Bowl di frutta di stagione"
    },
    "d": {
-    "es": "Opción para reemplazar la leche tradicional. Consultar las variedades disponibles.",
-    "en": "An alternative to dairy milk. Please ask which varieties are available.",
-    "pt": "Opção para substituir o leite tradicional. Consulte as variedades disponíveis."
-   },
-   "m": [],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "ADI002",
-   "cat": "ADI",
-   "orden": 2,
-   "dest": false,
-   "n": {
-    "es": "Leche sin lactosa",
-    "en": "Lactose-Free Milk",
-    "pt": "Leite sem lactose"
-   },
-   "d": {
-    "es": "Opción de leche sin lactosa para personalizar bebidas.",
-    "en": "Lactose-free milk available for customising drinks.",
-    "pt": "Opção de leite sem lactose para personalizar bebidas."
-   },
-   "m": [],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "STC001",
-   "cat": "STC",
-   "orden": 1,
-   "dest": false,
-   "n": {
-    "es": "Postres sin TACC",
-    "en": "Gluten-Free Desserts",
-    "pt": "Sobremesas sem glúten"
-   },
-   "d": {
-    "es": "Selección según disponibilidad: cheesecake, lemon pie o chocotorta. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "Selection subject to availability: cheesecake, lemon pie or chocotorta. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Seleção conforme disponibilidade: cheesecake, lemon pie ou chocotorta. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Frutas frescas de estación, servidas en bowl.",
+    "en": "Fresh seasonal fruit, served in a bowl.",
+    "pt": "Frutas frescas da estação, servidas em bowl.",
+    "fr": "Fruits frais de saison, servis dans un bol.",
+    "it": "Frutta fresca di stagione, servita in una ciotola."
    },
    "m": [
-    "fresco",
+    "fresco"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "DEL001",
+   "cat": "DEL",
+   "orden": 24,
+   "dest": false,
+   "n": {
+    "es": "Bowl de huevos",
+    "en": "Egg Bowl",
+    "pt": "Bowl de ovos",
+    "fr": "Bowl d’œufs",
+    "it": "Bowl di uova"
+   },
+   "d": {
+    "es": "Huevos preparados al momento. Acompañamientos según disponibilidad.",
+    "en": "Eggs prepared to order. Accompaniments subject to availability.",
+    "pt": "Ovos preparados na hora. Acompanhamentos conforme disponibilidade.",
+    "fr": "Œufs préparés à la commande. Accompagnements selon disponibilité.",
+    "it": "Uova preparate al momento. Accompagnamenti secondo disponibilità."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "DEL003",
+   "cat": "DEL",
+   "orden": 25,
+   "dest": false,
+   "n": {
+    "es": "Chipá",
+    "en": "Chipá Cheese Rolls",
+    "pt": "Pão de queijo tipo chipá",
+    "fr": "Petits pains au fromage chipá",
+    "it": "Panini al formaggio chipá"
+   },
+   "d": {
+    "es": "Almidón de mandioca y queso; suave por dentro, ligeramente crocante por fuera.",
+    "en": "Cassava starch and cheese; soft within, lightly crisp outside.",
+    "pt": "Polvilho de mandioca e queijo; macio por dentro, levemente crocante por fora.",
+    "fr": "Amidon de manioc et fromage ; moelleux à cœur, légèrement croustillant à l’extérieur.",
+    "it": "Amido di manioca e formaggio; morbido dentro, leggermente croccante fuori."
+   },
+   "m": [
+    "calentito",
+    "llevar"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Especialidad Amelí"
+  },
+  {
+   "id": "DEL004",
+   "cat": "DEL",
+   "orden": 26,
+   "dest": false,
+   "n": {
+    "es": "Medialunas",
+    "en": "Argentine Croissants",
+    "pt": "Medialunas argentinas",
+    "fr": "Croissants argentins",
+    "it": "Cornetti argentini"
+   },
+   "d": {
+    "es": "Medialunas argentinas, suaves y hojaldradas. Presentación según disponibilidad.",
+    "en": "Soft, flaky Argentinian medialunas. Serving size subject to availability.",
+    "pt": "Medialunas argentinas, macias e folhadas. Apresentação conforme disponibilidade.",
+    "fr": "Medialunas argentines, moelleuses et feuilletées. Présentation selon disponibilité.",
+    "it": "Medialunas argentine, soffici e sfogliate. Presentazione secondo disponibilità."
+   },
+   "m": [
+    "calentito",
     "llevar",
     "dulce"
    ],
-   "b": [
-    "sintacc"
-   ],
-   "img": null
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "STC002",
-   "cat": "STC",
-   "orden": 2,
+   "id": "DEL005",
+   "cat": "DEL",
+   "orden": 27,
    "dest": false,
    "n": {
-    "es": "Pasta frola sin TACC",
-    "en": "Gluten-Free Quince Tart",
-    "pt": "Pasta frola sem glúten"
+    "es": "Mini budines",
+    "en": "Mini Loaf Cakes",
+    "pt": "Mini bolos tipo inglês",
+    "fr": "Mini cakes",
+    "it": "Mini plumcake"
    },
    "d": {
-    "es": "Tarta clásica rellena con dulce de membrillo. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "A classic tart filled with quince paste. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Torta clássica recheada com doce de marmelo. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
-   },
-   "m": [
-    "fresco",
-    "llevar",
-    "dulce"
-   ],
-   "b": [
-    "sintacc"
-   ],
-   "img": null
-  },
-  {
-   "id": "STC003",
-   "cat": "STC",
-   "orden": 3,
-   "dest": false,
-   "n": {
-    "es": "Tarta de coco y dulce de leche sin TACC",
-    "en": "Gluten-Free Coconut & Dulce de Leche Tart",
-    "pt": "Torta de coco e doce de leite sem glúten"
-   },
-   "d": {
-    "es": "Base de masa dulce, rellena con dulce de leche y cubierta de coco. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "A sweet pastry base filled with dulce de leche and topped with coconut. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Base de massa doce, recheada com doce de leite e coberta com coco. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
-   },
-   "m": [
-    "fresco",
-    "llevar",
-    "dulce"
-   ],
-   "b": [
-    "sintacc"
-   ],
-   "img": null
-  },
-  {
-   "id": "STC004",
-   "cat": "STC",
-   "orden": 4,
-   "dest": false,
-   "n": {
-    "es": "Alfacookie sin TACC",
-    "en": "Gluten-Free Alfacookie",
-    "pt": "Alfacookie sem glúten"
-   },
-   "d": {
-    "es": "Dos cookies rellenas con dulce de leche. Producto tercerizado. Consultar disponibilidad y condiciones de manipulación antes de realizar el pedido.",
-    "en": "Two cookies filled with dulce de leche. Supplied by a third party. Please ask about availability and handling conditions before ordering.",
-    "pt": "Duas cookies recheadas com doce de leite. Produto terceirizado. Consulte a disponibilidade e as condições de manipulação antes de fazer o pedido."
+    "es": "Selección de mini budines en los sabores del día.",
+    "en": "A selection of mini loaf cakes in the day’s flavours.",
+    "pt": "Seleção de minibolos nos sabores do dia.",
+    "fr": "Sélection de mini-cakes aux parfums du jour.",
+    "it": "Selezione di mini plumcake nei gusti del giorno."
    },
    "m": [
     "llevar",
     "dulce"
    ],
-   "b": [
-    "sintacc"
-   ],
-   "img": null
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "TYT001",
-   "cat": "TYT",
-   "orden": 1,
-   "dest": true,
-   "n": {
-    "es": "Torta Amelí",
-    "en": "Amelí Signature Cake",
-    "pt": "Bolo assinatura Amelí"
-   },
-   "d": {
-    "es": "Bizcochuelo de vainilla relleno con ganache de chocolate blanco, limón, nueces y leche condensada.",
-    "en": "Vanilla sponge layered with white chocolate ganache, lemon, walnuts and condensed milk.",
-    "pt": "Pão de ló de baunilha recheado com ganache de chocolate branco, limão, nozes e leite condensado."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [
-    "fav"
-   ],
-   "img": null
-  },
-  {
-   "id": "TYT002",
-   "cat": "TYT",
-   "orden": 2,
+   "id": "DEL006",
+   "cat": "DEL",
+   "orden": 28,
    "dest": false,
    "n": {
-    "es": "Marquise",
-    "en": "Chocolate Marquise Cake",
-    "pt": "Bolo marquise de chocolate"
+    "es": "Raspaditas mendocinas",
+    "en": "Mendoza Raspaditas",
+    "pt": "Raspaditas mendocinas",
+    "fr": "Raspaditas de Mendoza",
+    "it": "Raspaditas mendocine"
    },
    "d": {
-    "es": "Bizcochuelo de chocolate cubierto con dulce de leche, crema chantilly y frutos rojos.",
-    "en": "Chocolate sponge topped with dulce de leche, whipped cream and red berries.",
-    "pt": "Pão de ló de chocolate coberto com doce de leite, chantilly e frutas vermelhas."
+    "es": "Tortitas saladas mendocinas, de textura firme.",
+    "en": "Traditional savoury Mendoza flatbreads with a firm texture.",
+    "pt": "Tortinhas salgadas tradicionais de Mendoza, de textura firme.",
+    "fr": "Petites galettes salées de Mendoza, à la texture ferme.",
+    "it": "Focaccine salate tradizionali di Mendoza, dalla consistenza compatta."
    },
    "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [
-    "reco"
-   ],
-   "img": null
-  },
-  {
-   "id": "TYT003",
-   "cat": "TYT",
-   "orden": 3,
-   "dest": false,
-   "n": {
-    "es": "Cheesecake de frutos rojos",
-    "en": "Red Berry Cheesecake",
-    "pt": "Cheesecake de frutas vermelhas"
-   },
-   "d": {
-    "es": "Base de galletas crocantes, crema suave de queso y cobertura de salsa de frutos rojos.",
-    "en": "A crisp biscuit base with smooth cream cheese filling and red berry sauce.",
-    "pt": "Base crocante de biscoitos, creme suave de queijo e cobertura de calda de frutas vermelhas."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
+    "llevar"
    ],
    "b": [],
-   "img": null
-  },
-  {
-   "id": "TYT004",
-   "cat": "TYT",
-   "orden": 4,
-   "dest": false,
-   "n": {
-    "es": "Red velvet",
-    "en": "Red Velvet Cake",
-    "pt": "Bolo red velvet"
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
    },
-   "d": {
-    "es": "Torta suave de cacao rojo, rellena y cubierta con crema de queso y frutillas.",
-    "en": "A soft red cocoa cake filled and covered with cream cheese frosting and strawberries.",
-    "pt": "Bolo macio de cacau vermelho, recheado e coberto com creme de queijo e morangos."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "TYT005",
-   "cat": "TYT",
-   "orden": 5,
-   "dest": false,
-   "n": {
-    "es": "Key lime pie",
-    "en": "Key Lime Pie",
-    "pt": "Key lime pie"
-   },
-   "d": {
-    "es": "Tarta de lima con base crocante y crema suave.",
-    "en": "Lime tart with a crisp base and a smooth filling.",
-    "pt": "Torta de lima com base crocante e recheio cremoso."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "TYT006",
-   "cat": "TYT",
-   "orden": 6,
-   "dest": false,
-   "n": {
-    "es": "Sablée de almendras",
-    "en": "Almond Sablée Cake",
-    "pt": "Sablée de amêndoas"
-   },
-   "d": {
-    "es": "Mini torta de dos capas crocantes de almendras tostadas, con dulce de leche, crema y frutillas.",
-    "en": "A mini cake with two crisp toasted-almond layers, dulce de leche, cream and strawberries.",
-    "pt": "Mini bolo com duas camadas crocantes de amêndoas tostadas, doce de leite, creme e morangos."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [],
-   "img": null
-  },
-  {
-   "id": "TYT007",
-   "cat": "TYT",
-   "orden": 7,
-   "dest": true,
-   "n": {
-    "es": "Franuí del bosque",
-    "en": "Forest Franuí Brownie",
-    "pt": "Brownie franuí do bosque"
-   },
-   "d": {
-    "es": "Brownie con dulce de leche, ganache de chocolate blanco y negro, dulce de frambuesa y frambuesas caseras bañadas en chocolate.",
-    "en": "Brownie with dulce de leche, white and dark chocolate ganache, raspberry preserve and house-made chocolate-coated raspberries.",
-    "pt": "Brownie com doce de leite, ganache de chocolate branco e amargo, doce de framboesa e framboesas artesanais cobertas com chocolate."
-   },
-   "m": [
-    "fresco",
-    "compartir",
-    "dulce"
-   ],
-   "b": [
-    "fav"
-   ],
-   "img": null
+   "tag": "Especialidad regional"
   },
   {
    "id": "SAT001",
    "cat": "SAT",
-   "orden": 1,
+   "orden": 36,
    "dest": false,
    "n": {
     "es": "Bagel",
     "en": "Breakfast Bagel",
-    "pt": "Bagel de café da manhã"
+    "pt": "Bagel de café da manhã",
+    "fr": "Bagel gourmand",
+    "it": "Bagel farcito"
    },
    "d": {
     "es": "Bagel con tomate, panceta, crema de palta, queso y huevo.",
-    "en": "Bagel filled with tomato, bacon, avocado cream, cheese and egg.",
-    "pt": "Bagel recheado com tomate, bacon, creme de abacate, queijo e ovo."
+    "en": "Bagel with tomato, bacon, avocado cream, cheese and egg.",
+    "pt": "Bagel com tomate, bacon, creme de abacate, queijo e ovo.",
+    "fr": "Bagel, tomate, bacon, crème d’avocat, fromage et œuf.",
+    "it": "Bagel con pomodoro, bacon, crema di avocado, formaggio e uovo."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": false,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": true,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "SAT002",
    "cat": "SAT",
-   "orden": 2,
+   "orden": 38,
    "dest": false,
    "n": {
     "es": "Tostado de jamón y queso",
     "en": "Ham & Cheese Toastie",
-    "pt": "Tostado de presunto e queijo"
+    "pt": "Tostado de presunto e queijo",
+    "fr": "Croque jambon-fromage",
+    "it": "Toast prosciutto e formaggio"
    },
    "d": {
-    "es": "Pan de campo tostado con jamón cocido y queso.",
-    "en": "Toasted country-style bread with cooked ham and cheese.",
-    "pt": "Pão rústico tostado com presunto cozido e queijo."
+    "es": "Pan de campo tostado, jamón cocido y queso.",
+    "en": "Toasted country bread with cooked ham and cheese.",
+    "pt": "Pão de campo tostado, presunto cozido e queijo.",
+    "fr": "Pain de campagne toasté, jambon blanc et fromage.",
+    "it": "Pane casereccio tostato, prosciutto cotto e formaggio."
    },
    "m": [
     "calentito"
    ],
    "b": [],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": false,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
    "id": "SAT003",
    "cat": "SAT",
-   "orden": 3,
+   "orden": 39,
    "dest": true,
    "n": {
     "es": "Tostón Amelí",
     "en": "Amelí Open Toast",
-    "pt": "Tostada aberta Amelí"
+    "pt": "Tostada aberta Amelí",
+    "fr": "Tartine Amelí",
+    "it": "Bruschetta Amelí"
    },
    "d": {
-    "es": "Pan de campo con crema de queso azul, peras frescas caramelizadas, nueces y un toque de miel.",
-    "en": "Country-style bread topped with blue cheese cream, caramelised fresh pears, walnuts and a touch of honey.",
-    "pt": "Pão rústico com creme de queijo azul, peras frescas caramelizadas, nozes e um toque de mel."
+    "es": "Pan de campo, crema de queso azul, peras caramelizadas, nueces y miel.",
+    "en": "Country bread, blue cheese cream, caramelised pears, walnuts and honey.",
+    "pt": "Pão de campo, creme de queijo azul, peras caramelizadas, nozes e mel.",
+    "fr": "Pain de campagne, crème de bleu, poires caramélisées, noix et miel.",
+    "it": "Pane casereccio, crema di formaggio erborinato, pere caramellate, noci e miele."
    },
    "m": [
     "calentito"
@@ -1285,22 +1824,44 @@
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Firma Amelí"
   },
   {
    "id": "SAT004",
    "cat": "SAT",
-   "orden": 4,
+   "orden": 40,
    "dest": false,
    "n": {
     "es": "Tostón de palta y huevo",
     "en": "Avocado & Egg Open Toast",
-    "pt": "Tostada aberta de abacate e ovo"
+    "pt": "Tostada aberta de abacate e ovo",
+    "fr": "Tartine avocat & œuf",
+    "it": "Bruschetta avocado & uovo"
    },
    "d": {
-    "es": "Pan de campo tostado con queso crema, queso danbo, palta, huevo y mix de semillas.",
-    "en": "Toasted country-style bread with cream cheese, Danbo cheese, avocado, egg and mixed seeds.",
-    "pt": "Pão rústico tostado com cream cheese, queijo danbo, abacate, ovo e mix de sementes."
+    "es": "Pan de campo tostado, queso crema, queso danbo, palta, huevo y semillas.",
+    "en": "Toasted country bread, cream cheese, Danbo cheese, avocado, egg and seeds.",
+    "pt": "Pão de campo tostado, cream cheese, queijo danbo, abacate, ovo e sementes.",
+    "fr": "Pain de campagne toasté, fromage frais, danbo, avocat, œuf et graines.",
+    "it": "Pane casereccio tostato, formaggio cremoso, danbo, avocado, uovo e semi."
    },
    "m": [
     "calentito"
@@ -1308,38 +1869,840 @@
    "b": [
     "reco"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   },
   {
-   "id": "SAT005",
-   "cat": "SAT",
-   "orden": 5,
-   "dest": true,
+   "id": "TYT003",
+   "cat": "TYT",
+   "orden": 49,
+   "dest": false,
    "n": {
-    "es": "Pistachero",
-    "en": "Pistachio Mortadella Sandwich",
-    "pt": "Sanduíche de mortadela e pistache"
+    "es": "Cheesecake de frutos rojos",
+    "en": "Red Berry Cheesecake",
+    "pt": "Cheesecake de frutas vermelhas",
+    "fr": "Cheesecake aux fruits rouges",
+    "it": "Cheesecake ai frutti rossi"
    },
    "d": {
-    "es": "Sándwich de mortadela, queso, manteca especiada, pistacho y queso gratinado.",
-    "en": "A sandwich with mortadella, cheese, spiced butter, pistachios and melted cheese.",
-    "pt": "Sanduíche com mortadela, queijo, manteiga temperada, pistache e queijo gratinado."
+    "es": "Base crocante de galletas, crema de queso y frutos rojos.",
+    "en": "A crisp biscuit base, cream cheese filling and red berries.",
+    "pt": "Base crocante de biscoitos, creme de queijo e frutas vermelhas.",
+    "fr": "Base biscuitée croustillante, crème au fromage et fruits rouges.",
+    "it": "Base croccante di biscotti, crema al formaggio e frutti rossi."
    },
    "m": [
-    "calentito"
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TYT007",
+   "cat": "TYT",
+   "orden": 50,
+   "dest": true,
+   "n": {
+    "es": "Franuí del bosque",
+    "en": "Forest Franuí Brownie",
+    "pt": "Brownie franuí do bosque",
+    "fr": "Brownie franuí des bois",
+    "it": "Brownie franuí del bosco"
+   },
+   "d": {
+    "es": "Brownie con dulce de leche, ganache de chocolate blanco y negro, dulce de frambuesa y frambuesas bañadas en chocolate.",
+    "en": "Brownie with dulce de leche, white and dark chocolate ganache, raspberry preserve and chocolate-coated raspberries.",
+    "pt": "Brownie com doce de leite, ganache de chocolate branco e amargo, doce de framboesa e framboesas cobertas com chocolate.",
+    "fr": "Brownie, dulce de leche, ganache aux chocolats blanc et noir, confit de framboise et framboises enrobées de chocolat.",
+    "it": "Brownie con dulce de leche, ganache al cioccolato bianco e fondente, composta di lamponi e lamponi ricoperti di cioccolato."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
    ],
    "b": [
     "fav"
    ],
-   "img": null
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   },
+   "tag": "Creación de la casa"
+  },
+  {
+   "id": "TYT005",
+   "cat": "TYT",
+   "orden": 51,
+   "dest": false,
+   "n": {
+    "es": "Key lime pie",
+    "en": "Key Lime Pie",
+    "pt": "Key lime pie",
+    "fr": "Tarte au citron vert",
+    "it": "Key lime pie"
+   },
+   "d": {
+    "es": "Base crocante, lima y crema suave.",
+    "en": "A crisp base with lime and a smooth cream filling.",
+    "pt": "Base crocante, limão e creme suave.",
+    "fr": "Base croustillante, citron vert et crème onctueuse.",
+    "it": "Base croccante, lime e crema vellutata."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TYT002",
+   "cat": "TYT",
+   "orden": 52,
+   "dest": false,
+   "n": {
+    "es": "Marquise",
+    "en": "Chocolate Marquise Cake",
+    "pt": "Bolo marquise de chocolate",
+    "fr": "Gâteau marquise au chocolat",
+    "it": "Torta marquise al cioccolato"
+   },
+   "d": {
+    "es": "Bizcochuelo de chocolate, dulce de leche, crema chantilly y frutos rojos.",
+    "en": "Chocolate sponge, dulce de leche, Chantilly cream and red berries.",
+    "pt": "Pão de ló de chocolate, doce de leite, chantilly e frutas vermelhas.",
+    "fr": "Génoise au chocolat, dulce de leche, crème Chantilly et fruits rouges.",
+    "it": "Pan di Spagna al cioccolato, dulce de leche, panna Chantilly e frutti rossi."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [
+    "reco"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
+  },
+  {
+   "id": "TYT004",
+   "cat": "TYT",
+   "orden": 53,
+   "dest": false,
+   "n": {
+    "es": "Red velvet",
+    "en": "Red Velvet Cake",
+    "pt": "Bolo red velvet",
+    "fr": "Gâteau red velvet",
+    "it": "Torta red velvet"
+   },
+   "d": {
+    "es": "Bizcochuelo de cacao, crema de queso y frutillas.",
+    "en": "Cocoa sponge, cream cheese frosting and strawberries.",
+    "pt": "Pão de ló de cacau, creme de queijo e morangos.",
+    "fr": "Génoise au cacao, crème au fromage et fraises.",
+    "it": "Pan di Spagna al cacao, crema al formaggio e fragole."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TYT006",
+   "cat": "TYT",
+   "orden": 54,
+   "dest": false,
+   "n": {
+    "es": "Sablée de almendras",
+    "en": "Almond Sablée Cake",
+    "pt": "Sablée de amêndoas",
+    "fr": "Sablé aux amandes",
+    "it": "Sablé alle mandorle"
+   },
+   "d": {
+    "es": "Dos capas crocantes de almendras tostadas, dulce de leche, crema y frutillas.",
+    "en": "Two crisp layers of toasted almonds, dulce de leche, cream and strawberries.",
+    "pt": "Duas camadas crocantes de amêndoas tostadas, doce de leite, creme e morangos.",
+    "fr": "Deux couches croustillantes aux amandes grillées, dulce de leche, crème et fraises.",
+    "it": "Due strati croccanti alle mandorle tostate, dulce de leche, crema e fragole."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "TYT001",
+   "cat": "TYT",
+   "orden": 55,
+   "dest": true,
+   "n": {
+    "es": "Torta Amelí",
+    "en": "Amelí Signature Cake",
+    "pt": "Bolo assinatura Amelí",
+    "fr": "Gâteau signature Amelí",
+    "it": "Torta firma Amelí"
+   },
+   "d": {
+    "es": "Bizcochuelo de vainilla, ganache de chocolate blanco, limón, nueces y leche condensada.",
+    "en": "Vanilla sponge, white chocolate ganache, lemon, walnuts and condensed milk.",
+    "pt": "Pão de ló de baunilha, ganache de chocolate branco, limão, nozes e leite condensado.",
+    "fr": "Génoise à la vanille, ganache au chocolat blanc, citron, noix et lait concentré.",
+    "it": "Pan di Spagna alla vaniglia, ganache al cioccolato bianco, limone, noci e latte condensato."
+   },
+   "m": [
+    "fresco",
+    "compartir",
+    "dulce"
+   ],
+   "b": [
+    "fav"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": false,
+    "lac": false,
+    "glu": true,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   },
+   "tag": "Producto insignia"
+  },
+  {
+   "id": "STC004",
+   "cat": "STC",
+   "orden": 41,
+   "dest": false,
+   "n": {
+    "es": "Alfacookie sin TACC",
+    "en": "Gluten-Free Alfacookie",
+    "pt": "Alfacookie sem glúten",
+    "fr": "Alfacookie sans gluten",
+    "it": "Alfacookie senza glutine"
+   },
+   "d": {
+    "es": "Dos cookies rellenas de dulce de leche. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Two cookies filled with dulce de leche. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Dois cookies recheados com doce de leite. Produto terceirizado; consulte disponibilidade e condições de manipulação.",
+    "fr": "Deux cookies garnis de dulce de leche. Produit fourni par un tiers ; se renseigner sur la disponibilité et les conditions de manipulation.",
+    "it": "Due cookie farciti con dulce de leche. Prodotto di terzi; chiedere disponibilità e condizioni di manipolazione."
+   },
+   "m": [
+    "llevar",
+    "dulce"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "STC002",
+   "cat": "STC",
+   "orden": 42,
+   "dest": false,
+   "n": {
+    "es": "Pasta frola sin TACC",
+    "en": "Gluten-Free Quince Tart",
+    "pt": "Pasta frola sem glúten",
+    "fr": "Tarte à la pâte de coing sans gluten",
+    "it": "Crostata di mele cotogne senza glutine"
+   },
+   "d": {
+    "es": "Masa dulce con membrillo. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Sweet pastry with quince paste. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Massa doce com marmelada. Produto terceirizado; consulte disponibilidade e condições de manipulação.",
+    "fr": "Pâte sucrée et pâte de coing. Produit fourni par un tiers ; se renseigner sur la disponibilité et les conditions de manipulation.",
+    "it": "Pasta dolce con cotognata. Prodotto di terzi; chiedere disponibilità e condizioni di manipolazione."
+   },
+   "m": [
+    "fresco",
+    "llevar",
+    "dulce"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "STC001",
+   "cat": "STC",
+   "orden": 43,
+   "dest": false,
+   "n": {
+    "es": "Postres sin TACC",
+    "en": "Gluten-Free Desserts",
+    "pt": "Sobremesas sem glúten",
+    "fr": "Desserts sans gluten",
+    "it": "Dolci senza glutine"
+   },
+   "d": {
+    "es": "Selección según disponibilidad: cheesecake, lemon pie o chocotorta. Producto tercerizado; consultar condiciones de manipulación.",
+    "en": "A rotating selection of cheesecake, lemon pie or chocotorta. Sourced from a third party; please ask about handling conditions.",
+    "pt": "Seleção conforme disponibilidade: cheesecake, lemon pie ou chocotorta. Produto terceirizado; consulte as condições de manipulação.",
+    "fr": "Sélection selon disponibilité : cheesecake, tarte au citron ou chocotorta. Produit fourni par un tiers ; se renseigner sur les conditions de manipulation.",
+    "it": "Selezione secondo disponibilità: cheesecake, lemon pie o chocotorta. Prodotto di terzi; chiedere le condizioni di manipolazione."
+   },
+   "m": [
+    "fresco",
+    "llevar",
+    "dulce"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
+  },
+  {
+   "id": "STC003",
+   "cat": "STC",
+   "orden": 44,
+   "dest": false,
+   "n": {
+    "es": "Tarta de coco y dulce de leche sin TACC",
+    "en": "Gluten-Free Coconut & Dulce de Leche Tart",
+    "pt": "Torta de coco e doce de leite sem glúten",
+    "fr": "Tarte coco et dulce de leche sans gluten",
+    "it": "Torta al cocco e dulce de leche senza glutine"
+   },
+   "d": {
+    "es": "Masa dulce, dulce de leche y coco. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
+    "en": "Sweet pastry, dulce de leche and coconut. Sourced from a third party; please ask about availability and handling conditions.",
+    "pt": "Massa doce, doce de leite e coco. Produto terceirizado; consulte disponibilidade e condições de manipulação.",
+    "fr": "Pâte sucrée, dulce de leche et noix de coco. Produit fourni par un tiers ; se renseigner sur la disponibilité et les conditions de manipulation.",
+    "it": "Pasta dolce, dulce de leche e cocco. Prodotto di terzi; chiedere disponibilità e condizioni di manipolazione."
+   },
+   "m": [
+    "fresco",
+    "llevar",
+    "dulce"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": false,
+    "tacc": true,
+    "lac": false,
+    "glu": false,
+    "lech": false,
+    "huev": true,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": false
+   }
   }
  ],
- "precios": {},
+ "precios": {
+  "BYJ001": {
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
+  },
+  "BYJ002": {
+   "ars": "Vaso $ 7.500 · Jarra $ 16.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 26"
+  },
+  "BYJ005": {
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
+  },
+  "BYJ003": {
+   "ars": "Vaso $ 6.000 · Jarra $ 13.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
+  },
+  "BYJ004": {
+   "ars": "Vaso $ 7.000 · Jarra $ 14.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 24"
+  },
+  "BYJ006": {
+   "ars": "Vaso $ 7.500 · Jarra $ 16.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 26"
+  },
+  "BLE001": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "BLE002": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "BLE003": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "BLE004": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "CCL001": {
+   "ars": "Chico $ 4.000 · Grande $ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 14"
+  },
+  "CCL003": {
+   "ars": "Chico $ 4.700 · Grande $ 6.200",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
+  },
+  "CCL006": {
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
+  },
+  "CCL002": {
+   "ars": "Chico $ 4.700 · Grande $ 6.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
+  },
+  "CCL004": {
+   "ars": "Chico $ 4.200 · Grande $ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 15"
+  },
+  "CCL005": {
+   "ars": "$ 7.700",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 27"
+  },
+  "CCL007": {
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
+  },
+  "CFR001": {
+   "ars": "$ 4.500",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 16"
+  },
+  "CFR003": {
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
+  },
+  "CFR002": {
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
+  },
+  "DEL002": {
+   "ars": "$ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "DEL001": {
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
+  },
+  "DEL003": {
+   "ars": "$ 6.000",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 21"
+  },
+  "DEL004": {
+   "ars": "$ 1.200",
+   "usd": "≈ USD 1",
+   "eur": "≈ EUR 1",
+   "brl": "≈ R$ 4"
+  },
+  "DEL005": {
+   "ars": "$ 4.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 14"
+  },
+  "DEL006": {
+   "ars": "$ 8.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 5",
+   "brl": "≈ R$ 28"
+  },
+  "DYM001": {
+   "ars": "$ 17.000",
+   "usd": "≈ USD 11",
+   "eur": "≈ EUR 10",
+   "brl": "≈ R$ 59"
+  },
+  "DYM002": {
+   "ars": "$ 14.000",
+   "usd": "≈ USD 9",
+   "eur": "≈ EUR 8",
+   "brl": "≈ R$ 48"
+  },
+  "DYM003": {
+   "ars": "$ 10.100",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 35"
+  },
+  "DYM004": {
+   "ars": "$ 17.000",
+   "usd": "≈ USD 11",
+   "eur": "≈ EUR 10",
+   "brl": "≈ R$ 59"
+  },
+  "ESP002": {
+   "ars": "$ 5.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 19"
+  },
+  "ESP001": {
+   "ars": "$ 6.500",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
+  },
+  "SAT001": {
+   "ars": "$ 13.000",
+   "usd": "≈ USD 9",
+   "eur": "≈ EUR 8",
+   "brl": "≈ R$ 45"
+  },
+  "SAT002": {
+   "ars": "$ 11.000",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 38"
+  },
+  "SAT003": {
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
+  },
+  "SAT004": {
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
+  },
+  "STC004": {
+   "ars": "$ 3.000",
+   "usd": "≈ USD 2",
+   "eur": "≈ EUR 2",
+   "brl": "≈ R$ 10"
+  },
+  "STC002": {
+   "ars": "$ 6.700",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 23"
+  },
+  "STC001": {
+   "ars": "$ 6.300",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 22"
+  },
+  "STC003": {
+   "ars": "$ 7.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 24"
+  },
+  "TEH001": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "TIS001": {
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "TIS002": {
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "TIS003": {
+   "ars": "Chico $ 5.000 · Grande $ 5.800",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "TYT003": {
+   "ars": "$ 9.300",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 5",
+   "brl": "≈ R$ 32"
+  },
+  "TYT007": {
+   "ars": "$ 12.000",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 42"
+  },
+  "TYT005": {
+   "ars": "$ 12.500",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 43"
+  },
+  "TYT002": {
+   "ars": "$ 9.500",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 33"
+  },
+  "TYT004": {
+   "ars": "$ 11.500",
+   "usd": "≈ USD 8",
+   "eur": "≈ EUR 7",
+   "brl": "≈ R$ 40"
+  },
+  "TYT006": {
+   "ars": "$ 11.000",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 38"
+  },
+  "TYT001": {
+   "ars": "$ 9.500",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 33"
+  }
+ },
  "config": {
   "moneda": "ARS",
   "whatsapp": "5492604106653",
   "instagram": "ameli.casadete",
   "direccion": "Malargüe, Mendoza, Argentina",
-  "url_base": null
+  "url_base": "https://ameli-casa-de-te-brunch.github.io/",
+  "tripadvisor": "https://www.tripadvisor.com.ar/UserReviewEdit-d34258612?m=68676",
+  "google_resenas": "https://g.page/r/CQ7xLLR2pchDEBM/review"
  }
 }

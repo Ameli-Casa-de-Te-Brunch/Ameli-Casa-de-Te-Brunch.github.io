@@ -1,10 +1,12 @@
 @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 600;font-display:swap;src:url('../fonts/cormorant-garamond.woff2') format('woff2')}
 @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 500;font-display:swap;src:url('../fonts/cormorant-garamond-italic.woff2') format('woff2')}
 @font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/montserrat-light.woff2') format('woff2')}
 :root{
-  --verde:#536039; --verde-osc:#3E4829; --verde-suave:#8B966E;
-  --crema:#F2EAE1; --blanco:#FFFDF7; --marron:#8B2F2F;
-  --rosa:#E7D2CE; --manteca:#E5DACC; --tinta:#000000;
+  --verde:#5B6E4A; --verde-osc:#1E2A1B; --verde-suave:#8B966E; --footer-bg:var(--verde-osc);
+  --crema:#F1E6D0; --blanco:#FFFDF7; --marron:#8B2F2F;
+  --rosa:#E7D2CE; --manteca:#F0E8DE; --tinta:#000000;
+  --dorado:#C4A668; --tostado:#9C7B52;
   --texto-sec:#5e5849;
   --marron-texto:#8B2F2F;
   --sombra:0 6px 24px rgba(83,96,57,.10);
@@ -15,12 +17,23 @@
   --glass-bg:rgba(255,253,247,.72);
   --glass-border:rgba(255,253,247,.6);
   --stc-bg:#EFE7DA; --stc-border:#b3a48b; --stc-color:#6b6252;
+  --alerg-pos-bg:#E3EBD9; --alerg-pos-color:#1E2A1B;
+  --alerg-warn-bg:#F5E6D3; --alerg-warn-color:#8a5a1f;
   --scrim:linear-gradient(180deg, rgba(62,72,41,0) 0%, rgba(62,72,41,.38) 45%, rgba(35,41,24,.92) 100%);
 }
 @media (prefers-color-scheme: dark){
   :root{
     --crema:#1E2117; --blanco:#2A2E20; --tinta:#F2EAE1;
     --texto-sec:#B7AF9C;
+    /* --verde-osc claro es casi negro (tinta del logo) -- en modo oscuro
+       necesita su propio tono, mas claro, o quedaria texto oscuro sobre
+       fondo oscuro (bug real que ya existia antes de este cambio: el
+       verde-osc original tampoco tenia variante oscura). */
+    --verde-osc:#94AC7E;
+    /* footer usa --verde-osc como FONDO (no como texto), asi que no puede
+       heredar el valor claro de arriba -- necesita su propio tono oscuro,
+       si no el texto blanco del footer queda casi ilegible encima. */
+    --footer-bg:#141A10;
     --marron-texto:#D98B7B;
     --sombra:0 6px 24px rgba(0,0,0,.4);
     --sombra-nav:0 6px 16px rgba(0,0,0,.45);
@@ -28,6 +41,8 @@
     --glass-bg:rgba(30,33,23,.6);
     --glass-border:rgba(242,234,225,.14);
     --stc-bg:#34382A; --stc-border:#5c5642; --stc-color:#C9BB98;
+    --alerg-pos-bg:#2E3524; --alerg-pos-color:#B7C99A;
+    --alerg-warn-bg:#3A2E1E; --alerg-warn-color:#E0B27A;
     --rosa:#9c5f5b;
   }
 }
@@ -36,12 +51,9 @@ html{scroll-behavior:smooth}
 body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
 ::selection{background:var(--rosa)}
 .hero{background:var(--verde);color:var(--sobre-verde);padding:56px 24px 84px;text-align:center;position:relative;overflow:hidden}
-.hero svg.botanica{position:absolute;opacity:.14;pointer-events:none}
-.hero .b1{top:-30px;left:-40px;width:190px;transform:rotate(15deg)}
-.hero .b2{bottom:-20px;right:-45px;width:220px;transform:rotate(190deg)}
-.hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:500;letter-spacing:.04em;line-height:1}
-.hero .marca em{font-style:italic}
-.hero .sub{margin-top:10px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--manteca);font-weight:500}
+.hero-wreath{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;max-width:92%;pointer-events:none;z-index:-1}
+.hero .marca{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:600;letter-spacing:.015em;text-transform:uppercase;line-height:1}
+.hero .sub{margin-top:10px;font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.075em;text-transform:uppercase;color:var(--manteca);font-weight:300}
 .hero .lugar{margin-top:22px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,253,247,.85)}
 .hero .hoja-div{width:52px;height:1px;background:var(--rosa);margin:18px auto 0;position:relative}
 .hero .hoja-div::after{content:'❧';position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);background:var(--verde);padding:0 8px;color:var(--rosa);font-size:13px}
@@ -56,7 +68,7 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .estado.cerrado .punto{background:#D98B7B;box-shadow:0 0 0 3px rgba(217,139,123,.25)}
 .estado .punto{animation:latir-punto 2.4s ease-in-out infinite}
 @keyframes latir-punto{0%,100%{opacity:1}50%{opacity:.45}}
-.langs{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
+.langs{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:4px;width:calc(100% - 32px);z-index:6}
 .langs button{display:flex;align-items:center;gap:4px;background:rgba(255,253,247,.12);border:1px solid rgba(255,253,247,.3);color:var(--sobre-verde);font-family:'Karla',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;padding:5px 9px 5px 6px;border-radius:999px;cursor:pointer;transition:all .2s}
 .langs button.activo{background:var(--sobre-verde);color:var(--verde);border-color:var(--sobre-verde)}
 .langs button:active{transform:scale(.94)}
@@ -67,9 +79,19 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .momentos p.hint{text-align:center;font-size:12px;color:var(--texto-sec);margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .chip{border:1.5px solid var(--verde-suave);background:transparent;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
-.chip .em{margin-right:5px}
 .chip.activo{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde);transform:scale(1.04)}
 .chip:active{transform:scale(.95)}
+/* clases fijas para reemplazar estilos inline dinamicos (la CSP no permite
+   style="" generado por JS sin 'unsafe-inline', asi que estos valores -que
+   son un conjunto chico y conocido de antemano- se resuelven con clases) */
+.grad-0{background:linear-gradient(135deg,#536039,#8B966E)}
+.grad-1{background:linear-gradient(135deg,#8B2F2F,#A85450)}
+.grad-2{background:linear-gradient(135deg,#3E4829,#536039)}
+.foto img,.sheet-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.stagger-0{transition-delay:0ms}.stagger-1{transition-delay:40ms}.stagger-2{transition-delay:80ms}
+.stagger-3{transition-delay:120ms}.stagger-4{transition-delay:160ms}.stagger-5{transition-delay:200ms}
+.stagger-6{transition-delay:240ms}.stagger-7{transition-delay:280ms}.stagger-8{transition-delay:320ms}
+.stagger-9{transition-delay:360ms}
 .limpiar{display:none;margin:12px auto 0;background:none;border:none;color:var(--marron-texto);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .limpiar.visible{display:block}
 .navcat{position:sticky;top:0;z-index:20;background:var(--navcat-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0 12px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(83,96,57,.12);margin-top:26px;box-shadow:none;transition:box-shadow .25s ease}
@@ -127,23 +149,18 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .prod .fila{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .prod h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;line-height:1.15;color:var(--tinta)}
 .prod .precio{font-weight:700;font-size:15px;color:var(--verde-osc);white-space:nowrap}
+.prod .precio small{font-weight:500;font-size:11px;color:var(--texto-sec)}
 .prod p{font-size:13px;color:var(--texto-sec);margin-top:5px;line-height:1.45}
 .prod .etiquetas{margin-bottom:6px;display:flex;gap:6px;flex-wrap:wrap}
 .prod .etiquetas .badge{margin-bottom:0}
 .prod.destacada .prod-inner{border:1.5px solid var(--rosa);background:var(--blanco)}
-.adic-banda{margin:30px 20px 0;background:var(--verde);border-radius:var(--radio);padding:20px;color:var(--sobre-verde);position:relative;overflow:hidden}
-.adic-banda svg{position:absolute;right:-30px;bottom:-30px;width:150px;opacity:.15;transform:rotate(200deg)}
-.adic-banda .eyebrow{padding:0;color:var(--rosa)}
-.adic-banda h3{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:500;margin-top:2px}
-.adic-banda ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:10px}
-.adic-banda li b{font-weight:600;font-family:'Cormorant Garamond',serif;font-size:17.5px}
-.adic-banda li span.det{display:block;font-size:12.5px;color:var(--manteca);font-weight:400;margin-top:2px}
-footer{margin-top:44px;background:var(--verde-osc);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
+footer{margin-top:44px;background:var(--footer-bg);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
-footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500}
+footer .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;letter-spacing:.015em;text-transform:uppercase}
 footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;margin-top:6px;color:var(--rosa)}
 .redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
 .redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600;transition:transform .12s ease}
+.redes a svg{color:var(--dorado);flex:0 0 auto}
 .redes a:active{transform:scale(.96)}
 footer .datos{margin-top:22px;font-size:12.5px;color:rgba(255,253,247,.7);line-height:1.7}
 .wsp{position:fixed;bottom:18px;right:16px;z-index:40;background:#3BA55D;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 8px 22px rgba(0,0,0,.22);transition:transform .2s}
@@ -171,10 +188,95 @@ section.cat.sin-resultados .vacio{display:block}
 .sheet-etiquetas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .sheet-panel h3{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:var(--tinta)}
 .sheet-panel p{margin-top:8px;font-size:14.5px;line-height:1.6;color:var(--texto-sec)}
+.sheet-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15.5px;color:var(--verde-osc);margin-top:2px!important}
+.sheet-alergenos{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.sheet-alergenos[hidden]{display:none}
+.alerg-tag{display:inline-block;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px}
+.alerg-tag.positivo{background:var(--alerg-pos-bg);color:var(--alerg-pos-color)}
+.alerg-tag.advertencia{background:var(--alerg-warn-bg);color:var(--alerg-warn-color)}
+.sheet-leche{font-size:13px;color:var(--texto-sec);margin-top:10px;font-style:italic}
 .sheet-acciones{display:flex;gap:10px;margin-top:20px;align-items:stretch}
 .btn-pedir{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#3BA55D;color:#fff;text-decoration:none;padding:0 16px;border-radius:999px;font-weight:700;font-size:14px;transition:transform .12s ease}
+.btn-pedir[hidden]{display:none}
 .btn-pedir:active{transform:scale(.96)}
 .btn-pedir svg{width:17px;height:17px}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
+/* pasos de arrastre del panel de detalle (drag-to-dismiss), cuantizados */
+.drag-0{transform:translateY(0px)}
+.drag-8{transform:translateY(8px)}
+.drag-16{transform:translateY(16px)}
+.drag-24{transform:translateY(24px)}
+.drag-32{transform:translateY(32px)}
+.drag-40{transform:translateY(40px)}
+.drag-48{transform:translateY(48px)}
+.drag-56{transform:translateY(56px)}
+.drag-64{transform:translateY(64px)}
+.drag-72{transform:translateY(72px)}
+.drag-80{transform:translateY(80px)}
+.drag-88{transform:translateY(88px)}
+.drag-96{transform:translateY(96px)}
+.drag-104{transform:translateY(104px)}
+.drag-112{transform:translateY(112px)}
+.drag-120{transform:translateY(120px)}
+.drag-128{transform:translateY(128px)}
+.drag-136{transform:translateY(136px)}
+.drag-144{transform:translateY(144px)}
+.drag-152{transform:translateY(152px)}
+.drag-160{transform:translateY(160px)}
+.drag-168{transform:translateY(168px)}
+.drag-176{transform:translateY(176px)}
+.drag-184{transform:translateY(184px)}
+.drag-192{transform:translateY(192px)}
+.drag-200{transform:translateY(200px)}
+.drag-208{transform:translateY(208px)}
+.drag-216{transform:translateY(216px)}
+.drag-224{transform:translateY(224px)}
+.drag-232{transform:translateY(232px)}
+.drag-240{transform:translateY(240px)}
+.drag-248{transform:translateY(248px)}
+.drag-256{transform:translateY(256px)}
+.drag-264{transform:translateY(264px)}
+.drag-272{transform:translateY(272px)}
+.drag-280{transform:translateY(280px)}
+.drag-288{transform:translateY(288px)}
+.drag-296{transform:translateY(296px)}
+.drag-304{transform:translateY(304px)}
+.drag-312{transform:translateY(312px)}
+.drag-320{transform:translateY(320px)}
+.drag-328{transform:translateY(328px)}
+.drag-336{transform:translateY(336px)}
+.drag-344{transform:translateY(344px)}
+.drag-352{transform:translateY(352px)}
+.drag-360{transform:translateY(360px)}
+.drag-368{transform:translateY(368px)}
+.drag-376{transform:translateY(376px)}
+.drag-384{transform:translateY(384px)}
+.drag-392{transform:translateY(392px)}
+.drag-400{transform:translateY(400px)}
+.drag-408{transform:translateY(408px)}
+.drag-416{transform:translateY(416px)}
+.drag-424{transform:translateY(424px)}
+.drag-432{transform:translateY(432px)}
+.drag-440{transform:translateY(440px)}
+.drag-448{transform:translateY(448px)}
+.drag-456{transform:translateY(456px)}
+.drag-464{transform:translateY(464px)}
+.drag-472{transform:translateY(472px)}
+.drag-480{transform:translateY(480px)}
+.drag-488{transform:translateY(488px)}
+.drag-496{transform:translateY(496px)}
+.drag-504{transform:translateY(504px)}
+.drag-512{transform:translateY(512px)}
+.drag-520{transform:translateY(520px)}
+.drag-528{transform:translateY(528px)}
+.drag-536{transform:translateY(536px)}
+.drag-544{transform:translateY(544px)}
+.drag-552{transform:translateY(552px)}
+.drag-560{transform:translateY(560px)}
+.drag-568{transform:translateY(568px)}
+.drag-576{transform:translateY(576px)}
+.drag-584{transform:translateY(584px)}
+.drag-592{transform:translateY(592px)}
+.drag-600{transform:translateY(600px)}

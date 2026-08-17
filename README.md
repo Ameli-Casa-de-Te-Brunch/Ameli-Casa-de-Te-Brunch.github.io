@@ -75,43 +75,45 @@ dentro de `dist/` y entrá a `http://localhost:8000`.
 
 ## Qué hoja editar para cada cosa
 
-El sitio muestra **3 idiomas: español, inglés, portugués** (el turismo real
-de Malargüe). Francés e italiano tienen columnas propias en el maestro —
-podés seguir completándolas si querés, pero el validador no las exige ni el
-sitio las muestra.
+Desde el maestro **V3.1** el archivo tiene **4 hojas**: `Resumen y
+Configuración`, `Categorías`, `Productos` (nombre, descripción, precio,
+alérgenos — lo esencial del menú) y `Productos - Backoffice` (ingredientes
+y personalización, referencia interna que el sitio nunca lee).
+
+El sitio muestra **los 5 idiomas trabajados: español, inglés, portugués,
+francés e italiano**.
 
 | Querés cambiar... | Hoja | Columna |
 |---|---|---|
-| Nombre o descripción de un producto (ES/EN/PT) | `01_Menú_Multilingüe` | Nombre: D-F · Descripción: I-K |
-| Si un producto está activo / destacado / recomendado / nuevo | `02_Productos_MASTER` | J, K, L, M, N |
-| Categorías, orden en el menú, si una categoría se muestra | `03_Categorías` | — |
-| Precios (de venta) | `04_Precios` | D (precio local) |
-| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `05_Gastronomía` | D, E |
-| Fotos de producto | `10_Multimedia_SEO` | C (URL imagen principal) — si está vacío, se muestra el patrón botánico en vez de una foto rota |
-| WhatsApp, Instagram, dirección, URL del QR | `13_Configuración` | B |
+| Nombre o descripción de un producto (ES/EN/PT/FR/IT) | `Productos` | Nombre: D-H · Descripción: I-M |
+| Si un producto está activo / destacado / recomendado / nuevo | `Productos` | N, O, P, Q, R |
+| Categorías, orden alfabético, si una categoría se muestra | `Categorías` | — |
+| Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | U (precio chico o único) · V (precio grande, solo si el producto tiene dos tamaños) |
+| Alérgenos (15 banderas + estado de validación) | `Productos` | AF-AT (banderas) · AU (estado de validación) — no se publica nada de un producto hasta que su fila diga "Validado por cocina" o "Validado por proveedor" |
+| Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | X, Y |
+| Fotos de producto | `Productos` | Z (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
+| Opción de leche vegetal / sin lactosa en una bebida | `Productos - Backoffice` | columnas "Leche vegetal" / "Leche sin lactosa" (dentro de Personalización) — no es un producto aparte, es un agregado que se muestra en el detalle de la bebida correspondiente |
+| WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 16-25) |
+| Ingredientes, personalización — referencia interna | `Productos - Backoffice` | — (nada de esto lo lee el sitio, salvo leche vegetal/sin lactosa arriba) |
 
-### Hojas en uso vs. hojas sin usar
+Un producto nuevo necesita una fila en `Productos` (y opcionalmente otra en
+`Productos - Backoffice` si querés cargarle ingredientes), con un ID que
+siga el formato de los que ya existen (3 letras + 3 números, ej. `TYT008`).
 
-El pipeline lee **7 hojas**: `01`, `02`, `03`, `04`, `05`, `10`, `13`. Un
-producto nuevo necesita fila en esas 7 (mismo ID en cada una), y el ID tiene
-que seguir el formato de los que ya existen (3 letras + 3 números, ej.
-`TYT008`).
+**"Adicionales" ya no es una categoría del menú.** Leche vegetal y leche
+sin lactosa dejaron de ser productos propios (no tenía sentido pedirlos
+solos) y pasaron a ser un agregado que se muestra en el detalle de cada
+bebida que lleva leche.
 
-Las hojas `06_Ingredientes`, `07_Alérgenos_Dietas`, `08_Personalización`,
-`09_Ingeniería_Menú`, `11_Canales_QR` y `12_Estadísticas` **existen en el
-maestro pero el pipeline no las lee ni el validador las exige**. Quedan ahí
-para cuando se retomen (ver "Fuera de alcance por ahora" y la sección legal
-sobre alérgenos más abajo) — no son "pendientes rotos", son simplemente
-hojas que hoy no alimentan el sitio.
+### Alérgenos: por qué no se publican todavía
 
-### Si ves errores de `#REF!` en los desplegables del Excel
-
-La hoja oculta `99_Listas` (de donde salen los rangos con nombre que arman
-los desplegables de las hojas 02/05/07/08) puede romperse al guardar desde
-Excel. El validador te avisa si detecta un rango roto, pero **no bloquea la
-publicación** — el pipeline lee valores de celda directamente, nunca los
-rangos con nombre, así que un `#REF!` ahí no afecta el sitio. Es un
-problema del Excel para quien lo edita, no del menú publicado.
+La columna "Estado de validación (alérgenos)" de `Productos - Backoffice`
+tiene que decir **"Validado por cocina" o "Validado por proveedor" en
+TODAS las filas** antes de que el sitio pueda mostrar cualquier dato de
+alérgenos — hoy están en "Pendiente" a propósito. (Corregido en esta misma
+versión: el chequeo miraba antes la columna equivocada por error de
+conteo — nunca reconocía nada como validado aunque se completara bien.
+Ya apunta a la columna correcta.)
 
 ## Qué hacer si el validador se queja
 
@@ -144,6 +146,10 @@ templates/menu.template.html              ← el HTML, separado de los datos
 assets/fonts/                             ← Cormorant Garamond + Karla, self-hosteadas
 assets/css/menu.css                       ← todo el CSS, external (no inline)
 assets/js/menu.js                         ← toda la lógica de la página, external (no inline)
+assets/img/                               ← favicon, apple-touch-icon, imagen de vista previa
+                                             (og:image) — generados del logo, no son fotos de
+                                             producto. Se regeneran a mano si el logo cambia
+                                             (no forman parte del build automático).
 dist/                                     ← generado, NO versionado en git
 build.py                                  ← construir (extract -> validate -> render) y, si pedís, publicar
 menu.bat / publicar.bat                   ← doble clic en Windows para cada paso
@@ -164,6 +170,17 @@ cosmético.)
   categoría, badges, momentos, precio de venta y los datos de contacto — si
   alguna vez agregás un campo a esa función, pensalo dos veces antes de
   agregar algo que no debería ser público.
+- **El equivalente en USD/EUR/BRL es una conversión fija, no una cotización
+  en vivo.** Se calcula una sola vez, en `extract.py`, con la tasa que
+  cargues a mano en "Tipo de cambio ARS/USD" / "ARS/EUR" / "Real" (hoja
+  Resumen y Configuración) — queda fija hasta el próximo `python build.py`.
+  La alternativa (pedirle la cotización a una API externa desde el
+  navegador de cada visitante) se descartó a propósito: abriría
+  `connect-src` a un tercero (hoy es `'none'`), y las APIs gratuitas de
+  cotización dan el dólar "oficial", que en Argentina casi nunca es el que
+  un turista termina pagando (blue/MEP/tarjeta) — mostrarlo podría
+  confundir más que ayudar. USD se muestra en cualquier idioma si hay tasa
+  cargada; EUR además solo en francés e italiano; BRL solo en portugués.
 - **La ruta del Excel es configurable** (flag, variable de entorno, o
   `.env` gitignoreado) porque cada máquina donde esto se corra va a tenerlo
   en un lugar distinto.
@@ -189,14 +206,19 @@ cosmético.)
   claves — y como el voto es manipulable desde el navegador, tampoco iba a
   servir como dato real para decidir la carta.
 - **Fuentes self-hosteadas, no Google Fonts.** `assets/fonts/` tiene los
-  dos tipos de letra (`Cormorant Garamond`, `Karla`) en `.woff2`, subset
-  `latin` (cubre todos los acentos de ES/EN/PT). Antes, cada visitante le
-  mandaba su IP a Google solo por cargar la tipografía; ahora no sale
-  ningún request a un tercero para eso, y además carga más rápido en 3G.
-  Las dos tienen licencia **SIL Open Font License 1.1** (libre para uso
-  comercial) — el texto de la licencia de cada familia viaja junto a los
-  archivos (`OFL-CormorantGaramond.txt`, `OFL-Karla.txt`), como exige la
-  licencia.
+  tres tipos de letra (`Cormorant Garamond`, `Karla`, `Montserrat`) en
+  `.woff2`, subset `latin` (cubre todos los acentos de ES/EN/PT/FR/IT).
+  Antes, cada visitante le mandaba su IP a Google solo por cargar la
+  tipografía; ahora no sale ningún request a un tercero para eso, y además
+  carga más rápido en 3G. Las tres tienen licencia **SIL Open Font License
+  1.1** (libre para uso comercial) — el texto de la licencia de cada
+  familia viaja junto a los archivos (`OFL-CormorantGaramond.txt`,
+  `OFL-Karla.txt`, `OFL-Montserrat.txt`), como exige la licencia.
+  `Montserrat` se suma para replicar la tipografía real del logo: "AMELÍ"
+  usa `Cormorant Garamond` 600 (SemiBold) en mayúsculas con tracking
+  chico; "CASA DE TÉ & BRUNCH" usa `Montserrat` 300 (Light) en mayúsculas
+  con tracking más generoso — mismos pesos y tracking que especificó el
+  dueño a partir del diseño original.
 - **El mapa nunca fue un embed.** El botón "Cómo llegar" siempre fue un
   link `<a href>` a Google Maps que solo se activa si la persona lo toca —
   no hay ningún iframe cargando de fondo. Se deja documentado acá porque
@@ -245,9 +267,24 @@ form-action 'none';
   contenido exacto puede correr — nada más.
 - **Nada de `unsafe-eval`**, como pidió el dueño del proyecto.
 
-Probado con la CSP puesta: los 3 idiomas, el filtro de momentos, el estado
-abierto/cerrado, el modo oscuro y las fuentes self-hosteadas siguen
-funcionando sin ningún bloqueo (0 errores de consola, 0 avisos de CSP).
+**Limitación real, no un bug:** `frame-ancestors` no tiene ningún efecto
+cuando se declara por `<meta>` — el navegador lo ignora y lo dice por
+consola ("ignored when delivered via a meta element"). Es una regla del
+propio estándar de CSP, no algo que se pueda arreglar desde el HTML.
+GitHub Pages no permite mandar cabeceras HTTP propias, así que **la
+protección contra clickjacking no está activa en la práctica**, aunque la
+política la declare. Se deja igual declarada porque no rompe nada y no
+cuesta nada tenerla, pero hay que saber que es cosmética en este hosting.
+
+**Una vuelta anterior de esto tenía un bug real**: la primera versión de la
+CSP asumía que no había ningún estilo inline dinámico, pero el propio JS
+del sitio sí los generaba (gradientes de los destacados, animación
+escalonada de las tarjetas, el arrastre del panel de detalle) — la CSP los
+bloqueaba en la práctica y rompía esas tres cosas. Se migraron todos a
+clases CSS fijas (o cuantizadas, para el arrastre) y las fotos de producto
+pasan de `background-image` a `<img>` real. Resultado actual, verificado
+en el navegador: **cero errores de consola**, `style-src 'self'` sin
+`'unsafe-inline'` en ningún lado.
 
 ## Cumplimiento legal (Argentina)
 
