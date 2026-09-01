@@ -10,6 +10,25 @@ if (window.top !== window.self) {
   document.documentElement.style.display = 'none';
 }
 
+/* Preferencias de accesibilidad guardadas localmente (nunca salen del
+   dispositivo, no es tracking) -- se aplican ya, antes del primer render,
+   para que no haya un parpadeo con el tamaño/contraste por defecto. */
+const A11Y_KEY = 'ameli_a11y';
+function leerA11y(){
+  try{ return JSON.parse(localStorage.getItem(A11Y_KEY) || '{}'); }catch(e){ return {}; }
+}
+function guardarA11y(p){
+  try{ localStorage.setItem(A11Y_KEY, JSON.stringify(p)); }catch(e){}
+}
+let a11yPrefs = leerA11y();
+(function aplicarA11yInicial(){
+  const html = document.documentElement;
+  html.style.setProperty('--afs', a11yPrefs.afs || 1);
+  if(a11yPrefs.contraste) html.setAttribute('data-contraste','alto');
+  if(a11yPrefs.movimiento) html.setAttribute('data-movimiento','reducido');
+  if(a11yPrefs.lectura) html.setAttribute('data-lectura','simple');
+})();
+
 const LANGS = ['es','en','pt','fr','it'];
 const UI = {
  sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de thé · Brunch',it:'Casa del tè · Brunch'},
@@ -41,6 +60,12 @@ const UI = {
  leche:{es:'Disponible con leche vegetal o sin lactosa',en:'Available with plant-based or lactose-free milk',pt:'Disponível com leite vegetal ou sem lactose',fr:'Disponible avec du lait végétal ou sans lactose',it:'Disponibile con latte vegetale o senza lattosio'},
  lecheVeg:{es:'Disponible con leche vegetal',en:'Available with plant-based milk',pt:'Disponível com leite vegetal',fr:'Disponible avec du lait végétal',it:'Disponibile con latte vegetale'},
  lecheLac:{es:'Disponible con leche sin lactosa',en:'Available with lactose-free milk',pt:'Disponível com leite sem lactose',fr:'Disponible avec du lait sans lactose',it:'Disponibile con latte senza lattosio'},
+ a11yBtn:{es:'Accesibilidad',en:'Accessibility',pt:'Acessibilidade',fr:'Accessibilité',it:'Accessibilità'},
+ a11yTitle:{es:'Accesibilidad',en:'Accessibility',pt:'Acessibilidade',fr:'Accessibilité',it:'Accessibilità'},
+ a11yTexto:{es:'Tamaño de texto',en:'Text size',pt:'Tamanho do texto',fr:'Taille du texte',it:'Dimensione del testo'},
+ a11yContraste:{es:'Alto contraste',en:'High contrast',pt:'Alto contraste',fr:'Contraste élevé',it:'Alto contrasto'},
+ a11yMovimiento:{es:'Reducir movimiento',en:'Reduce motion',pt:'Reduzir movimento',fr:'Réduire les animations',it:'Riduci movimento'},
+ a11yLectura:{es:'Lectura simple',en:'Simple reading',pt:'Leitura simples',fr:'Lecture simplifiée',it:'Lettura semplice'},
 };
 const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
 const CHIPS = [
@@ -279,6 +304,58 @@ function onSheetKeydown(e){
 $('sheetCerrar').addEventListener('click', cerrarDetalle);
 $('sheetBackdrop').addEventListener('click', cerrarDetalle);
 
+/* ---------- panel de accesibilidad ---------- */
+let a11yFocoPrevio=null;
+function aplicarA11y(){
+  const html=document.documentElement;
+  html.style.setProperty('--afs', a11yPrefs.afs || 1);
+  if(a11yPrefs.contraste) html.setAttribute('data-contraste','alto'); else html.removeAttribute('data-contraste');
+  if(a11yPrefs.movimiento) html.setAttribute('data-movimiento','reducido'); else html.removeAttribute('data-movimiento');
+  if(a11yPrefs.lectura) html.setAttribute('data-lectura','simple'); else html.removeAttribute('data-lectura');
+  document.querySelectorAll('.a11y-opts button').forEach(b=>{
+    b.setAttribute('aria-pressed', String(Number(b.dataset.afs)===Number(a11yPrefs.afs||1)));
+  });
+  $('a11yContraste').checked = !!a11yPrefs.contraste;
+  $('a11yMovimiento').checked = !!a11yPrefs.movimiento;
+  $('a11yLectura').checked = !!a11yPrefs.lectura;
+}
+function abrirA11y(){
+  a11yFocoPrevio=document.activeElement;
+  $('a11yBackdrop').hidden=false; $('a11yPanel').hidden=false;
+  requestAnimationFrame(()=>{ $('a11yBackdrop').classList.add('abierto'); $('a11yPanel').classList.add('abierto'); });
+  $('a11yBtn').setAttribute('aria-expanded','true');
+  $('a11yPanel').focus();
+  document.addEventListener('keydown', onA11yKeydown);
+}
+function cerrarA11y(){
+  $('a11yBackdrop').classList.remove('abierto');
+  $('a11yPanel').classList.remove('abierto');
+  $('a11yBtn').setAttribute('aria-expanded','false');
+  document.removeEventListener('keydown', onA11yKeydown);
+  setTimeout(()=>{ $('a11yBackdrop').hidden=true; $('a11yPanel').hidden=true; },220);
+  if(a11yFocoPrevio && a11yFocoPrevio.focus) a11yFocoPrevio.focus();
+}
+function onA11yKeydown(e){
+  if(e.key==='Escape'){ cerrarA11y(); return; }
+  if(e.key==='Tab'){
+    const focosables=$('a11yPanel').querySelectorAll('button, input');
+    if(!focosables.length) return;
+    const primero=focosables[0], ultimo=focosables[focosables.length-1];
+    if(e.shiftKey && document.activeElement===primero){ e.preventDefault(); ultimo.focus(); }
+    else if(!e.shiftKey && document.activeElement===ultimo){ e.preventDefault(); primero.focus(); }
+  }
+}
+$('a11yBtn').addEventListener('click', abrirA11y);
+$('a11yCerrar').addEventListener('click', cerrarA11y);
+$('a11yBackdrop').addEventListener('click', cerrarA11y);
+document.querySelectorAll('.a11y-opts button').forEach(b=>{
+  b.addEventListener('click', ()=>{ a11yPrefs.afs=Number(b.dataset.afs); guardarA11y(a11yPrefs); aplicarA11y(); });
+});
+$('a11yContraste').addEventListener('change', e=>{ a11yPrefs.contraste=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
+$('a11yMovimiento').addEventListener('change', e=>{ a11yPrefs.movimiento=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
+$('a11yLectura').addEventListener('change', e=>{ a11yPrefs.lectura=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
+aplicarA11y();
+
 /* ---------- carrusel: flechas, puntos, drag desktop ---------- */
 function initCarrusel(){
   const car=$('carrusel');
@@ -347,6 +424,13 @@ function render(){
   $('footGrx').textContent=UI.grx[lang];
   if($('footGoogleTxt')) $('footGoogleTxt').textContent=UI.googleReview[lang];
   $('footDatos').innerHTML=UI.datos[lang];
+  $('a11yBtn').setAttribute('aria-label', UI.a11yBtn[lang]);
+  $('a11yTitle').textContent=UI.a11yTitle[lang];
+  $('a11yTextoLabel').textContent=UI.a11yTexto[lang];
+  $('a11yContrasteLabel').textContent=UI.a11yContraste[lang];
+  $('a11yMovimientoLabel').textContent=UI.a11yMovimiento[lang];
+  $('a11yLecturaLabel').textContent=UI.a11yLectura[lang];
+  $('a11yCerrar').setAttribute('aria-label', UI.cerrarSheet[lang]);
   $('carPrev').setAttribute('aria-label', UI.anterior[lang]);
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
   pintarEstado();
