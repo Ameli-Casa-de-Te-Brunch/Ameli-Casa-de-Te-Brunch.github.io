@@ -3,8 +3,11 @@
 @font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
 @font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/montserrat-light.woff2') format('woff2')}
 :root{
-  --verde:#5B6E4A; --verde-osc:#1E2A1B; --verde-suave:#8B966E; --footer-bg:var(--verde-osc);
-  --crema:#F1E6D0; --blanco:#FFFDF7; --marron:#8B2F2F;
+  /* Amelí Digital v3 -- paleta oficial de la guía de marca, con Blanco
+     Cálido y Crema como superficies dominantes y Verde Oliva reservado a
+     marca/acción/navegación activa (ver README, sección de diseño). */
+  --verde:#536039; --verde-osc:#3E4736; --verde-suave:#8B966E; --footer-bg:var(--verde-osc);
+  --crema:#F2EAE1; --blanco:#FFFDF7; --marron:#8B2F2F;
   --rosa:#E7D2CE; --manteca:#F0E8DE; --tinta:#000000;
   --dorado:#C4A668; --tostado:#9C7B52;
   --texto-sec:#5e5849;
@@ -19,7 +22,10 @@
   --stc-bg:#EFE7DA; --stc-border:#b3a48b; --stc-color:#6b6252;
   --alerg-pos-bg:#E3EBD9; --alerg-pos-color:#1E2A1B;
   --alerg-warn-bg:#F5E6D3; --alerg-warn-color:#8a5a1f;
-  --scrim:linear-gradient(180deg, rgba(62,72,41,0) 0%, rgba(62,72,41,.38) 45%, rgba(35,41,24,.92) 100%);
+  /* antes era un velo mucho más oscuro (pensado para texto blanco encima de
+     la foto) -- ya no hay texto superpuesto a fotos en ningún lado del
+     sitio, así que queda solo como viñeta sutil, no como tapa oscura. */
+  --scrim:linear-gradient(180deg, rgba(62,72,41,0) 0%, rgba(62,72,41,.05) 50%, rgba(35,41,24,.35) 100%);
   --afs:1;
 }
 /* Sin variante de modo oscuro a propósito: el feedback de los clientes fue
@@ -28,7 +34,7 @@
    sistema operativo del visitante. */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
-body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
+body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
 ::selection{background:var(--rosa)}
 .hero{background:var(--verde);color:var(--sobre-verde);padding:56px 24px 84px;text-align:center;position:relative;overflow:hidden}
 .hero-wreath{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;max-width:92%;pointer-events:none;z-index:-1}
@@ -76,13 +82,13 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .btn-volver{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);z-index:39;display:flex;align-items:center;gap:7px;min-height:44px;padding:0 18px;border-radius:999px;border:none;background:var(--marron);color:var(--sobre-verde);font-weight:700;font-family:'Karla',sans-serif;font-size:calc(13px * var(--afs,1));box-shadow:0 8px 22px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;cursor:pointer}
 .btn-volver.visible{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
 .btn-volver:active{transform:translate(-50%,0) scale(.95)}
-.momentos{margin:-52px 16px 0;background:var(--blanco);border-radius:var(--radio);box-shadow:var(--sombra);padding:20px 18px 22px;position:relative;z-index:5}
+.momentos{margin:-52px 16px 0;background:var(--crema);border-radius:var(--radio);box-shadow:var(--sombra);padding:20px 18px 22px;position:relative;z-index:5}
 .momentos h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:calc(22px * var(--afs,1));text-align:center;color:var(--verde-osc)}
 .momentos h2 em{font-style:italic}
 .momentos p.hint{text-align:center;font-size:calc(12px * var(--afs,1));color:var(--texto-sec);margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.chip{border:1.5px solid var(--verde-suave);background:transparent;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:calc(13px * var(--afs,1));padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
-.chip.activo{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde);transform:scale(1.04)}
+.chip{border:none;background:var(--blanco);color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:calc(13px * var(--afs,1));padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
+.chip.activo{background:var(--verde);color:var(--sobre-verde);transform:scale(1.04)}
 .chip:active{transform:scale(.95)}
 /* clases fijas para reemplazar estilos inline dinamicos (la CSP no permite
    style="" generado por JS sin 'unsafe-inline', asi que estos valores -que
@@ -100,23 +106,26 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .navcat{position:sticky;top:0;z-index:20;background:var(--navcat-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0 12px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(83,96,57,.12);margin-top:26px;box-shadow:none;transition:box-shadow .25s ease}
 .navcat.scrolled{box-shadow:var(--sombra-nav)}
 .navcat::-webkit-scrollbar{display:none}
-.navcat a{flex:0 0 auto;text-decoration:none;font-size:calc(13px * var(--afs,1));font-weight:600;color:var(--marron-texto);background:var(--blanco);border:1px solid rgba(139,47,47,.22);padding:8px 14px;border-radius:999px;transition:all .2s}
-.navcat a.actual{background:var(--marron);color:var(--sobre-verde);border-color:var(--marron)}
+.navcat a{flex:0 0 auto;text-decoration:none;font-size:calc(13px * var(--afs,1));font-weight:600;color:var(--verde-osc);background:var(--blanco);border:1px solid rgba(83,96,57,.16);padding:8px 14px;border-radius:999px;transition:all .2s}
+.navcat a.actual{background:var(--verde);color:var(--sobre-verde);border-color:var(--verde)}
 .navcat a:active{transform:scale(.96)}
 .navcat a:last-child{margin-right:16px}
 .destacados{padding:26px 0 6px;position:relative}
-.eyebrow{padding:0 20px;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--marron-texto)}
+.eyebrow{padding:0 20px;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--verde-osc)}
 .destacados h3{padding:2px 20px 0;font-family:'Cormorant Garamond',serif;font-size:calc(28px * var(--afs,1));font-weight:500;color:var(--verde-osc)}
 .carrusel{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 10px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;user-select:none}
 .carrusel.arrastrando{cursor:grabbing;scroll-snap-type:none}
 .carrusel::-webkit-scrollbar{display:none}
-.dcard{flex:0 0 78%;scroll-snap-align:start;background:var(--blanco);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden;position:relative;cursor:pointer;transition:transform .12s ease}
+.dcard{flex:0 0 78%;scroll-snap-align:start;background:var(--crema);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden;position:relative;cursor:pointer;transition:transform .12s ease}
 .dcard:active{transform:scale(.97)}
-.dcard .foto{height:210px;position:relative;display:flex;align-items:flex-end;justify-content:center;background-size:cover;background-position:center;overflow:hidden}
-.dcard .foto::after{content:'';position:absolute;inset:0;background:var(--scrim)}
-.dcard .foto span.inicial{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(60px * var(--afs,1));color:rgba(255,253,247,.5);margin-bottom:auto;margin-top:auto}
-.dcard .cuerpo{position:relative;z-index:1;padding:0 16px 16px;margin-top:-64px;width:100%}
+.dcard .foto{height:150px;position:relative;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;overflow:hidden}
+.dcard .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(48px * var(--afs,1));color:rgba(255,253,247,.6)}
+/* el cuerpo ya no se superpone a la foto (antes iba con margin-top
+   negativo y velo oscuro para que el texto blanco se leyera encima) --
+   ahora es un panel claro propio, debajo de la foto. */
+.dcard .cuerpo{padding:14px 16px 16px}
 .badge{display:inline-block;font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
+.dcard .cuerpo .badge{margin-right:6px}
 .badge.fav{background:var(--marron);color:var(--sobre-verde)}
 .badge.reco{background:var(--manteca);color:var(--marron)}
 .badge.agotado{background:var(--alerg-warn-bg);color:var(--alerg-warn-color)}
@@ -125,9 +134,8 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .badge.pedido{background:var(--manteca);color:var(--marron)}
 .badge.nuevo{background:var(--verde);color:var(--sobre-verde)}
 .badge.sintacc{background:var(--stc-bg);color:var(--stc-color);border:1px dashed var(--stc-border)}
-.dcard .pill{display:inline-block;font-size:calc(10.5px * var(--afs,1));font-weight:700;padding:4px 10px;border-radius:999px;margin:0 6px 8px 0;background:rgba(255,253,247,.22);color:var(--sobre-verde);backdrop-filter:blur(3px)}
-.dcard h3{font-family:'Cormorant Garamond',serif;font-size:calc(23px * var(--afs,1));font-weight:600;color:var(--sobre-verde);line-height:1.1}
-.dcard p{font-size:calc(13px * var(--afs,1));color:rgba(255,253,247,.82);margin-top:5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dcard h3{font-family:'Cormorant Garamond',serif;font-size:calc(21px * var(--afs,1));font-weight:600;color:var(--verde-osc);line-height:1.15}
+.dcard p{font-size:calc(13px * var(--afs,1));color:var(--texto-sec);margin-top:5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .car-flecha{display:none}
 @media(min-width:768px){
   .car-flecha{display:flex;position:absolute;top:58%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:1px solid rgba(83,96,57,.2);background:var(--blanco);color:var(--verde-osc);align-items:center;justify-content:center;font-size:calc(20px * var(--afs,1));cursor:pointer;box-shadow:var(--sombra);z-index:3}
@@ -147,7 +155,7 @@ section.cat p.desc-cat{color:var(--texto-sec);margin-top:4px;font-style:italic;f
 .lista{display:flex;flex-direction:column;gap:12px}
 .prod{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .35s ease, opacity .3s ease, margin-top .35s ease, transform .15s ease;cursor:pointer}
 .prod:active{transform:scale(.97)}
-.prod .prod-inner{overflow:hidden;min-height:0;background:var(--blanco);border-radius:16px;padding:16px 16px 15px;box-shadow:0 2px 10px rgba(83,96,57,.06)}
+.prod .prod-inner{overflow:hidden;min-height:0;background:var(--crema);border-radius:16px;padding:16px 16px 15px;box-shadow:0 2px 10px rgba(83,96,57,.06)}
 .prod.oculto{grid-template-rows:0fr;opacity:0;margin-top:-12px}
 .prod.oculto .prod-inner{padding-top:0;padding-bottom:0}
 section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}

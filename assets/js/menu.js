@@ -525,7 +525,7 @@ function render(){
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
-    const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('') + (p.disp?`<span class="pill">${esc(dispTexto(p))}</span>`:'');
+    const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
     const fotoContenido = p.img
       ? `<img src="${esc(p.img)}" alt="${esc(altProducto(p))}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
