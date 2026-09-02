@@ -129,7 +129,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .navcat a:last-child{margin-right:16px}
 .destacados{padding:26px 0 6px;position:relative}
 .eyebrow{padding:0 20px;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--verde-osc)}
-.destacados h3{padding:2px 20px 0;font-family:'Cormorant Garamond',serif;font-size:calc(28px * var(--afs,1));font-weight:500;color:var(--verde-osc)}
+.destacados h2{padding:2px 20px 0;font-family:'Cormorant Garamond',serif;font-size:calc(28px * var(--afs,1));font-weight:500;color:var(--verde-osc)}
 .carrusel{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 10px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;user-select:none}
 .carrusel.arrastrando{cursor:grabbing;scroll-snap-type:none}
 .carrusel::-webkit-scrollbar{display:none}
@@ -247,6 +247,33 @@ section.cat.sin-resultados .vacio{display:block}
 .btn-pedir[hidden]{display:none}
 .btn-pedir:active{transform:scale(.96)}
 .btn-pedir svg{width:17px;height:17px}
+
+/* ===== escritorio: no es la interfaz móvil estirada -- contenedor más
+   ancho, grillas de más columnas, fotos más grandes. El bottom sheet
+   (.sheet), el panel de accesibilidad (.a11y-panel) y el menú de idioma
+   ya tienen su propio ancho máximo independiente de body, así que no
+   necesitan nada acá: quedan como paneles centrados, no se estiran. */
+@media(min-width:900px){
+  body{max-width:1280px}
+  .topbar{max-width:1280px;padding:28px 40px 0}
+  .topbar-info{max-width:640px;padding:12px 20px 0}
+  .hero-foto{height:360px;margin:20px 40px 0}
+  .hero-texto{max-width:640px;padding:22px 20px 4px}
+  .cat-icons{padding:24px 40px 4px}
+  .momentos{margin:12px 40px 0}
+  .aviso-alergias{margin:20px 40px 0}
+  .buscador{margin:16px 40px 0}
+  .eyebrow,.destacados h2,.carrusel{padding-left:40px;padding-right:40px}
+  .dcard{flex:0 0 280px}
+  section.cat{padding:36px 40px 4px}
+  .lista{grid-template-columns:repeat(4,1fr)}
+  .prod.compacta .foto{height:150px}
+  .prod.destacado-cat .prod-inner{display:flex;align-items:stretch}
+  .destacado-cat .foto{flex:0 0 42%;height:auto;min-height:240px}
+  .prod.destacado-cat .cont{flex:1;display:flex;flex-direction:column;justify-content:center}
+  footer{padding:56px 40px 110px}
+  .wsp{right:calc(50% - 624px)}
+}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
