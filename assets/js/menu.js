@@ -241,7 +241,7 @@ function abrirDetalle(id){
   foto.querySelector('img')?.remove();
   if(p.img){
     const img = document.createElement('img');
-    img.src = p.img; img.alt = p.n[lang];
+    img.src = p.img; img.alt = altProducto(p);
     foto.appendChild(img);
     $('sheetInicial').hidden = true;
   } else {
@@ -527,7 +527,7 @@ function render(){
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
     const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('') + (p.disp?`<span class="pill">${esc(dispTexto(p))}</span>`:'');
     const fotoContenido = p.img
-      ? `<img src="${esc(p.img)}" alt="${esc(p.n[lang])}" loading="lazy">`
+      ? `<img src="${esc(p.img)}" alt="${esc(altProducto(p))}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
     return `<article class="dcard" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
       <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}</div>
@@ -562,6 +562,9 @@ function render(){
 }
 function normalizar(s){
   return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function altProducto(p){
+  return (p.alt && p.alt[lang]) || p.n[lang];
 }
 function dispTexto(p){
   if(p.disp==='agotado') return UI.agotadoHoy[lang];

@@ -60,6 +60,7 @@ COL = {
     "alergenos_inicio": 32, "alergenos_fin": 46,
     "estado_alergenos": 47, "obs_alergenos": 48, "observaciones": 49,
     "disponibilidad": 50,
+    "alt": {"es": 51, "en": 52, "pt": 53, "fr": 54, "it": 55},
 }
 
 # Valores de la columna "Disponibilidad hoy" -> código corto publicado.
@@ -206,6 +207,8 @@ def load_productos(wb):
             "temperatura": ws.cell(row=r, column=COL["temperatura"]).value or "",
             "formato": ws.cell(row=r, column=COL["formato"]).value or "",
             "img": ws.cell(row=r, column=COL["img"]).value or None,
+            "alt": {lang: ws.cell(row=r, column=c).value for lang, c in
+                    ((l, COL["alt"][l]) for l in LANGS)},
             "tag": ws.cell(row=r, column=COL["etiqueta_inicial"]).value or None,
             "disp": DISPONIBILIDAD_VALORES.get(ws.cell(row=r, column=COL["disponibilidad"]).value),
             "alerg": alergenos,
@@ -421,6 +424,8 @@ def extract(xlsx_path: Path) -> dict:
             "b": badges_for(prod),
             "img": prod["img"],
         }
+        if any(prod["alt"].values()):
+            item["alt"] = prod["alt"]
         if prod["alerg"] is not None:
             item["alerg"] = prod["alerg"]
         if prod["tag"]:
@@ -447,7 +452,7 @@ def extract(xlsx_path: Path) -> dict:
 # si su fila individual está validada (ver load_productos) — el resto
 # (costos, ingredientes, personalización, notas operativas, fila/columna
 # de origen) se queda afuera de lo que se versiona y se publica.
-_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag", "leche", "disp")
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alt", "alerg", "tag", "leche", "disp")
 _CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base", "tripadvisor", "google_resenas")
 
 
