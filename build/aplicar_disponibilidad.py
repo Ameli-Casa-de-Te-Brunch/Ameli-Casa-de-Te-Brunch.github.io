@@ -34,12 +34,13 @@ MENU_JSON = HERE.parent / "data" / "menu.json"
 VALORES = {
     "Agotado por hoy": "agotado",
     "No disponible temporalmente": "no_disp",
+    "Últimas porciones": "ultimas",
 }
 
 
 def leer_csv(url: str, timeout: int = 10) -> dict:
-    """ID de producto -> código de disponibilidad ('agotado'/'no_disp'), o
-    ausente si la fila dice 'Disponible' o está vacía."""
+    """ID de producto -> código de disponibilidad ('agotado'/'no_disp'/'ultimas'),
+    o ausente si la fila dice 'Disponible' o está vacía."""
     with urllib.request.urlopen(url, timeout=timeout) as resp:
         contenido = resp.read().decode("utf-8-sig")
     filas = list(csv.reader(io.StringIO(contenido)))

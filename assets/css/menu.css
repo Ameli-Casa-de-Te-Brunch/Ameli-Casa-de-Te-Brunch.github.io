@@ -121,6 +121,7 @@ body{font-family:'Karla',sans-serif;background:var(--crema);color:var(--tinta);m
 .badge.reco{background:var(--manteca);color:var(--marron)}
 .badge.agotado{background:var(--alerg-warn-bg);color:var(--alerg-warn-color)}
 .badge.no-disp{background:var(--stc-bg);color:var(--stc-color)}
+.badge.ultimas{background:var(--manteca);color:var(--marron)}
 .badge.pedido{background:var(--manteca);color:var(--marron)}
 .badge.nuevo{background:var(--verde);color:var(--sobre-verde)}
 .badge.sintacc{background:var(--stc-bg);color:var(--stc-color);border:1px dashed var(--stc-border)}

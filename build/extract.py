@@ -66,10 +66,14 @@ COL = {
 # Ausente o "Disponible" (el default) no se publica -- un producto sin
 # esta columna cargada se sigue mostrando normal, sin badge. "Inactivo"
 # ya lo cubre la columna "Producto activo" (el producto ni aparece), así
-# que acá solo hacen falta los dos estados intermedios.
+# que acá solo hacen falta los estados intermedios. "Últimas porciones" es
+# el único que no bloquea el pedido por WhatsApp -- el producto sigue
+# disponible, solo avisa que queda poco (ver menu.js, dispBadge y el
+# chequeo antes de mostrar el botón de WhatsApp).
 DISPONIBILIDAD_VALORES = {
     "Agotado por hoy": "agotado",
     "No disponible temporalmente": "no_disp",
+    "Últimas porciones": "ultimas",
 }
 
 

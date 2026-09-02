@@ -77,6 +77,7 @@ const UI = {
  volverCategorias:{es:'Categorías',en:'Categories',pt:'Categorias',fr:'Catégories',it:'Categorie'},
  agotadoHoy:{es:'Agotado por hoy',en:'Sold out today',pt:'Esgotado por hoje',fr:'Épuisé pour aujourd’hui',it:'Esaurito per oggi'},
  noDisponible:{es:'No disponible temporalmente',en:'Temporarily unavailable',pt:'Temporariamente indisponível',fr:'Temporairement indisponible',it:'Temporaneamente non disponibile'},
+ ultimasPorciones:{es:'Últimas porciones',en:'Last portions',pt:'Últimas porções',fr:'Dernières portions',it:'Ultime porzioni'},
 };
 const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
 const CHIPS = [
@@ -249,8 +250,10 @@ function abrirDetalle(id){
     $('sheetInicial').textContent=p.n[lang].charAt(0);
   }
   /* si está agotado o no disponible, no tiene sentido ofrecer pedirlo por
-     WhatsApp -- el badge ya explica por qué */
-  if(WSP_NUMBER && !p.disp){
+     WhatsApp -- el badge ya explica por qué. "Últimas porciones" sigue
+     disponible, así que ahí el botón se mantiene. */
+  const noPedible = p.disp==='agotado' || p.disp==='no_disp';
+  if(WSP_NUMBER && !noPedible){
     const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
     $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
     $('sheetPedirTxt').textContent = UI.wsp[lang];
@@ -522,7 +525,7 @@ function render(){
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
-    const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('') + (p.disp?`<span class="pill">${esc(UI[p.disp==='agotado'?'agotadoHoy':'noDisponible'][lang])}</span>`:'');
+    const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('') + (p.disp?`<span class="pill">${esc(dispTexto(p))}</span>`:'');
     const fotoContenido = p.img
       ? `<img src="${esc(p.img)}" alt="${esc(p.n[lang])}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
@@ -544,7 +547,7 @@ function render(){
       const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
       const et=bd?`<div class="etiquetas">${bd}</div>`:'';
       const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(UI[p.disp==='agotado'?'agotadoHoy':'noDisponible'][lang]):''}">
+      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
         <div class="prod-inner">${et}<div class="fila"><h3>${esc(p.n[lang])}</h3>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
     }).join('');
     return `<section class="cat" id="${esc(cat.cod)}"><header><h2>${esc(cat.nom[lang])}</h2>${nota}</header>
@@ -560,9 +563,16 @@ function render(){
 function normalizar(s){
   return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 }
+function dispTexto(p){
+  if(p.disp==='agotado') return UI.agotadoHoy[lang];
+  if(p.disp==='no_disp') return UI.noDisponible[lang];
+  if(p.disp==='ultimas') return UI.ultimasPorciones[lang];
+  return '';
+}
 function dispBadge(p){
   if(p.disp==='agotado') return `<span class="badge agotado">${esc(UI.agotadoHoy[lang])}</span>`;
   if(p.disp==='no_disp') return `<span class="badge no-disp">${esc(UI.noDisponible[lang])}</span>`;
+  if(p.disp==='ultimas') return `<span class="badge ultimas">${esc(UI.ultimasPorciones[lang])}</span>`;
   return '';
 }
 function haystackProducto(p, cat){
