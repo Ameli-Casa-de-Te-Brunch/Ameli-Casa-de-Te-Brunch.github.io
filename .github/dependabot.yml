@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Actions usadas en .github/workflows/deploy.yml (fijadas por SHA a
+  # propósito -- Dependabot abre un PR para mover el SHA cuando salga
+  # una versión nueva, en vez de que quede desactualizado en silencio).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # requirements.txt (openpyxl, usado en build/extract.py y build/validate.py).
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"

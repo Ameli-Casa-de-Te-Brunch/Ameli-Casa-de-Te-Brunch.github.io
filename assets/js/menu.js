@@ -572,7 +572,7 @@ function render(){
   $('menu').innerHTML=CATS.map(cat=>{
     const items=PRODS.filter(p=>p.cat===cat.cod);
     if(!items.length) return '';
-    const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${CAT_NOTAS[cat.cod][lang]}</p>`:'';
+    const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${esc(CAT_NOTAS[cat.cod][lang])}</p>`:'';
     /* el primer producto marcado "Destacado" de la categoría se muestra
        como panel grande (foto + descripción); el resto va en la grilla
        compacta de 2 columnas, sin descripción (se ve al abrir la ficha) */
@@ -604,7 +604,7 @@ function fotoOInicial(p){
 function renderDestacadoCategoria(p, cat){
   const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
   const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-  return `<article class="prod destacado-cat" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+  return `<article class="prod destacado-cat" data-moods="${esc(p.m.join(','))}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
     <div class="prod-inner">
       <div class="foto ${p.img?'':`grad-${Math.abs(hashId(p.id))%3}`}">${fotoOInicial(p)}</div>
       <div class="cont"><p class="eyebrow-cat">${esc(UI.productoDestacado[lang])}</p><h3>${esc(p.n[lang])}</h3><p class="desc">${esc(p.d[lang])}</p><div class="fila">${precio}${bd}</div></div>
@@ -613,7 +613,7 @@ function renderDestacadoCategoria(p, cat){
 function renderCardCompacta(p, cat, i){
   const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
   const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-  return `<article class="prod compacta stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+  return `<article class="prod compacta stagger-${Math.min(i,9)}" data-moods="${esc(p.m.join(','))}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
     <div class="prod-inner">
       <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoOInicial(p)}</div>
       <div class="cont"><h3>${esc(p.n[lang])}</h3>${precio}${bd?`<div class="etiquetas">${bd}</div>`:''}</div>

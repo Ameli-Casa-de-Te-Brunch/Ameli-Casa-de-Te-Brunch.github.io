@@ -2,13 +2,23 @@ __pycache__/
 *.pyc
 .env
 
-# El Excel maestro NUNCA se versiona: tiene columnas de costo unitario y
-# margen (hojas 04 y 09) que no son para un repo público. Vive fuera del
-# repo — ver README, sección "Qué es público y qué no". Lo que se versiona
-# es data/menu.json, ya filtrado a solo lo que se publica.
+# El Excel maestro NUNCA se versiona: la hoja "Productos - Backoffice"
+# tiene recetas completas (hasta 12 ingredientes por producto) y si cada
+# plato es elaboración propia o tercerizada — información competitiva que
+# el sitio nunca necesita (load_opciones_leche() solo lee 2 columnas
+# booleanas de esa hoja, nada más). Vive fuera del repo — ver README,
+# sección "Qué es público y qué no". Lo que se versiona es data/menu.json,
+# ya filtrado a solo lo que se publica.
 *.xlsx
 *.xlsm
 ~$*
+
+# Mismo motivo que el Excel: cualquier CSV exportado de una hoja del
+# maestro (Productos, Categorías, Config, y sobre todo Backoffice) es un
+# volcado de esos mismos datos. Si en algún momento se necesita versionar
+# un CSV público a propósito, se agrega una excepción puntual acá
+# (!nombre.csv) — no se saca esta regla general.
+*.csv
 
 # dist/ lo genera build.py en cada corrida y el workflow de GitHub Actions lo
 # regenera de cero en cada deploy (nunca lee lo que esté commiteado acá) —

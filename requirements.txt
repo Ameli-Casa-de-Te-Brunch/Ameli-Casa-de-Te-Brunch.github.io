@@ -1,0 +1,5 @@
+# Única dependencia real del pipeline: leer/escribir el Excel maestro
+# (build/extract.py, build/validate.py). CI (GitHub Actions) no la
+# necesita -- nunca corre extract.py ni validate.py, solo render.py y
+# aplicar_disponibilidad.py, que son stdlib puro.
+openpyxl==3.1.5

@@ -46,10 +46,20 @@ FILA_CONFIG_DESDE = 2
 
 
 def _leer_csv(fuente: str) -> list:
-    """fuente: URL http(s) publicada, o ruta a un archivo local (para
-    pruebas). Devuelve una lista de filas (cada fila, una lista de
-    strings) -- igual forma que csv.reader."""
+    """fuente: URL https publicada de Google Sheets, o ruta a un archivo
+    local (para pruebas). Devuelve una lista de filas (cada fila, una
+    lista de strings) -- igual forma que csv.reader.
+
+    Toda URL se valida contra el mismo allowlist de dominio que ya usa
+    disponibilidad_csv_url en extract_common.sanear_config() -- si algún
+    día esta fuente viene de una variable de repo mal configurada, el
+    runner de CI no le hace un GET a un host arbitrario (ver auditoría
+    de seguridad, hallazgo H-01)."""
     if fuente.startswith("http://") or fuente.startswith("https://"):
+        if not ec.url_https_valida(fuente, ("docs.google.com",)):
+            raise ValueError(
+                f"La URL de origen no es de docs.google.com, no la voy a buscar: {fuente}"
+            )
         with urllib.request.urlopen(fuente, timeout=15) as resp:
             contenido = resp.read().decode("utf-8-sig")
     else:
