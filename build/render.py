@@ -8,6 +8,7 @@ import json
 import re
 import shutil
 import sys
+import urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -179,6 +180,11 @@ def render(data: dict, template: str) -> str:
     out = _bloque(out, "DIRECCION", bool(direccion))
     if direccion:
         out = out.replace("__DIRECCION__", html_mod.escape(direccion))
+        # antes la dirección era texto plano, sin ningún link a Maps -- se
+        # arma una búsqueda de Google Maps con nombre + dirección (no un
+        # Place ID puntual, que requeriría cargarlo a mano en la config).
+        consulta_maps = urllib.parse.quote(f"Amelí Casa de Té & Brunch, {direccion}")
+        out = out.replace("__DIRECCION_MAPS_URL__", f"https://www.google.com/maps/search/?api=1&query={consulta_maps}")
 
     tripadvisor_url = cfg.get("tripadvisor")
     out = _bloque(out, "TA", bool(tripadvisor_url))

@@ -169,6 +169,7 @@ footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:c
 .redes a svg{color:var(--dorado);flex:0 0 auto}
 .redes a:active{transform:scale(.96)}
 footer .datos{margin-top:22px;font-size:calc(12.5px * var(--afs,1));color:rgba(255,253,247,.7);line-height:1.7}
+footer .datos a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,253,247,.4)}
 .wsp{position:fixed;bottom:18px;right:16px;z-index:40;background:#3BA55D;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:calc(14px * var(--afs,1));box-shadow:0 8px 22px rgba(0,0,0,.22);transition:transform .2s}
 .wsp:active{transform:scale(.94)}
 @media(min-width:481px){.wsp{right:calc(50% - 224px)}}
