@@ -152,22 +152,37 @@ section.cat.visible{opacity:1;transform:translateY(0)}
 section.cat header{margin-bottom:14px}
 section.cat h2{font-family:'Cormorant Garamond',serif;font-size:calc(29px * var(--afs,1));font-weight:500;color:var(--verde-osc);line-height:1.05}
 section.cat p.desc-cat{color:var(--texto-sec);margin-top:4px;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:calc(16px * var(--afs,1))}
-.lista{display:flex;flex-direction:column;gap:12px}
+.lista{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prod{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .35s ease, opacity .3s ease, margin-top .35s ease, transform .15s ease;cursor:pointer}
 .prod:active{transform:scale(.97)}
-.prod .prod-inner{overflow:hidden;min-height:0;background:var(--crema);border-radius:16px;padding:16px 16px 15px;box-shadow:0 2px 10px rgba(83,96,57,.06)}
+.prod .prod-inner{overflow:hidden;min-height:0;background:var(--crema);border-radius:16px;box-shadow:0 2px 10px rgba(83,96,57,.06)}
 .prod.oculto{grid-template-rows:0fr;opacity:0;margin-top:-12px}
-.prod.oculto .prod-inner{padding-top:0;padding-bottom:0}
 section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .lista .prod{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease,grid-template-rows .35s ease,margin-top .35s ease}
-.prod .fila{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.prod h3{font-family:'Cormorant Garamond',serif;font-size:calc(20px * var(--afs,1));font-weight:600;line-height:1.15;color:var(--tinta)}
-.prod .precio{font-weight:700;font-size:calc(15px * var(--afs,1));color:var(--verde-osc);white-space:nowrap}
+.prod .cont{padding:12px 14px 14px}
+.prod .fila{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.prod h3{font-family:'Cormorant Garamond',serif;font-size:calc(18px * var(--afs,1));font-weight:600;line-height:1.2;color:var(--tinta)}
+.prod .precio{font-weight:700;font-size:calc(14px * var(--afs,1));color:var(--verde-osc);white-space:nowrap}
 .prod .precio small{font-weight:500;font-size:calc(11px * var(--afs,1));color:var(--texto-sec)}
-.prod p{font-size:calc(13px * var(--afs,1));color:var(--texto-sec);margin-top:5px;line-height:1.45}
-.prod .etiquetas{margin-bottom:6px;display:flex;gap:6px;flex-wrap:wrap}
+.prod .desc{font-size:calc(13px * var(--afs,1));color:var(--texto-sec);margin-top:6px;line-height:1.5}
+.prod .etiquetas{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
 .prod .etiquetas .badge{margin-bottom:0}
-.prod.destacada .prod-inner{border:1.5px solid var(--rosa);background:var(--blanco)}
+/* card compacta de la grilla de 2 columnas (todo lo que no es el
+   producto destacado de la categoría) */
+.prod.compacta .foto{height:110px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.prod.compacta .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(38px * var(--afs,1));color:rgba(255,253,247,.6)}
+.prod.compacta h3{font-size:calc(15px * var(--afs,1));margin-top:0}
+.prod.compacta .cont{padding:10px 12px 12px}
+/* panel de producto destacado por categoría -- fuera de la grilla, ancho
+   completo, foto arriba y contenido en panel claro debajo (sin velo) */
+.destacado-cat{margin-bottom:14px}
+.destacado-cat .foto{height:160px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.destacado-cat .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(52px * var(--afs,1));color:rgba(255,253,247,.6)}
+.prod.destacado-cat .cont{padding:16px 18px 18px}
+.destacado-cat .eyebrow-cat{font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:4px}
+.destacado-cat h3{font-size:calc(23px * var(--afs,1))}
+.destacado-cat .desc{margin-bottom:4px}
+.destacado-cat .fila{margin-top:10px}
 footer{margin-top:44px;background:var(--footer-bg);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
 footer .marca{font-family:'Cormorant Garamond',serif;font-size:calc(34px * var(--afs,1));font-weight:600;letter-spacing:.015em;text-transform:uppercase}

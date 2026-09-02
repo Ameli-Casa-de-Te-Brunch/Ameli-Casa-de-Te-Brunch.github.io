@@ -38,6 +38,7 @@ const UI = {
  limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menu'},
  destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí',fr:'Aujourd’hui chez Amelí',it:'Oggi da Amelí'},
  destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'Le specialità della casa'},
+ productoDestacado:{es:'Producto destacado',en:'Featured product',pt:'Produto em destaque',fr:'Produit vedette',it:'Prodotto in evidenza'},
  vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien par ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
  grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
  googleReview:{es:'Reseña en Google',en:'Review on Google',pt:'Avaliação no Google',fr:'Avis sur Google',it:'Recensione su Google'},
@@ -543,15 +544,15 @@ function render(){
     const items=PRODS.filter(p=>p.cat===cat.cod);
     if(!items.length) return '';
     const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${CAT_NOTAS[cat.cod][lang]}</p>`:'';
-    const cards=items.map((p,i)=>{
-      const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
-      const et=bd?`<div class="etiquetas">${bd}</div>`:'';
-      const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
-        <div class="prod-inner">${et}<div class="fila"><h3>${esc(p.n[lang])}</h3>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
-    }).join('');
+    /* el primer producto marcado "Destacado" de la categoría se muestra
+       como panel grande (foto + descripción); el resto va en la grilla
+       compacta de 2 columnas, sin descripción (se ve al abrir la ficha) */
+    const destacado=items.find(p=>p.dest);
+    const resto=destacado?items.filter(p=>p!==destacado):items;
+    const panel=destacado?renderDestacadoCategoria(destacado, cat):'';
+    const cards=resto.map((p,i)=>renderCardCompacta(p, cat, i)).join('');
     return `<section class="cat" id="${esc(cat.cod)}"><header><h2>${esc(cat.nom[lang])}</h2>${nota}</header>
-      <div class="lista">${cards}</div><p class="vacio">${UI.vacio[lang]}</p></section>`;
+      ${panel}<div class="lista">${cards}</div><p class="vacio">${UI.vacio[lang]}</p></section>`;
   }).join('');
   document.querySelectorAll('main .prod').forEach(card=>{
     card.addEventListener('click', ()=>abrirDetalle(card.dataset.id));
@@ -565,6 +566,29 @@ function normalizar(s){
 }
 function altProducto(p){
   return (p.alt && p.alt[lang]) || p.n[lang];
+}
+function fotoOInicial(p){
+  return p.img
+    ? `<img src="${esc(p.img)}" alt="${esc(altProducto(p))}" loading="lazy">`
+    : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
+}
+function renderDestacadoCategoria(p, cat){
+  const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
+  const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
+  return `<article class="prod destacado-cat" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+    <div class="prod-inner">
+      <div class="foto ${p.img?'':`grad-${Math.abs(hashId(p.id))%3}`}">${fotoOInicial(p)}</div>
+      <div class="cont"><p class="eyebrow-cat">${esc(UI.productoDestacado[lang])}</p><h3>${esc(p.n[lang])}</h3><p class="desc">${esc(p.d[lang])}</p><div class="fila">${precio}${bd}</div></div>
+    </div></article>`;
+}
+function renderCardCompacta(p, cat, i){
+  const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
+  const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
+  return `<article class="prod compacta stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+    <div class="prod-inner">
+      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoOInicial(p)}</div>
+      <div class="cont"><h3>${esc(p.n[lang])}</h3>${precio}${bd?`<div class="etiquetas">${bd}</div>`:''}</div>
+    </div></article>`;
 }
 function dispTexto(p){
   if(p.disp==='agotado') return UI.agotadoHoy[lang];
