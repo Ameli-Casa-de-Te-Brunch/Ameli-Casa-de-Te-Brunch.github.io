@@ -33,6 +33,10 @@ const LANGS = ['es','en','pt','fr','it'];
 const UI = {
  sub:{es:'Casa de Té · Brunch',en:'Tea House · Brunch',pt:'Casa de Chá · Brunch',fr:'Maison de thé · Brunch',it:'Casa del tè · Brunch'},
  lugar:{es:'Malargüe, Mendoza — hecho en casa, todos los días.',en:'Malargüe, Mendoza — homemade, every day.',pt:'Malargüe, Mendoza — feito em casa, todos os dias.',fr:'Malargüe, Mendoza — fait maison, tous les jours.',it:'Malargüe, Mendoza — fatto in casa, tutti i giorni.'},
+ buenosDias:{es:'Buenos días',en:'Good morning',pt:'Bom dia',fr:'Bonjour',it:'Buongiorno'},
+ buenasTardes:{es:'Buenas tardes',en:'Good afternoon',pt:'Boa tarde',fr:'Bon après-midi',it:'Buon pomeriggio'},
+ buenasNoches:{es:'Buenas noches',en:'Good evening',pt:'Boa noite',fr:'Bonsoir',it:'Buonasera'},
+ antojoHoy:{es:'¿Qué se te antoja hoy?',en:'What are you craving today?',pt:'O que você está com vontade hoje?',fr:'Qu’avez-vous envie de déguster aujourd’hui ?',it:'Cosa ti va di gustare oggi?'},
  momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí',fr:'Choisissez votre <em>moment</em> Amelí',it:'Scegli il tuo <em>momento</em> Amelí'},
  momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade',fr:'Touchez-en un et le menu s’adapte à votre envie',it:'Tocca uno e il menu si adatta alla tua voglia'},
  limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menu'},
@@ -88,6 +92,22 @@ const CHIPS = [
  {m:'calentito', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
  {m:'llevar', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
 ];
+/* íconos de línea, minimalistas, uno por categoría real (no decorativos
+   sin sentido: cada uno referencia el tipo de producto de esa categoría) */
+const ICONOS = {
+ DYM:'<path d="M4 8h11v3a5.5 5.5 0 0 1-5.5 5.5A5.5 5.5 0 0 1 4 11V8Z"/><path d="M6.5 4.8c-.5.6-.5 1.1 0 1.7M9.5 4.8c-.5.6-.5 1.1 0 1.7"/>',
+ TEH:'<path d="M4 16C4 8 10 4 16 4c0 6-4 12-12 12Z"/><path d="M5 15c3-3 6-6 10-10"/>',
+ BLE:'<path d="M4 16C4 8 10 4 16 4c0 6-4 12-12 12Z"/><path d="M5 15c3-3 6-6 10-10"/><circle cx="14" cy="6" r="1" fill="currentColor" stroke="none"/>',
+ TIS:'<circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"/><path d="M10 3.5c1.4 1.4 1.4 3.2 0 4.6-1.4-1.4-1.4-3.2 0-4.6ZM10 16.5c1.4-1.4 1.4-3.2 0-4.6-1.4 1.4-1.4 3.2 0 4.6ZM3.5 10c1.4-1.4 3.2-1.4 4.6 0-1.4 1.4-3.2 1.4-4.6 0ZM16.5 10c-1.4-1.4-3.2-1.4-4.6 0 1.4 1.4 3.2 1.4 4.6 0Z"/>',
+ CCL:'<path d="M4 8h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V8Z"/><path d="M14 9.5h1.2a2 2 0 0 1 0 4H14"/>',
+ ESP:'<path d="M10 2.5l1.8 5.4 5.7.1-4.6 3.5 1.7 5.5-4.6-3.4-4.6 3.4 1.7-5.5-4.6-3.5 5.7-.1Z"/>',
+ CFR:'<path d="M6 4h8l-1 12a2 2 0 0 1-2 1.8H9A2 2 0 0 1 7 16L6 4Z"/><path d="M7 8h6M7.6 11h4.8"/>',
+ BYJ:'<path d="M6 6h8l-.9 9.5A2 2 0 0 1 11.1 17H8.9a2 2 0 0 1-2-1.5L6 6Z"/><path d="M12 6 14 2"/>',
+ DEL:'<path d="M3 15 10 5l7 10Z"/><path d="M3 15h14"/><circle cx="10" cy="8.5" r="1" fill="currentColor" stroke="none"/>',
+ SAT:'<path d="M3 8l7-4 7 4"/><path d="M4 8h12l-1.2 6.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5L4 8Z"/><path d="M5.5 11h9"/>',
+ TYT:'<path d="M3 15 10 5l7 10Z"/><path d="M3 15h14"/><circle cx="10" cy="8.5" r="1" fill="currentColor" stroke="none"/>',
+ STC:'<path d="M10 17V6"/><path d="M10 6c-2 0-3-1-3-3M10 6c2 0 3-1 3-3M10 10c-2 0-3-1-3-3M10 10c2 0 3-1 3-3"/><path d="M4 4l12 12"/>',
+};
 const BADGES = {
  fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Favori de la maison',it:'Preferito della casa'}},
  reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
@@ -185,6 +205,12 @@ function estadoNegocio(){
     if(min<ini) return {abierto:false, proximaApertura:ini};
   }
   return {abierto:false};
+}
+function saludoHorario(){
+  const h = Math.floor(ahoraMendoza().min/60);
+  if(h<12) return UI.buenosDias[lang];
+  if(h<19) return UI.buenasTardes[lang];
+  return UI.buenasNoches[lang];
 }
 function pintarEstado(){
   const est = estadoNegocio();
@@ -482,6 +508,8 @@ function render(){
   document.title=UI.title[lang];
   $('heroSub').textContent=UI.sub[lang];
   $('heroLugar').textContent=UI.lugar[lang];
+  $('heroSaludo').textContent=saludoHorario();
+  $('heroPregunta').textContent=UI.antojoHoy[lang];
   $('momTitle').innerHTML=UI.momTitle[lang];
   $('momHint').textContent=UI.momHint[lang];
   $('limpiar').textContent=UI.limpiar[lang];
@@ -524,6 +552,7 @@ function render(){
   }));
   $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
+  $('catIcons').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[c.cod]||ICONOS.CCL}</svg><span>${esc(c.nom[lang])}</span></a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
     const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
