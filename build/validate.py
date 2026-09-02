@@ -157,6 +157,15 @@ def validate(data: dict, xlsx_path: Path):
                 f"información hasta entonces."
             )
 
+        disp_crudo = wb["Productos"].cell(row=fila, column=extract.COL["disponibilidad"]).value
+        if disp_crudo and disp_crudo not in extract.DISPONIBILIDAD_VALORES:
+            valores_validos = "', '".join(extract.DISPONIBILIDAD_VALORES)
+            warnings.append(
+                f"Fila {fila} ({pid} · {nombre}): la columna {_col('disponibilidad')} "
+                f"('Disponibilidad hoy') tiene '{disp_crudo}', que no es un valor reconocido. "
+                f"Dejala vacía (= disponible) o usá exactamente '{valores_validos}'."
+            )
+
     # --- slugs duplicados ---
     filas_slugs = _leer_slugs(wb)
     for idx_col, label in ((2, "ES"), (3, "EN")):

@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "build"))
+import aplicar_disponibilidad  # noqa: E402
 import config_local  # noqa: E402
 import extract  # noqa: E402
 import render  # noqa: E402
@@ -121,8 +122,17 @@ def main():
 
     print("3/3 render")
     MENU_JSON.parent.mkdir(parents=True, exist_ok=True)
+    # Se commitea SIN la disponibilidad en vivo de la hoja: eso es efímero
+    # (cambia varias veces por día) y no debería ensuciar el historial de
+    # git. El commiteado refleja el Excel; la hoja lo pisa recién al
+    # renderizar, en memoria, y de nuevo en cada rebuild que dispare el
+    # Apps Script vía GitHub Actions (ver aplicar_disponibilidad.py).
     MENU_JSON.write_text(json.dumps(extract.datos_publicos(data), ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"      {MENU_JSON} (solo campos públicos)")
+
+    url_disponibilidad = data["config"].get("disponibilidad_csv_url")
+    if url_disponibilidad:
+        aplicar_disponibilidad.aplicar_a_prods(data["prods"], url_disponibilidad)
 
     template = args.template.read_text(encoding="utf-8")
     html = render.render(data, template)
@@ -131,6 +141,7 @@ def main():
     print(f"      {args.out} ({len(html)} bytes)")
     render.copiar_assets(args.out.parent)
     print(f"      {args.out.parent / 'assets'} (fuentes)")
+    render._escribir_seo_estatico(args.out.parent, data["config"].get("url_base"))
 
     if args.publicar:
         publicar()
