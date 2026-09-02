@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """data/menu.json + templates/menu.template.html -> dist/index.html (+ assets/)"""
 import base64
+import datetime
 import hashlib
 import html as html_mod
 import json
@@ -14,6 +15,17 @@ DEFAULT_JSON = HERE.parent / "data" / "menu.json"
 DEFAULT_TEMPLATE = HERE.parent / "templates" / "menu.template.html"
 DEFAULT_OUT = HERE.parent / "dist" / "index.html"
 ASSETS_DIR = HERE.parent / "assets"
+
+# Horario actual del local -- se repite acá porque el Excel todavía no lo
+# tiene como dato estructurado (solo existe como texto de display en
+# assets/js/menu.js, UI.datos + HORARIO). Si cambian el horario, hay que
+# actualizar los dos lugares hasta que esto se mueva a la hoja de config.
+HORARIO_JSONLD = [
+    {"dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+     "opens": "09:00", "closes": "13:00"},
+    {"dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+     "opens": "17:30", "closes": "21:00"},
+]
 
 
 def copiar_assets(destino_dir: Path):
@@ -69,6 +81,62 @@ def _bloque(texto: str, nombre: str, mantener: bool) -> str:
     return patron.sub("", texto)
 
 
+def _jsonld(data: dict, url_base_limpia: str) -> str:
+    """Restaurant + Menu (Schema.org) para resultados enriquecidos de Google.
+    Se arma con los mismos datos que ya alimentan el sitio (una sola fuente),
+    salvo el horario (ver HORARIO_JSONLD arriba)."""
+    cfg = data["config"]
+    direccion = cfg.get("direccion") or ""
+    # "Malargüe, Mendoza, Argentina" -> separar en partes para PostalAddress.
+    partes_dir = [p.strip() for p in direccion.split(",")]
+    localidad = partes_dir[1] if len(partes_dir) > 1 else "Malargüe"
+
+    secciones = []
+    for cat in data["cats"]:
+        items = [p for p in data["prods"] if p["cat"] == cat["cod"]]
+        if not items:
+            continue
+        secciones.append({
+            "@type": "MenuSection",
+            "name": cat["nom"].get("es"),
+            "hasMenuItem": [
+                {
+                    "@type": "MenuItem",
+                    "name": p["n"].get("es"),
+                    "description": p["d"].get("es"),
+                }
+                for p in items
+            ],
+        })
+
+    obj = {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Amelí Casa de Té & Brunch",
+        "url": f"{url_base_limpia}/",
+        "image": f"{url_base_limpia}/assets/img/og-image.jpg",
+        "servesCuisine": ["Café", "Té", "Brunch", "Pastelería"],
+        "priceRange": "$$",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": partes_dir[0] if partes_dir else direccion,
+            "addressLocality": localidad,
+            "addressRegion": "Mendoza",
+            "addressCountry": "AR",
+        },
+        "openingHoursSpecification": [
+            {"@type": "OpeningHoursSpecification", **h} for h in HORARIO_JSONLD
+        ],
+        "hasMenu": {
+            "@type": "Menu",
+            "hasMenuSection": secciones,
+        },
+    }
+    if cfg.get("whatsapp"):
+        obj["telephone"] = f"+{cfg['whatsapp']}"
+    return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+
+
 def render(data: dict, template: str) -> str:
     cfg = data["config"]
     wsp_number = cfg.get("whatsapp")
@@ -92,6 +160,14 @@ def render(data: dict, template: str) -> str:
     out = _bloque(out, "OG_IMAGE", bool(url_base_limpia))
     if url_base_limpia:
         out = out.replace("__OG_IMAGE_URL__", html_mod.escape(f"{url_base_limpia}/assets/img/og-image.jpg"))
+
+    out = _bloque(out, "CANONICAL", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__CANONICAL_URL__", html_mod.escape(f"{url_base_limpia}/"))
+
+    out = _bloque(out, "JSONLD", bool(url_base_limpia))
+    if url_base_limpia:
+        out = out.replace("__JSONLD__", _jsonld(data, url_base_limpia))
 
     out = _bloque(out, "WSP", bool(wsp_number))
     out = out.replace("__WSP_NUMBER__", wsp_number or "")
@@ -125,6 +201,32 @@ def render(data: dict, template: str) -> str:
     return out
 
 
+def _escribir_seo_estatico(destino_dir: Path, url_base: str | None):
+    """robots.txt y sitemap.xml -- sitemap.xml necesita URL absoluta, así
+    que sin 'URL base del menú' cargada solo se escribe un robots.txt
+    mínimo (sin línea Sitemap) y no se genera sitemap.xml."""
+    url_base_limpia = url_base.rstrip("/") if url_base else None
+    lineas_robots = ["User-agent: *", "Allow: /"]
+    if url_base_limpia:
+        lineas_robots += ["", f"Sitemap: {url_base_limpia}/sitemap.xml"]
+    (destino_dir / "robots.txt").write_text("\n".join(lineas_robots) + "\n", encoding="utf-8")
+
+    if url_base_limpia:
+        hoy = datetime.date.today().isoformat()
+        sitemap = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            "  <url>\n"
+            f"    <loc>{html_mod.escape(url_base_limpia)}/</loc>\n"
+            f"    <lastmod>{hoy}</lastmod>\n"
+            "    <changefreq>weekly</changefreq>\n"
+            "    <priority>1.0</priority>\n"
+            "  </url>\n"
+            "</urlset>\n"
+        )
+        (destino_dir / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+
 def main():
     json_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_JSON
     template_path = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_TEMPLATE
@@ -137,6 +239,7 @@ def main():
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html, encoding="utf-8")
     copiar_assets(out_path.parent)
+    _escribir_seo_estatico(out_path.parent, data["config"].get("url_base"))
     print(f"OK: {out_path} ({len(html)} bytes)")
 
 

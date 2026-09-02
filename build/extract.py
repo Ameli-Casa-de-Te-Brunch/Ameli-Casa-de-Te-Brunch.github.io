@@ -43,7 +43,7 @@ DEFAULT_OUT = HERE.parent / "data" / "menu.json"
 OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 
 FILA_CONFIG_INICIO = 16  # ver hoja "Resumen y Configuración": el bloque de
-FILA_CONFIG_FIN = 29     # config empieza después del resumen automático.
+FILA_CONFIG_FIN = 30     # config empieza después del resumen automático.
 
 # Columnas de la hoja "Productos" (1-indexado). Definidas una sola vez acá
 # porque validate.py las necesita también para armar sus mensajes.
@@ -59,6 +59,17 @@ COL = {
     "slug": {"es": 27, "en": 28, "pt": 29, "fr": 30, "it": 31},
     "alergenos_inicio": 32, "alergenos_fin": 46,
     "estado_alergenos": 47, "obs_alergenos": 48, "observaciones": 49,
+    "disponibilidad": 50,
+}
+
+# Valores de la columna "Disponibilidad hoy" -> código corto publicado.
+# Ausente o "Disponible" (el default) no se publica -- un producto sin
+# esta columna cargada se sigue mostrando normal, sin badge. "Inactivo"
+# ya lo cubre la columna "Producto activo" (el producto ni aparece), así
+# que acá solo hacen falta los dos estados intermedios.
+DISPONIBILIDAD_VALORES = {
+    "Agotado por hoy": "agotado",
+    "No disponible temporalmente": "no_disp",
 }
 
 
@@ -192,6 +203,7 @@ def load_productos(wb):
             "formato": ws.cell(row=r, column=COL["formato"]).value or "",
             "img": ws.cell(row=r, column=COL["img"]).value or None,
             "tag": ws.cell(row=r, column=COL["etiqueta_inicial"]).value or None,
+            "disp": DISPONIBILIDAD_VALORES.get(ws.cell(row=r, column=COL["disponibilidad"]).value),
             "alerg": alergenos,
             "estado_alergenos": estado_alergenos,
             "leche": opciones_leche.get(idv, []),
@@ -271,6 +283,7 @@ def load_config(wb):
     url_base = params.get("URL base del menú")
     tripadvisor = params.get("TripAdvisor")
     google_resenas = params.get("Google (reseñas)")
+    disponibilidad_csv_url = params.get("URL de disponibilidad (Google Sheets)")
 
     if _es_placeholder(whatsapp) or _es_placeholder(params.get("WhatsApp de pedidos")):
         whatsapp = None
@@ -284,6 +297,8 @@ def load_config(wb):
         tripadvisor = None
     if _es_placeholder(google_resenas):
         google_resenas = None
+    if _es_placeholder(disponibilidad_csv_url):
+        disponibilidad_csv_url = None
 
     # Segunda capa de validación (además del escapado HTML en render.py):
     # un handle de Instagram con caracteres raros, o un link que no sea
@@ -296,6 +311,8 @@ def load_config(wb):
         tripadvisor = None
     if not _url_https_valida(google_resenas, ("google.com", "g.page")):
         google_resenas = None
+    if not _url_https_valida(disponibilidad_csv_url, ("docs.google.com",)):
+        disponibilidad_csv_url = None
 
     tasa_usd = params.get("Tipo de cambio ARS/USD")
     tasa_eur = params.get("Tipo de cambio ARS/EUR")
@@ -309,6 +326,9 @@ def load_config(wb):
         "url_base": url_base,
         "tripadvisor": tripadvisor,
         "google_resenas": google_resenas,
+        # Solo para build.py (aplicar_disponibilidad.py) -- nunca sale al
+        # HTML/JSON público, no está en _CAMPOS_CONFIG_PUBLICOS.
+        "disponibilidad_csv_url": disponibilidad_csv_url,
         "tasa_usd": tasa_usd if isinstance(tasa_usd, (int, float)) else None,
         "tasa_eur": tasa_eur if isinstance(tasa_eur, (int, float)) else None,
         "tasa_brl": tasa_brl if isinstance(tasa_brl, (int, float)) else None,
@@ -403,6 +423,8 @@ def extract(xlsx_path: Path) -> dict:
             item["tag"] = prod["tag"]
         if prod["leche"]:
             item["leche"] = prod["leche"]
+        if prod["disp"]:
+            item["disp"] = prod["disp"]
         prods.append(item)
     prods.sort(key=lambda p: (next(c["orden"] for c in cats if c["cod"] == p["cat"]), p["orden"]))
 
@@ -421,7 +443,7 @@ def extract(xlsx_path: Path) -> dict:
 # si su fila individual está validada (ver load_productos) — el resto
 # (costos, ingredientes, personalización, notas operativas, fila/columna
 # de origen) se queda afuera de lo que se versiona y se publica.
-_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag", "leche")
+_CAMPOS_PROD_PUBLICOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img", "alerg", "tag", "leche", "disp")
 _CAMPOS_CONFIG_PUBLICOS = ("moneda", "whatsapp", "instagram", "direccion", "url_base", "tripadvisor", "google_resenas")
 
 

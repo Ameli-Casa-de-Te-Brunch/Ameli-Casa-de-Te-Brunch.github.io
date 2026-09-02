@@ -24,7 +24,14 @@ propósito — no se retoma hasta resolver privacidad y hosting:
 - **Sitio institucional** (una página de marca/presencia separada del menú).
 - **Sistema de "me gusta" / votos** (backend Apps Script, contador en las
   tarjetas). Se sacó del sitio — ver más abajo por qué.
-- **Dominio propio** (`menu.ameli.com.ar` o similar) y su DNS.
+- **Dominio propio** (`amelicasadete.com.ar`) — todavía no comprado. El
+  proyecto ya está preparado para esa migración (ver "Migración a dominio
+  propio" más abajo); no hay nada que rehacer cuando se compre.
+- **Sesión temporal de 180 minutos con backend** (Cloudflare Workers/
+  Supabase/etc. + tokens firmados) — arquitectura documentada pero sin
+  implementar (ver "Arquitectura futura: sesión de 180 minutos" más abajo).
+  No confundir con un timer de JavaScript: eso no es lo que se pidió, y no
+  se va a fingir que sí con un `setTimeout`.
 - **Analytics** de cualquier tipo (visitas, escaneos de QR, etc.).
 
 Si en algún momento se retoma alguno de estos puntos, que sea una decisión
@@ -59,6 +66,39 @@ GitHub Actions reconstruye el sitio solo a partir de `data/menu.json`.
 Si el validador encuentra un error, **`menu.bat` no genera nada** y
 **`publicar.bat` no tiene nada para subir**: corregís lo que te indica en el
 Excel y volvés a correr `menu.bat`.
+
+## Disponibilidad en vivo (sin tocar el Excel ni el código)
+
+Esto es aparte del flujo de arriba, y a propósito: cambiar el precio o la
+descripción de un producto sigue pasando por el Excel + `publicar.bat` (son
+cambios que ameritan pensarlos). Pero "se terminó la Matilda" necesita
+poder resolverse desde el celular, en segundos, sin este proyecto de por
+medio — ver el detalle completo (y por qué se descartaron otras
+arquitecturas) en `Disponibilidad_en_vivo_instrucciones` que te compartí.
+
+**Cómo funciona:** una hoja de Google Sheets con una fila por producto
+(`ID`, `Nombre`, `Disponibilidad`) que el personal edita desde el celular.
+Un Apps Script avisa a GitHub cada vez que cambia una celda; GitHub Actions
+reconstruye el sitio usando el `data/menu.json` ya commiteado (nunca toca
+el Excel, nunca necesita verlo) y publica en ~30-90 segundos. Todos los
+demás datos del producto (nombre, precio, descripción, alérgenos, fotos)
+siguen viniendo únicamente del Excel — la hoja de Sheets solo pisa el campo
+`disp` de cada producto.
+
+**Piezas del lado del código** (si hay que tocarlas de nuevo):
+- `build/aplicar_disponibilidad.py` — lee la hoja publicada como CSV y
+  parchea la disponibilidad. Nunca corta el build si la hoja no responde.
+- `build.py` lo aplica en memoria (para que la vista previa local también
+  refleje la hoja) usando la URL del Excel, campo "URL de disponibilidad
+  (Google Sheets)" en *Resumen y Configuración*.
+- `.github/workflows/deploy.yml` lo corre standalone, leyendo la URL de la
+  **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
+  variables → Actions → Variables — no es un secreto: una hoja "publicada
+  en la web" ya es pública por diseño de Google, por eso va como variable
+  y no como secret).
+- El disparador es `repository_dispatch` con `event_type:
+  actualizar-disponibilidad`, invocado por el Apps Script de la hoja — no
+  por nada de este repo.
 
 ### Otras formas de correrlo
 
@@ -309,11 +349,12 @@ cualquier decisión real.
   (warning, no bloquea, porque hoy no hay ningún precio cargado todavía) si
   un producto activo se publica sin precio — ver la sección de arriba sobre
   qué hace el validador.
-- **Sin rastreo.** Cero cookies, cero `localStorage`/`sessionStorage`, cero
-  analytics, cero píxeles. Auditado directamente en el HTML generado: no
-  queda ningún request ni ningún guardado de datos del visitante — el único
-  uso de `localStorage` que existió (para no dejar votar dos veces desde el
-  mismo dispositivo) se fue junto con todo el sistema de votos en la Fase 2.
+- **Sin rastreo.** Cero cookies, cero analytics, cero píxeles, cero request
+  a terceros (`connect-src 'none'`, auditado en el HTML generado). El único
+  uso de `localStorage` es para las preferencias de accesibilidad (tamaño
+  de texto, contraste, idioma) — vive únicamente en el dispositivo del
+  visitante, nunca sale de ahí, y no es tracking: no identifica a nadie ni
+  se lee desde ningún lado más que el propio navegador.
 
 ## Qué es público y qué no
 
@@ -341,3 +382,95 @@ de nuevo, ni a ningún archivo versionado):**
 **Si tenés dudas sobre si algo puede publicarse:** no lo subas y preguntá
 primero. Es mucho más fácil agregar un dato después que sacarlo de un repo
 público una vez que salió.
+
+## Migración a dominio propio
+
+El sitio está armado para que comprar `amelicasadete.com.ar` sea un cambio
+de configuración chico, no una reconstrucción. Todo lo que depende del
+dominio sale de **una sola fuente**: el campo "URL base del menú" en la
+hoja *Resumen y Configuración* del Excel. No hay ningún `github.io`
+hardcodeado en el código — se verificó con una búsqueda completa del
+repositorio. Todos los `href`/`src` de assets son rutas relativas
+(`assets/css/menu.css`, no `/assets/css/menu.css`), así que funcionan igual
+si el sitio se sirve desde la raíz de un dominio o desde un subpath como
+`amelicasadete.com.ar/menu`.
+
+**Qué ya usa esa URL base hoy** (todo se regenera solo con `python
+build.py` una vez actualizado el campo): `og:url`, `og:image`,
+`<link rel="canonical">`, el JSON-LD (Schema.org), `robots.txt` y
+`sitemap.xml`.
+
+### Pasos para cuando se compre el dominio
+
+1. Configurar el dominio en GitHub Pages (Settings → Pages → Custom domain)
+   apuntando a `amelicasadete.com.ar` — o, si se prefiere `/menu` como
+   subpath, evaluar en ese momento si GitHub Pages custom domain soporta
+   ese path o si conviene otro hosting (Cloudflare Pages/Netlify, ambos
+   gratis en este volumen) sirviendo este mismo `dist/` bajo `/menu`.
+2. Elegir canónico con o sin `www` y redirigir la variante secundaria.
+3. Actualizar "URL base del menú" en el Excel con la URL definitiva.
+4. Correr `python build.py --publicar` — esto ya regenera OG, canonical,
+   JSON-LD, `robots.txt` y `sitemap.xml` con la URL nueva, sin tocar código.
+5. Dar de alta la propiedad en Google Search Console, verificar por DNS,
+   enviar el `sitemap.xml` nuevo.
+6. Enlazar Google Business Profile al dominio definitivo.
+7. Configurar correo (`hola@amelicasadete.com.ar` y las cuentas que
+   correspondan) con SPF/DKIM/DMARC — recién en este momento, no antes.
+8. Recién acá: generar el QR físico definitivo apuntando al dominio propio,
+   e imprimirlo. No antes — el QR no debería tener que reimprimirse nunca
+   más después de este punto, ni por cambios de precio, de menú, de fotos
+   ni de hosting.
+9. `ameli-casa-de-te-brunch.github.io` queda como infraestructura interna
+   (GitHub Pages la sigue sirviendo) o como redirect al dominio nuevo, pero
+   deja de ser la URL que ve un cliente.
+
+## Arquitectura futura: sesión de 180 minutos
+
+**Todavía no implementada a propósito** — se documenta acá para no
+perder el diseño, pero no se construye hasta tener el dominio propio y
+decidir el proveedor de backend. Un timer solo de JavaScript no cumple lo
+pedido (se esquiva con un refresh) y no se va a fingir que sí.
+
+**Flujo previsto:**
+
+```
+QR físico permanente (impreso una sola vez)
+        │
+        ▼
+amelicasadete.com.ar/menu
+        │
+        ▼
+backend / edge function (Cloudflare Workers, o equivalente)
+        │  crea un token firmado con:
+        │   - hora de creación
+        │   - hora de expiración (creación + 180 min)
+        │   - estado
+        ▼
+menú servido con el token válido en un header/cookie de sesión
+        │
+        ▼
+cada carga verifica el token en el backend, nunca confía en el reloj
+del navegador — un refresh no renueva ni esquiva la expiración
+        │
+        ▼
+al vencer: pantalla "Tu visita al menú terminó", con los links
+institucionales (Instagram, WhatsApp, ubicación, TripAdvisor) igual
+accesibles — lo que expira es la carta, no el contacto con Amelí
+```
+
+**Por qué no es trivial** (para que quede claro por qué se dejó para una
+fase aparte, no por pereza):
+- Requiere un proveedor de cómputo real (Workers/Functions) — GitHub Pages
+  sirve archivos estáticos, no puede emitir ni verificar tokens.
+- Requiere un secreto de firma gestionado con cuidado — el primer secreto
+  real que tendría este proyecto.
+- Cambia el modelo de amenazas: pasa de "sitio estático sin backend" (lo
+  que hoy simplifica enormemente la seguridad) a un sistema con su propio
+  ciclo de vida, rotación de claves y superficie de ataque.
+- Preferencias de accesibilidad e idioma deberían sobrevivir dentro de una
+  misma sesión (ya lo hacen vía `localStorage`, que no depende de esto) pero
+  no más allá de los 180 minutos ni de una visita a otra.
+
+**Cuándo retomarlo:** cuando el dominio propio esté andando y haya decidido
+el proveedor de backend. Hasta entonces, el sitio sigue siendo 100%
+estático y sin esa dependencia.

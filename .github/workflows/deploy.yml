@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Lo dispara el Apps Script de la hoja de disponibilidad cada vez que el
+  # personal cambia un estado (ver build/aplicar_disponibilidad.py y el
+  # README, sección "Disponibilidad en vivo"). No necesita el Excel: solo
+  # re-renderiza data/menu.json (ya commiteado) con la disponibilidad nueva.
+  repository_dispatch:
+    types: [actualizar-disponibilidad]
 
 permissions:
   contents: read
@@ -35,6 +41,14 @@ jobs:
           }
       # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, así que
       # nunca corre extract.py ni validate.py — eso pasa en la PC del dueño.
+      # Sí puede pisar la disponibilidad con lo que diga la hoja de Sheets
+      # (DISPONIBILIDAD_CSV_URL es una repo variable, no un secreto: es una
+      # URL "publicada en la web", pública por diseño de Google Sheets) —
+      # no falla el build si no está configurada o no responde.
+      - name: Aplicar disponibilidad en vivo (si está configurada)
+        env:
+          DISPONIBILIDAD_CSV_URL: ${{ vars.DISPONIBILIDAD_CSV_URL }}
+        run: python build/aplicar_disponibilidad.py
       - run: python build/render.py
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:

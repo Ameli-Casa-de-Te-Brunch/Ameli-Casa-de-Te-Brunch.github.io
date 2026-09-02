@@ -47,7 +47,7 @@ const UI = {
         fr:'Mardi à samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
         it:'Martedì a sabato · 9:00–13:00 e 17:30–21:00<br>Domenica · 17:30–21:00'},
  wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
- title:{es:'Amelí · Casa de Té & Brunch — Menú',en:'Amelí · Tea House & Brunch — Menu',pt:'Amelí · Casa de Chá & Brunch — Menu',fr:'Amelí · Maison de thé & Brunch — Menu',it:'Amelí · Casa del tè & Brunch — Menu'},
+ title:{es:'Menú | Amelí Casa de Té & Brunch · Malargüe',en:'Menu | Amelí Tea House & Brunch · Malargüe',pt:'Menu | Amelí Casa de Chá & Brunch · Malargüe',fr:'Menu | Amelí Maison de thé & Brunch · Malargüe',it:'Menu | Amelí Casa del tè & Brunch · Malargüe'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
  cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
  abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
@@ -66,6 +66,17 @@ const UI = {
  a11yContraste:{es:'Alto contraste',en:'High contrast',pt:'Alto contraste',fr:'Contraste élevé',it:'Alto contrasto'},
  a11yMovimiento:{es:'Reducir movimiento',en:'Reduce motion',pt:'Reduzir movimento',fr:'Réduire les animations',it:'Riduci movimento'},
  a11yLectura:{es:'Lectura simple',en:'Simple reading',pt:'Leitura simples',fr:'Lecture simplifiée',it:'Lettura semplice'},
+ idioma:{es:'Idioma',en:'Language',pt:'Idioma',fr:'Langue',it:'Lingua'},
+ avisoAlergias:{es:'Si tenés alguna alergia o intolerancia alimentaria, informanos antes de realizar tu pedido.',en:'If you have any food allergy or intolerance, please let us know before ordering.',pt:'Se você tem alguma alergia ou intolerância alimentar, avise-nos antes de pedir.',fr:'Si vous avez une allergie ou une intolérance alimentaire, informez-nous avant de commander.',it:'Se hai un’allergia o un’intolleranza alimentare, informaci prima di ordinare.'},
+ avisoMoneda:{es:'Precios expresados en pesos argentinos (ARS). Las conversiones a otras monedas son orientativas.',en:'Prices shown in Argentine pesos (ARS). Conversions to other currencies are approximate.',pt:'Preços em pesos argentinos (ARS). As conversões para outras moedas são apenas orientativas.',fr:'Prix indiqués en pesos argentins (ARS). Les conversions dans d’autres devises sont indicatives.',it:'Prezzi in pesos argentini (ARS). Le conversioni in altre valute sono indicative.'},
+ buscarLabel:{es:'Buscar en el menú',en:'Search the menu',pt:'Buscar no menu',fr:'Rechercher dans le menu',it:'Cerca nel menu'},
+ buscarPlaceholder:{es:'¿Qué estás buscando?',en:'What are you looking for?',pt:'O que você está procurando?',fr:'Que recherchez-vous ?',it:'Cosa stai cercando?'},
+ buscarLimpiar:{es:'Limpiar búsqueda',en:'Clear search',pt:'Limpar busca',fr:'Effacer la recherche',it:'Cancella ricerca'},
+ buscarSinResultados:{es:'Sin resultados para tu búsqueda',en:'No results for your search',pt:'Nenhum resultado para sua busca',fr:'Aucun résultat pour votre recherche',it:'Nessun risultato per la tua ricerca'},
+ buscarResultados:{es:'resultados encontrados',en:'results found',pt:'resultados encontrados',fr:'résultats trouvés',it:'risultati trovati'},
+ volverCategorias:{es:'Categorías',en:'Categories',pt:'Categorias',fr:'Catégories',it:'Categorie'},
+ agotadoHoy:{es:'Agotado por hoy',en:'Sold out today',pt:'Esgotado por hoje',fr:'Épuisé pour aujourd’hui',it:'Esaurito per oggi'},
+ noDisponible:{es:'No disponible temporalmente',en:'Temporarily unavailable',pt:'Temporariamente indisponível',fr:'Temporairement indisponible',it:'Temporaneamente non disponibile'},
 };
 const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
 const CHIPS = [
@@ -139,7 +150,7 @@ const BANDERAS = {
  it:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cIT"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cIT)"><rect width="6.7" height="20" fill="#009246"/><rect x="6.7" width="6.6" height="20" fill="#FFFFFF"/><rect x="13.3" width="6.7" height="20" fill="#CE2B37"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
 };
 
-let lang='es', moodActivo=null, sheetProdId=null;
+let lang='es', moodActivo=null, sheetProdId=null, terminoBusqueda='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -197,7 +208,7 @@ function abrirDetalle(id){
   focoPrevio = document.activeElement;
   $('sheetNombre').textContent = p.n[lang];
   $('sheetDesc').textContent = p.d[lang];
-  $('sheetEtiquetas').innerHTML = p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
+  $('sheetEtiquetas').innerHTML = p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
   /* "etiqueta inicial" es un texto editorial libre, cargado solo en
      espanol en el Excel -- se muestra unicamente en ese idioma para no
      mezclar espanol sin traducir con el resto de la ficha. */
@@ -229,7 +240,7 @@ function abrirDetalle(id){
   foto.querySelector('img')?.remove();
   if(p.img){
     const img = document.createElement('img');
-    img.src = p.img; img.alt = '';
+    img.src = p.img; img.alt = p.n[lang];
     foto.appendChild(img);
     $('sheetInicial').hidden = true;
   } else {
@@ -237,7 +248,9 @@ function abrirDetalle(id){
     $('sheetInicial').hidden = false;
     $('sheetInicial').textContent=p.n[lang].charAt(0);
   }
-  if(WSP_NUMBER){
+  /* si está agotado o no disponible, no tiene sentido ofrecer pedirlo por
+     WhatsApp -- el badge ya explica por qué */
+  if(WSP_NUMBER && !p.disp){
     const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
     $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
     $('sheetPedirTxt').textContent = UI.wsp[lang];
@@ -356,6 +369,55 @@ $('a11yMovimiento').addEventListener('change', e=>{ a11yPrefs.movimiento=e.targe
 $('a11yLectura').addEventListener('change', e=>{ a11yPrefs.lectura=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
 aplicarA11y();
 
+/* ---------- selector de idioma (desplegable) ---------- */
+function abrirLangs(){
+  $('langsMenu').hidden=false;
+  $('langsBtn').setAttribute('aria-expanded','true');
+  document.addEventListener('click', onLangsOutsideClick);
+  document.addEventListener('keydown', onLangsKeydown);
+  const actual=$('langsMenu').querySelector('button[aria-selected="true"]');
+  if(actual) actual.focus();
+}
+function cerrarLangs(){
+  $('langsMenu').hidden=true;
+  $('langsBtn').setAttribute('aria-expanded','false');
+  document.removeEventListener('click', onLangsOutsideClick);
+  document.removeEventListener('keydown', onLangsKeydown);
+}
+function onLangsOutsideClick(e){ if(!$('langs').contains(e.target)) cerrarLangs(); }
+function onLangsKeydown(e){
+  if(e.key==='Escape'){ cerrarLangs(); $('langsBtn').focus(); return; }
+  if(e.key==='Tab'){
+    const focosables=$('langsMenu').querySelectorAll('button');
+    if(!focosables.length) return;
+    const primero=focosables[0], ultimo=focosables[focosables.length-1];
+    if(e.shiftKey && document.activeElement===primero){ e.preventDefault(); ultimo.focus(); }
+    else if(!e.shiftKey && document.activeElement===ultimo){ e.preventDefault(); primero.focus(); }
+  }
+}
+$('langsBtn').addEventListener('click', ()=>{ $('langsMenu').hidden ? abrirLangs() : cerrarLangs(); });
+
+/* ---------- buscador ---------- */
+$('buscarInput').addEventListener('input', e=>{
+  terminoBusqueda=e.target.value;
+  $('buscarLimpiar').hidden=!terminoBusqueda;
+  aplicarFiltro();
+});
+$('buscarLimpiar').addEventListener('click', ()=>{
+  terminoBusqueda=''; $('buscarInput').value=''; $('buscarLimpiar').hidden=true;
+  aplicarFiltro(); $('buscarInput').focus();
+});
+
+/* ---------- volver a categorías ---------- */
+$('btnVolver').addEventListener('click', ()=>{
+  const destino=$('navcat');
+  destino.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  destino.querySelector('a')?.focus({preventScroll:true});
+});
+window.addEventListener('scroll', ()=>{
+  $('btnVolver').classList.toggle('visible', window.scrollY > window.innerHeight*1.4);
+}, {passive:true});
+
 /* ---------- carrusel: flechas, puntos, drag desktop ---------- */
 function initCarrusel(){
   const car=$('carrusel');
@@ -435,11 +497,20 @@ function render(){
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
   pintarEstado();
   /* selector de idioma */
-  $('langs').innerHTML=LANGS.map(l=>`<button data-l="${l}" class="${l===lang?'activo':''}" aria-pressed="${l===lang}" aria-label="${esc(IDIOMA_LABEL[l])}">${BANDERAS[l]}<span>${l.toUpperCase()}</span></button>`).join('');
-  document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{
-    lang=b.dataset.l;render();aplicarFiltro();
+  $('langsBtnTxt').textContent=lang.toUpperCase();
+  $('langsBtn').setAttribute('aria-label', `${UI.idioma[lang]}: ${IDIOMA_LABEL[lang]}`);
+  $('langsMenu').innerHTML=LANGS.map(l=>`<li><button type="button" role="option" data-l="${l}" aria-selected="${l===lang}">${esc(IDIOMA_LABEL[l])}</button></li>`).join('');
+  $('langsMenu').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    lang=b.dataset.l; cerrarLangs(); render(); aplicarFiltro();
     if(sheetProdId) abrirDetalle(sheetProdId);  /* si hay un panel de detalle abierto, refrescarlo tambien */
   }));
+  /* aviso de alergias, moneda y buscador */
+  $('avisoAlergias').textContent=UI.avisoAlergias[lang];
+  $('avisoMoneda').textContent=UI.avisoMoneda[lang];
+  $('buscarInput').placeholder=UI.buscarPlaceholder[lang];
+  $('buscarLabel').textContent=UI.buscarLabel[lang];
+  $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
+  $('btnVolverTxt').textContent=UI.volverCategorias[lang];
   /* chips */
   $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}">${ch.t[lang]}</button>`).join('');
   document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
@@ -451,13 +522,13 @@ function render(){
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados */
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
-    const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('');
+    const bd=p.b.map(k=>`<span class="pill">${BADGES[k].t[lang]}</span>`).join('') + (p.disp?`<span class="pill">${esc(UI[p.disp==='agotado'?'agotadoHoy':'noDisponible'][lang])}</span>`:'');
     const fotoContenido = p.img
-      ? `<img src="${esc(p.img)}" alt="" loading="lazy">`
+      ? `<img src="${esc(p.img)}" alt="${esc(p.n[lang])}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
     return `<article class="dcard" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
       <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}</div>
-      <div class="cuerpo">${bd}<h4>${esc(p.n[lang])}</h4><p>${esc(p.d[lang])}</p></div></article>`;
+      <div class="cuerpo">${bd}<h3>${esc(p.n[lang])}</h3><p>${esc(p.d[lang])}</p></div></article>`;
   }).join('');
   document.querySelectorAll('.dcard').forEach(card=>{
     card.addEventListener('click', ()=>abrirDetalle(card.dataset.id));
@@ -470,13 +541,13 @@ function render(){
     if(!items.length) return '';
     const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${CAT_NOTAS[cat.cod][lang]}</p>`:'';
     const cards=items.map((p,i)=>{
-      const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('');
+      const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
       const et=bd?`<div class="etiquetas">${bd}</div>`:'';
       const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
-        <div class="prod-inner">${et}<div class="fila"><h4>${esc(p.n[lang])}</h4>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
+      return `<article class="prod ${p.dest?'destacada':''} stagger-${Math.min(i,9)}" data-moods="${p.m.join(',')}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(UI[p.disp==='agotado'?'agotadoHoy':'noDisponible'][lang]):''}">
+        <div class="prod-inner">${et}<div class="fila"><h3>${esc(p.n[lang])}</h3>${precio}</div><p>${esc(p.d[lang])}</p></div></article>`;
     }).join('');
-    return `<section class="cat" id="${esc(cat.cod)}"><header><h3>${esc(cat.nom[lang])}</h3>${nota}</header>
+    return `<section class="cat" id="${esc(cat.cod)}"><header><h2>${esc(cat.nom[lang])}</h2>${nota}</header>
       <div class="lista">${cards}</div><p class="vacio">${UI.vacio[lang]}</p></section>`;
   }).join('');
   document.querySelectorAll('main .prod').forEach(card=>{
@@ -486,15 +557,38 @@ function render(){
   observarNav();
   observarCategorias();
 }
+function normalizar(s){
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function dispBadge(p){
+  if(p.disp==='agotado') return `<span class="badge agotado">${esc(UI.agotadoHoy[lang])}</span>`;
+  if(p.disp==='no_disp') return `<span class="badge no-disp">${esc(UI.noDisponible[lang])}</span>`;
+  return '';
+}
+function haystackProducto(p, cat){
+  const partes=[p.n[lang], p.d[lang], cat?cat.nom[lang]:'', p.b.map(k=>BADGES[k]?BADGES[k].t[lang]:'').join(' ')];
+  if(p.alerg){ ALERG_POSITIVOS.forEach(k=>{ if(p.alerg[k]) partes.push(ALERG_TXT[k][lang]); }); }
+  return normalizar(partes.join(' '));
+}
 function aplicarFiltro(){
+  const termino=normalizar(terminoBusqueda);
   document.querySelectorAll('.prod').forEach(p=>{
     const moods=(p.dataset.moods||'').split(',');
-    p.classList.toggle('oculto', !!moodActivo && !moods.includes(moodActivo));
+    const moodOk=!moodActivo || moods.includes(moodActivo);
+    const textoOk=!termino || (p.dataset.haystack||'').includes(termino);
+    p.classList.toggle('oculto', !(moodOk && textoOk));
   });
   document.querySelectorAll('section.cat').forEach(sec=>{
     sec.classList.toggle('sin-resultados', sec.querySelectorAll('.prod:not(.oculto)').length===0);
   });
   $('limpiar').classList.toggle('visible', !!moodActivo);
+  actualizarResultadosBusqueda();
+}
+function actualizarResultadosBusqueda(){
+  const el=$('buscarResultados');
+  if(!terminoBusqueda){ el.textContent=''; return; }
+  const visibles=document.querySelectorAll('.prod:not(.oculto)').length;
+  el.textContent = visibles===0 ? UI.buscarSinResultados[lang] : `${visibles} ${UI.buscarResultados[lang]}`;
 }
 let observer;
 function observarNav(){
