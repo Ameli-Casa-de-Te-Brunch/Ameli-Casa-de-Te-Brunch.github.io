@@ -93,6 +93,12 @@ def main():
     ap.add_argument("--out", type=Path, default=ROOT / "dist" / "index.html")
     ap.add_argument("--dry-run", action="store_true", help="solo validar y reportar, no escribir nada")
     ap.add_argument("--publicar", action="store_true", help="al final, ofrecer publicar (con confirmación)")
+    ap.add_argument(
+        "--disponibilidad-estricta", action="store_true",
+        help="probar localmente el modo estricto de disponibilidad en vivo (el mismo que usa "
+             "CI en producción) -- por defecto la corrida local es NO estricta: un problema en "
+             "la hoja se avisa por consola y se sigue con lo que había.",
+    )
     args = ap.parse_args()
 
     xlsx_path = config_local.resolver_ruta_xlsx(args.xlsx)
@@ -132,7 +138,14 @@ def main():
 
     url_disponibilidad = data["config"].get("disponibilidad_csv_url")
     if url_disponibilidad:
-        aplicar_disponibilidad.aplicar_a_prods(data["prods"], url_disponibilidad)
+        try:
+            aplicar_disponibilidad.aplicar_a_prods(
+                data["prods"], url_disponibilidad, estricto=args.disponibilidad_estricta
+            )
+        except aplicar_disponibilidad.DisponibilidadInvalida as e:
+            print(f"\n[ERROR] Disponibilidad en vivo (modo estricto): {e}")
+            print("Build detenido. Corregí la hoja de disponibilidad o corré sin --disponibilidad-estricta.")
+            sys.exit(1)
 
     template = args.template.read_text(encoding="utf-8")
     html = render.render(data, template)

@@ -88,9 +88,12 @@ def _jsonld(data: dict, url_base_limpia: str) -> str:
     salvo el horario (ver HORARIO_JSONLD arriba)."""
     cfg = data["config"]
     direccion = cfg.get("direccion") or ""
-    # "Malargüe, Mendoza, Argentina" -> separar en partes para PostalAddress.
-    partes_dir = [p.strip() for p in direccion.split(",")]
-    localidad = partes_dir[1] if len(partes_dir) > 1 else "Malargüe"
+    # "Malargüe, Mendoza, Argentina" -> localidad, región (nunca calle: no
+    # existe calle y altura confirmadas en ningún lado del maestro, así que
+    # jamás se inventa un streetAddress -- se omite esa clave directamente).
+    partes_dir = [p.strip() for p in direccion.split(",") if p.strip()]
+    localidad = partes_dir[0] if partes_dir else "Malargüe"
+    region = partes_dir[1] if len(partes_dir) > 1 else "Mendoza"
 
     secciones = []
     for cat in data["cats"]:
@@ -120,9 +123,8 @@ def _jsonld(data: dict, url_base_limpia: str) -> str:
         "priceRange": "$$",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": partes_dir[0] if partes_dir else direccion,
             "addressLocality": localidad,
-            "addressRegion": "Mendoza",
+            "addressRegion": region,
             "addressCountry": "AR",
         },
         "openingHoursSpecification": [

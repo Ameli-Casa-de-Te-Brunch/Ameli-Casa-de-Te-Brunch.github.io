@@ -114,11 +114,32 @@ def es_placeholder(valor):
     return "xxx" in texto or texto in ("ejemplo", "pendiente", "completar", "tbd", "n/a")
 
 
+def host_permitido(host, dominios_permitidos):
+    """True solo si `host` es exactamente uno de los dominios permitidos, o
+    un subdominio real de alguno (termina en "." + dominio). Nunca una
+    coincidencia parcial de texto: "google.com.ejemplo.com" o
+    "tripadvisor.com.ar.ejemplo.com" contienen el nombre permitido como
+    subcadena pero no son ese dominio ni un subdominio suyo, así que
+    quedan afuera. Mismo criterio que build_site.py del prototipo
+    institucional (_host_permitido)."""
+    if not host:
+        return False
+    host = host.lower()
+    for permitido in dominios_permitidos:
+        permitido = permitido.lower()
+        if host == permitido or host.endswith("." + permitido):
+            return True
+    return False
+
+
 def url_https_valida(valor, dominios_permitidos=None):
     """Antes de publicar un link que viene del maestro como texto libre (no un
     handle ni un teléfono que ya sanitizamos con regex), lo validamos: solo
-    https, y si se pasa una lista de dominios, el host tiene que contener
-    alguno de ellos. Esto es una segunda capa además del escapado HTML en
+    https, y si se pasa una lista de dominios, el host (no el netloc
+    completo, así se ignora cualquier userinfo del tipo "usuario@host" en
+    vez de quedar engañado por él) tiene que coincidir exactamente o ser un
+    subdominio real de alguno de los permitidos -- nunca una coincidencia
+    parcial de texto. Esto es una segunda capa además del escapado HTML en
     render.py — no confiamos en que la celda siempre tenga lo que se espera
     (podría pegarse mal, quedar a medio escribir, etc.), y un esquema
     no-https (`javascript:`, `data:`, ...) nunca debería llegar a un href
@@ -130,9 +151,9 @@ def url_https_valida(valor, dominios_permitidos=None):
         partes = urlsplit(texto)
     except ValueError:
         return False
-    if partes.scheme != "https" or not partes.netloc:
+    if partes.scheme != "https" or not partes.hostname:
         return False
-    if dominios_permitidos and not any(d in partes.netloc.lower() for d in dominios_permitidos):
+    if dominios_permitidos and not host_permitido(partes.hostname, dominios_permitidos):
         return False
     return True
 
@@ -162,11 +183,34 @@ def normalizar_whatsapp(valor):
     return solo_digitos or None
 
 
+WHATSAPP_LONGITUD = re.compile(r"^[0-9]{8,15}$")
+
+
+def whatsapp_valido(valor):
+    """Normaliza y además exige 8 a 15 dígitos -- un número más corto o más
+    largo no es un WhatsApp real utilizable y generaría un link wa.me roto;
+    mejor publicarlo ausente que roto (mismo criterio que el resto de los
+    campos de contacto acá)."""
+    normalizado = normalizar_whatsapp(valor)
+    if normalizado is None or not WHATSAPP_LONGITUD.match(normalizado):
+        return None
+    return normalizado
+
+
+# Dominios explícitos y completos por campo -- nunca fragmentos como
+# "tripadvisor." (ver host_permitido: exige coincidencia exacta o
+# subdominio real, así que un fragmento sería además inútil acá).
+DOMINIOS_MENU = ("ameli-casa-de-te-brunch.github.io",)
+DOMINIOS_GOOGLE = ("google.com", "g.page")
+DOMINIOS_TRIPADVISOR = ("tripadvisor.com", "tripadvisor.com.ar")
+DOMINIOS_DISPONIBILIDAD = ("docs.google.com",)
+
+
 def sanear_config(params: dict) -> dict:
     """params: nombre de campo -> valor crudo (ya sea de la hoja Resumen y
     Configuración del Excel, o de la fila equivalente en Sheets). Aplica el
     mismo saneo/validación de links y handles sea cual sea el origen."""
-    whatsapp = normalizar_whatsapp(params.get("WhatsApp de pedidos"))
+    whatsapp = whatsapp_valido(params.get("WhatsApp de pedidos"))
     instagram = params.get("Instagram")
     direccion = params.get("Dirección")
     url_base = params.get("URL base del menú")
@@ -190,13 +234,13 @@ def sanear_config(params: dict) -> dict:
         disponibilidad_csv_url = None
 
     instagram = handle_instagram_sano(instagram)
-    if not url_https_valida(url_base):
+    if not url_https_valida(url_base, DOMINIOS_MENU):
         url_base = None
-    if not url_https_valida(tripadvisor, ("tripadvisor.",)):
+    if not url_https_valida(tripadvisor, DOMINIOS_TRIPADVISOR):
         tripadvisor = None
-    if not url_https_valida(google_resenas, ("google.com", "g.page")):
+    if not url_https_valida(google_resenas, DOMINIOS_GOOGLE):
         google_resenas = None
-    if not url_https_valida(disponibilidad_csv_url, ("docs.google.com",)):
+    if not url_https_valida(disponibilidad_csv_url, DOMINIOS_DISPONIBILIDAD):
         disponibilidad_csv_url = None
 
     tasa_usd = params.get("Tipo de cambio ARS/USD")

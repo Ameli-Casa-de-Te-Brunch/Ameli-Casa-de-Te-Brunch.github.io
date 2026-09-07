@@ -56,7 +56,7 @@ def _leer_csv(fuente: str) -> list:
     runner de CI no le hace un GET a un host arbitrario (ver auditoría
     de seguridad, hallazgo H-01)."""
     if fuente.startswith("http://") or fuente.startswith("https://"):
-        if not ec.url_https_valida(fuente, ("docs.google.com",)):
+        if not ec.url_https_valida(fuente, ec.DOMINIOS_DISPONIBILIDAD):
             raise ValueError(
                 f"La URL de origen no es de docs.google.com, no la voy a buscar: {fuente}"
             )

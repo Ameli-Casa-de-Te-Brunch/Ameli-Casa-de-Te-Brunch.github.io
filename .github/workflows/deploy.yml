@@ -31,21 +31,38 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
-      - name: Verificar que data/menu.json estÃ© presente
+      - name: Verificar que data/menu.json esté presente
         run: |
           test -f data/menu.json || {
-            echo "Falta data/menu.json. El Excel maestro vive fuera del repo (a propÃ³sito)";
-            echo "y se publica corriendo 'python build.py --publicar' en la PC del dueÃ±o,";
-            echo "no desde acÃ¡.";
+            echo "Falta data/menu.json. El Excel maestro vive fuera del repo (a propósito)";
+            echo "y se publica corriendo 'python build.py --publicar' en la PC del dueño,";
+            echo "no desde acá.";
             exit 1;
           }
-      # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, asÃ­ que
-      # nunca corre extract.py ni validate.py â€” eso pasa en la PC del dueÃ±o.
-      # SÃ­ puede pisar la disponibilidad con lo que diga la hoja de Sheets
+      # Pruebas y validación de integridad primero, sin red y sin
+      # dependencias (todo lo que tocan estos tests es stdlib puro) -- si
+      # algo de esto falla, ni se intenta tocar la hoja de disponibilidad
+      # ni renderizar.
+      - name: Ejecutar pruebas automáticas
+        run: python -m unittest discover -s tests -v
+      - name: Validar data/menu.json (estructura, IDs, campos públicos)
+        run: python build/validate_json_publico.py data/menu.json
+      # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, así que
+      # nunca corre extract.py ni validate.py -- eso pasa en la PC del dueño.
+      # Sí puede pisar la disponibilidad con lo que diga la hoja de Sheets
       # (DISPONIBILIDAD_CSV_URL es una repo variable, no un secreto: es una
-      # URL "publicada en la web", pÃºblica por diseÃ±o de Google Sheets) â€”
-      # no falla el build si no estÃ¡ configurada o no responde.
-      - name: Aplicar disponibilidad en vivo (si estÃ¡ configurada)
+      # URL "publicada en la web", pública por diseño de Google Sheets).
+      # Este paso corre en modo ESTRICTO (el único modo de
+      # build/aplicar_disponibilidad.py cuando se lo invoca standalone): si
+      # la URL no está configurada no pasa nada (la función es opcional),
+      # pero si está configurada y la hoja no responde, redirige a un
+      # destino no permitido, o el contenido no es confiable (valor
+      # desconocido, ID duplicado/desconocido, producto activo sin fila,
+      # hoja vacía/truncada, o excede el tamaño máximo), este paso falla y
+      # el job entero se corta acá -- nunca se llega a renderizar ni a
+      # publicar, así que GitHub Pages conserva la última versión publicada
+      # con éxito.
+      - name: Aplicar disponibilidad en vivo (si está configurada; modo estricto)
         env:
           DISPONIBILIDAD_CSV_URL: ${{ vars.DISPONIBILIDAD_CSV_URL }}
         run: python build/aplicar_disponibilidad.py

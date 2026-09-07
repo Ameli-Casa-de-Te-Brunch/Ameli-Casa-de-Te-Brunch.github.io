@@ -87,10 +87,17 @@ siguen viniendo únicamente del Excel — la hoja de Sheets solo pisa el campo
 
 **Piezas del lado del código** (si hay que tocarlas de nuevo):
 - `build/aplicar_disponibilidad.py` — lee la hoja publicada como CSV y
-  parchea la disponibilidad. Nunca corta el build si la hoja no responde.
-- `build.py` lo aplica en memoria (para que la vista previa local también
-  refleje la hoja) usando la URL del Excel, campo "URL de disponibilidad
-  (Google Sheets)" en *Resumen y Configuración*.
+  parchea la disponibilidad, con integridad de filas estricta (ver
+  `docs/SECURITY_BASELINE.md` y `docs/operations/SOLD_OUT.md`): valores
+  desconocidos, IDs duplicados/desconocidos, filas sin ID con un estado, o
+  un producto activo sin fila, hacen fallar el paso en vez de publicarse
+  con datos no confiables. Si la URL simplemente no está configurada,
+  eso no es un error — la disponibilidad en vivo sigue siendo opcional.
+- `build.py` lo aplica en memoria en modo NO estricto por defecto (para
+  que la vista previa local no se rompa por una hoja de prueba
+  incompleta), usando la URL del Excel, campo "URL de disponibilidad
+  (Google Sheets)" en *Resumen y Configuración*. `--disponibilidad-estricta`
+  prueba localmente el mismo modo estricto que usa CI.
 - `.github/workflows/deploy.yml` lo corre standalone, leyendo la URL de la
   **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
   variables → Actions → Variables — no es un secreto: una hoja "publicada
@@ -145,15 +152,18 @@ sin lactosa dejaron de ser productos propios (no tenía sentido pedirlos
 solos) y pasaron a ser un agregado que se muestra en el detalle de cada
 bebida que lleva leche.
 
-### Alérgenos: por qué no se publican todavía
+### Alérgenos: cómo se valida y se publica
 
-La columna "Estado de validación (alérgenos)" de `Productos - Backoffice`
-tiene que decir **"Validado por cocina" o "Validado por proveedor" en
-TODAS las filas** antes de que el sitio pueda mostrar cualquier dato de
-alérgenos — hoy están en "Pendiente" a propósito. (Corregido en esta misma
-versión: el chequeo miraba antes la columna equivocada por error de
-conteo — nunca reconocía nada como validado aunque se completara bien.
-Ya apunta a la columna correcta.)
+La validación es **por producto, no global**: cada fila de `Productos`
+tiene su propia columna "Estado de validación (alérgenos)" (columna AU),
+y esa fila puntual se publica con sus datos de alérgenos solo si ahí dice
+**"Validado por cocina" o "Validado por proveedor"**. Un producto sin
+validar no bloquea a los demás — cada uno se evalúa solo.
+
+Estado actual: los 51 productos publicados hoy ya tienen su columna AU
+validada (no quedan productos activos en "Pendiente"). Un producto nuevo
+que se agregue sin completar esa columna se publica igual, simplemente
+sin sus datos de alérgenos, hasta que se valide.
 
 ## Qué hacer si el validador se queja
 

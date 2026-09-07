@@ -1,0 +1,76 @@
+# Agregar, editar o dar de baja un producto del menú
+
+## Quién puede hacerlo
+
+El dueño (o quien tenga el Excel maestro `Ameli_Menu_Maestro_V*.xlsx` en su
+PC, vía OneDrive). Requiere tener Python instalado y este repositorio
+clonado — no es un procedimiento para hacer desde el celular.
+
+## Qué sistema se modifica
+
+El Excel maestro (fuera del repo, en OneDrive) primero. Después,
+`data/menu.json` de este repositorio, y `main` en GitHub al publicar.
+
+## Pasos exactos
+
+1. Abrí el Excel maestro y editá la hoja `Productos` (nombre, categoría,
+   descripción en los 5 idiomas, precio, alérgenos, etc.) o `Categorías`.
+   Un producto nuevo necesita un ID con formato 3 letras + 3 números
+   (ej. `TYT008`) que no se repita con ninguno existente.
+2. Guardá el Excel.
+3. En una terminal, dentro de la carpeta del repositorio:
+   ```
+   python build.py --dry-run
+   ```
+   Esto valida todo sin escribir nada. Si aparece algún `[ERROR]`,
+   corregilo en el Excel y repetí este paso hasta que diga
+   "0 error(es)".
+4. Cuando el dry-run esté limpio, corré:
+   ```
+   python build.py
+   ```
+   Esto genera `data/menu.json` y `dist/index.html` en tu PC (todavía no
+   publica nada).
+5. Revisá `dist/index.html` abriéndolo en el navegador (doble clic, o
+   `python -m http.server 8000` dentro de `dist/`) para confirmar que se
+   ve bien.
+6. Recién ahí, para publicar de verdad:
+   ```
+   python build.py --publicar
+   ```
+   Te va a mostrar exactamente qué archivo (`data/menu.json`) va a subir y
+   va a pedir que escribas `si` para confirmar. Sin esa confirmación no
+   pasa nada.
+
+## Cómo verificar el resultado
+
+Después de publicar, esperá 1-2 minutos y abrí
+`https://ameli-casa-de-te-brunch.github.io/` refrescando la página.
+Revisá el producto nuevo/editado en su categoría.
+
+## Cuándo detenerse
+
+- Si `--dry-run` marca un `[ERROR]`: no continúes a los pasos siguientes
+  hasta corregirlo. Los `[AVISO]` no bloquean, pero conviene leerlos.
+- Si `--publicar` te muestra un diff que no esperabas (cambios en
+  productos que no tocaste): no confirmes con `si` — revisá primero si
+  guardaste una versión vieja del Excel por error.
+
+## Cómo volver atrás
+
+Si ya publicaste un cambio con un error:
+```
+git log --oneline -- data/menu.json      # ver el commit anterior
+git revert <hash-del-commit-que-rompió>
+git push origin main
+```
+`git revert` crea un commit nuevo que deshace el anterior, sin borrar
+historial. **Nunca uses `git reset --hard` sobre `main`** — reescribe
+historia que ya está publicada y puede complicar futuras publicaciones.
+
+## Qué nunca copiar en capturas, logs o GitHub
+
+- Nada de la hoja `Productos - Backoffice` (ingredientes, costos,
+  personalización) — es información interna que nunca se publica.
+- Las 12 columnas de costo/ingrediente ni el origen propio/tercerizado
+  del Excel.
