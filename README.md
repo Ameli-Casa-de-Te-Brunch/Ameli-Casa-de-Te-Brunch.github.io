@@ -100,15 +100,22 @@ algo no funcionó.
   `docs/SECURITY_BASELINE.md` y `docs/operations/SOLD_OUT.md`): valores
   desconocidos, IDs duplicados/desconocidos, filas sin ID con un estado, o
   un producto activo sin fila, hacen fallar el paso en vez de publicarse
-  con datos no confiables. Si la URL simplemente no está configurada,
-  eso no es un error — la disponibilidad en vivo sigue siendo opcional.
-- `build.py` lo aplica en memoria en modo NO estricto por defecto (para
-  que la vista previa local no se rompa por una hoja de prueba
-  incompleta), usando la URL del Excel, campo "URL de disponibilidad
-  (Google Sheets)" en *Resumen y Configuración*. `--disponibilidad-estricta`
-  prueba localmente el mismo modo estricto que usa CI.
-- `.github/workflows/deploy.yml` lo corre standalone, leyendo la URL de la
-  **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
+  con datos no confiables. Que la URL sea opcional o no depende de
+  dónde/cómo se corre — ver el detalle exacto abajo, no asumas que
+  siempre es opcional.
+- `build.py`, ejecución normal (sin `--disponibilidad-estricta`): la URL
+  del Excel (campo "URL de disponibilidad (Google Sheets)" en *Resumen y
+  Configuración*) **sigue siendo opcional acá, y solo acá** — si no está
+  configurada, el build sigue sin aplicar disponibilidad; si está, se
+  aplica en memoria en modo NO estricto (para que la vista previa local
+  no se rompa por una hoja de prueba incompleta).
+- `build.py --disponibilidad-estricta` (con o sin `--dry-run`): la URL
+  pasa a ser **obligatoria** — si falta, el build falla antes de escribir
+  cualquier archivo, igual que en CI. Sirve para probar localmente el
+  mismo modo estricto que usa producción antes de confiar en él.
+- `.github/workflows/deploy.yml` lo corre standalone, siempre en modo
+  estricto y con la URL **obligatoria** (nunca opcional ahí), leyéndola de
+  la **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
   variables → Actions → Variables — no es un secreto: una hoja "publicada
   en la web" ya es pública por diseño de Google, por eso va como variable
   y no como secret).
@@ -128,9 +135,14 @@ algo no funcionó.
 ### Otras formas de correrlo
 
 ```
-python build.py                # valida y arma dist/ en tu PC, no toca git
-python build.py --dry-run      # solo revisa el Excel y te dice qué está mal
-python build.py --publicar     # arma el sitio y ofrece publicar (pide "si")
+python build.py                                       # valida y arma dist/ en tu PC, no toca git
+python build.py --dry-run                              # valida el Excel y el JSON público; no consulta
+                                                         # la hoja de disponibilidad ni escribe nada
+python build.py --dry-run --disponibilidad-estricta    # además de lo anterior, exige la URL de
+                                                         # disponibilidad configurada y consulta/valida
+                                                         # la hoja real en modo estricto -- tampoco
+                                                         # escribe nada, es el preflight antes de publicar
+python build.py --publicar                             # arma el sitio y ofrece publicar (pide "si")
 python build.py --xlsx otra_version.xlsx
 ```
 

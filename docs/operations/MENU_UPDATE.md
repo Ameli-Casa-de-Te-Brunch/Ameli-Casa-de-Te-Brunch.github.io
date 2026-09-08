@@ -22,9 +22,11 @@ El Excel maestro (fuera del repo, en OneDrive) primero. Después,
    ```
    python build.py --dry-run
    ```
-   Esto valida todo sin escribir nada. Si aparece algún `[ERROR]`,
-   corregilo en el Excel y repetí este paso hasta que diga
-   "0 error(es)".
+   Este dry-run común valida el Excel maestro y el documento público
+   (`data/menu.json`) **sin acceso de red** — no consulta la hoja de
+   disponibilidad en vivo, solo lo que ya está en el Excel. Si aparece
+   algún `[ERROR]`, corregilo en el Excel y repetí este paso hasta que
+   diga "0 error(es)".
 4. Cuando el dry-run esté limpio, corré:
    ```
    python build.py
@@ -34,7 +36,19 @@ El Excel maestro (fuera del repo, en OneDrive) primero. Después,
 5. Revisá `dist/index.html` abriéndolo en el navegador (doble clic, o
    `python -m http.server 8000` dentro de `dist/`) para confirmar que se
    ve bien.
-6. Recién ahí, para publicar de verdad:
+6. **Antes de preparar una publicación**, corré el preflight adicional:
+   ```
+   python build.py --dry-run --disponibilidad-estricta
+   ```
+   A diferencia del dry-run del paso 3, este exige que la URL de
+   disponibilidad esté configurada y consulta/valida de verdad la hoja
+   real, en el mismo modo estricto que usa la publicación real en GitHub
+   Actions — pero tampoco escribe ningún archivo. Sirve para confirmar
+   que la hoja de disponibilidad está en un estado válido antes de
+   publicar, sin depender de que el workflow lo descubra recién en CI.
+   Si cualquiera de los dos dry-runs (paso 3 o este) falla, no continúes
+   a los pasos siguientes hasta corregirlo.
+7. Recién ahí, para publicar de verdad:
    ```
    python build.py --publicar
    ```
@@ -56,8 +70,10 @@ falló.
 
 ## Cuándo detenerse
 
-- Si `--dry-run` marca un `[ERROR]`: no continúes a los pasos siguientes
-  hasta corregirlo. Los `[AVISO]` no bloquean, pero conviene leerlos.
+- Si cualquiera de los dos dry-runs (el común del paso 3, o el
+  `--disponibilidad-estricta` del paso 6) marca un `[ERROR]`: no continúes
+  a los pasos siguientes hasta corregirlo. Los `[AVISO]` no bloquean, pero
+  conviene leerlos.
 - Si `--publicar` te muestra un diff que no esperabas (cambios en
   productos que no tocaste): no confirmes con `si` — revisá primero si
   guardaste una versión vieja del Excel por error.

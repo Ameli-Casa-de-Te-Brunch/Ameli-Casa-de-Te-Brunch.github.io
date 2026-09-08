@@ -42,14 +42,25 @@ de escritura salvo que se justifique acá, en esta misma tabla.
 ## Validación de entradas (no confiar en que el maestro siempre tenga lo
 esperado)
 
-- **URLs** (`build/extract_common.py::url_https_valida`): exige `https`,
-  usa `hostname` (no `netloc`, así se ignora cualquier
-  `usuario@host` engañoso), y exige coincidencia exacta o subdominio real
-  contra una allowlist explícita por campo (`DOMINIOS_MENU`,
+- **URLs** (`build/extract_common.py::url_https_valida`): exige `https`;
+  rechaza directamente cualquier URL con usuario o contraseña embebidos
+  (`usuario@host` o `usuario:clave@host`) en vez de solo ignorar esa
+  parte al comparar el host; rechaza cualquier puerto que no sea `443`
+  (un puerto ausente o explícitamente `443` sí se acepta); y exige
+  coincidencia exacta o subdominio real del `hostname` (no el `netloc`
+  completo) contra una allowlist explícita por campo (`DOMINIOS_MENU`,
   `DOMINIOS_GOOGLE`, `DOMINIOS_TRIPADVISOR`, `DOMINIOS_DISPONIBILIDAD`) —
   nunca un fragmento de texto como `"tripadvisor."`. Cualquier otro
   esquema (`http:`, `javascript:`, `data:`) queda rechazado directamente
-  por el chequeo de esquema.
+  por el chequeo de esquema. Paths y query strings siguen permitidos —
+  TripAdvisor y Google Reseñas los necesitan.
+- **`url_base`** (`build/extract_common.py::url_base_valida`): política
+  aparte y mucho más estricta, solo para el origen público del sitio
+  (`config.url_base`) — exige un origen `https` exacto y limpio, sin
+  ningún path más allá de `"/"`, sin query string, sin fragmento, sin
+  usuario/contraseña, y sin un puerto distinto de `443`. TripAdvisor y
+  Google Reseñas no usan esta función, siguen validándose con
+  `url_https_valida` (que sí permite paths).
 - **WhatsApp** (`whatsapp_valido`): normaliza a solo dígitos y exige 8 a
   15 dígitos — un número fuera de rango se descarta (queda ausente del
   sitio) en vez de publicar un link `wa.me` roto.
@@ -129,6 +140,16 @@ URL), el JSON público (incluida una corrida contra el
 `data/menu.json` real committeado), el JSON-LD, render sin placeholders,
 CSP presente, y ausencia de campos internos/secretos en el HTML
 generado.
+
+Varios de esos tests usan un centinela literal
+(`SECRETO_NO_DEBE_APARECER_123`) como valor de prueba deliberadamente
+"sensible", e inyectado a propósito en URLs, claves desconocidas, IDs sin
+validar y otros campos, para después comprobar que no aparece en ningún
+mensaje de error, excepción, `stdout` ni `stderr`. Ese centinela vive
+únicamente dentro de `tests/` (y, como referencia descriptiva, en un
+comentario de `build/validate_json_publico.py` que solo nombra a esos
+tests) — nunca en el código de producción, en `data/menu.json`, en
+`dist/`, ni en ningún otro output real generado por un build.
 
 ## Estado reconciliado de la hoja real de disponibilidad
 
