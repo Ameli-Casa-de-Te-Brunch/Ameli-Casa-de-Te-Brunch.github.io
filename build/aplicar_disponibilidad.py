@@ -202,12 +202,15 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
 
         if disp_crudo not in ESTADOS_VALIDOS:
             # Nunca disp_crudo (el valor recibido) -- solo la fila y, si
-            # ya se confirmó que es un ID público conocido, ese ID.
-            valores_validos = "', '".join(v for v in ESTADOS_VALIDOS if v)
+            # ya se confirmó que es un ID público conocido, ese ID. La
+            # lista de valores no vacíos ya incluye "Disponible" una sola
+            # vez -- "vacío" se menciona aparte porque "" no es un valor
+            # que tenga sentido citar entre comillas en la lista.
+            valores_no_vacios = "', '".join(v for v in ESTADOS_VALIDOS if v)
             identificacion = f" (ID '{idv}')" if id_conocido else ""
             problemas.append(
                 f"Fila {numero_fila}{identificacion}: el valor de disponibilidad no es reconocido. "
-                f"Tiene que estar vacío, 'Disponible', o exactamente uno de '{valores_validos}'."
+                f"Tiene que estar vacío o ser exactamente uno de: '{valores_no_vacios}'."
             )
             continue
 

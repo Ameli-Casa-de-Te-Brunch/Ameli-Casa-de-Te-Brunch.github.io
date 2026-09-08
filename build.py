@@ -21,9 +21,19 @@ import config_local  # noqa: E402
 import extract  # noqa: E402
 import render  # noqa: E402
 import validate  # noqa: E402
+import validate_json_publico  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 MENU_JSON = ROOT / "data" / "menu.json"
+
+
+class DocumentoPublicoInvalido(Exception):
+    """Se levanta cuando el documento que armaría data/menu.json (el
+    resultado de extract.datos_publicos(data)) no pasa su propio control
+    independiente (validate_json_publico.validate_menu_json) -- el mismo
+    que corre en CI antes de renderizar. El mensaje nunca reproduce
+    valores no confiables (ver validate_json_publico.py: esa garantía
+    vive ahí, no acá)."""
 
 
 def _git(*args):
@@ -86,33 +96,64 @@ def publicar():
     print("https://ameli-casa-de-te-brunch.github.io/")
 
 
-def preparar_en_memoria(data: dict, disponibilidad_estricta: bool) -> str:
+def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_disponibilidad: bool) -> str:
     """Hace, en memoria y sin tocar disco, todo lo que hace falta antes de
-    poder decidir si se escribe algo: arma el texto exacto que iría a
-    data/menu.json y aplica/valida la disponibilidad en vivo.
+    poder decidir si se escribe algo:
 
-    El texto de data/menu.json se serializa ACÁ, antes de aplicar
-    disponibilidad -- así el JSON versionado nunca incorpora la
-    disponibilidad efímera de la hoja (cambia varias veces por día), sin
-    importar que aplicar_a_prods más abajo mute data["prods"] para el
-    render. El commiteado refleja el Excel; la hoja lo pisa recién al
-    renderizar, en memoria, y de nuevo en cada rebuild que dispare el Apps
-    Script vía GitHub Actions (ver aplicar_disponibilidad.py).
+    1. arma el documento público exacto (extract.datos_publicos(data)) que
+       iría a data/menu.json;
+    2. lo valida con validate_json_publico.validate_menu_json -- el mismo
+       control independiente que corre en CI antes de renderizar. Un
+       error acá (ERROR, no AVISO) levanta DocumentoPublicoInvalido SIN
+       haber escrito nada todavía;
+    3. si consultar_disponibilidad=True, aplica/valida la disponibilidad
+       en vivo -- ver el parámetro más abajo;
+    4. serializa a texto EXACTAMENTE el documento ya validado en el paso 2
+       (nunca uno recalculado después) -- así el JSON versionado nunca
+       incorpora la disponibilidad efímera aplicada en memoria sobre
+       data["prods"] para el render (esa mutación pasa DESPUÉS de
+       serializar). El commiteado refleja el Excel; la hoja lo pisa recién
+       al renderizar, y de nuevo en cada rebuild que dispare el Apps
+       Script vía GitHub Actions (ver aplicar_disponibilidad.py).
 
-    Si disponibilidad_estricta=True y la hoja no es confiable, propaga
-    aplicar_disponibilidad.DisponibilidadInvalida SIN haber escrito nada
-    todavía -- es responsabilidad del llamador no escribir ningún archivo
-    si esto levanta.
-    """
-    menu_json_texto = json.dumps(extract.datos_publicos(data), ensure_ascii=False, indent=1)
+    consultar_disponibilidad: si False, ni siquiera se mira si hay una URL
+    configurada -- no se hace ninguna llamada de red ni a
+    aplicar_a_prods. Lo usa "--dry-run" sin "--disponibilidad-estricta":
+    ese modo valida el Excel y el JSON público, pero no tiene por qué
+    consultar la hoja en vivo para poder decir "esto pasaría". Cuando es
+    True: si disponibilidad_estricta=True, una URL ausente es en sí misma
+    un error (se exige, no es opcional en modo estricto); si hay URL, se
+    aplica (estricta u no, según disponibilidad_estricta) y un problema en
+    modo estricto propaga aplicar_disponibilidad.DisponibilidadInvalida
+    SIN haber escrito nada todavía -- es responsabilidad del llamador no
+    escribir ningún archivo si cualquiera de estas dos excepciones
+    levanta."""
+    documento_publico = extract.datos_publicos(data)
 
-    url_disponibilidad = data["config"].get("disponibilidad_csv_url")
-    if url_disponibilidad:
-        aplicar_disponibilidad.aplicar_a_prods(
-            data["prods"], url_disponibilidad, estricto=disponibilidad_estricta
+    print("      validando documento público (data/menu.json)")
+    errores_json, avisos_json = validate_json_publico.validate_menu_json(documento_publico)
+    for w in avisos_json:
+        print("      [AVISO] " + w)
+    for e in errores_json:
+        print("      [ERROR] " + e)
+    if errores_json:
+        raise DocumentoPublicoInvalido(
+            str(len(errores_json)) + " error(es) en el documento público -- ver arriba."
         )
 
-    return menu_json_texto
+    if consultar_disponibilidad:
+        url_disponibilidad = data["config"].get("disponibilidad_csv_url")
+        if disponibilidad_estricta and not url_disponibilidad:
+            raise aplicar_disponibilidad.DisponibilidadInvalida(
+                "DISPONIBILIDAD_CSV_URL no está configurada -- en modo estricto es obligatoria, "
+                "no se continúa sin ella."
+            )
+        if url_disponibilidad:
+            aplicar_disponibilidad.aplicar_a_prods(
+                data["prods"], url_disponibilidad, estricto=disponibilidad_estricta
+            )
+
+    return json.dumps(documento_publico, ensure_ascii=False, indent=1)
 
 
 def ejecutar(args, xlsx_path: Path) -> None:
@@ -133,16 +174,34 @@ def ejecutar(args, xlsx_path: Path) -> None:
         print("python build.py. Nada se generó ni se publicó.")
         sys.exit(1)
 
-    # Todo esto (extracción, validación del JSON y validación estricta de
-    # disponibilidad en vivo) ocurre en memoria, ANTES de escribir cualquier
-    # archivo -- inclusive en --dry-run, que antes salía sin siquiera
-    # intentar la descarga/validación de la hoja. Así
-    # "--dry-run --disponibilidad-estricta" prueba de verdad si la hoja
-    # real pasaría el modo estricto, y un fallo (con o sin --dry-run) nunca
-    # deja data/menu.json, dist/index.html ni ningún otro output tocado --
-    # el mensaje "no se generó ni publicó nada" sigue siendo cierto.
+    # Todo esto (extracción, validación del JSON público y, según el modo,
+    # validación estricta de disponibilidad en vivo) ocurre en memoria,
+    # ANTES de escribir cualquier archivo. Cuatro modos, según
+    # --dry-run/--disponibilidad-estricta:
+    #   - "--dry-run" solo: valida el Excel y el JSON público, pero NUNCA
+    #     consulta la hoja (ni siquiera en modo no estricto) -- no hace
+    #     falta red para poder decir "esto pasaría".
+    #   - "--dry-run --disponibilidad-estricta": exige URL y hace la
+    #     consulta/validación estricta real -- sirve para probar de
+    #     verdad si la hoja real pasaría el modo estricto, sin escribir
+    #     nada.
+    #   - normal sin --disponibilidad-estricta: comportamiento de siempre
+    #     -- aplica disponibilidad en modo NO estricto si hay URL
+    #     configurada, sigue sin aplicarla si no la hay.
+    #   - normal con --disponibilidad-estricta: exige URL (una URL
+    #     ausente es en sí misma un error acá) y valida en modo estricto.
+    # Un fallo en cualquiera de los dos controles (JSON público o
+    # disponibilidad) nunca deja data/menu.json, dist/index.html ni ningún
+    # otro output tocado -- el mensaje "no se generó ni publicó nada"
+    # sigue siendo cierto en los cuatro modos.
+    consultar_disponibilidad = args.disponibilidad_estricta or not args.dry_run
     try:
-        menu_json_texto = preparar_en_memoria(data, args.disponibilidad_estricta)
+        menu_json_texto = preparar_en_memoria(data, args.disponibilidad_estricta, consultar_disponibilidad)
+    except DocumentoPublicoInvalido as e:
+        print()
+        print("[ERROR] El documento público (data/menu.json) no pasa su propia validación: " + str(e))
+        print("Build detenido. No se generó ni publicó nada.")
+        sys.exit(1)
     except aplicar_disponibilidad.DisponibilidadInvalida as e:
         print()
         print("[ERROR] Disponibilidad en vivo (modo estricto): " + str(e))

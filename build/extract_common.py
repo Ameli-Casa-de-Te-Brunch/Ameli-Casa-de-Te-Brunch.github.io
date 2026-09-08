@@ -135,23 +135,46 @@ def host_permitido(host, dominios_permitidos):
 def url_https_valida(valor, dominios_permitidos=None):
     """Antes de publicar un link que viene del maestro como texto libre (no un
     handle ni un teléfono que ya sanitizamos con regex), lo validamos: solo
-    https, y si se pasa una lista de dominios, el host (no el netloc
-    completo, así se ignora cualquier userinfo del tipo "usuario@host" en
-    vez de quedar engañado por él) tiene que coincidir exactamente o ser un
-    subdominio real de alguno de los permitidos -- nunca una coincidencia
-    parcial de texto. Esto es una segunda capa además del escapado HTML en
-    render.py — no confiamos en que la celda siempre tenga lo que se espera
-    (podría pegarse mal, quedar a medio escribir, etc.), y un esquema
-    no-https (`javascript:`, `data:`, ...) nunca debería llegar a un href
+    https, sin usuario ni contraseña embebidos (nunca un
+    "https://usuario:clave@host/..." ni un "https://algo@host/..." -- ni
+    siquiera para compararlo, ver el motivo más abajo), sin un puerto
+    distinto del 443 (ausente o explícitamente 443, cualquier otro se
+    rechaza), y si se pasa una lista de dominios, el host (no el netloc
+    completo) tiene que coincidir exactamente o ser un subdominio real de
+    alguno de los permitidos -- nunca una coincidencia parcial de texto.
+    Paths y query strings siguen totalmente permitidos (TripAdvisor y
+    Google Reseñas los necesitan) -- esta función no los toca ni los
+    valida, solo el esquema/host/usuario/puerto.
+
+    Por qué rechazar usuario/contraseña en vez de solo ignorarlos como
+    antes: aceptar "https://algo@host/..." como válido (mirando solo
+    partes.hostname, que ya ignora esa parte) dejaba pasar una URL que un
+    navegador real interpreta con esa porción como credenciales HTTP
+    embebidas -- una forma de colar texto arbitrario (hasta un secreto)
+    en una URL que de otro modo parece apuntar a un host confiable. Mejor
+    rechazarla directamente que solo evitar que engañe al chequeo de host.
+
+    Esto es una segunda capa además del escapado HTML en render.py — no
+    confiamos en que la celda siempre tenga lo que se espera (podría
+    pegarse mal, quedar a medio escribir, etc.), y un esquema no-https
+    (`javascript:`, `data:`, ...) nunca debería llegar a un href
     publicado, más allá de que el CSP también lo bloquee."""
     if valor in (None, ""):
         return False
     texto = str(valor).strip()
     try:
         partes = urlsplit(texto)
+        puerto = partes.port
     except ValueError:
+        # urlsplit() y el acceso a .port pueden levantar ValueError con
+        # texto malformado (ej. un puerto no numérico) -- nunca se
+        # reproduce `texto` en la excepción ni en ningún lado de acá.
         return False
     if partes.scheme != "https" or not partes.hostname:
+        return False
+    if partes.username is not None or partes.password is not None:
+        return False
+    if puerto is not None and puerto != 443:
         return False
     if dominios_permitidos and not host_permitido(partes.hostname, dominios_permitidos):
         return False

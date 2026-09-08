@@ -42,6 +42,22 @@ class TestParsearYValidar(unittest.TestCase):
         self.assertTrue(any("BEB001" in p and "no es reconocido" in p for p in problemas))
         self.assertFalse(any("sin stock" in p for p in problemas))  # el valor recibido nunca se reproduce
 
+    def test_mensaje_de_valor_desconocido_no_repite_disponible(self):
+        """El mensaje mencionaba 'Disponible' dos veces (una vez aparte,
+        otra dentro de la lista de valores válidos) -- corregido para
+        nombrarlo una sola vez."""
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BEB001", "sin stock"],
+            ["BEB002", ""],
+            ["TYT001", ""],
+        ])
+        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        mensaje = next(p for p in problemas if "BEB001" in p)
+        self.assertEqual(mensaje.count("Disponible"), 1, mensaje)
+        for esperado in ("Agotado por hoy", "No disponible temporalmente", "Últimas porciones"):
+            self.assertIn(esperado, mensaje)
+
     def test_id_duplicado(self):
         contenido = _csv([
             ["ID", "Disponibilidad"],

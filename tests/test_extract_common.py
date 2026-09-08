@@ -46,6 +46,78 @@ class TestUrlHttpsValida(unittest.TestCase):
         self.assertTrue(ec.url_https_valida("https://www.google.com/", ec.DOMINIOS_GOOGLE))
         self.assertTrue(ec.url_https_valida("https://sub.tripadvisor.com/", ec.DOMINIOS_TRIPADVISOR))
 
+    def test_paths_y_query_strings_legitimos_siguen_permitidos(self):
+        """Google Reseñas y TripAdvisor sí necesitan path -- y a veces
+        query string -- a diferencia de la política mucho más estricta de
+        url_base_valida (que no los permite)."""
+        casos = [
+            ("https://g.page/r/CQ7xLLR2pchDEBM/review", ec.DOMINIOS_GOOGLE),
+            ("https://www.google.com/maps/place/x?hl=es&entry=ttu", ec.DOMINIOS_GOOGLE),
+            ("https://www.tripadvisor.com.ar/Restaurant_Review-g303importante-d123.html",
+             ec.DOMINIOS_TRIPADVISOR),
+            ("https://www.tripadvisor.com/UserReviewEdit?d=456&lang=es", ec.DOMINIOS_TRIPADVISOR),
+        ]
+        for url, dominios in casos:
+            with self.subTest(url=url):
+                self.assertTrue(ec.url_https_valida(url, dominios))
+
+    def test_usuario_o_contrasena_embebidos_es_invalida(self):
+        sentinel = "SECRETO_NO_DEBE_APARECER_123"
+        casos = [
+            f"https://{sentinel}@google.com/maps",
+            "https://usuario:clave@tripadvisor.com/Restaurant_Review-x",
+            "https://solo-usuario@www.google.com/maps",
+        ]
+        for url in casos:
+            with self.subTest(url=url):
+                dominios = ec.DOMINIOS_GOOGLE if "google" in url else ec.DOMINIOS_TRIPADVISOR
+                self.assertFalse(ec.url_https_valida(url, dominios))
+
+    def test_puerto_distinto_de_443_es_invalido_puerto_443_es_valido(self):
+        self.assertFalse(ec.url_https_valida("https://google.com:8443/maps", ec.DOMINIOS_GOOGLE))
+        self.assertTrue(ec.url_https_valida("https://google.com:443/maps", ec.DOMINIOS_GOOGLE))
+        # puerto ausente: sigue siendo válido (default implícito de https)
+        self.assertTrue(ec.url_https_valida("https://google.com/maps", ec.DOMINIOS_GOOGLE))
+
+    def test_puerto_malformado_es_invalida_sin_traceback(self):
+        try:
+            resultado = ec.url_https_valida("https://google.com:noesunpuerto/maps", ec.DOMINIOS_GOOGLE)
+        except Exception as e:
+            self.fail(f"url_https_valida levantó {type(e).__name__}: {e}")
+        self.assertFalse(resultado)
+
+    def test_centinela_en_userinfo_no_se_reproduce_en_errores_del_validador_json(self):
+        """El centinela embebido como userinfo de una URL de config tiene
+        que hacer fallar la validación del JSON público (vía
+        validate_json_publico, que usa esta misma función) sin que el
+        mensaje de error lo reproduzca."""
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "build"))
+        import validate_json_publico as vjp  # noqa: E402
+
+        sentinel = "SECRETO_NO_DEBE_APARECER_123"
+        doc = {
+            "cats": [{"cod": "BEB", "orden": 1, "nom": {
+                "es": "Bebidas", "en": "Drinks", "pt": "Bebidas", "fr": "Boissons", "it": "Bevande",
+            }}],
+            "prods": [{
+                "id": "BEB001", "cat": "BEB", "orden": 1, "dest": False,
+                "n": {"es": "Café", "en": "Coffee", "pt": "Café", "fr": "Café", "it": "Caffè"},
+                "d": {"es": "d", "en": "d", "pt": "d", "fr": "d", "it": "d"},
+                "m": [], "b": [], "img": None,
+            }],
+            "precios": {"BEB001": {"ars": "$ 1.000"}},
+            "config": {
+                "moneda": "ARS", "whatsapp": None, "instagram": None,
+                "direccion": None, "url_base": "https://ameli-casa-de-te-brunch.github.io",
+                "tripadvisor": f"https://{sentinel}@tripadvisor.com/Restaurant_Review-x",
+                "google_resenas": None,
+            },
+        }
+        errors, warnings = vjp.validate_menu_json(doc)
+        combinado = " ".join(errors) + " ".join(warnings)
+        self.assertNotIn(sentinel, combinado, errors)
+        self.assertTrue(any("tripadvisor" in e for e in errors), errors)
+
 
 class TestUrlBaseValida(unittest.TestCase):
     """Política propia y más estricta que url_https_valida() para
