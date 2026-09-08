@@ -1,0 +1,96 @@
+name: Verificar rama (sin publicar)
+
+# Corre las mismas validaciones de código que el job `build` de
+# deploy.yml -- pruebas, JSON público, render -- pero nunca puede
+# publicar nada, y nunca toca la hoja de disponibilidad real.
+#
+# Por qué acá NO se le entrega al código la variable real de la hoja de
+# disponibilidad (ni ninguna otra variable o secreto): este workflow
+# ejecuta código proveniente de una rama o de una PR, que todavía no
+# pasó revisión -- cualquiera podría modificar el script que la lee en
+# esa misma rama para imprimirla completa. Las repository variables (a
+# diferencia de los secrets) no se enmascaran automáticamente en los
+# logs, así que entregarla acá sería exponerla a código no aprobado sin
+# necesidad real -- la política es no difundirla ni entregarla de más,
+# más allá de que la hoja en sí sea "publicada en la web".
+#   - La integración con la hoja real (Google Sheets) NO se ejecuta acá.
+#   - El modo estricto de disponibilidad SÍ se prueba, pero contra datos
+#     controlados: la suite de tests (tests/test_aplicar_disponibilidad.py)
+#     ejercita el parseo/validación/aplicación con CSVs de prueba fijos
+#     en el propio código, sin ninguna URL real de por medio.
+#   - La única lectura real de esa variable en todo el repositorio sigue
+#     siendo la del workflow de despliegue, después de que el código ya
+#     fue revisado y llegó a `main`.
+#   - Antes de cada merge a `main`, se hace además una comprobación
+#     local de solo lectura contra la hoja real (fuera de CI, en la PC
+#     de quien mantiene el código) -- no automatizada acá a propósito.
+#
+# Triggers:
+#   - push a cualquier rama que no sea `main`: disponible ya mismo, sin
+#     esperar a que este archivo esté en la rama predeterminada.
+#   - pull_request, limitado a PRs contra `main`: a diferencia de
+#     pull_request_target (que sí resuelve la definición del workflow
+#     desde la rama base por diseño, justamente para que una PR no pueda
+#     alterar su propia verificación), un pull_request normal toma la
+#     versión de este archivo que ya existe en la rama de la propia PR --
+#     no hace falta esperar a que esté mergeado en `main`. Confirmado en
+#     la práctica: la PR #5 (cierre-tecnico-menu -> main) disparó una
+#     ejecución exitosa de este workflow por el evento pull_request antes
+#     de que este archivo estuviera mergeado en `main`.
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+    branches: [main]
+
+# Mínimo privilegio -- y el único permiso que existe en todo el
+# archivo: no hay pages/id-token en ningún lado de este workflow, ni
+# ningún secret o repository variable entregado a ningún paso.
+permissions:
+  contents: read
+
+concurrency:
+  group: verificar-rama-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # Mismas Actions, mismos SHA pineados que ya usa deploy.yml --
+      # este archivo no cambia ninguna versión, no interactúa con las
+      # PR de Dependabot abiertas. persist-credentials: false porque
+      # este workflow ejecuta código de ramas y PR y no hace ningún git
+      # push, fetch autenticado ni operación que necesite conservar el
+      # token de checkout una vez terminado -- no hay motivo para
+      # dejarlo escrito en el runner más de lo necesario.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Verificar que data/menu.json esté presente
+        run: |
+          test -f data/menu.json || {
+            echo "Falta data/menu.json -- no se puede probar el render sin él.";
+            exit 1;
+          }
+      # Cubre disponibilidad estricta con datos controlados (CSVs fijos
+      # en el propio código de test, sin red, sin URL real) -- ver
+      # tests/test_aplicar_disponibilidad.py.
+      - name: Ejecutar pruebas automáticas
+        run: python -m unittest discover -s tests -v
+      - name: Validar data/menu.json
+        run: python build/validate_json_publico.py data/menu.json
+      # Render LOCAL únicamente, sobre el data/menu.json ya commiteado
+      # (sin ninguna disponibilidad en vivo aplicada -- eso solo pasa en
+      # el workflow de despliegue): escribe dist/ dentro del runner,
+      # nunca se sube a ningún lado. Este archivo no tiene ningún paso
+      # que suba ni publique artefactos -- ni en este job ni en ningún
+      # otro, porque no existe ningún otro job.
+      - name: Render local (solo para probar que no rompe, nunca se publica)
+        run: python build/render.py

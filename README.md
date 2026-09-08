@@ -80,32 +80,69 @@ arquitecturas) en `Disponibilidad_en_vivo_instrucciones` que te compartí.
 (`ID`, `Nombre`, `Disponibilidad`) que el personal edita desde el celular.
 Un Apps Script avisa a GitHub cada vez que cambia una celda; GitHub Actions
 reconstruye el sitio usando el `data/menu.json` ya commiteado (nunca toca
-el Excel, nunca necesita verlo) y publica en ~30-90 segundos. Todos los
-demás datos del producto (nombre, precio, descripción, alérgenos, fotos)
-siguen viniendo únicamente del Excel — la hoja de Sheets solo pisa el campo
-`disp` de cada producto.
+el Excel, nunca necesita verlo). Todos los demás datos del producto
+(nombre, precio, descripción, alérgenos, fotos) siguen viniendo únicamente
+del Excel — la hoja de Sheets solo pisa el campo `disp` de cada producto.
+
+**Sobre los tiempos, con precisión:** el workflow de GitHub Actions en sí
+tarda ~30-90 segundos en correr (build + deploy). Eso NO es lo mismo que
+"el visitante ya ve el cambio" — GitHub Pages sirve detrás de una caché
+pública (CDN) que en la práctica puede seguir mostrando la versión
+anterior varios minutos más, incluso con el workflow ya terminado en ✅.
+Para verificar un cambio: primero confirmá en la pestaña Actions que la
+corrida terminó en ✅, y recién después probá el sitio con un refresco
+forzado (Ctrl+Shift+R) o desde otro dispositivo/red antes de asumir que
+algo no funcionó.
 
 **Piezas del lado del código** (si hay que tocarlas de nuevo):
 - `build/aplicar_disponibilidad.py` — lee la hoja publicada como CSV y
-  parchea la disponibilidad. Nunca corta el build si la hoja no responde.
-- `build.py` lo aplica en memoria (para que la vista previa local también
-  refleje la hoja) usando la URL del Excel, campo "URL de disponibilidad
-  (Google Sheets)" en *Resumen y Configuración*.
-- `.github/workflows/deploy.yml` lo corre standalone, leyendo la URL de la
-  **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
+  parchea la disponibilidad, con integridad de filas estricta (ver
+  `docs/SECURITY_BASELINE.md` y `docs/operations/SOLD_OUT.md`): valores
+  desconocidos, IDs duplicados/desconocidos, filas sin ID con un estado, o
+  un producto activo sin fila, hacen fallar el paso en vez de publicarse
+  con datos no confiables. Que la URL sea opcional o no depende de
+  dónde/cómo se corre — ver el detalle exacto abajo, no asumas que
+  siempre es opcional.
+- `build.py`, ejecución normal (sin `--disponibilidad-estricta`): la URL
+  del Excel (campo "URL de disponibilidad (Google Sheets)" en *Resumen y
+  Configuración*) **sigue siendo opcional acá, y solo acá** — si no está
+  configurada, el build sigue sin aplicar disponibilidad; si está, se
+  aplica en memoria en modo NO estricto (para que la vista previa local
+  no se rompa por una hoja de prueba incompleta).
+- `build.py --disponibilidad-estricta` (con o sin `--dry-run`): la URL
+  pasa a ser **obligatoria** — si falta, el build falla antes de escribir
+  cualquier archivo, igual que en CI. Sirve para probar localmente el
+  mismo modo estricto que usa producción antes de confiar en él.
+- `.github/workflows/deploy.yml` lo corre standalone, siempre en modo
+  estricto y con la URL **obligatoria** (nunca opcional ahí), leyéndola de
+  la **repo variable** `DISPONIBILIDAD_CSV_URL` (Settings → Secrets and
   variables → Actions → Variables — no es un secreto: una hoja "publicada
   en la web" ya es pública por diseño de Google, por eso va como variable
   y no como secret).
-- El disparador es `repository_dispatch` con `event_type:
-  actualizar-disponibilidad`, invocado por el Apps Script de la hoja — no
-  por nada de este repo.
+- El disparador real todavía no está confirmado por inspección directa del
+  Apps Script (vive en la cuenta de Google del dueño, sin acceso desde
+  este repo) — ver `docs/SYSTEMS_AND_SECRETS.md` para el detalle completo
+  y el estado exacto de cada credencial. Lo reportado/observado hasta
+  ahora — cuatro ejecuciones exitosas de la función `alCambiarDisponibilidad`
+  del lado de Apps Script, coincidiendo exactamente con cuatro ejecuciones
+  `workflow_dispatch` sobre `main` — es consistente con que el disparador
+  use hoy `workflow_dispatch` (vía `avisarGitHubViaActions()` y el PAT
+  `GITHUB_TOKEN_ACTIONS`), no `repository_dispatch` como se documentaba
+  antes acá. Esto es lo reportado/observado por quien mantiene la hoja,
+  no una inspección directa del código real de Apps Script desde este
+  repo — y en cualquier caso no es parte del código de este repositorio.
 
 ### Otras formas de correrlo
 
 ```
-python build.py                # valida y arma dist/ en tu PC, no toca git
-python build.py --dry-run      # solo revisa el Excel y te dice qué está mal
-python build.py --publicar     # arma el sitio y ofrece publicar (pide "si")
+python build.py                                       # valida y arma dist/ en tu PC, no toca git
+python build.py --dry-run                              # valida el Excel y el JSON público; no consulta
+                                                         # la hoja de disponibilidad ni escribe nada
+python build.py --dry-run --disponibilidad-estricta    # además de lo anterior, exige la URL de
+                                                         # disponibilidad configurada y consulta/valida
+                                                         # la hoja real en modo estricto -- tampoco
+                                                         # escribe nada, es el preflight antes de publicar
+python build.py --publicar                             # arma el sitio y ofrece publicar (pide "si")
 python build.py --xlsx otra_version.xlsx
 ```
 
@@ -131,7 +168,7 @@ francés e italiano**.
 | Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | U (precio chico o único) · V (precio grande, solo si el producto tiene dos tamaños) |
 | Alérgenos (15 banderas + estado de validación) | `Productos` | AF-AT (banderas) · AU (estado de validación) — no se publica nada de un producto hasta que su fila diga "Validado por cocina" o "Validado por proveedor" |
 | Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | X, Y |
-| Fotos de producto | `Productos` | Z (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
+| Fotos de producto | `Productos` | Z (ruta relativa propia, ej. `assets/img/tyt004.webp`) — nunca una URL externa: la CSP solo permite `img-src 'self'`, y `build/validate_json_publico.py` rechaza cualquier otra forma (URL externa, ruta absoluta, `..`). Si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
 | Opción de leche vegetal / sin lactosa en una bebida | `Productos - Backoffice` | columnas "Leche vegetal" / "Leche sin lactosa" (dentro de Personalización) — no es un producto aparte, es un agregado que se muestra en el detalle de la bebida correspondiente |
 | WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 16-25) |
 | Ingredientes, personalización — referencia interna | `Productos - Backoffice` | — (nada de esto lo lee el sitio, salvo leche vegetal/sin lactosa arriba) |
@@ -145,15 +182,18 @@ sin lactosa dejaron de ser productos propios (no tenía sentido pedirlos
 solos) y pasaron a ser un agregado que se muestra en el detalle de cada
 bebida que lleva leche.
 
-### Alérgenos: por qué no se publican todavía
+### Alérgenos: cómo se valida y se publica
 
-La columna "Estado de validación (alérgenos)" de `Productos - Backoffice`
-tiene que decir **"Validado por cocina" o "Validado por proveedor" en
-TODAS las filas** antes de que el sitio pueda mostrar cualquier dato de
-alérgenos — hoy están en "Pendiente" a propósito. (Corregido en esta misma
-versión: el chequeo miraba antes la columna equivocada por error de
-conteo — nunca reconocía nada como validado aunque se completara bien.
-Ya apunta a la columna correcta.)
+La validación es **por producto, no global**: cada fila de `Productos`
+tiene su propia columna "Estado de validación (alérgenos)" (columna AU),
+y esa fila puntual se publica con sus datos de alérgenos solo si ahí dice
+**"Validado por cocina" o "Validado por proveedor"**. Un producto sin
+validar no bloquea a los demás — cada uno se evalúa solo.
+
+Estado actual: los 51 productos publicados hoy ya tienen su columna AU
+validada (no quedan productos activos en "Pendiente"). Un producto nuevo
+que se agregue sin completar esa columna se publica igual, simplemente
+sin sus datos de alérgenos, hasta que se valide.
 
 ## Qué hacer si el validador se queja
 

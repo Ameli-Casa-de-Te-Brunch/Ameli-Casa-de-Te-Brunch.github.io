@@ -114,25 +114,69 @@ def es_placeholder(valor):
     return "xxx" in texto or texto in ("ejemplo", "pendiente", "completar", "tbd", "n/a")
 
 
+def host_permitido(host, dominios_permitidos):
+    """True solo si `host` es exactamente uno de los dominios permitidos, o
+    un subdominio real de alguno (termina en "." + dominio). Nunca una
+    coincidencia parcial de texto: "google.com.ejemplo.com" o
+    "tripadvisor.com.ar.ejemplo.com" contienen el nombre permitido como
+    subcadena pero no son ese dominio ni un subdominio suyo, así que
+    quedan afuera. Mismo criterio que build_site.py del prototipo
+    institucional (_host_permitido)."""
+    if not host:
+        return False
+    host = host.lower()
+    for permitido in dominios_permitidos:
+        permitido = permitido.lower()
+        if host == permitido or host.endswith("." + permitido):
+            return True
+    return False
+
+
 def url_https_valida(valor, dominios_permitidos=None):
     """Antes de publicar un link que viene del maestro como texto libre (no un
     handle ni un teléfono que ya sanitizamos con regex), lo validamos: solo
-    https, y si se pasa una lista de dominios, el host tiene que contener
-    alguno de ellos. Esto es una segunda capa además del escapado HTML en
-    render.py — no confiamos en que la celda siempre tenga lo que se espera
-    (podría pegarse mal, quedar a medio escribir, etc.), y un esquema
-    no-https (`javascript:`, `data:`, ...) nunca debería llegar a un href
+    https, sin usuario ni contraseña embebidos (nunca un
+    "https://usuario:clave@host/..." ni un "https://algo@host/..." -- ni
+    siquiera para compararlo, ver el motivo más abajo), sin un puerto
+    distinto del 443 (ausente o explícitamente 443, cualquier otro se
+    rechaza), y si se pasa una lista de dominios, el host (no el netloc
+    completo) tiene que coincidir exactamente o ser un subdominio real de
+    alguno de los permitidos -- nunca una coincidencia parcial de texto.
+    Paths y query strings siguen totalmente permitidos (TripAdvisor y
+    Google Reseñas los necesitan) -- esta función no los toca ni los
+    valida, solo el esquema/host/usuario/puerto.
+
+    Por qué rechazar usuario/contraseña en vez de solo ignorarlos como
+    antes: aceptar "https://algo@host/..." como válido (mirando solo
+    partes.hostname, que ya ignora esa parte) dejaba pasar una URL que un
+    navegador real interpreta con esa porción como credenciales HTTP
+    embebidas -- una forma de colar texto arbitrario (hasta un secreto)
+    en una URL que de otro modo parece apuntar a un host confiable. Mejor
+    rechazarla directamente que solo evitar que engañe al chequeo de host.
+
+    Esto es una segunda capa además del escapado HTML en render.py — no
+    confiamos en que la celda siempre tenga lo que se espera (podría
+    pegarse mal, quedar a medio escribir, etc.), y un esquema no-https
+    (`javascript:`, `data:`, ...) nunca debería llegar a un href
     publicado, más allá de que el CSP también lo bloquee."""
     if valor in (None, ""):
         return False
     texto = str(valor).strip()
     try:
         partes = urlsplit(texto)
+        puerto = partes.port
     except ValueError:
+        # urlsplit() y el acceso a .port pueden levantar ValueError con
+        # texto malformado (ej. un puerto no numérico) -- nunca se
+        # reproduce `texto` en la excepción ni en ningún lado de acá.
         return False
-    if partes.scheme != "https" or not partes.netloc:
+    if partes.scheme != "https" or not partes.hostname:
         return False
-    if dominios_permitidos and not any(d in partes.netloc.lower() for d in dominios_permitidos):
+    if partes.username is not None or partes.password is not None:
+        return False
+    if puerto is not None and puerto != 443:
+        return False
+    if dominios_permitidos and not host_permitido(partes.hostname, dominios_permitidos):
         return False
     return True
 
@@ -162,11 +206,81 @@ def normalizar_whatsapp(valor):
     return solo_digitos or None
 
 
+WHATSAPP_LONGITUD = re.compile(r"^[0-9]{8,15}$")
+
+
+def whatsapp_valido(valor):
+    """Normaliza y además exige 8 a 15 dígitos -- un número más corto o más
+    largo no es un WhatsApp real utilizable y generaría un link wa.me roto;
+    mejor publicarlo ausente que roto (mismo criterio que el resto de los
+    campos de contacto acá)."""
+    normalizado = normalizar_whatsapp(valor)
+    if normalizado is None or not WHATSAPP_LONGITUD.match(normalizado):
+        return None
+    return normalizado
+
+
+# Dominios explícitos y completos por campo -- nunca fragmentos como
+# "tripadvisor." (ver host_permitido: exige coincidencia exacta o
+# subdominio real, así que un fragmento sería además inútil acá).
+DOMINIOS_MENU = ("ameli-casa-de-te-brunch.github.io",)
+DOMINIOS_GOOGLE = ("google.com", "g.page")
+DOMINIOS_TRIPADVISOR = ("tripadvisor.com", "tripadvisor.com.ar")
+DOMINIOS_DISPONIBILIDAD = ("docs.google.com",)
+
+# Host único y exacto de "config.url_base" -- a propósito el mismo texto
+# que DOMINIOS_MENU[0], pero como constante aparte: url_base_valida() más
+# abajo exige coincidencia EXACTA (nunca un subdominio), a diferencia de
+# host_permitido()/url_https_valida() (pensadas para permitir subdominios
+# reales de TripAdvisor/Google, que sí los tienen). El dominio propio
+# personalizado (amelicasadete.com.ar) queda deliberadamente fuera de esta
+# constante hasta que se decida su enrutamiento definitivo -- no es parte
+# del cierre técnico C1.
+DOMINIO_URL_BASE = "ameli-casa-de-te-brunch.github.io"
+
+
+def url_base_valida(valor) -> bool:
+    """Política mucho más estricta que url_https_valida() para el único
+    campo que se usa como origen público del sitio (JSON-LD, canonical,
+    sitemap, robots.txt -- ver render.py): tiene que ser exactamente
+    "https://ameli-casa-de-te-brunch.github.io", opcionalmente con una "/"
+    final, y nada más. Rechaza explícitamente: http, cualquier otro host
+    (exacto o subdominio -- acá ni un subdominio real cuenta como válido),
+    usuario/contraseña embebidos, cualquier puerto que no sea el 443
+    (default de https), cualquier path que no sea "/", query string,
+    fragmento, y esquemas peligrosos (javascript:, data:) o URLs
+    malformadas -- estas últimas ya quedan afuera por el chequeo de
+    esquema/por el try/except de más abajo."""
+    if not isinstance(valor, str) or not valor:
+        return False
+    try:
+        partes = urlsplit(valor)
+        puerto = partes.port
+    except ValueError:
+        # urlsplit() y el acceso a .port pueden levantar ValueError con
+        # texto malformado (ej. un puerto no numérico) -- eso ya es, en sí
+        # mismo, una URL inválida para esta política.
+        return False
+    if partes.scheme != "https":
+        return False
+    if (partes.hostname or "").lower() != DOMINIO_URL_BASE:
+        return False
+    if partes.username is not None or partes.password is not None:
+        return False
+    if puerto is not None and puerto != 443:
+        return False
+    if partes.path not in ("", "/"):
+        return False
+    if partes.query or partes.fragment:
+        return False
+    return True
+
+
 def sanear_config(params: dict) -> dict:
     """params: nombre de campo -> valor crudo (ya sea de la hoja Resumen y
     Configuración del Excel, o de la fila equivalente en Sheets). Aplica el
     mismo saneo/validación de links y handles sea cual sea el origen."""
-    whatsapp = normalizar_whatsapp(params.get("WhatsApp de pedidos"))
+    whatsapp = whatsapp_valido(params.get("WhatsApp de pedidos"))
     instagram = params.get("Instagram")
     direccion = params.get("Dirección")
     url_base = params.get("URL base del menú")
@@ -190,13 +304,13 @@ def sanear_config(params: dict) -> dict:
         disponibilidad_csv_url = None
 
     instagram = handle_instagram_sano(instagram)
-    if not url_https_valida(url_base):
+    if not url_base_valida(url_base):
         url_base = None
-    if not url_https_valida(tripadvisor, ("tripadvisor.",)):
+    if not url_https_valida(tripadvisor, DOMINIOS_TRIPADVISOR):
         tripadvisor = None
-    if not url_https_valida(google_resenas, ("google.com", "g.page")):
+    if not url_https_valida(google_resenas, DOMINIOS_GOOGLE):
         google_resenas = None
-    if not url_https_valida(disponibilidad_csv_url, ("docs.google.com",)):
+    if not url_https_valida(disponibilidad_csv_url, DOMINIOS_DISPONIBILIDAD):
         disponibilidad_csv_url = None
 
     tasa_usd = params.get("Tipo de cambio ARS/USD")
