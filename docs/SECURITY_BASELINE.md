@@ -130,17 +130,35 @@ URL), el JSON público (incluida una corrida contra el
 CSP presente, y ausencia de campos internos/secretos en el HTML
 generado.
 
-## Bloqueo externo explícito: la hoja real tiene datos inválidos hoy
+## Estado reconciliado de la hoja real de disponibilidad
 
-La hoja de disponibilidad real (no una hoja de prueba) tiene, al momento
-de escribir esto, el texto literal `Disponibilidad` cargado en la columna
-de estado para los productos `BLE001`–`BLE004` -- un dato inválido, no
-algo introducido por este cierre técnico. **No se modificó la hoja** (fuera
-de alcance de esta fase). Esto significa que, con el modo estricto ya
-implementado acá, **una publicación real usando este código fallaría hoy**
-hasta que el dueño corrija esas 4 filas en la hoja real (dejarlas vacías o
-escribir `Disponible`). No se debe hacer una prueba productiva ni una
-publicación con el nuevo modo estricto mientras esas filas sigan así.
+Durante la preparación de este cierre técnico se detectó, mediante un
+diagnóstico de solo lectura (nunca se guardó el CSV ni se imprimió su
+contenido), que la columna completa de "Disponibilidad" de la hoja real
+había quedado sobrescrita con su propio texto de encabezado -- afectaba a
+las filas `BLE001`–`BLE004` en el primer chequeo, y a las 51 filas en un
+chequeo posterior antes de la corrección. **No se modificó la hoja desde
+acá**: la corrigió el dueño externamente (fuera del alcance de código de
+esta fase), dejando la columna vacía para los 51 productos (vacío =
+disponible).
+
+Una validación aislada y de solo lectura, corrida después de esa
+corrección externa, confirmó:
+
+- cobertura de IDs: 51 conocidos, 0 desconocidos, 0 duplicados, 0
+  ausentes;
+- validación estricta de disponibilidad completada con éxito (el mismo
+  modo que usa CI en producción);
+- segunda validación del JSON público (después de aplicar disponibilidad):
+  0 errores, 0 avisos;
+- render temporal exitoso, sin marcadores de plantilla sin resolver.
+
+Este chequeo se hizo con el código ya presente en esta rama, contra la
+hoja real, pero es un dato externo verificado durante la preparación --
+**no forma parte del diff de esta PR** (ningún archivo de código cambia
+por esto). Ni la URL de la hoja ni su contenido crudo se documentan ni se
+reproducen acá ni en ningún log -- ver "Disponibilidad en vivo" más
+arriba para los controles que lo garantizan en el propio código.
 
 ## Qué queda deliberadamente fuera de esta fase
 

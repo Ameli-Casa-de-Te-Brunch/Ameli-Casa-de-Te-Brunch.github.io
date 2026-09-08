@@ -47,6 +47,71 @@ class TestUrlHttpsValida(unittest.TestCase):
         self.assertTrue(ec.url_https_valida("https://sub.tripadvisor.com/", ec.DOMINIOS_TRIPADVISOR))
 
 
+class TestUrlBaseValida(unittest.TestCase):
+    """Política propia y más estricta que url_https_valida() para
+    config.url_base: un origen https limpio y exacto, sin nada más. No
+    debe romper TripAdvisor/Google Reseñas (esos siguen validándose con
+    url_https_valida, que sí permite paths -- ver TestUrlHttpsValida
+    arriba, sin cambios)."""
+
+    def test_positivas(self):
+        casos = [
+            "https://ameli-casa-de-te-brunch.github.io",
+            "https://ameli-casa-de-te-brunch.github.io/",
+        ]
+        for url in casos:
+            with self.subTest(url=url):
+                self.assertTrue(ec.url_base_valida(url))
+
+    def test_negativas(self):
+        casos = [
+            "http://ameli-casa-de-te-brunch.github.io",  # http, no https
+            "https://ejemplo-no-permitido.com",  # host no permitido
+            "https://ameli-casa-de-te-brunch.github.io.ejemplo.com",  # coincidencia parcial engañosa
+            "https://sub.ameli-casa-de-te-brunch.github.io",  # ni un subdominio real cuenta acá
+            "https://usuario@ameli-casa-de-te-brunch.github.io",  # usuario embebido
+            "https://usuario:clave@ameli-casa-de-te-brunch.github.io",  # usuario y contraseña
+            "https://ameli-casa-de-te-brunch.github.io:8443",  # puerto distinto de 443
+            "https://ameli-casa-de-te-brunch.github.io/menu",  # cualquier path que no sea "/"
+            "https://ameli-casa-de-te-brunch.github.io?x=1",  # query string
+            "https://ameli-casa-de-te-brunch.github.io/#seccion",  # fragmento
+            "https://ameli-casa-de-te-brunch.github.io//",  # "//" como path
+            "//ameli-casa-de-te-brunch.github.io",  # protocolo relativo
+            "javascript:alert(1)",
+            "data:text/html,<script>alert(1)</script>",
+            "https://ameli-casa-de-te-brunch.github.io:abc/",  # puerto no numérico -- malformada
+            "",
+            None,
+            42,
+            ["https://ameli-casa-de-te-brunch.github.io"],
+        ]
+        for url in casos:
+            with self.subTest(url=url):
+                self.assertFalse(ec.url_base_valida(url))
+
+    def test_regresion_query_con_token_se_rechaza_y_no_se_reproduce(self):
+        """Caso exacto pedido: una query string con un valor sensible
+        pegado tiene que rechazarse -- y el centinela no debe aparecer en
+        ningún lado de la salida de esta prueba (acá no hay logs de por
+        medio, pero el valor de retorno no lo reproduce de ninguna forma)."""
+        url = "https://ameli-casa-de-te-brunch.github.io/?token=SECRETO_NO_DEBE_APARECER_123"
+        self.assertFalse(ec.url_base_valida(url))
+
+    def test_tripadvisor_y_google_con_path_siguen_funcionando(self):
+        """url_base_valida es una política aparte -- no reemplaza ni
+        rompe url_https_valida, que sigue permitiendo paths reales para
+        TripAdvisor/Google Reseñas."""
+        self.assertTrue(ec.url_https_valida(
+            "https://www.tripadvisor.com.ar/Restaurant_Review-x", ec.DOMINIOS_TRIPADVISOR
+        ))
+        self.assertTrue(ec.url_https_valida(
+            "https://g.page/r/CQ7xLLR2pchDEBM/review", ec.DOMINIOS_GOOGLE
+        ))
+        # y esas mismas URLs, con path, tienen que seguir siendo inválidas
+        # para la política de url_base (que exige "/" o nada de path)
+        self.assertFalse(ec.url_base_valida("https://www.tripadvisor.com.ar/Restaurant_Review-x"))
+
+
 class TestWhatsappValido(unittest.TestCase):
     def test_positivos(self):
         self.assertEqual(ec.whatsapp_valido("5492604106653"), "5492604106653")

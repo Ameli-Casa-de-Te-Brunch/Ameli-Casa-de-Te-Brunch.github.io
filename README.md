@@ -112,9 +112,18 @@ algo no funcionó.
   variables → Actions → Variables — no es un secreto: una hoja "publicada
   en la web" ya es pública por diseño de Google, por eso va como variable
   y no como secret).
-- El disparador es `repository_dispatch` con `event_type:
-  actualizar-disponibilidad`, invocado por el Apps Script de la hoja — no
-  por nada de este repo.
+- El disparador real todavía no está confirmado por inspección directa del
+  Apps Script (vive en la cuenta de Google del dueño, sin acceso desde
+  este repo) — ver `docs/SYSTEMS_AND_SECRETS.md` para el detalle completo
+  y el estado exacto de cada credencial. Lo reportado/observado hasta
+  ahora — cuatro ejecuciones exitosas de la función `alCambiarDisponibilidad`
+  del lado de Apps Script, coincidiendo exactamente con cuatro ejecuciones
+  `workflow_dispatch` sobre `main` — es consistente con que el disparador
+  use hoy `workflow_dispatch` (vía `avisarGitHubViaActions()` y el PAT
+  `GITHUB_TOKEN_ACTIONS`), no `repository_dispatch` como se documentaba
+  antes acá. Esto es lo reportado/observado por quien mantiene la hoja,
+  no una inspección directa del código real de Apps Script desde este
+  repo — y en cualquier caso no es parte del código de este repositorio.
 
 ### Otras formas de correrlo
 

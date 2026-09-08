@@ -28,13 +28,15 @@ name: Verificar rama (sin publicar)
 # Triggers:
 #   - push a cualquier rama que no sea `main`: disponible ya mismo, sin
 #     esperar a que este archivo esté en la rama predeterminada.
-#   - pull_request, limitado a PRs contra `main`: por cómo GitHub
-#     Actions resuelve los workflows de pull_request (lee la definición
-#     desde la rama base del PR, no desde la rama del PR), este trigger
-#     recién toma efecto una vez que este archivo ya esté mergeado en
-#     `main` -- hasta entonces, abrir o actualizar una PR (de Dependabot
-#     u otra) no dispara este workflow todavía. Documentado acá para que
-#     no sorprenda a nadie.
+#   - pull_request, limitado a PRs contra `main`: a diferencia de
+#     pull_request_target (que sí resuelve la definición del workflow
+#     desde la rama base por diseño, justamente para que una PR no pueda
+#     alterar su propia verificación), un pull_request normal toma la
+#     versión de este archivo que ya existe en la rama de la propia PR --
+#     no hace falta esperar a que esté mergeado en `main`. Confirmado en
+#     la práctica: la PR #5 (cierre-tecnico-menu -> main) disparó una
+#     ejecución exitosa de este workflow por el evento pull_request antes
+#     de que este archivo estuviera mergeado en `main`.
 on:
   push:
     branches-ignore: [main]

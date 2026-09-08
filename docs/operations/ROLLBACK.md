@@ -39,12 +39,12 @@ después de que el workflow corra de nuevo.
 
 **Importante: el deploy del revert pasa por los mismos controles que
 cualquier otro.** Si la hoja de disponibilidad en vivo tiene datos
-inválidos en ese momento (ver `docs/SECURITY_BASELINE.md`, sección del
-bloqueo de `BLE001`–`BLE004`), el paso "Aplicar disponibilidad en vivo"
-va a fallar en modo estricto y el revert **no se va a publicar** hasta
-que se corrija la hoja -- aunque el commit de revert en sí esté bien.
-Si el rollback es urgente y la hoja está inválida, corregir la hoja es
-parte del camino crítico para que el revert efectivamente se publique.
+inválidos en ese momento (ver `docs/SECURITY_BASELINE.md`, sección
+"Disponibilidad en vivo"), el paso "Aplicar disponibilidad en vivo" va a
+fallar en modo estricto y el revert **no se va a publicar** hasta que se
+corrija la hoja -- aunque el commit de revert en sí esté bien. Si el
+rollback es urgente y la hoja está inválida, corregir la hoja es parte
+del camino crítico para que el revert efectivamente se publique.
 
 ## Cómo verificar el resultado
 
