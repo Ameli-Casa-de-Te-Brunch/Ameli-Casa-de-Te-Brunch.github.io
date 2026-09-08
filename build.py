@@ -16,11 +16,19 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "build"))
+# aplicar_disponibilidad, config_local, extract_common, render y
+# validate_json_publico son stdlib puro (ver requirements.txt) -- seguros
+# de importar acá, a nivel de módulo. extract.py y validate.py son
+# DELIBERADAMENTE la excepción: ambos importan openpyxl (la única
+# dependencia de terceros de todo el pipeline), y los runners de CI nunca
+# la instalan. Importarlos remoto (import build) no puede arrastrar esa
+# dependencia -- por eso se cargan recién al ejecutar de verdad el flujo
+# que abre el Excel, nunca al cargar este módulo (ver
+# _cargar_dependencias_xlsx()/ejecutar() más abajo).
 import aplicar_disponibilidad  # noqa: E402
 import config_local  # noqa: E402
-import extract  # noqa: E402
+import extract_common  # noqa: E402
 import render  # noqa: E402
-import validate  # noqa: E402
 import validate_json_publico  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
@@ -29,11 +37,46 @@ MENU_JSON = ROOT / "data" / "menu.json"
 
 class DocumentoPublicoInvalido(Exception):
     """Se levanta cuando el documento que armaría data/menu.json (el
-    resultado de extract.datos_publicos(data)) no pasa su propio control
-    independiente (validate_json_publico.validate_menu_json) -- el mismo
-    que corre en CI antes de renderizar. El mensaje nunca reproduce
-    valores no confiables (ver validate_json_publico.py: esa garantía
-    vive ahí, no acá)."""
+    resultado de extract_common.datos_publicos(data)) no pasa su propio
+    control independiente (validate_json_publico.validate_menu_json) --
+    el mismo que corre en CI antes de renderizar. El mensaje nunca
+    reproduce valores no confiables (ver validate_json_publico.py: esa
+    garantía vive ahí, no acá)."""
+
+
+class OpenpyxlNoInstalado(Exception):
+    """Se levanta cuando hace falta leer el Excel maestro real (vía
+    extract.py o validate.py) pero el paquete 'openpyxl' no está
+    instalado. Nunca se levanta por el simple hecho de importar build.py
+    -- solo al ejecutar de verdad el flujo local que abre un .xlsx (ver
+    _cargar_dependencias_xlsx())."""
+
+
+def _cargar_dependencias_xlsx():
+    """Importa extract.py y validate.py recién ACÁ -- nunca a nivel de
+    módulo -- porque son los dos únicos módulos de build/ que requieren
+    openpyxl (para leer el Excel maestro real). Así "import build" (lo
+    que hacen los tests, y cualquier otra herramienta que solo necesite
+    -por ejemplo- preparar_en_memoria) nunca arrastra esa dependencia de
+    terceros: ni los runners de CI (que corren sin pip install, solo
+    stdlib) ni nadie que solo quiera importar este módulo la necesitan,
+    con tal de no ejecutar el flujo real.
+
+    Si openpyxl no está instalado, levanta OpenpyxlNoInstalado con un
+    mensaje claro y accionable en vez de dejar que un
+    ModuleNotFoundError crudo (con traceback) llegue hasta quien corre
+    build.py."""
+    try:
+        import extract
+        import validate
+    except ModuleNotFoundError as e:
+        if e.name != "openpyxl":
+            raise
+        raise OpenpyxlNoInstalado(
+            "Falta el paquete 'openpyxl' (necesario para leer el Excel maestro real). "
+            "Instalalo con: pip install -r requirements.txt"
+        ) from None
+    return extract, validate
 
 
 def _git(*args):
@@ -100,8 +143,11 @@ def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_dis
     """Hace, en memoria y sin tocar disco, todo lo que hace falta antes de
     poder decidir si se escribe algo:
 
-    1. arma el documento público exacto (extract.datos_publicos(data)) que
-       iría a data/menu.json;
+    1. arma el documento público exacto (extract_common.datos_publicos(data),
+       la misma función que extract.py re-exporta como extract.datos_publicos
+       -- se usa acá directo porque extract_common no necesita openpyxl,
+       así esta función nunca depende de que el Excel real sea legible)
+       que iría a data/menu.json;
     2. lo valida con validate_json_publico.validate_menu_json -- el mismo
        control independiente que corre en CI antes de renderizar. Un
        error acá (ERROR, no AVISO) levanta DocumentoPublicoInvalido SIN
@@ -128,7 +174,7 @@ def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_dis
     SIN haber escrito nada todavía -- es responsabilidad del llamador no
     escribir ningún archivo si cualquiera de estas dos excepciones
     levanta."""
-    documento_publico = extract.datos_publicos(data)
+    documento_publico = extract_common.datos_publicos(data)
 
     print("      validando documento público (data/menu.json)")
     errores_json, avisos_json = validate_json_publico.validate_menu_json(documento_publico)
@@ -156,13 +202,30 @@ def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_dis
     return json.dumps(documento_publico, ensure_ascii=False, indent=1)
 
 
-def ejecutar(args, xlsx_path: Path) -> None:
+def ejecutar(args, xlsx_path: Path, extract_mod=None, validate_mod=None) -> None:
+    """extract_mod/validate_mod: inyección explícita de los módulos
+    extract.py/validate.py (los dos únicos que requieren openpyxl) --
+    los tests SIEMPRE los pasan (dobles simples, nunca el openpyxl real
+    ni un mock global en sys.modules), así nunca necesitan que openpyxl
+    esté instalado. Si se omite alguno, se cargan de verdad acá mismo,
+    recién ahora, vía _cargar_dependencias_xlsx() -- el camino que usa
+    main() en una corrida real."""
+    if extract_mod is None or validate_mod is None:
+        try:
+            extract_cargado, validate_cargado = _cargar_dependencias_xlsx()
+        except OpenpyxlNoInstalado as e:
+            print("[ERROR] " + str(e))
+            print("Build detenido. No se generó ni publicó nada.")
+            sys.exit(1)
+        extract_mod = extract_mod or extract_cargado
+        validate_mod = validate_mod or validate_cargado
+
     print("1/3 extract  (" + xlsx_path.name + ")")
-    data = extract.extract(xlsx_path)
+    data = extract_mod.extract(xlsx_path)
     print("      " + str(len(data["prods"])) + " productos activos, " + str(len(data["cats"])) + " categorías")
 
     print("2/3 validate")
-    errors, warnings = validate.validate(data, xlsx_path)
+    errors, warnings = validate_mod.validate(data, xlsx_path)
     for w in warnings:
         print("      [AVISO] " + w)
     for e in errors:
