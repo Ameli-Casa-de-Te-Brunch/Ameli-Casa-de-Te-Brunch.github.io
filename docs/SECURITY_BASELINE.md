@@ -117,6 +117,18 @@ URL), el JSON público (incluida una corrida contra el
 CSP presente, y ausencia de campos internos/secretos en el HTML
 generado.
 
+## Bloqueo externo explícito: la hoja real tiene datos inválidos hoy
+
+La hoja de disponibilidad real (no una hoja de prueba) tiene, al momento
+de escribir esto, el texto literal `Disponibilidad` cargado en la columna
+de estado para los productos `BLE001`–`BLE004` -- un dato inválido, no
+algo introducido por este cierre técnico. **No se modificó la hoja** (fuera
+de alcance de esta fase). Esto significa que, con el modo estricto ya
+implementado acá, **una publicación real usando este código fallaría hoy**
+hasta que el dueño corrija esas 4 filas en la hoja real (dejarlas vacías o
+escribir `Disponible`). No se debe hacer una prueba productiva ni una
+publicación con el nuevo modo estricto mientras esas filas sigan así.
+
 ## Qué queda deliberadamente fuera de esta fase
 
 No se tocó, no se creó ni se planea acá:

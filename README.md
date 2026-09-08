@@ -80,10 +80,19 @@ arquitecturas) en `Disponibilidad_en_vivo_instrucciones` que te compartí.
 (`ID`, `Nombre`, `Disponibilidad`) que el personal edita desde el celular.
 Un Apps Script avisa a GitHub cada vez que cambia una celda; GitHub Actions
 reconstruye el sitio usando el `data/menu.json` ya commiteado (nunca toca
-el Excel, nunca necesita verlo) y publica en ~30-90 segundos. Todos los
-demás datos del producto (nombre, precio, descripción, alérgenos, fotos)
-siguen viniendo únicamente del Excel — la hoja de Sheets solo pisa el campo
-`disp` de cada producto.
+el Excel, nunca necesita verlo). Todos los demás datos del producto
+(nombre, precio, descripción, alérgenos, fotos) siguen viniendo únicamente
+del Excel — la hoja de Sheets solo pisa el campo `disp` de cada producto.
+
+**Sobre los tiempos, con precisión:** el workflow de GitHub Actions en sí
+tarda ~30-90 segundos en correr (build + deploy). Eso NO es lo mismo que
+"el visitante ya ve el cambio" — GitHub Pages sirve detrás de una caché
+pública (CDN) que en la práctica puede seguir mostrando la versión
+anterior varios minutos más, incluso con el workflow ya terminado en ✅.
+Para verificar un cambio: primero confirmá en la pestaña Actions que la
+corrida terminó en ✅, y recién después probá el sitio con un refresco
+forzado (Ctrl+Shift+R) o desde otro dispositivo/red antes de asumir que
+algo no funcionó.
 
 **Piezas del lado del código** (si hay que tocarlas de nuevo):
 - `build/aplicar_disponibilidad.py` — lee la hoja publicada como CSV y

@@ -44,9 +44,15 @@ El Excel maestro (fuera del repo, en OneDrive) primero. Después,
 
 ## Cómo verificar el resultado
 
-Después de publicar, esperá 1-2 minutos y abrí
-`https://ameli-casa-de-te-brunch.github.io/` refrescando la página.
-Revisá el producto nuevo/editado en su categoría.
+Después de publicar: primero confirmá en GitHub, pestaña **Actions**, que
+la corrida terminó en ✅ (el workflow en sí tarda ~1-2 minutos). Eso
+confirma que se publicó, no que ya se ve -- GitHub Pages sirve detrás de
+una caché pública que puede tardar varios minutos más en mostrar la
+versión nueva. Recién después abrí
+`https://ameli-casa-de-te-brunch.github.io/` con un refresco forzado
+(Ctrl+Shift+R) y revisá el producto nuevo/editado en su categoría; si no
+lo ves, probá desde otro dispositivo o red antes de asumir que algo
+falló.
 
 ## Cuándo detenerse
 

@@ -5,6 +5,12 @@ publicar (CI nunca ve el maestro, así que validate.py/validate_sheets.py no
 alcanzan ahí). Habla en los mismos términos que validate.py: errores
 bloquean, avisos no.
 
+Allowlist estricta y real: cualquier clave -- de primer nivel, de una
+categoría, de un producto, de una entrada de precios o de config -- que no
+esté en la lista explícita correspondiente es un ERROR, no se deja pasar
+en silencio. Las traducciones en los 5 idiomas son obligatorias (error, no
+aviso) porque el maestro ya las exige así (ver validate.py).
+
 No fija en ningún lado que "tienen que ser 51 productos" -- reporta el
 conteo actual y valida coherencia de referencias (categorías, precios),
 para que agregar o sacar productos nunca rompa este control por un número
@@ -21,38 +27,72 @@ HERE = Path(__file__).resolve().parent
 DEFAULT_JSON = HERE.parent / "data" / "menu.json"
 
 CODIGOS_DISPONIBILIDAD_VALIDOS = set(ec.DISPONIBILIDAD_VALORES.values())
-CAMPOS_PROD_OBLIGATORIOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
-CAMPOS_PROD_OPCIONALES = tuple(c for c in ec.CAMPOS_PROD_PUBLICOS if c not in CAMPOS_PROD_OBLIGATORIOS)
 LANGS = ec.LANGS
 
+CAMPOS_RAIZ_PERMITIDOS = ("cats", "prods", "precios", "config")
+CAMPOS_CATEGORIA_PERMITIDOS = ("cod", "orden", "nom")
+CAMPOS_PROD_OBLIGATORIOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
+CAMPOS_PROD_OPCIONALES = tuple(c for c in ec.CAMPOS_PROD_PUBLICOS if c not in CAMPOS_PROD_OBLIGATORIOS)
+CAMPOS_PRECIO_PERMITIDOS = ("ars", "usd", "eur", "brl")
 
-def _tipo_ok(valor, tipos):
-    return isinstance(valor, tipos)
+# Detecta __ALGO__ y también __ALGO2__ / __ALGO_123__ -- la versión
+# anterior ([A-Z_]+) no reconocía dígitos en el marcador.
+MARCADOR_PLANTILLA = re.compile(r"__[A-Z0-9_]+__")
 
 
-def validate_menu_json(data: dict) -> tuple[list[str], list[str]]:
+def _es_num(valor) -> bool:
+    """int/float, pero no bool -- bool es subclase de int en Python y un
+    'True' donde se espera un precio sería un tipo incorrecto igual."""
+    return isinstance(valor, (int, float)) and not isinstance(valor, bool)
+
+
+def validate_menu_json(data) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
 
-    # --- estructura de primer nivel ---
+    # --- estructura de primer nivel: objeto, claves permitidas, tipos ---
     if not isinstance(data, dict):
         return ["El JSON público no es un objeto en la raíz."], []
+
+    campos_raiz_desconocidos = set(data.keys()) - set(CAMPOS_RAIZ_PERMITIDOS)
+    if campos_raiz_desconocidos:
+        errors.append(
+            f"El JSON tiene clave(s) de primer nivel no permitidas: {sorted(campos_raiz_desconocidos)}. "
+            f"Solo se permiten {list(CAMPOS_RAIZ_PERMITIDOS)}."
+        )
+
     for clave, tipos in (("cats", list), ("prods", list), ("precios", dict), ("config", dict)):
         if clave not in data:
             errors.append(f"Falta la clave de primer nivel '{clave}'.")
-        elif not _tipo_ok(data[clave], tipos):
+        elif not isinstance(data[clave], tipos):
             errors.append(f"'{clave}' tiene que ser {tipos.__name__}, encontré {type(data[clave]).__name__}.")
     if errors:
         return errors, warnings  # sin esto no se puede seguir validando nada más
 
     cats, prods, precios, config = data["cats"], data["prods"], data["precios"], data["config"]
 
-    # --- categorías: forma y códigos únicos ---
+    # --- categorías: solo campos permitidos, tipos, códigos únicos ---
     cat_codes = set()
     for i, c in enumerate(cats):
-        if not isinstance(c, dict) or "cod" not in c or "nom" not in c:
-            errors.append(f"Categoría en posición {i}: le falta 'cod' o 'nom', o no es un objeto.")
+        if not isinstance(c, dict):
+            errors.append(f"Categoría en posición {i}: no es un objeto.")
             continue
+
+        campos_desconocidos = set(c.keys()) - set(CAMPOS_CATEGORIA_PERMITIDOS)
+        if campos_desconocidos:
+            errors.append(
+                f"Categoría en posición {i} ({c.get('cod', '?')}): tiene campo(s) no permitidos "
+                f"{sorted(campos_desconocidos)}. Solo se permiten {list(CAMPOS_CATEGORIA_PERMITIDOS)}."
+            )
+        if "cod" not in c or "nom" not in c:
+            errors.append(f"Categoría en posición {i}: le falta 'cod' o 'nom'.")
+            continue
+
+        if not isinstance(c["cod"], str) or not c["cod"]:
+            errors.append(f"Categoría en posición {i}: 'cod' tiene que ser un string no vacío.")
+            continue
+        if "orden" in c and not _es_num(c["orden"]):
+            errors.append(f"Categoría '{c['cod']}': 'orden' tiene que ser numérico.")
         if c["cod"] in cat_codes:
             errors.append(f"Código de categoría duplicado: '{c['cod']}'.")
         cat_codes.add(c["cod"])
@@ -60,7 +100,7 @@ def validate_menu_json(data: dict) -> tuple[list[str], list[str]]:
             errors.append(f"Categoría '{c['cod']}': falta el nombre en español ('nom.es').")
 
     # --- productos: campos permitidos, tipos, IDs únicos, categoría existente,
-    #     código de disponibilidad válido, URLs/handles válidos si vienen embebidos ---
+    #     código de disponibilidad válido ---
     ids_vistos: dict[str, int] = {}
     ids_activos: set[str] = set()
     for i, p in enumerate(prods):
@@ -90,36 +130,77 @@ def validate_menu_json(data: dict) -> tuple[list[str], list[str]]:
             ids_vistos[pid] = i
         ids_activos.add(pid)
 
-        if p["cat"] not in cat_codes:
+        if not isinstance(p["cat"], str):
+            errors.append(f"Producto '{pid}': 'cat' tiene que ser un string.")
+        elif p["cat"] not in cat_codes:
             errors.append(f"Producto '{pid}': la categoría '{p['cat']}' no existe entre las categorías publicadas.")
 
-        for campo_texto, tipo_ok in (("n", dict), ("d", dict)):
+        if not _es_num(p["orden"]):
+            errors.append(f"Producto '{pid}': 'orden' tiene que ser numérico.")
+        if not isinstance(p["dest"], bool):
+            errors.append(f"Producto '{pid}': 'dest' tiene que ser booleano.")
+        if p["img"] is not None and not isinstance(p["img"], str):
+            errors.append(f"Producto '{pid}': 'img' tiene que ser un string o null.")
+
+        # Traducciones en los 5 idiomas: obligatorias -- el maestro ya las
+        # exige así (ver validate.py), un faltante acá es tan error como
+        # allá, no un aviso.
+        for campo_texto in ("n", "d"):
             valor = p.get(campo_texto)
-            if not isinstance(valor, tipo_ok):
+            if not isinstance(valor, dict):
                 errors.append(f"Producto '{pid}': '{campo_texto}' tiene que ser un objeto por idioma.")
                 continue
             for lang in LANGS:
-                if not valor.get(lang):
-                    warnings.append(f"Producto '{pid}': falta '{campo_texto}.{lang}'.")
+                if not isinstance(valor.get(lang), str) or not valor.get(lang):
+                    errors.append(f"Producto '{pid}': falta o es inválida '{campo_texto}.{lang}'.")
 
-        if not isinstance(p.get("m"), list) or not isinstance(p.get("b"), list):
-            errors.append(f"Producto '{pid}': 'm' y 'b' tienen que ser listas.")
+        if not isinstance(p.get("m"), list) or any(not isinstance(x, str) for x in p.get("m", [])):
+            errors.append(f"Producto '{pid}': 'm' tiene que ser una lista de strings.")
+        if not isinstance(p.get("b"), list) or any(not isinstance(x, str) for x in p.get("b", [])):
+            errors.append(f"Producto '{pid}': 'b' tiene que ser una lista de strings.")
 
         if "disp" in p and p["disp"] not in CODIGOS_DISPONIBILIDAD_VALIDOS:
             errors.append(
                 f"Producto '{pid}': código de disponibilidad '{p['disp']}' no reconocido "
                 f"(válidos: {sorted(CODIGOS_DISPONIBILIDAD_VALIDOS)})."
             )
+        if "alt" in p and not isinstance(p["alt"], dict):
+            errors.append(f"Producto '{pid}': 'alt' tiene que ser un objeto por idioma.")
+        if "alerg" in p and not isinstance(p["alerg"], dict):
+            errors.append(f"Producto '{pid}': 'alerg' tiene que ser un objeto.")
+        if "tag" in p and not isinstance(p["tag"], str):
+            errors.append(f"Producto '{pid}': 'tag' tiene que ser un string.")
+        if "leche" in p and not isinstance(p["leche"], list):
+            errors.append(f"Producto '{pid}': 'leche' tiene que ser una lista.")
 
         if pid not in precios:
             warnings.append(f"Producto '{pid}': no tiene precio en 'precios' -- se publica sin precio visible.")
 
-    # --- precios: ninguna entrada huérfana (un ID que ya no exista en prods) ---
-    for pid in precios:
+    # --- precios: solo campos permitidos, tipos correctos, ninguna entrada
+    #     huérfana (un ID que ya no exista en prods) ---
+    for pid, entrada in precios.items():
         if pid not in ids_activos:
             errors.append(f"'precios' tiene una entrada para '{pid}', que no existe en 'prods' (referencia huérfana).")
-        elif not isinstance(precios[pid], dict) or "ars" not in precios[pid]:
-            errors.append(f"'precios.{pid}' tiene que ser un objeto con al menos la clave 'ars'.")
+            continue
+        if not isinstance(entrada, dict):
+            errors.append(f"'precios.{pid}' tiene que ser un objeto.")
+            continue
+        campos_desconocidos = set(entrada.keys()) - set(CAMPOS_PRECIO_PERMITIDOS)
+        if campos_desconocidos:
+            errors.append(
+                f"'precios.{pid}' tiene campo(s) no permitidos {sorted(campos_desconocidos)}. "
+                f"Solo se permiten {list(CAMPOS_PRECIO_PERMITIDOS)}."
+            )
+        if "ars" not in entrada:
+            errors.append(f"'precios.{pid}' tiene que tener al menos la clave 'ars'.")
+        elif not isinstance(entrada["ars"], str) or not entrada["ars"]:
+            # "ars" ya viene formateado como string de display (ej. "$
+            # 6.000" o "Vaso $ 7.500 · Jarra $ 16.000") -- ver
+            # extract_common.formatear_precio(); no es un número crudo.
+            errors.append(f"'precios.{pid}.ars' tiene que ser un string no vacío (ya viene formateado).")
+        for campo in ("usd", "eur", "brl"):
+            if campo in entrada and not isinstance(entrada[campo], str):
+                errors.append(f"'precios.{pid}.{campo}' tiene que ser un string (ya viene formateado).")
 
     # --- config: solo campos públicos, y válidos si están presentes ---
     campos_config_desconocidos = set(config.keys()) - set(ec.CAMPOS_CONFIG_PUBLICOS)
@@ -134,7 +215,7 @@ def validate_menu_json(data: dict) -> tuple[list[str], list[str]]:
         errors.append(f"'config.whatsapp' ('{whatsapp}') no son 8 a 15 dígitos.")
 
     instagram = config.get("instagram")
-    if instagram is not None and not re.fullmatch(r"[A-Za-z0-9._]{1,30}", instagram):
+    if instagram is not None and (not isinstance(instagram, str) or not re.fullmatch(r"[A-Za-z0-9._]{1,30}", instagram)):
         errors.append(f"'config.instagram' ('{instagram}') no es un handle válido.")
 
     for campo, dominios in (
@@ -148,7 +229,7 @@ def validate_menu_json(data: dict) -> tuple[list[str], list[str]]:
 
     # --- ningún marcador de plantilla sin reemplazar, en ningún string del JSON ---
     texto_completo = json.dumps(data, ensure_ascii=False)
-    marcadores = sorted(set(re.findall(r"__[A-Z_]+__", texto_completo)))
+    marcadores = sorted(set(MARCADOR_PLANTILLA.findall(texto_completo)))
     if marcadores:
         errors.append(f"Quedaron marcadores de plantilla sin reemplazar en el JSON: {marcadores}.")
 
@@ -161,11 +242,19 @@ def main():
         print(f"[ERROR] No encuentro {json_path}.")
         sys.exit(1)
 
-    data = json.loads(json_path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] {json_path} no es JSON válido: {e}")
+        sys.exit(1)
+    except UnicodeDecodeError:
+        print(f"[ERROR] {json_path} no es UTF-8 válido.")
+        sys.exit(1)
+
     errors, warnings = validate_menu_json(data)
 
-    n_prods = len(data.get("prods", [])) if isinstance(data.get("prods"), list) else 0
-    n_cats = len(data.get("cats", [])) if isinstance(data.get("cats"), list) else 0
+    n_prods = len(data.get("prods", [])) if isinstance(data, dict) and isinstance(data.get("prods"), list) else 0
+    n_cats = len(data.get("cats", [])) if isinstance(data, dict) and isinstance(data.get("cats"), list) else 0
     print(f"[INFO] {n_prods} producto(s), {n_cats} categoría(s) en {json_path}.")
 
     for w in warnings:

@@ -31,41 +31,47 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
-      - name: Verificar que data/menu.json estÈ presente
+      - name: Verificar que data/menu.json est√© presente
         run: |
           test -f data/menu.json || {
-            echo "Falta data/menu.json. El Excel maestro vive fuera del repo (a propÛsito)";
-            echo "y se publica corriendo 'python build.py --publicar' en la PC del dueÒo,";
-            echo "no desde ac·.";
+            echo "Falta data/menu.json. El Excel maestro vive fuera del repo (a prop√≥sito)";
+            echo "y se publica corriendo 'python build.py --publicar' en la PC del due√±o,";
+            echo "no desde ac√°.";
             exit 1;
           }
-      # Pruebas y validaciÛn de integridad primero, sin red y sin
+      # Pruebas y validaci√≥n de integridad primero, sin red y sin
       # dependencias (todo lo que tocan estos tests es stdlib puro) -- si
       # algo de esto falla, ni se intenta tocar la hoja de disponibilidad
       # ni renderizar.
-      - name: Ejecutar pruebas autom·ticas
+      - name: Ejecutar pruebas autom√°ticas
         run: python -m unittest discover -s tests -v
-      - name: Validar data/menu.json (estructura, IDs, campos p˙blicos)
+      - name: Validar data/menu.json (antes de disponibilidad)
         run: python build/validate_json_publico.py data/menu.json
-      # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, asÌ que
-      # nunca corre extract.py ni validate.py -- eso pasa en la PC del dueÒo.
-      # SÌ puede pisar la disponibilidad con lo que diga la hoja de Sheets
-      # (DISPONIBILIDAD_CSV_URL es una repo variable, no un secreto: es una
-      # URL "publicada en la web", p˙blica por diseÒo de Google Sheets).
-      # Este paso corre en modo ESTRICTO (el ˙nico modo de
-      # build/aplicar_disponibilidad.py cuando se lo invoca standalone): si
-      # la URL no est· configurada no pasa nada (la funciÛn es opcional),
-      # pero si est· configurada y la hoja no responde, redirige a un
+      # CI solo renderiza: no tiene (ni debe tener) el Excel maestro, as√≠ que
+      # nunca corre extract.py ni validate.py ‚Äî eso pasa en la PC del due√±o.
+      # DISPONIBILIDAD_CSV_URL es una repo variable, no un secreto: es una
+      # URL "publicada en la web", p√∫blica por dise√±o de Google Sheets.
+      # Este paso es OBLIGATORIO y ESTRICTO en este camino (a diferencia de
+      # build.py en la PC del due√±o, donde sigue siendo opcional): si la
+      # variable no est√° configurada, si la hoja no responde, redirige a un
       # destino no permitido, o el contenido no es confiable (valor
       # desconocido, ID duplicado/desconocido, producto activo sin fila,
-      # hoja vacÌa/truncada, o excede el tamaÒo m·ximo), este paso falla y
-      # el job entero se corta ac· -- nunca se llega a renderizar ni a
-      # publicar, asÌ que GitHub Pages conserva la ˙ltima versiÛn publicada
-      # con Èxito.
-      - name: Aplicar disponibilidad en vivo (si est· configurada; modo estricto)
+      # hoja vac√≠a/truncada, codificaci√≥n inv√°lida, o excede el tama√±o
+      # m√°ximo), este paso falla y el job entero se corta ac√° -- nunca se
+      # llega a renderizar ni a publicar, as√≠ que GitHub Pages conserva la
+      # √∫ltima versi√≥n publicada con √©xito. Antes de esta correcci√≥n, una
+      # variable vac√≠a/faltante terminaba "con √©xito" sin aplicar nada, lo
+      # que pod√≠a publicar todo como disponible sin que nadie se entere.
+      - name: Aplicar disponibilidad en vivo (obligatoria; modo estricto)
         env:
           DISPONIBILIDAD_CSV_URL: ${{ vars.DISPONIBILIDAD_CSV_URL }}
         run: python build/aplicar_disponibilidad.py
+      # Se valida de nuevo DESPU√âS de aplicar disponibilidad: el paso
+      # anterior reescribe data/menu.json en disco, as√≠ que esta corrida
+      # revisa el JSON exacto que se va a renderizar y publicar, no el que
+      # hab√≠a antes de pisarlo con la hoja en vivo.
+      - name: Validar data/menu.json (despu√©s de disponibilidad, antes de publicar)
+        run: python build/validate_json_publico.py data/menu.json
       - run: python build/render.py
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:

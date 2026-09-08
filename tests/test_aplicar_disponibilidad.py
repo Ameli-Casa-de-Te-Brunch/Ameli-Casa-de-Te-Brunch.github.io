@@ -125,15 +125,23 @@ class TestModoEstrictoVsNoEstricto(unittest.TestCase):
             with self.assertRaises(ad.DisponibilidadInvalida):
                 ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=True)
 
-    def test_no_estricto_no_levanta_y_devuelve_lo_que_pudo(self):
+    def test_no_estricto_no_levanta_y_devuelve_problemas_junto_con_lo_interpretado(self):
         contenido = _csv([
             ["ID", "Disponibilidad"],
             ["BEB001", "Agotado por hoy"],
             ["ZZZ999", ""],
         ])
         with self._stub_descarga(contenido):
-            disp = ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=False)
+            disp, problemas = ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=False)
         self.assertEqual(disp.get("BEB001"), "agotado")
+        self.assertTrue(problemas)  # el llamador (aplicar_a_prods) decide qué hacer con esto
+
+    def test_estricto_sin_problemas_devuelve_tupla_con_lista_vacia(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", ""], ["BEB002", ""], ["TYT001", ""]])
+        with self._stub_descarga(contenido):
+            disp, problemas = ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=True)
+        self.assertEqual(problemas, [])
+        self.assertEqual(disp, {})
 
 
 class TestTamanoMaximo(unittest.TestCase):
@@ -202,6 +210,116 @@ class TestAplicarAProds(unittest.TestCase):
         resultado = ad.aplicar_a_prods(prods, "", estricto=True)
         self.assertEqual(resultado, -1)
         self.assertEqual(prods[0]["disp"], "agotado")  # intacto
+
+
+class TestAtomicidadModoNoEstricto(unittest.TestCase):
+    """Si hay cualquier problema de integridad, en modo no estricto no se
+    aplica NADA -- todo o nada, nunca una mezcla de productos actualizados
+    y otros con el estado viejo por una fila mala en el medio."""
+
+    def test_una_fila_mala_entre_varias_buenas_no_aplica_ningun_cambio(self):
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BEB001", "Agotado por hoy"],   # esta sola sería un cambio válido
+            ["BEB002", "Últimas porciones"],  # esta también
+            ["TYT001", "sin stock"],          # valor desconocido -- problema
+        ])
+        prods = [
+            {"id": "BEB001", "disp": "no_disp"},
+            {"id": "BEB002"},
+            {"id": "TYT001", "disp": "ultimas"},
+        ]
+        estado_original = [dict(p) for p in prods]
+        with patch.object(ad, "_descargar", return_value=contenido):
+            resultado = ad.aplicar_a_prods(prods, "https://docs.google.com/x", estricto=False)
+        self.assertEqual(resultado, -1)
+        self.assertEqual(prods, estado_original)  # ni un solo producto cambió
+
+    def test_producto_activo_ausente_tambien_bloquea_todo_en_no_estricto(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", "Agotado por hoy"]])
+        prods = [{"id": "BEB001"}, {"id": "BEB002", "disp": "agotado"}, {"id": "TYT001"}]
+        estado_original = [dict(p) for p in prods]
+        with patch.object(ad, "_descargar", return_value=contenido):
+            resultado = ad.aplicar_a_prods(prods, "https://docs.google.com/x", estricto=False)
+        self.assertEqual(resultado, -1)
+        self.assertEqual(prods, estado_original)
+
+    def test_sin_problemas_si_aplica_normalmente(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", "Agotado por hoy"], ["BEB002", ""], ["TYT001", ""]])
+        prods = [{"id": "BEB001"}, {"id": "BEB002"}, {"id": "TYT001"}]
+        with patch.object(ad, "_descargar", return_value=contenido):
+            resultado = ad.aplicar_a_prods(prods, "https://docs.google.com/x", estricto=False)
+        self.assertEqual(resultado, 1)
+        self.assertEqual(prods[0]["disp"], "agotado")
+
+
+class TestDecodificacionInvalida(unittest.TestCase):
+    def test_bytes_invalidos_se_traducen_a_disponibilidad_invalida(self):
+        bytes_invalidos = b"ID,Disponibilidad\r\nBEB001,\xff\xfe\x80\x81"
+
+        class RespuestaFalsa:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self, n):
+                return bytes_invalidos
+
+        with patch.object(ad, "_RedirectHandlerRestringido"):
+            with patch("urllib.request.build_opener") as mock_build_opener:
+                mock_build_opener.return_value.open.return_value = RespuestaFalsa()
+                with self.assertRaises(ad.DisponibilidadInvalida) as ctx:
+                    ad._descargar("https://docs.google.com/x", timeout=1)
+        # el mensaje nunca incluye los bytes crudos
+        self.assertNotIn("\\xff", str(ctx.exception))
+
+    def test_bytes_validos_utf8_sig_decodifican_bien(self):
+        contenido_ok = "ID,Disponibilidad\r\nBEB001,".encode("utf-8-sig")
+
+        class RespuestaFalsa:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self, n):
+                return contenido_ok
+
+        with patch("urllib.request.build_opener") as mock_build_opener:
+            mock_build_opener.return_value.open.return_value = RespuestaFalsa()
+            resultado = ad._descargar("https://docs.google.com/x", timeout=1)
+        self.assertIn("BEB001", resultado)
+
+
+class TestUrlObligatoriaEnProduccion(unittest.TestCase):
+    """CI (main() -> aplicar_a_archivo(..., url_obligatoria=True)) no puede
+    terminar 'exitosamente' sin URL -- eso publicaría todo como disponible
+    sin que nadie se entere. Local (build.py) sigue siendo opcional."""
+
+    def test_sin_url_y_obligatoria_levanta(self):
+        with self.assertRaises(ad.DisponibilidadInvalida):
+            ad.aplicar_a_archivo("", url_obligatoria=True)
+
+    def test_sin_url_y_no_obligatoria_no_levanta(self):
+        resultado = ad.aplicar_a_archivo("", url_obligatoria=False)
+        self.assertEqual(resultado, -1)
+
+    def test_main_sin_url_termina_con_exit_code_distinto_de_cero(self):
+        import os as os_module
+        with patch.dict(os_module.environ, {"DISPONIBILIDAD_CSV_URL": ""}, clear=False):
+            with self.assertRaises(SystemExit) as ctx:
+                ad.main()
+        self.assertNotEqual(ctx.exception.code, 0)
+
+    def test_main_con_url_en_blanco_tambien_falla(self):
+        import os as os_module
+        with patch.dict(os_module.environ, {"DISPONIBILIDAD_CSV_URL": "   "}, clear=False):
+            with self.assertRaises(SystemExit) as ctx:
+                ad.main()
+        self.assertNotEqual(ctx.exception.code, 0)
 
 
 if __name__ == "__main__":

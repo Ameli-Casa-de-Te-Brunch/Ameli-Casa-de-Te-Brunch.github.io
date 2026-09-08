@@ -28,9 +28,14 @@ ARS/Real) también viven en el Excel, en el mismo bloque de configuración.
 
 ## Cómo verificar el resultado
 
-Después de publicar, abrí el sitio y confirmá el precio nuevo en la
-tarjeta del producto, y — si cambiaste tipo de cambio — que el precio
-equivalente en USD/EUR/Real también se vea correcto.
+Primero confirmá en GitHub, pestaña **Actions**, que la corrida terminó en
+✅. Recién después abrí el sitio con un refresco forzado (Ctrl+Shift+R) y
+confirmá el precio nuevo en la tarjeta del producto, y — si cambiaste tipo
+de cambio — que el precio equivalente en USD/EUR/Real también se vea
+correcto. GitHub Pages sirve detrás de una caché pública: si Actions ya
+dice ✅ pero el precio viejo sigue apareciendo, puede tardar varios
+minutos más en verse, o probá desde otro dispositivo/red antes de asumir
+que algo falló.
 
 ## Cuándo detenerse
 

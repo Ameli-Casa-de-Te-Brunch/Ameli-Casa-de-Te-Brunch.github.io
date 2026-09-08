@@ -33,14 +33,25 @@ después de que el workflow corra de nuevo.
    ```
    git push origin main
    ```
-5. GitHub Actions va a reconstruir y publicar automáticamente en 1-2
-   minutos.
+5. GitHub Actions va a reconstruir y publicar automáticamente -- el
+   workflow en sí tarda ~1-2 minutos; el sitio puede tardar varios
+   minutos más en reflejarlo por la caché pública de GitHub Pages.
+
+**Importante: el deploy del revert pasa por los mismos controles que
+cualquier otro.** Si la hoja de disponibilidad en vivo tiene datos
+inválidos en ese momento (ver `docs/SECURITY_BASELINE.md`, sección del
+bloqueo de `BLE001`–`BLE004`), el paso "Aplicar disponibilidad en vivo"
+va a fallar en modo estricto y el revert **no se va a publicar** hasta
+que se corrija la hoja -- aunque el commit de revert en sí esté bien.
+Si el rollback es urgente y la hoja está inválida, corregir la hoja es
+parte del camino crítico para que el revert efectivamente se publique.
 
 ## Cómo verificar el resultado
 
 - Pestaña **Actions** en GitHub: la corrida nueva tiene que terminar en
-  ✅.
-- Abrí el sitio publicado y confirmá que volvió al estado esperado.
+  ✅ -- si falla en el paso de disponibilidad, ver el párrafo de arriba.
+- Abrí el sitio publicado (con refresco forzado) y confirmá que volvió al
+  estado esperado.
 
 ## Cuándo detenerse
 

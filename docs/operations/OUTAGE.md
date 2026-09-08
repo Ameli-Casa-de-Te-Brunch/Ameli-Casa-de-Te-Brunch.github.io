@@ -45,8 +45,11 @@ problema (ver abajo).
 ## Cómo verificar el resultado
 
 Después de cualquier corrección, esperá a que una corrida nueva de
-Actions termine en ✅, después refrescá el sitio en el navegador (con
-Ctrl+Shift+R) y confirmá.
+Actions termine en ✅ (eso es el workflow, ~1-2 minutos), después refrescá
+el sitio en el navegador (con Ctrl+Shift+R) y confirmá. Si Actions ya dice
+✅ pero el sitio sigue igual: puede ser la caché pública de GitHub Pages,
+que a veces tarda varios minutos más en actualizarse -- probá desde otro
+dispositivo o red antes de asumir que la corrección no funcionó.
 
 ## Cuándo detenerse
 

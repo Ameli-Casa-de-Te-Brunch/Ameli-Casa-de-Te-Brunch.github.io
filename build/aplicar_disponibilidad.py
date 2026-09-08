@@ -126,7 +126,15 @@ def _descargar(url: str, timeout: int) -> str:
             f"No se pudo descargar la hoja de disponibilidad ({type(e).__name__})."
         ) from None
     _verificar_tamano(crudo)
-    return crudo.decode("utf-8-sig")
+    try:
+        return crudo.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        # Nunca los bytes crudos ni el contenido en el mensaje -- ni
+        # siquiera parcialmente, por si el problema es justo en un punto
+        # que dejaría ver algo sensible por casualidad.
+        raise DisponibilidadInvalida(
+            "La hoja de disponibilidad no es un CSV de texto en una codificación válida."
+        ) from None
 
 
 def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tuple[dict, list[str]]:
@@ -201,22 +209,27 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
 
 
 def leer_csv(url: str, ids_activos_esperados: set | None = None, estricto: bool = True,
-             timeout: int = 10) -> dict:
-    """ID de producto -> código de disponibilidad ('agotado'/'no_disp'/'ultimas'),
-    o ausente si la fila dice 'Disponible' o está vacía.
+             timeout: int = 10) -> tuple[dict, list[str]]:
+    """Devuelve siempre (disponibilidad, problemas):
+    - disponibilidad: {id: código ('agotado'/'no_disp'/'ultimas')}, ausente
+      si la fila dice 'Disponible' o está vacía.
+    - problemas: lista de mensajes de integridad (vacía si todo está bien).
 
     ids_activos_esperados: set opcional de IDs de productos activos. Si se
-    pasa, en modo estricto TODOS tienen que aparecer como fila (una fila
-    ausente es un error, nunca "disponible por omisión"), y cualquier ID de
-    fila que no esté en ese conjunto es un error (fila de un producto
+    pasa, TODOS tienen que aparecer como fila (una fila ausente es un
+    problema, nunca "disponible por omisión"), y cualquier ID de fila que
+    no esté en ese conjunto es un problema (fila de un producto
     desconocido).
 
-    estricto=True (el default, y el único modo del camino de CI): cualquier
-    problema de integridad hace levantar DisponibilidadInvalida, sin
-    devolver nada aplicable.
-    estricto=False (uso local, opt-in vía build.py): los problemas se
-    devuelven como avisos impresos por el llamador; se sigue con lo que se
-    pudo interpretar."""
+    estricto=True (el default, y el único modo del camino de CI): si
+    `problemas` no está vacía, levanta DisponibilidadInvalida en vez de
+    devolver nada -- no hay forma de que el llamador reciba un resultado
+    parcial en este modo.
+    estricto=False (uso local, opt-in vía build.py): nunca levanta por
+    problemas de integridad (sí puede levantar por una descarga fallida,
+    ver _descargar) -- devuelve la tupla completa para que el llamador
+    decida qué hacer (ver aplicar_a_prods: por atomicidad, no aplica nada
+    si hay problemas)."""
     contenido = _descargar(url, timeout)
     disponibilidad, problemas = _parsear_y_validar(contenido, ids_activos_esperados)
     if problemas and estricto:
@@ -224,17 +237,18 @@ def leer_csv(url: str, ids_activos_esperados: set | None = None, estricto: bool 
             "La hoja de disponibilidad tiene datos que no se pueden confiar:\n  - "
             + "\n  - ".join(problemas)
         )
-    if problemas:
-        for p in problemas:
-            print(f"[AVISO] Disponibilidad en vivo: {p}")
-    return disponibilidad
+    return disponibilidad, problemas
 
 
 def aplicar_a_prods(prods: list, url: str, estricto: bool = False) -> int:
     """Parchea en el lugar una lista de productos (dicts con 'id' y 'disp'
     opcional) en memoria. Devuelve la cantidad de cambios, o -1 si no se
-    pudo aplicar (sin URL, o -- solo si estricto=False -- la hoja no
-    respondió o tenía problemas). En estricto=True, un problema levanta
+    aplicó nada (sin URL; o -- solo si estricto=False -- la descarga
+    falló, o la hoja tenía cualquier problema de integridad).
+
+    Atomicidad: si hay algún problema (aunque sea en una sola fila), no se
+    modifica NINGÚN producto -- nunca se aplica parcialmente lo que sí se
+    pudo interpretar. En estricto=True, un problema levanta
     DisponibilidadInvalida en vez de devolver -1."""
     if not url:
         return -1
@@ -242,12 +256,23 @@ def aplicar_a_prods(prods: list, url: str, estricto: bool = False) -> int:
         print("Disponibilidad en vivo: modo NO estricto (uso local) -- nunca usar así en producción.")
     ids_activos = {p["id"] for p in prods}
     try:
-        disponibilidad = leer_csv(url, ids_activos_esperados=ids_activos, estricto=estricto)
+        disponibilidad, problemas = leer_csv(url, ids_activos_esperados=ids_activos, estricto=estricto)
     except DisponibilidadInvalida as e:
         if estricto:
             raise
-        print(f"Disponibilidad en vivo: no pude aplicarla ({e}) -- sigo con lo que había.")
+        print(f"Disponibilidad en vivo: no pude aplicarla ({e}) -- no se modifica ningún producto.")
         return -1
+
+    if problemas:
+        # Solo posible acá en modo no estricto (estricto ya habría
+        # levantado dentro de leer_csv). Se avisa, pero no se toca nada:
+        # todo o nada, nunca una mezcla de productos actualizados y otros
+        # con el estado viejo por una fila mala en el medio.
+        for p in problemas:
+            print(f"[AVISO] Disponibilidad en vivo: {p}")
+        print("Disponibilidad en vivo: hay problemas de integridad en la hoja -- no se modifica ningún producto.")
+        return -1
+
     cambios = 0
     for p in prods:
         nuevo = disponibilidad.get(p["id"])
@@ -262,12 +287,27 @@ def aplicar_a_prods(prods: list, url: str, estricto: bool = False) -> int:
     return cambios
 
 
-def aplicar_a_archivo(url: str, menu_json_path: Path = MENU_JSON, estricto: bool = True) -> int:
+def aplicar_a_archivo(url: str, menu_json_path: Path = MENU_JSON, estricto: bool = True,
+                       url_obligatoria: bool = False) -> int:
     """Igual que aplicar_a_prods, pero leyendo y reescribiendo un
     data/menu.json en disco -- para el caso CI, que no tiene el dict en
     memoria porque nunca corre extract.py. estricto=True por defecto: es el
-    camino de producción."""
+    camino de producción.
+
+    url_obligatoria=True (usado por main(), el camino de CI/producción):
+    una URL vacía/faltante es en sí misma un problema -- levanta
+    DisponibilidadInvalida en vez de seguir de largo sin aplicar nada. Sin
+    esto, si la repo variable DISPONIBILIDAD_CSV_URL se borra o queda mal
+    configurada por error, el build podía terminar "exitosamente" sin
+    ningún dato de disponibilidad aplicado -- publicando todo como
+    disponible sin que nadie se entere. url_obligatoria=False (el default,
+    usado por build.py en la PC del dueño) conserva el comportamiento
+    anterior: sin URL configurada, la función es simplemente opcional."""
     if not url:
+        if url_obligatoria:
+            raise DisponibilidadInvalida(
+                "DISPONIBILIDAD_CSV_URL no está configurada -- en este camino es obligatoria, no se publica sin ella."
+            )
         print("Disponibilidad en vivo: no hay URL configurada, no se aplica nada.")
         return -1
     if not menu_json_path.exists():
@@ -285,7 +325,7 @@ def aplicar_a_archivo(url: str, menu_json_path: Path = MENU_JSON, estricto: bool
 def main():
     url = os.environ.get("DISPONIBILIDAD_CSV_URL", "").strip()
     try:
-        aplicar_a_archivo(url, estricto=True)
+        aplicar_a_archivo(url, estricto=True, url_obligatoria=True)
     except DisponibilidadInvalida as e:
         print(f"[ERROR] Disponibilidad en vivo: {e}")
         print("[ERROR] Build detenido -- no se publica con datos de disponibilidad no confiables.")

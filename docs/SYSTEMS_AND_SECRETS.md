@@ -26,13 +26,17 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 - **Dónde vive**: Propiedad de script `GITHUB_TOKEN` en el Apps Script de
   la hoja de disponibilidad.
 - **Para qué se usa**: `avisarGitHub()` en Apps Script dispara
-  `repository_dispatch` (`event_type: actualizar-disponibilidad`) — este
-  es el mecanismo que hoy está efectivamente conectado al trigger real
-  `alCambiarDisponibilidad` (el que corre cuando el personal edita la
-  hoja).
-- **Estado**: **se conserva únicamente como rollback temporal** mientras
-  se termina de probar el mecanismo nuevo (ver abajo). No renovar,
-  revocar ni modificar durante esta fase.
+  `repository_dispatch` (`event_type: actualizar-disponibilidad`).
+- **Estado del trigger real: POR VERIFICAR.** Este documento se basa en
+  lo conversado sobre el mecanismo, no en una inspección directa del
+  Apps Script real (vive en la cuenta de Google del dueño, sin acceso
+  desde acá). Que `alCambiarDisponibilidad` siga llamando a
+  `avisarGitHub()` (y no a `avisarGitHubViaActions()`) es lo asumido,
+  no lo confirmado — hay que abrir el editor de Apps Script y mirar el
+  cuerpo real de esa función antes de dar esto por hecho.
+- **Mientras el trigger real no se verifique**: se conserva como
+  rollback temporal, no se renueva, revoca ni modifica durante esta
+  fase.
 
 ### `GITHUB_TOKEN_ACTIONS` (PAT nuevo)
 
@@ -44,13 +48,16 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 - **Para qué se usa**: la función `avisarGitHubViaActions()` (agregada
   junto a `avisarGitHub()`, no en reemplazo) dispara el workflow vía
   `workflow_dispatch`.
-- **Estado**: creado y probado manualmente con éxito — GitHub respondió
-  HTTP 204 y el workflow terminó bien. Todavía no es lo que dispara el
-  trigger real de edición de la hoja (`alCambiarDisponibilidad` sigue
-  llamando a `avisarGitHub()`, el mecanismo anterior). El cutover
-  (cambiar ese trigger para que use la función nueva, y recién ahí
-  evaluar revocar el PAT anterior) queda para después de esta fase — no
-  se toca Apps Script durante Fase C1.
+- **Estado confirmado**: creado y probado manualmente con éxito — GitHub
+  respondió HTTP 204 y el workflow terminó bien. Esto sí es un hecho
+  reportado directamente, no una suposición.
+- **Estado del trigger real: POR VERIFICAR** (mismo motivo que arriba —
+  sin inspección directa del Apps Script desde acá). Que este mecanismo
+  todavía NO sea el que dispara el trigger real de edición de la hoja es
+  lo asumido según lo conversado, no algo confirmado mirando el código
+  real. El cutover (verificar/cambiar ese trigger, y recién ahí evaluar
+  revocar el PAT anterior) queda para después de esta fase — no se toca
+  Apps Script durante Fase C1.
 
 ### `DISPONIBILIDAD_CSV_URL`
 
@@ -73,10 +80,12 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 
 ## Antes de cualquier cambio futuro sobre estas credenciales
 
-1. Confirmar que el mecanismo nuevo (`GITHUB_TOKEN_ACTIONS` +
-   `avisarGitHubViaActions()`) esté realmente conectado al trigger de
-   edición real de la hoja y probado con una edición real del personal,
-   no solo con la prueba manual ya hecha.
+1. **Abrir el editor de Apps Script real y confirmar con los propios
+   ojos** qué función llama hoy `alCambiarDisponibilidad` -- no asumirlo
+   de esta conversación. Recién con eso confirmado, verificar que el
+   mecanismo nuevo (`GITHUB_TOKEN_ACTIONS` + `avisarGitHubViaActions()`)
+   esté realmente conectado a ese trigger y probado con una edición real
+   del personal, no solo con la prueba manual ya hecha.
 2. Solo entonces evaluar revocar `GITHUB_TOKEN` (el anterior) — nunca
    antes de tener el reemplazo probado en producción.
 3. Cualquier secret o variable nueva se documenta acá (nombre, alcance,
