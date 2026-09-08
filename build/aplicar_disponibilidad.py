@@ -164,30 +164,49 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
         disp_crudo = fila[col_disp].strip() if len(fila) > col_disp else ""
 
         if not idv:
+            # Nunca disp_crudo acá: es texto de celda no confiable, podría
+            # llevar cualquier cosa pegada por error (hasta una
+            # credencial) -- alcanza con el número de fila.
             if disp_crudo:
                 problemas.append(
-                    f"Fila {numero_fila}: tiene un estado de disponibilidad ('{disp_crudo}') "
-                    "pero no tiene ID -- no se sabe a qué producto corresponde."
+                    f"Fila {numero_fila}: tiene un valor de disponibilidad pero no tiene ID -- "
+                    "no se sabe a qué producto corresponde."
                 )
             continue
 
+        # A partir de acá, "idv" solo es seguro de reproducir en un
+        # mensaje si es uno de los IDs públicos ya conocidos (nuestros
+        # propios códigos de producto, ej. "TYT004") -- nunca el texto
+        # crudo de la celda tal cual llegó, que podría no serlo.
+        id_conocido = ids_activos_esperados is not None and idv in ids_activos_esperados
+
         if idv in vistos:
-            problemas.append(
-                f"El ID '{idv}' está repetido en la hoja de disponibilidad: filas {vistos[idv]} y {numero_fila}."
-            )
+            if id_conocido:
+                problemas.append(
+                    f"El ID '{idv}' está repetido en la hoja de disponibilidad: filas {vistos[idv]} y {numero_fila}."
+                )
+            else:
+                problemas.append(
+                    f"Fila {numero_fila}: repite el mismo ID que la fila {vistos[idv]} (ID no reconocido)."
+                )
             continue
         vistos[idv] = numero_fila
 
-        if ids_activos_esperados is not None and idv not in ids_activos_esperados:
+        if ids_activos_esperados is not None and not id_conocido:
+            # Nunca idv acá: no es uno de nuestros IDs conocidos, así que
+            # no hay garantía de qué contiene esa celda.
             problemas.append(
-                f"Fila {numero_fila}: el ID '{idv}' no corresponde a ningún producto activo publicado."
+                f"Fila {numero_fila}: contiene un ID que no corresponde a ningún producto activo publicado."
             )
             continue
 
         if disp_crudo not in ESTADOS_VALIDOS:
+            # Nunca disp_crudo (el valor recibido) -- solo la fila y, si
+            # ya se confirmó que es un ID público conocido, ese ID.
             valores_validos = "', '".join(v for v in ESTADOS_VALIDOS if v)
+            identificacion = f" (ID '{idv}')" if id_conocido else ""
             problemas.append(
-                f"Fila {numero_fila} (ID '{idv}'): '{disp_crudo}' no es un valor reconocido. "
+                f"Fila {numero_fila}{identificacion}: el valor de disponibilidad no es reconocido. "
                 f"Tiene que estar vacío, 'Disponible', o exactamente uno de '{valores_validos}'."
             )
             continue

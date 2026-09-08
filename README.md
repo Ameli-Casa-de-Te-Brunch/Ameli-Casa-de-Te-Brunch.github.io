@@ -147,7 +147,7 @@ francés e italiano**.
 | Precios (de venta) — un solo precio, o "chico/grande" (té, café, blends) o "vaso/jarra" (batidos y jugos) | `Productos` | U (precio chico o único) · V (precio grande, solo si el producto tiene dos tamaños) |
 | Alérgenos (15 banderas + estado de validación) | `Productos` | AF-AT (banderas) · AU (estado de validación) — no se publica nada de un producto hasta que su fila diga "Validado por cocina" o "Validado por proveedor" |
 | Temperatura (para el filtro "algo calentito/fresco") y formato de servicio | `Productos` | X, Y |
-| Fotos de producto | `Productos` | Z (URL imagen principal) — si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
+| Fotos de producto | `Productos` | Z (ruta relativa propia, ej. `assets/img/tyt004.webp`) — nunca una URL externa: la CSP solo permite `img-src 'self'`, y `build/validate_json_publico.py` rechaza cualquier otra forma (URL externa, ruta absoluta, `..`). Si está vacío, se muestra un gradiente con la inicial del producto en vez de una foto rota |
 | Opción de leche vegetal / sin lactosa en una bebida | `Productos - Backoffice` | columnas "Leche vegetal" / "Leche sin lactosa" (dentro de Personalización) — no es un producto aparte, es un agregado que se muestra en el detalle de la bebida correspondiente |
 | WhatsApp, Instagram, dirección, URL del QR | `Resumen y Configuración` | columna Valor, bloque "Configuración del sitio" (filas 16-25) |
 | Ingredientes, personalización — referencia interna | `Productos - Backoffice` | — (nada de esto lo lee el sitio, salvo leche vegetal/sin lactosa arriba) |

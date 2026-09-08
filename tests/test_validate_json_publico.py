@@ -17,7 +17,9 @@ MENU_JSON_REAL = ROOT / "data" / "menu.json"
 
 def _doc_valido():
     return {
-        "cats": [{"cod": "BEB", "orden": 1, "nom": {"es": "Bebidas"}}],
+        "cats": [{"cod": "BEB", "orden": 1, "nom": {
+            "es": "Bebidas", "en": "Drinks", "pt": "Bebidas", "fr": "Boissons", "it": "Bevande",
+        }}],
         "prods": [{
             "id": "BEB001", "cat": "BEB", "orden": 1, "dest": False,
             "n": {"es": "Café", "en": "Coffee", "pt": "Café", "fr": "Café", "it": "Caffè"},
@@ -250,6 +252,144 @@ class TestEntradaNoValida(unittest.TestCase):
             Path(ruta).unlink()
         self.assertEqual(resultado.returncode, 1)
         self.assertNotIn("Traceback", resultado.stdout + resultado.stderr)
+
+
+class TestCamposInternosYEnumeraciones(unittest.TestCase):
+    """Casos exactos comprobados independientemente que antes pasaban sin
+    error -- uno por uno, tal como se reportaron."""
+
+    def test_cat_nom_interno_es_error(self):
+        doc = _doc_valido()
+        doc["cats"][0]["nom"]["interno"] = "secreto"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("interno" in e for e in errors), errors)
+
+    def test_prod_n_costo_interno_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["n"]["costo_interno"] = "secreto"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("costo_interno" in e for e in errors), errors)
+
+    def test_categoria_sin_nom_en_es_error(self):
+        doc = _doc_valido()
+        del doc["cats"][0]["nom"]["en"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("nom.en" in e for e in errors), errors)
+
+    def test_badge_desconocido_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["b"] = ["desconocido"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("desconocido" in e and "'b'" in e for e in errors), errors)
+
+    def test_momento_desconocido_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["m"] = ["desconocido"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("desconocido" in e and "'m'" in e for e in errors), errors)
+
+    def test_momento_dulce_es_valido(self):
+        """'dulce' es un chip real de menu.js (CHIPS[0]), no un error."""
+        doc = _doc_valido()
+        doc["prods"][0]["m"] = ["dulce"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertEqual(errors, [])
+
+    def test_alerg_clave_privada_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["alerg"] = {"nota_privada": True}
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("nota_privada" in e for e in errors), errors)
+
+    def test_alerg_clave_valida_con_tipo_incorrecto_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["alerg"] = {"veg": "sí"}
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("alerg.veg" in e for e in errors), errors)
+
+    def test_leche_valor_desconocido_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["leche"] = ["secreto"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("secreto" in e and "leche" in e for e in errors), errors)
+
+    def test_leche_duplicada_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["leche"] = ["veg", "veg"]
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("duplicado" in e for e in errors), errors)
+
+    def test_whatsapp_numerico_es_error(self):
+        """Un número JSON no debe aceptarse silenciosamente aunque, como
+        string, coincidiría con la regex de 8-15 dígitos."""
+        doc = _doc_valido()
+        doc["config"]["whatsapp"] = 12345678
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("whatsapp" in e and "string" in e for e in errors), errors)
+
+    def test_alt_idioma_no_permitido_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["alt"] = {"es": "una foto", "klingon": "texto"}
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("klingon" in e for e in errors), errors)
+
+    def test_alt_ausente_no_es_error(self):
+        """alt es opcional: menu.js cae al nombre del producto si falta
+        (ver altProducto() en assets/js/menu.js)."""
+        doc = _doc_valido()
+        self.assertNotIn("alt", doc["prods"][0])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertEqual(errors, [])
+
+
+class TestImagenRuta(unittest.TestCase):
+    def test_ruta_relativa_bajo_assets_img_es_valida(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "assets/img/tyt004.webp"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertEqual(errors, [])
+
+    def test_url_externa_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "https://ejemplo-externo.com/foto.jpg"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_protocolo_relativo_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "//ejemplo-externo.com/foto.jpg"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_data_uri_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "data:image/png;base64,AAAA"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_javascript_uri_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "javascript:alert(1)"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_ruta_absoluta_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "/etc/passwd"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_traversal_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "assets/img/../../secretos/x.jpg"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
+
+    def test_fuera_de_assets_img_es_error(self):
+        doc = _doc_valido()
+        doc["prods"][0]["img"] = "assets/otra-cosa/x.jpg"
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("'img'" in e for e in errors), errors)
 
 
 class TestJsonPublicoReal(unittest.TestCase):

@@ -5,6 +5,19 @@ Estado de esta línea base: cierre técnico Fase C1 (rama
 al sitio, no un plan a futuro — para lo que queda deliberadamente
 pospuesto, ver la sección final.
 
+## Permisos del workflow (mínimo privilegio por job)
+
+`.github/workflows/deploy.yml` ya no da los mismos permisos a los dos
+jobs -- cada uno tiene solo lo que necesita:
+
+| Job | `contents` | `pages` | `id-token` | Por qué |
+|---|---|---|---|---|
+| `build` | `read` | — | — | Descarga y procesa la hoja de disponibilidad, corre pruebas, renderiza -- nunca publica. No tiene ningún motivo para poder escribir nada. |
+| `deploy` | — | `write` | `write` | El único paso que efectivamente publica (`actions/deploy-pages`) -- no hace checkout, no necesita `contents` en absoluto. |
+
+Ningún otro job existe hoy. Si se agrega uno nuevo, arranca sin permisos
+de escritura salvo que se justifique acá, en esta misma tabla.
+
 ## Cabeceras y política de contenido
 
 - **CSP** (`build/render.py`, `_csp_meta`): `default-src 'none'`, con

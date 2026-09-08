@@ -39,7 +39,8 @@ class TestParsearYValidar(unittest.TestCase):
             ["TYT001", ""],
         ])
         _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
-        self.assertTrue(any("no es un valor reconocido" in p for p in problemas))
+        self.assertTrue(any("BEB001" in p and "no es reconocido" in p for p in problemas))
+        self.assertFalse(any("sin stock" in p for p in problemas))  # el valor recibido nunca se reproduce
 
     def test_id_duplicado(self):
         contenido = _csv([
@@ -83,7 +84,8 @@ class TestParsearYValidar(unittest.TestCase):
             ["ZZZ999", ""],
         ])
         _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
-        self.assertTrue(any("ZZZ999" in p and "ningún producto activo" in p for p in problemas))
+        self.assertTrue(any("ningún producto activo" in p for p in problemas))
+        self.assertFalse(any("ZZZ999" in p for p in problemas))  # el ID desconocido nunca se reproduce
 
     def test_producto_activo_ausente(self):
         contenido = _csv([
@@ -320,6 +322,107 @@ class TestUrlObligatoriaEnProduccion(unittest.TestCase):
             with self.assertRaises(SystemExit) as ctx:
                 ad.main()
         self.assertNotEqual(ctx.exception.code, 0)
+
+
+SENTINEL = "SECRETO_NO_DEBE_APARECER_123"
+
+
+class TestNuncaImprimeDatosNoConfiables(unittest.TestCase):
+    """Ninguna celda de la hoja (columna ID o Disponibilidad) es confiable
+    -- puede llevar cualquier cosa pegada por error, hasta una credencial.
+    Ningún mensaje de problema, excepción, ni stdout/stderr debe reproducir
+    ese contenido, salvo un ID que ya sea uno de nuestros públicos
+    conocidos (ids_activos_esperados)."""
+
+    def _sin_sentinel(self, *textos):
+        for t in textos:
+            self.assertNotIn(SENTINEL, t)
+
+    def test_estado_invalido_con_id_conocido_no_reproduce_el_valor(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", SENTINEL], ["BEB002", ""], ["TYT001", ""]])
+        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self._sin_sentinel(*problemas)
+        # el ID sí conocido puede aparecer, el valor no
+        self.assertTrue(any("BEB001" in p for p in problemas))
+
+    def test_fila_sin_id_no_reproduce_el_valor(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["", SENTINEL], ["BEB001", ""], ["BEB002", ""], ["TYT001", ""]])
+        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self._sin_sentinel(*problemas)
+        self.assertTrue(any("Fila 2" in p for p in problemas))
+
+    def test_id_desconocido_no_se_reproduce(self):
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BEB001", ""], ["BEB002", ""], ["TYT001", ""],
+            [SENTINEL, ""],
+        ])
+        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self._sin_sentinel(*problemas)
+        self.assertTrue(any("no corresponde a ningún producto activo" in p for p in problemas))
+
+    def test_id_duplicado_desconocido_no_se_reproduce(self):
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            [SENTINEL, ""], [SENTINEL, ""],
+            ["BEB001", ""], ["BEB002", ""], ["TYT001", ""],
+        ])
+        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self._sin_sentinel(*problemas)
+
+    def test_estado_invalido_sin_ids_activos_esperados_no_reproduce_ni_id_ni_valor(self):
+        """Sin el set de IDs activos (no hay forma de confirmar que el ID
+        sea uno de los nuestros), ni el ID ni el valor se reproducen."""
+        contenido = _csv([["ID", "Disponibilidad"], [SENTINEL, SENTINEL]])
+        _, problemas = ad._parsear_y_validar(contenido, None)
+        self._sin_sentinel(*problemas)
+
+    def test_excepcion_en_modo_estricto_no_reproduce_el_sentinel(self):
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", SENTINEL], ["BEB002", ""], ["TYT001", ""]])
+        with patch.object(ad, "_descargar", return_value=contenido):
+            with self.assertRaises(ad.DisponibilidadInvalida) as ctx:
+                ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=True)
+        self.assertNotIn(SENTINEL, str(ctx.exception))
+
+    def test_stdout_stderr_de_aplicar_a_prods_no_reproduce_el_sentinel(self):
+        """Cobertura de punta a punta: nada de lo que efectivamente se
+        imprime por consola (avisos incluidos) contiene el centinela."""
+        import contextlib
+        import io as io_module
+
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BEB001", SENTINEL],
+            [SENTINEL, ""],
+            ["BEB002", ""], ["TYT001", ""],
+        ])
+        prods = [{"id": "BEB001"}, {"id": "BEB002"}, {"id": "TYT001"}]
+        buffer_out = io_module.StringIO()
+        with patch.object(ad, "_descargar", return_value=contenido):
+            with contextlib.redirect_stdout(buffer_out):
+                ad.aplicar_a_prods(prods, "https://docs.google.com/x", estricto=False)
+        self.assertNotIn(SENTINEL, buffer_out.getvalue())
+
+    def test_stdout_de_main_no_reproduce_el_sentinel_en_modo_estricto(self):
+        import contextlib
+        import io as io_module
+        import os as os_module
+
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BLE001", SENTINEL],
+            ["BLE002", ""],
+        ])
+        buffer_out = io_module.StringIO()
+        with patch.object(ad, "_descargar", return_value=contenido):
+            with patch("json.loads", return_value={"prods": [{"id": "BLE001"}, {"id": "BLE002"}]}):
+                with patch.object(Path, "exists", return_value=True):
+                    with patch.object(Path, "read_text", return_value="{}"):
+                        with patch.dict(os_module.environ, {"DISPONIBILIDAD_CSV_URL": "https://docs.google.com/x"}):
+                            with contextlib.redirect_stdout(buffer_out):
+                                with self.assertRaises(SystemExit):
+                                    ad.main()
+        self.assertNotIn(SENTINEL, buffer_out.getvalue())
 
 
 if __name__ == "__main__":
