@@ -1,0 +1,25 @@
+# Artefactos de Python
+__pycache__/
+*.pyc
+
+# Salida de build -- se genera con build_site.py, no se versiona
+dist/
+
+# Archivos temporales de build (directorio de staging antes de reemplazar dist/)
+*.tmp
+*.temp
+.build-tmp-*/
+
+# Respaldo transitorio de dist/ durante el swap (ver build_site.py,
+# construir()) -- si queda alguno, es evidencia de un fallo a medio
+# resolver, nunca basura a borrar sin mirar.
+.dist-respaldo-*/
+
+# Configuración local / secretos futuros -- nunca debe versionarse
+.env
+*.local.json
+site.config.local.json
+
+# Artefactos comunes de editor/SO
+.DS_Store
+Thumbs.db

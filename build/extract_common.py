@@ -228,29 +228,31 @@ DOMINIOS_GOOGLE = ("google.com", "g.page")
 DOMINIOS_TRIPADVISOR = ("tripadvisor.com", "tripadvisor.com.ar")
 DOMINIOS_DISPONIBILIDAD = ("docs.google.com",)
 
-# Host único y exacto de "config.url_base" -- a propósito el mismo texto
-# que DOMINIOS_MENU[0], pero como constante aparte: url_base_valida() más
-# abajo exige coincidencia EXACTA (nunca un subdominio), a diferencia de
-# host_permitido()/url_https_valida() (pensadas para permitir subdominios
-# reales de TripAdvisor/Google, que sí los tienen). El dominio propio
-# personalizado (amelicasadete.com.ar) queda deliberadamente fuera de esta
-# constante hasta que se decida su enrutamiento definitivo -- no es parte
-# del cierre técnico C1.
-DOMINIO_URL_BASE = "ameli-casa-de-te-brunch.github.io"
+# Dos orígenes válidos para "config.url_base" durante la transición a
+# la arquitectura unificada (web + menú en un único artefacto de
+# GitHub Pages, ver build_unificado.py en la raíz del repo):
+#   - el nuevo, real: dominio propio con el menú bajo /menu/.
+#   - el viejo: el repo separado de antes, como rollback rápido sin
+#     depender de que la celda de Sheets ya esté actualizada.
+# url_base_valida() más abajo exige coincidencia EXACTA de host (nunca
+# un subdominio), a diferencia de host_permitido()/url_https_valida()
+# (pensadas para permitir subdominios reales de TripAdvisor/Google).
+DOMINIO_URL_BASE_NUEVO = "amelicasadete.com.ar"
+RUTA_URL_BASE_NUEVO = "/menu"
+DOMINIO_URL_BASE_VIEJO = "ameli-casa-de-te-brunch.github.io"
 
 
 def url_base_valida(valor) -> bool:
-    """Política mucho más estricta que url_https_valida() para el único
-    campo que se usa como origen público del sitio (JSON-LD, canonical,
-    sitemap, robots.txt -- ver render.py): tiene que ser exactamente
-    "https://ameli-casa-de-te-brunch.github.io", opcionalmente con una "/"
-    final, y nada más. Rechaza explícitamente: http, cualquier otro host
-    (exacto o subdominio -- acá ni un subdominio real cuenta como válido),
+    """Único campo que se usa como origen público del sitio (JSON-LD,
+    canonical, sitemap, robots.txt -- ver render.py). Acepta EXACTAMENTE
+    una de dos formas (con o sin "/" final): "https://amelicasadete.com.ar/menu"
+    -- la arquitectura unificada real -- o "https://ameli-casa-de-te-brunch.github.io"
+    -- rollback al repo separado. Rechaza explícitamente: http, cualquier
+    otro host o path (ni siquiera un subdominio real cuenta acá),
     usuario/contraseña embebidos, cualquier puerto que no sea el 443
-    (default de https), cualquier path que no sea "/", query string,
-    fragmento, y esquemas peligrosos (javascript:, data:) o URLs
-    malformadas -- estas últimas ya quedan afuera por el chequeo de
-    esquema/por el try/except de más abajo."""
+    (default de https), query string, fragmento, y esquemas peligrosos
+    (javascript:, data:) o URLs malformadas -- estas últimas ya quedan
+    afuera por el chequeo de esquema/por el try/except de más abajo."""
     if not isinstance(valor, str) or not valor:
         return False
     try:
@@ -263,17 +265,18 @@ def url_base_valida(valor) -> bool:
         return False
     if partes.scheme != "https":
         return False
-    if (partes.hostname or "").lower() != DOMINIO_URL_BASE:
-        return False
     if partes.username is not None or partes.password is not None:
         return False
     if puerto is not None and puerto != 443:
         return False
-    if partes.path not in ("", "/"):
-        return False
     if partes.query or partes.fragment:
         return False
-    return True
+    host = (partes.hostname or "").lower()
+    if host == DOMINIO_URL_BASE_NUEVO:
+        return partes.path in (RUTA_URL_BASE_NUEVO, RUTA_URL_BASE_NUEVO + "/")
+    if host == DOMINIO_URL_BASE_VIEJO:
+        return partes.path in ("", "/")
+    return False
 
 
 def sanear_config(params: dict) -> dict:

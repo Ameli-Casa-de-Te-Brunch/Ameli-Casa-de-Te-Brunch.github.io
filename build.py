@@ -85,9 +85,27 @@ def _git(*args):
     )
 
 
-def publicar():
+def _mensaje_url_publicada(url_base: str | None) -> str:
+    """Arma la línea final de publicar() a partir de config.url_base --
+    separada en su propia función, sin tocar git ni pedir confirmación,
+    para poder probarla sola (ver tests/test_build.py). Nunca un dominio
+    hardcodeado acá: sea cual sea el origen real vigente
+    (amelicasadete.com.ar/menu/, el repo separado de antes como
+    rollback, o cualquier otro que se configure en el futuro), el
+    mensaje siempre refleja ese mismo dato, no un texto fijo que pueda
+    quedar desactualizado."""
+    if url_base:
+        return url_base if url_base.endswith("/") else url_base + "/"
+    return ("(config.url_base no está configurada -- revisá GitHub Pages, "
+            "Settings, para la URL publicada real).")
+
+
+def publicar(url_base: str | None = None):
     """Muestra EXACTAMENTE qué archivo cambiaría y pide confirmación explícita
-    antes de commitear y pushear. Nunca commitea nada que no haya listado antes."""
+    antes de commitear y pushear. Nunca commitea nada que no haya listado antes.
+
+    url_base: el mismo config.url_base ya extraído del Excel/Sheets en esta
+    corrida (ver ejecutar() más abajo) -- ver _mensaje_url_publicada()."""
     print("\n--publicar")
 
     rev_parse = _git("rev-parse", "--abbrev-ref", "HEAD")
@@ -136,7 +154,7 @@ def publicar():
         print("Corré 'git push' a mano cuando se resuelva.")
         return
     print("Publicado. GitHub Actions va a reconstruir el sitio en un par de minutos:")
-    print("https://ameli-casa-de-te-brunch.github.io/")
+    print(_mensaje_url_publicada(url_base))
 
 
 def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_disponibilidad: bool) -> str:
@@ -292,7 +310,7 @@ def ejecutar(args, xlsx_path: Path, extract_mod=None, validate_mod=None) -> None
     render._escribir_seo_estatico(args.out.parent, data["config"].get("url_base"))
 
     if args.publicar:
-        publicar()
+        publicar(data["config"].get("url_base"))
     else:
         print()
         print("Listo en tu PC. Para publicar de verdad: python build.py --publicar")

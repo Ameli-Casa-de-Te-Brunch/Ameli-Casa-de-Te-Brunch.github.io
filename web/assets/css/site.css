@@ -1,0 +1,717 @@
+/* Amelí — editorial botánica contemporánea. Fuentes self-hosted, sin
+   Google Fonts ni CDN. Interacción del panel de accesibilidad resuelta
+   en assets/js/site.js (propio, sin librerías); todo lo demás (foco,
+   hover, reduced-motion por preferencia del sistema) sigue en CSS. */
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 600;font-display:swap;src:url('../fonts/cormorant-garamond.woff2') format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 500;font-display:swap;src:url('../fonts/cormorant-garamond-italic.woff2') format('woff2')}
+@font-face{font-family:'Karla';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/karla.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/montserrat-light.woff2') format('woff2')}
+
+:root{
+  --verde:#536039;
+  --verde-osc:#3E4736;
+  --crema:#F2EAE1;
+  --calafate:#8B2F2F;
+  --blanco:#FFFDF7;
+  --salvia:#C7D6A6;
+  --verde-linea:#6B7A57;
+  --tinta:#000000;
+  --texto-sec:#5e5849;
+  --linea:rgba(83,96,57,.22);
+  --linea-suave:rgba(83,96,57,.12);
+  --radius-sm:14px; --radius-md:20px; --radius-pill:999px;
+  --max-w:1160px;
+
+  /* ---- Tipografía en 3 niveles (jerarquía deliberada, no accidental) ----
+     Nivel 1, DISPLAY: títulos de marca y de sección. Serif editorial
+       (Cormorant Garamond), la voz más grande y la única con esa serif.
+     Nivel 2, SUBHEAD: eyebrows, tagline, etiquetas de lista. Sans
+       (Karla) en mayúsculas trackeadas para eyebrows, o itálica serif
+       para el tagline -- marca transición entre título y cuerpo.
+     Nivel 3, BODY: párrafos y textos de apoyo. Sans (Karla) regular,
+       siempre el tamaño más chico y el de mayor line-height. */
+  --font-display:'Cormorant Garamond',serif;
+  --font-subhead:'Karla',system-ui,sans-serif;
+  --font-body:'Karla',system-ui,sans-serif;
+
+  /* Multiplicador de tamaño de texto del panel de accesibilidad.
+     assets/js/site.js lo escribe en <html style="--afs:N">; 1 = normal.
+     Al vivir en la raíz y todo lo demás en rem, un solo cambio acá
+     escala proporcionalmente toda la tipografía del sitio. */
+  --afs:1;
+}
+
+*{box-sizing:border-box}
+html{
+  scroll-behavior:smooth;
+  font-size:calc(16px * var(--afs, 1));
+}
+body{
+  margin:0;
+  background:var(--blanco);
+  color:var(--tinta);
+  font-family:var(--font-body);
+  font-size:1rem;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;display:block}
+a{color:var(--verde)}
+/* Texto para tecnologías de asistencia únicamente -- no visible en
+   pantalla, no afecta el layout. Se agrega dentro de cada enlace
+   target="_blank" para anunciar la apertura en una pestaña nueva sin
+   depender de un ícono o de que el usuario ya sepa la convención. */
+.solo-lectores{
+  position:absolute!important; width:1px!important; height:1px!important;
+  padding:0!important; margin:-1px!important; overflow:hidden!important;
+  clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important;
+}
+
+.skip-link{
+  position:absolute; left:0; top:0;
+  transform:translateY(-120%);
+  background:var(--verde); color:var(--blanco);
+  padding:12px 20px; border-radius:0 0 var(--radius-sm) 0;
+  font-weight:700; z-index:100; transition:transform .2s ease;
+}
+.skip-link:focus{transform:translateY(0)}
+
+a:focus-visible, button:focus-visible{
+  outline:3px solid var(--calafate);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* ---------- tipografía editorial compartida ---------- */
+.eyebrow{
+  display:flex; align-items:baseline; gap:10px;
+  font-family:var(--font-subhead); font-weight:700;
+  font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--texto-sec); margin:0 0 14px;
+}
+/* Tag de categoría de la portada: mismo texto que antes, ahora en un
+   chip de color sólido en vez de texto plano -- una de las cosas que
+   se pidió traer de referencias con más energía de color/contraste,
+   traducida a la paleta propia (verde de marca, no la de la
+   referencia). Uso puntual, no reemplaza .eyebrow en el resto del
+   sitio (los números de índice siguen con el tratamiento de texto). */
+.eyebrow-tag{
+  display:inline-flex; align-items:center;
+  font-family:var(--font-subhead); font-weight:700;
+  font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--blanco); background:var(--verde);
+  padding:8px 16px; border-radius:var(--radius-pill);
+  margin:0 0 20px;
+}
+/* Numeración estilo índice editorial: un prefijo discreto ("00", "01"...)
+   antes de cada eyebrow de sección -- retoma el índice numerado de
+   "Amelí Editorial" pero sin nav flotante ni scroll-spy, para no volver
+   a la sensación de "parece una revista" que se rechazó en ese concepto. */
+.indice-num{
+  font-family:var(--font-display); font-style:italic; font-weight:600;
+  font-size:.95rem; letter-spacing:0; text-transform:none;
+  color:var(--calafate);
+}
+.titulo-seccion{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(2rem, 5vw, 3rem);
+  color:var(--tinta); margin:0 0 18px; line-height:1.05;
+}
+.texto-editorial{
+  max-width:46ch; color:var(--texto-sec); font-size:1rem; margin:0 0 24px;
+}
+
+/* ---------- botones y enlaces ---------- */
+/* Botones más contundentes: más alto, más padding, letras un poco más
+   espaciadas y una sombra propia -- la idea de "peso" que se pidió,
+   sin copiar el color ni la tipografía de ninguna referencia. */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  min-height:56px; padding:0 34px;
+  border-radius:var(--radius-pill);
+  font-family:var(--font-subhead); font-weight:700; font-size:1rem;
+  letter-spacing:.02em;
+  text-decoration:none; border:none; cursor:pointer;
+  background:var(--verde); color:var(--blanco);
+  box-shadow:0 10px 24px -8px rgba(62,71,54,.55);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.btn:hover, .btn:focus-visible{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
+}
+.link-secundario{
+  display:inline-flex; align-items:center; min-height:48px;
+  font-family:var(--font-subhead); font-weight:700; font-size:.9rem;
+  color:var(--tinta); text-decoration:none;
+  border-bottom:1.5px solid var(--linea);
+  transition:border-color .2s ease;
+}
+.link-secundario:hover, .link-secundario:focus-visible{border-color:var(--calafate)}
+.link-secundario span{margin-left:6px; transition:transform .2s ease}
+.link-secundario:hover span{transform:translateX(3px)}
+
+/* ---------- header ---------- */
+.site-header{
+  max-width:var(--max-w); margin:0 auto;
+  padding:22px 24px 0;
+}
+.site-header-fila{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 16px;
+}
+.wordmark-chico{
+  font-family:var(--font-display); font-weight:600;
+  font-size:1.3rem; color:var(--verde); margin:0;
+}
+/* Isotipo real de Amelí (SVG vectorial, sin fondo) en el header --
+   el footer conserva el wordmark tipográfico de arriba: a la tinta
+   oscura del isotipo (pensada para fondos claros) le falta contraste
+   sobre el verde oscuro del footer, y no existe todavía una versión
+   clara/invertida del archivo para ese uso. */
+.logo-header{height:56px; width:auto}
+/* El propio <a> que envuelve el logo -- solo quita el subrayado por
+   defecto de los enlaces; el foco visible sigue siendo el del resto
+   del sitio (outline del navegador / :focus-visible global). */
+.logo-enlace{display:inline-flex; text-decoration:none}
+
+/* ---------- navegación principal ---------- */
+/* Visible siempre, mobile incluido -- sin botón hamburguesa ni JS: en
+   mobile pasa a ocupar toda la fila (order:3 + flex:1 0 100% la manda
+   abajo del logo/acciones dentro del mismo .site-header-fila, que ya
+   tiene flex-wrap) como una segunda fila propia, separada por una
+   línea fina. El breakpoint de escritorio la reacomoda en la misma
+   fila que el logo, ver media query más abajo. */
+.nav-principal{
+  order:3; flex:1 0 100%;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:12px 0 0; margin-top:4px;
+  border-top:1px solid var(--linea-suave);
+}
+.nav-principal a{
+  font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
+  letter-spacing:.02em; color:var(--texto-sec); text-decoration:none;
+  min-height:48px; display:inline-flex; align-items:center;
+  transition:color .2s ease;
+}
+.nav-principal a:hover, .nav-principal a:focus-visible{color:var(--verde)}
+
+.header-acciones{display:flex; align-items:center; gap:12px}
+.header-menu{
+  min-height:48px; display:inline-flex; align-items:center;
+  padding:0 17px; border-radius:var(--radius-pill);
+  background:var(--verde); color:var(--blanco);
+  font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
+  text-decoration:none;
+  transition:background .2s ease;
+}
+.header-menu:hover, .header-menu:focus-visible{background:var(--verde-osc)}
+
+/* ---------- botón y panel de accesibilidad ---------- */
+.a11y-btn{
+  flex:none;
+  width:48px; height:48px;
+  border-radius:50%;
+  border:1.5px solid var(--linea);
+  background:var(--blanco); color:var(--verde-osc);
+  font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
+  cursor:pointer;
+  transition:border-color .2s ease, background .2s ease;
+}
+.a11y-btn:hover{border-color:var(--verde)}
+.a11y-btn[aria-expanded="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
+/* Mejora progresiva: mientras site.js no haya terminado de inicializar
+   (o no cargue, o falle), el botón queda oculto e inhabilitado.
+   visibility:hidden -- a diferencia de opacity:0 -- lo saca del orden
+   de foco por Tab y de árbol de accesibilidad, así que ni se ve, ni se
+   enfoca, ni un lector de pantalla lo anuncia. El elemento sigue
+   ocupando su caja de 48x48px en el flex del header (no display:none),
+   así que su aparición no mueve nada cuando site.js saca este
+   atributo. */
+.a11y-btn[data-a11y-pending]{visibility:hidden}
+
+/* <dialog> nativo: reset de los estilos por defecto del navegador
+   (borde, margin centrado) antes de aplicar los propios. El fondo
+   oscurecido detrás ya no es un <div> propio sino el pseudo-elemento
+   ::backdrop que el navegador crea solo mientras showModal() está
+   activo. */
+.a11y-panel{
+  position:fixed; top:16px; right:16px; bottom:16px; margin:0;
+  width:min(340px, calc(100vw - 32px));
+  max-width:none; max-height:none;
+  overflow-y:auto;
+  background:var(--blanco); color:var(--tinta);
+  border:none; border-radius:var(--radius-md);
+  box-shadow:0 12px 40px rgba(30,28,20,.28);
+  padding:26px 24px;
+}
+.a11y-panel::backdrop{
+  background:rgba(30,28,20,.35);
+}
+.a11y-panel h3{
+  font-family:var(--font-display); font-weight:600; font-size:1.5rem;
+  margin:0 0 20px;
+}
+.a11y-cerrar{
+  position:absolute; top:14px; right:14px;
+  width:48px; height:48px; border-radius:50%;
+  border:1.5px solid var(--linea); background:none; color:var(--tinta);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.a11y-cerrar:hover{border-color:var(--verde)}
+.a11y-group{
+  padding:16px 0; border-top:1px solid var(--linea-suave);
+}
+.a11y-group:first-of-type{border-top:none}
+.a11y-group h4{
+  font-family:var(--font-subhead); font-weight:700; font-size:.8rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--texto-sec);
+  margin:0 0 12px;
+}
+.a11y-opts{display:flex; gap:10px}
+.a11y-opts button{
+  min-width:48px; min-height:48px; padding:0 12px;
+  border-radius:var(--radius-sm); border:1.5px solid var(--linea);
+  background:var(--blanco); color:var(--tinta); cursor:pointer;
+  font-family:var(--font-subhead); font-weight:700;
+}
+.a11y-opts button[aria-pressed="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
+.a11y-switch{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  font-family:var(--font-subhead); font-weight:700; font-size:.95rem;
+  cursor:pointer; min-height:48px;
+}
+.a11y-switch input{width:20px; height:20px; accent-color:var(--verde)}
+.a11y-reset{
+  margin-top:8px;
+  min-height:48px; width:100%;
+  border-radius:var(--radius-pill); border:1.5px solid var(--linea);
+  background:none; color:var(--texto-sec); cursor:pointer;
+  font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
+}
+.a11y-reset:hover{border-color:var(--calafate); color:var(--calafate)}
+
+/* ================= PORTADA ================= */
+.portada{
+  max-width:var(--max-w); margin:0 auto;
+  display:flex; flex-direction:column;
+  padding:20px 24px 0;
+}
+.portada-texto{
+  padding:28px 0 36px;
+  border-bottom:1px solid var(--linea-suave);
+}
+.portada-texto .eyebrow{margin-bottom:16px}
+.titulo-marca{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(3.2rem, 16vw, 5.6rem);
+  line-height:.92; color:var(--tinta); margin:0;
+}
+.tagline-editorial{
+  font-family:var(--font-display); font-style:italic; font-weight:500;
+  font-size:clamp(1.2rem, 4vw, 1.6rem);
+  color:var(--verde-osc); margin:10px 0 28px;
+}
+.cta-fila{display:flex; flex-wrap:wrap; align-items:center; gap:22px}
+
+/* Lista corta de "rituales" (Café/Té/Brunch/Pastelería) -- separada
+   del cta-fila por una línea fina arriba, mismo recurso que ya usa
+   .lista-editorial para separar ítems, aplicado acá a una fila en vez
+   de una columna. El punto usa --calafate: único uso del color de
+   acento en toda la portada, coherente con la regla de la dirección
+   visual de reservarlo para detalles, no para bloques grandes. */
+.rituales{
+  list-style:none; margin:24px 0 0; padding-top:20px;
+  border-top:1px solid var(--linea-suave);
+  display:flex; flex-wrap:wrap; gap:10px 22px;
+}
+.rituales li{
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
+  color:var(--verde-osc);
+}
+.rituales li::before{
+  content:""; width:6px; height:6px; border-radius:50%;
+  background:var(--calafate); flex:none;
+}
+
+/* Marco fotográfico en arco -- dirección visual acordada: la portada
+   queda clara (fondo --crema del marco, no la foto a sangre completa
+   de punta a punta) y la foto en sí no lleva ningún texto encima. */
+.portada-visual{
+  align-self:center; width:min(100%, 540px);
+  padding:12px 12px 40px;
+  background:var(--crema);
+  border-radius:220px 220px 28px 28px;
+}
+.portada-visual img{
+  width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; display:block;
+  border-radius:200px 200px 18px 18px;
+}
+
+/* ---------- Sobre Amelí (solo se genera con texto real) ---------- */
+.sobre-ameli{
+  max-width:var(--max-w); margin:0 auto;
+  padding:56px 24px; border-bottom:1px solid var(--linea-suave);
+}
+
+/* ================= SABORES DE LA CASA =================
+   Bloque de color sólido de punta a punta (a diferencia del resto de
+   la página, que vive sobre --blanco) con una grilla de fotografía de
+   producto en tarjetas propias -- el principio de "fotografía como
+   protagonista + color con energía" traducido a la paleta de Amelí. */
+.sabores{
+  background:var(--crema);
+}
+.sabores-inner{
+  max-width:var(--max-w); margin:0 auto;
+  padding:56px 24px 60px;
+}
+.sabores-grid{
+  display:grid; grid-template-columns:1fr; gap:24px;
+}
+.sabor-card{
+  margin:0;
+  background:var(--blanco);
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  box-shadow:0 16px 32px -16px rgba(30,28,20,.28);
+}
+.sabor-card img{
+  width:100%; aspect-ratio:3/4; object-fit:cover; display:block;
+}
+.sabor-card figcaption{
+  padding:16px 18px;
+  font-family:var(--font-display); font-weight:600; font-size:1.15rem;
+  color:var(--tinta);
+}
+
+/* ================= BLOQUE MENÚ =================
+   Composición dividida texto + fotografía real, como segundo ritmo
+   visual de la página (el primero es .portada-visual). Fondo verde
+   oscuro de punta a punta (dirección visual acordada: "El menú, a tu
+   manera" sobre fondo oscuro con texto claro) -- mismo patrón de banda
+   de color de .sabores/.servicios, con el contenido centrado hasta
+   --max-w mediante padding calculado en vez de un wrapper interno
+   nuevo, porque acá no hace falta: .bloque-menu ya es el propio
+   contenedor flex de los dos hijos (texto + marco). */
+.bloque-menu{
+  margin:0;
+  display:flex; flex-direction:column; gap:32px;
+  padding:56px 24px;
+  padding:56px max(24px, calc((100vw - var(--max-w)) / 2));
+  background:var(--verde-osc); color:var(--blanco);
+}
+.bloque-menu .eyebrow, .bloque-menu .texto-editorial{color:rgba(255,253,247,.82)}
+.bloque-menu .titulo-seccion{color:var(--blanco)}
+.bloque-menu .indice-num{color:var(--salvia)}
+.bloque-menu .btn{background:var(--blanco); color:var(--verde-osc); box-shadow:none}
+.bloque-menu-marco{
+  overflow:hidden;
+  height:34vh; min-height:220px; max-height:340px;
+  border-radius:var(--radius-md);
+  background:var(--crema);
+}
+.bloque-menu-marco img{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+/* Dos datos inclusivos (idiomas / alérgenos) bajo el botón "Ver el
+   menú completo" -- misma pareja etiqueta+detalle que .lista-etiqueta/
+   .lista-detalle más abajo, acá adaptada al fondo oscuro de
+   .bloque-menu: --salvia para la etiqueta corta (mismo verde claro que
+   ya usa .indice-num sobre este mismo fondo) y --blanco para el
+   detalle, en vez de los tonos pensados para fondo claro que se
+   usaban antes de este cambio de dirección visual. */
+.menu-inclusion{
+  margin-top:28px; padding-top:24px;
+  border-top:1px solid rgba(255,253,247,.24);
+  display:flex; flex-direction:column; gap:16px;
+}
+.menu-dato-titulo{
+  font-family:var(--font-subhead); font-weight:700; font-size:.8rem;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--salvia);
+  margin:0 0 4px;
+}
+.menu-dato-detalle{
+  font-family:var(--font-body); font-size:.9rem; color:var(--blanco);
+  margin:0; line-height:1.5;
+}
+
+/* ================= SERVICIOS =================
+   Cuarto bloque de color sólido de punta a punta -- usa --salvia, que
+   ya estaba definida en :root desde el origen del proyecto pero nunca
+   se había usado en ningún selector. Da un ritmo de color distinto de
+   --crema (Sabores) y verde oscuro (El menú), sin agregar ningún color
+   nuevo a la paleta. Contenido en borrador, ver
+   templates/index.template.html. */
+.servicios{
+  background:var(--salvia);
+}
+/* Etiqueta visible de estado -- explícita a propósito: esta sección no
+   se presenta como una lista de servicios publicados o vigentes,
+   nombres/alcance/textos siguen sin confirmar con Nacho. */
+.servicios-estado{
+  display:inline-flex; align-items:center;
+  font-family:var(--font-subhead); font-weight:700; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase;
+  color:var(--calafate); border:1px solid var(--calafate);
+  border-radius:var(--radius-pill); padding:4px 12px;
+  margin:0 0 18px;
+}
+.servicios-inner{
+  max-width:var(--max-w); margin:0 auto;
+  padding:56px 24px 60px;
+}
+.servicios-grid{
+  display:grid; grid-template-columns:1fr; gap:20px;
+  margin-top:8px;
+}
+.servicio-card{
+  margin:0;
+  background:var(--blanco);
+  border-radius:var(--radius-md);
+  padding:24px 22px;
+  box-shadow:0 16px 32px -16px rgba(30,28,20,.22);
+}
+.servicio-card h3{
+  font-family:var(--font-display); font-weight:600; font-size:1.25rem;
+  color:var(--tinta); margin:0 0 8px;
+}
+.servicio-card p{
+  font-family:var(--font-body); font-size:.92rem; color:var(--texto-sec);
+  margin:0; line-height:1.5;
+}
+.servicios-cta{
+  margin-top:40px;
+  padding-top:32px;
+  border-top:1px solid rgba(0,0,0,.12);
+  display:flex; flex-direction:column; gap:18px;
+  align-items:flex-start;
+}
+.servicios-cta .texto-editorial{margin:0; max-width:none; font-weight:600; color:var(--tinta)}
+
+/* ================= PÁGINA 404 =================
+   Mismo patrón de contenedor que .informacion-practica (max-width +
+   padding), sin variables ni colores nuevos -- solo layout para que el
+   mensaje y el botón de vuelta no queden pegados al borde. */
+.pagina-404{
+  max-width:var(--max-w); margin:0 auto;
+  padding:80px 24px 100px;
+  min-height:50vh;
+}
+
+/* ================= INFORMACIÓN PRÁCTICA ================= */
+.informacion-practica{
+  max-width:var(--max-w); margin:0 auto;
+  padding:56px 24px 60px;
+}
+.practica-intro{margin-bottom:34px}
+.practica-intro .eyebrow{margin-bottom:14px}
+/* Horario de atención -- misma pareja etiqueta+detalle que
+   .menu-dato-titulo/.menu-dato-detalle, pero con los colores pensados
+   para fondo claro (--verde/--texto-sec): .informacion-practica vive
+   sobre --blanco, no sobre el fondo oscuro de .bloque-menu, así que no
+   se reutilizan esas clases directamente acá. white-space:pre-line
+   respeta los saltos de línea reales que ya vienen en el texto de
+   config.json (uno por franja horaria) sin necesitar tres <p>
+   separados para un dato tan corto. */
+.horario-info{margin-bottom:28px}
+.horario-etiqueta{
+  font-family:var(--font-subhead); font-weight:700; font-size:.8rem;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--verde);
+  margin:0 0 4px;
+}
+.horario-detalle{
+  font-family:var(--font-body); font-size:.9rem; color:var(--texto-sec);
+  margin:0; line-height:1.6; white-space:pre-line;
+}
+/* <address> aplica font-style:italic por defecto en los navegadores --
+   se resetea acá porque el resto de la tipografía editorial del sitio
+   reserva la cursiva para el tagline y los números de índice, no para
+   bloques de contenido completos. */
+.informacion-practica address{font-style:normal}
+.lista-editorial{list-style:none; margin:0; padding:0}
+.lista-editorial li{border-top:1px solid var(--linea-suave)}
+.lista-editorial li:last-child{border-bottom:1px solid var(--linea-suave)}
+.lista-editorial a{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 16px;
+  padding:18px 4px; min-height:48px;
+  text-decoration:none; color:var(--tinta);
+}
+.lista-editorial a:hover .lista-etiqueta, .lista-editorial a:focus-visible .lista-etiqueta{color:var(--verde)}
+.lista-etiqueta{
+  font-family:var(--font-display); font-weight:600; font-size:1.3rem;
+  transition:color .2s ease;
+}
+.lista-detalle{font-family:var(--font-body); font-size:.85rem; color:var(--texto-sec)}
+
+/* ---------- Información del servicio (reglas de la casa) ----------
+   Ausente hasta que haya texto real y aprobado -- ver
+   templates/index.template.html. Mismo patrón simple de contenedor que
+   .sobre-ameli (un solo bloque de texto editorial), con borde arriba
+   en vez de abajo porque esta sección, cuando existe, queda última
+   antes del footer -- no hace falta una línea que la separe de nada
+   que venga después. */
+.informacion-servicio{
+  max-width:var(--max-w); margin:0 auto;
+  padding:56px 24px 60px;
+  border-top:1px solid var(--linea-suave);
+}
+
+/* ================= FOOTER =================
+   Composición con dos bloques (marca / acciones) en vez de todo
+   apilado y centrado, más una marca de agua del isotipo real a gran
+   escala y muy baja opacidad como textura de fondo -- mismo archivo
+   logo.svg de siempre, no uno nuevo. */
+footer{
+  position:relative; overflow:hidden;
+  background:var(--verde-osc); color:var(--blanco);
+  padding:64px 24px 40px;
+}
+/* La marca de agua: mismo filtro brightness(0) invert(1) que ya se
+   usaba para el ícono chico, acá aplicado a una copia gigante puesta
+   como fondo del pseudo-elemento -- brightness(0) uniforma fill y
+   stroke a negro puro, invert(1) lo pasa a blanco; la opacidad baja
+   (.06) lo deja como textura, no como un segundo logo legible.
+   pointer-events:none para que nunca intercepte clicks. */
+footer::before{
+  content:"";
+  position:absolute; top:-18%; right:-12%;
+  width:560px; height:505px;
+  background:url('../img/logo.svg') no-repeat center / contain;
+  filter:brightness(0) invert(1);
+  opacity:.06;
+  pointer-events:none;
+}
+.footer-interior{
+  position:relative; z-index:1;
+  max-width:var(--max-w); margin:0 auto;
+  display:flex; flex-direction:column; align-items:center; gap:32px;
+  padding-bottom:36px; margin-bottom:28px;
+  border-bottom:1px solid rgba(255,253,247,.18);
+  text-align:center;
+}
+.footer-marca{display:flex; align-items:center; gap:14px}
+.logo-footer-chico{height:48px; width:auto; filter:brightness(0) invert(1)}
+.footer-wordmark{
+  font-family:var(--font-display); font-weight:600;
+  font-size:1.9rem; color:var(--blanco); margin:0;
+}
+.footer-acciones{
+  display:flex; flex-direction:column; align-items:center; gap:20px;
+}
+footer .btn{background:var(--blanco); color:var(--verde-osc)}
+.enlaces-footer{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+}
+.enlaces-footer a{
+  color:var(--blanco); text-decoration:none;
+  border:1px solid rgba(255,253,247,.35);
+  border-radius:var(--radius-pill);
+  padding:9px 16px; font-size:.85rem; font-weight:600;
+  min-height:48px; display:inline-flex; align-items:center;
+  transition:border-color .2s ease;
+}
+.enlaces-footer a:hover, .enlaces-footer a:focus-visible{border-color:var(--blanco)}
+footer p.legal{
+  position:relative; z-index:1;
+  text-align:center; font-size:.75rem; color:rgba(255,253,247,.65);
+}
+.privacidad-breve{
+  position:relative; z-index:1; max-width:62ch; margin:0 auto 10px;
+  text-align:center; font-size:.85rem; color:rgba(255,253,247,.82);
+}
+
+/* ================= DESKTOP ================= */
+@media(min-width:860px){
+  .site-header-fila{flex-wrap:nowrap}
+  .nav-principal{
+    order:0; flex:0 1 auto; justify-content:center; gap:28px;
+    padding:0; margin:0; border-top:0;
+  }
+
+  .portada{
+    flex-direction:row; align-items:center; gap:56px;
+    padding-top:32px;
+  }
+  .portada-texto{
+    flex:0 0 45%;
+    border-bottom:none; border-right:1px solid var(--linea-suave);
+    padding:40px 40px 40px 0;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .portada-visual{
+    flex:0 1 560px; width:100%; max-width:560px;
+  }
+  .bloque-menu{
+    flex-direction:row; align-items:center; gap:56px;
+  }
+  .bloque-menu-texto{flex:0 0 45%}
+  .bloque-menu-marco{flex:1; height:auto; min-height:280px; max-height:360px}
+
+  /* Grilla asimétrica: una foto protagonista (2/3 del ancho, alta) más
+     dos secundarias apiladas -- en vez de las 3 columnas iguales de
+     mobile. Solo cambia el desktop; en mobile sigue siendo la grilla
+     lineal de 1 columna definida arriba. */
+  .sabores-grid{
+    grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, minmax(0,1fr));
+    gap:28px;
+  }
+  .sabor-card-destacada{grid-column:1 / 3; grid-row:1 / 3}
+  /* Alturas fijas a propósito en las tres fotos de este grid, no
+     aspect-ratio ni height:100% -- .sabores-grid es un grid de altura
+     indefinida (filas fr sin alto de contenedor explícito) y se
+     comprobó en el navegador que ese contexto rompe aspect-ratio en
+     una imagen replaced (la deja en su alto natural en píxeles -- acá
+     1440px -- ignorando por completo el ancho ya escalado, en vez de
+     mantener la proporción). Con alturas fijas en píxeles se evita esa
+     interacción por completo: 650px la protagonista, 311px cada
+     secundaria (311*2 + 28px de gap = 650, misma altura total que la
+     protagonista, para que la grilla quede prolija). */
+  .sabor-card-destacada img{height:650px; aspect-ratio:auto}
+  .sabor-card:not(.sabor-card-destacada) img{height:311px; aspect-ratio:auto}
+  .sabor-card:not(.sabor-card-destacada):nth-child(2){grid-column:3; grid-row:1}
+  .sabor-card:not(.sabor-card-destacada):nth-child(3){grid-column:3; grid-row:2}
+
+  .servicios-grid{grid-template-columns:repeat(3, 1fr); gap:24px}
+  .servicios-cta{
+    flex-direction:row; align-items:center; justify-content:space-between;
+  }
+  .servicios-cta .texto-editorial{max-width:38ch}
+
+  .footer-interior{
+    flex-direction:row; justify-content:space-between; align-items:center;
+    text-align:left;
+  }
+  .footer-acciones{flex-direction:row; align-items:center; gap:28px}
+}
+
+/* ================= ACCESIBILIDAD: preferencias del panel =================
+   Mismo criterio de atributos que el menú real: html[data-...] activado
+   por assets/js/site.js y guardado en localStorage. El multiplicador
+   --afs de tamaño de texto se define arriba, en :root, y se aplica en
+   `html` -- acá solo van alto contraste, movimiento reducido y lectura
+   simple, que cambian reglas en vez de un número. */
+
+html[data-contraste="alto"]{
+  --texto-sec:#000000;
+  --linea:rgba(0,0,0,.55);
+  --linea-suave:rgba(0,0,0,.4);
+  --verde:#2c3a1a;
+  --verde-osc:#1c2412;
+  --calafate:#6e0000;
+}
+html[data-contraste="alto"] body{background:var(--blanco); color:#000}
+
+html[data-movimiento="reducido"] *{transition:none!important; animation:none!important}
+html[data-movimiento="reducido"]{scroll-behavior:auto}
+
+html[data-lectura="simple"] body{line-height:1.85}
+html[data-lectura="simple"] .texto-editorial{max-width:60ch}
+html[data-lectura="simple"] .tagline-editorial{font-style:normal}
+html[data-lectura="simple"] .eyebrow{letter-spacing:.04em}
+html[data-lectura="simple"] .indice-num{font-style:normal}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important; animation:none!important}
+  html{scroll-behavior:auto}
+}

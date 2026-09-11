@@ -1,0 +1,20 @@
+# Normaliza todo archivo de texto a LF en el repo, UTF-8 asumido por
+# defecto en las herramientas del proyecto (Python stdlib, editores).
+* text=auto eol=lf
+
+*.py text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binarios -- nunca tocar finales de línea ni intentar diff de texto
+*.woff2 binary
+*.png binary
+*.webp binary
+*.svg binary
+*.ico binary
