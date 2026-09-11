@@ -79,7 +79,13 @@ jobs:
       # había antes de pisarlo con la hoja en vivo.
       - name: Validar data/menu.json (después de disponibilidad, antes de publicar)
         run: python build/validate_json_publico.py data/menu.json
-      - run: python build/render.py
+      # build_unificado.py corre build/render.py con los mismos
+      # argumentos de siempre y ADEMÁS genera la web institucional en
+      # la raíz de dist/ -- ver build_unificado.py en la raíz del
+      # repo. No cambia nada de la validación/disponibilidad de los
+      # pasos anteriores. PROPUESTO -- ver informe de unificación,
+      # todavía no aplicado a un despliegue real.
+      - run: python build_unificado.py --production
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: dist

@@ -84,13 +84,22 @@ jobs:
       # tests/test_aplicar_disponibilidad.py.
       - name: Ejecutar pruebas automáticas
         run: python -m unittest discover -s tests -v
+      # PROPUESTO -- ver informe de unificación: la web institucional
+      # (web/) tiene su propia suite, independiente de la del menú de
+      # arriba. Sin este paso, un cambio que rompa web/build_site.py
+      # pasaría esta verificación de rama sin que nadie se entere hasta
+      # que fallara el build unificado más abajo (que sí lo detectaría,
+      # pero sin el detalle test por test).
+      - name: Ejecutar pruebas automáticas de la web institucional
+        run: python -m unittest discover -s web/tests -v
       - name: Validar data/menu.json
         run: python build/validate_json_publico.py data/menu.json
-      # Render LOCAL únicamente, sobre el data/menu.json ya commiteado
-      # (sin ninguna disponibilidad en vivo aplicada -- eso solo pasa en
-      # el workflow de despliegue): escribe dist/ dentro del runner,
-      # nunca se sube a ningún lado. Este archivo no tiene ningún paso
-      # que suba ni publique artefactos -- ni en este job ni en ningún
-      # otro, porque no existe ningún otro job.
-      - name: Render local (solo para probar que no rompe, nunca se publica)
-        run: python build/render.py
+      # Build unificado LOCAL únicamente, sobre el data/menu.json ya
+      # commiteado (sin ninguna disponibilidad en vivo aplicada -- eso
+      # solo pasa en el workflow de despliegue): escribe dist/ dentro
+      # del runner, nunca se sube a ningún lado. Este archivo no tiene
+      # ningún paso que suba ni publique artefactos -- ni en este job
+      # ni en ningún otro, porque no existe ningún otro job. PROPUESTO,
+      # ver informe de unificación.
+      - name: Build unificado local (solo para probar que no rompe, nunca se publica)
+        run: python build_unificado.py

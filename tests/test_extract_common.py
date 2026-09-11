@@ -169,6 +169,35 @@ class TestUrlBaseValida(unittest.TestCase):
         url = "https://ameli-casa-de-te-brunch.github.io/?token=SECRETO_NO_DEBE_APARECER_123"
         self.assertFalse(ec.url_base_valida(url))
 
+    def test_positivas_dominio_propio_unificado(self):
+        """Arquitectura unificada (web + menú en un único artefacto de
+        GitHub Pages, ver build_unificado.py): el menú vive bajo
+        /menu/ del dominio propio."""
+        casos = [
+            "https://amelicasadete.com.ar/menu",
+            "https://amelicasadete.com.ar/menu/",
+        ]
+        for url in casos:
+            with self.subTest(url=url):
+                self.assertTrue(ec.url_base_valida(url))
+
+    def test_negativas_dominio_propio_con_path_incorrecto(self):
+        casos = [
+            "https://amelicasadete.com.ar",  # sin /menu -- ese es el path de la WEB, no del menú
+            "https://amelicasadete.com.ar/",
+            "https://amelicasadete.com.ar/menu2",  # path parecido pero no exacto
+            "https://amelicasadete.com.ar/menu/extra",
+            "http://amelicasadete.com.ar/menu",  # http, no https
+            "https://amelicasadete.com.ar:8443/menu",  # puerto distinto de 443
+            "https://usuario@amelicasadete.com.ar/menu",  # usuario embebido
+            "https://amelicasadete.com.ar/menu?x=1",  # query string
+            "https://amelicasadete.com.ar/menu#seccion",  # fragmento
+            "https://sub.amelicasadete.com.ar/menu",  # ni un subdominio real cuenta acá
+        ]
+        for url in casos:
+            with self.subTest(url=url):
+                self.assertFalse(ec.url_base_valida(url))
+
     def test_tripadvisor_y_google_con_path_siguen_funcionando(self):
         """url_base_valida es una política aparte -- no reemplaza ni
         rompe url_https_valida, que sigue permitiendo paths reales para

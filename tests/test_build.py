@@ -505,5 +505,73 @@ class TestJsonPersistidoSinDisponibilidadEfimera(unittest.TestCase):
             self.assertNotIn("disp", publicado["prods"][0])
 
 
+class TestMensajeUrlPublicada(unittest.TestCase):
+    """publicar() ya no imprime un dominio hardcodeado -- el mensaje
+    final sale de config.url_base, la misma config ya extraída del
+    Excel/Sheets en esa corrida (ver build.ejecutar()). Se prueba
+    _mensaje_url_publicada() sola, sin invocar publicar() -- esa
+    función hace git real y pide confirmación por input(), no hace
+    falta nada de eso para probar el armado del mensaje."""
+
+    def test_usa_la_url_base_real_de_la_arquitectura_unificada(self):
+        self.assertEqual(
+            build._mensaje_url_publicada("https://amelicasadete.com.ar/menu/"),
+            "https://amelicasadete.com.ar/menu/",
+        )
+
+    def test_agrega_barra_final_si_falta(self):
+        self.assertEqual(
+            build._mensaje_url_publicada("https://amelicasadete.com.ar/menu"),
+            "https://amelicasadete.com.ar/menu/",
+        )
+
+    def test_no_hardcodea_ningun_dominio_para_el_rollback_al_repo_separado(self):
+        """Si algún día url_base vuelve a ser el repo separado de antes
+        (rollback), el mensaje lo refleja -- no imprime un dominio fijo
+        distinto del que realmente está configurado."""
+        self.assertEqual(
+            build._mensaje_url_publicada("https://ameli-casa-de-te-brunch.github.io/"),
+            "https://ameli-casa-de-te-brunch.github.io/",
+        )
+
+    def test_sin_url_base_no_inventa_ningun_dominio(self):
+        mensaje = build._mensaje_url_publicada(None)
+        self.assertNotIn("github.io", mensaje)
+        self.assertNotIn("amelicasadete.com.ar", mensaje)
+        self.assertIn("no está configurada", mensaje)
+
+    def test_publicar_le_pasa_el_url_base_de_la_config_ya_extraida(self):
+        """Cubre el otro extremo del cambio: ejecutar() tiene que pasarle
+        a publicar() el config.url_base real de esta corrida, no
+        llamarlo sin argumentos (que caería en el default None)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            menu_json = tmp / "menu.json"
+            template_path = tmp / "plantilla.html"
+            template_path.write_text("PLANTILLA", encoding="utf-8")
+
+            # _data_sin_url(): sin disponibilidad_csv_url, para que esta
+            # corrida (dry_run=False, disponibilidad_estricta=False) no
+            # intente consultar ninguna hoja real -- no es lo que se
+            # prueba acá, ver TestModosDeDisponibilidad para eso.
+            data = _data_sin_url()
+            data["config"]["url_base"] = "https://amelicasadete.com.ar/menu/"
+            args = _ArgsFake(dry_run=False, disponibilidad_estricta=False,
+                              template=template_path, out=tmp / "dist" / "index.html",
+                              publicar=True)
+
+            llamadas_publicar = []
+
+            with patch.object(build, "MENU_JSON", menu_json), \
+                 patch.object(build.render, "render", return_value="<html>fake</html>"), \
+                 patch.object(build.render, "copiar_assets"), \
+                 patch.object(build.render, "_escribir_seo_estatico"), \
+                 patch.object(build, "publicar", side_effect=lambda *a: llamadas_publicar.append(a)):
+                build.ejecutar(args, Path("fake.xlsx"),
+                                extract_mod=_ExtractModFake(data), validate_mod=_ValidateModFake())
+
+            self.assertEqual(llamadas_publicar, [("https://amelicasadete.com.ar/menu/",)])
+
+
 if __name__ == "__main__":
     unittest.main()

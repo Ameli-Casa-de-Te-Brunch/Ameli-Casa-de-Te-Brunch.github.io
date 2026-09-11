@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página no encontrada — __MARCA__</title>
+<!-- 404 siempre noindex, en cualquier modo (preview o producción):
+     una página de error nunca debe indexarse -- ver build_site.py,
+     renderizar_404(). -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32">
+<link rel="icon" href="assets/img/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+<header class="site-header">
+  <div class="site-header-fila">
+    <img class="logo-header" src="assets/img/logo.svg" alt="__MARCA__ — __CATEGORIA__" width="64" height="58">
+  </div>
+</header>
+
+<main id="contenido" class="pagina-404">
+  <p class="eyebrow">Error 404</p>
+  <h1 class="titulo-seccion">Esta página no existe</h1>
+  <p class="texto-editorial">
+    El enlace puede estar roto o la página se movió. Volvé al inicio para
+    encontrar el menú y el resto de la información de __MARCA__.
+  </p>
+  <a class="btn btn-principal" href="index.html">Volver al inicio</a>
+</main>
+
+</body>
+</html>
