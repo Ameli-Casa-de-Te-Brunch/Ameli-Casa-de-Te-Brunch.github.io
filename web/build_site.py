@@ -390,6 +390,17 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     tiene_sobre_ameli = isinstance(sobre_ameli, str) and sobre_ameli.strip() != ""
     plantilla = _bloque(plantilla, "SOBRE_AMELI", tiene_sobre_ameli)
 
+    # "Servicios Amelí" -- BORRADOR de diseño/contenido (nombres, alcance
+    # y textos todavía sin confirmar con Ignacio, ver comentario en el
+    # propio template). Oculta por defecto: solo se muestra si
+    # servicios_habilitado es exactamente true en site.config.json (no
+    # "truthy" genérico), para que activarla sea una decisión explícita y
+    # no un efecto secundario de cualquier valor no vacío. El HTML/CSS ya
+    # preparado no se borra -- mismo mecanismo null-gated que los demás
+    # bloques opcionales de esta función.
+    tiene_servicios = config.get("servicios_habilitado") is True
+    plantilla = _bloque(plantilla, "SERVICIOS", tiene_servicios)
+
     # Datos legales del pie -- ver comentario en validar_config(): solo
     # se genera si los tres campos de identidad fiscal están completos
     # a la vez (nunca un dato fiscal parcial).
