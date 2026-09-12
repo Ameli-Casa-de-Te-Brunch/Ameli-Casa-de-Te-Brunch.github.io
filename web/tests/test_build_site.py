@@ -69,6 +69,7 @@ CONFIG_VALIDO = {
     "domicilio_comercial": None,
     "aviso_copyright": None,
     "informacion_servicio": None,
+    "servicios_habilitado": False,
 }
 
 
@@ -602,6 +603,52 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
         self.assertIn("Reglas reales aprobadas por Ignacio.", contenido)
         self.assertIn("Información del servicio", contenido)
+
+    def test_servicios_se_omite_por_defecto(self):
+        """'Servicios Amelí' es contenido en BORRADOR -- nombres, alcance
+        y textos todavía sin confirmar con Ignacio -- oculto a propósito
+        (servicios_habilitado=false) hasta que se confirme. A diferencia
+        de los otros bloques opcionales, acá el propio comentario
+        explicativo (que menciona "BORRADOR") queda adentro de
+        SERVICIOS_START/END, así que con el mecanismo apagado no debe
+        sobrevivir ni siquiera dentro de un comentario HTML."""
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn("BORRADOR", contenido)
+        self.assertNotIn("Servicios Amelí", contenido)
+        self.assertNotIn('class="servicios"', contenido)
+        self.assertNotIn('class="servicio-card"', contenido)
+        for nombre_no_confirmado in (
+            "Amelí Eventos", "Amelí Catering", "Amelí Experiences",
+            "Amelí Boxes", "Amelí Empresas", "Amelí Turismo",
+        ):
+            self.assertNotIn(nombre_no_confirmado, contenido)
+
+    def test_servicios_se_incluye_si_esta_habilitado(self):
+        """El HTML/CSS no se borró: sigue disponible para cuando Ignacio
+        confirme el contenido real y se active servicios_habilitado."""
+        self.escribir_config(config_valido(servicios_habilitado=True))
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Servicios Amelí", contenido)
+        self.assertIn('class="servicios"', contenido)
+        self.assertIn("Amelí Eventos", contenido)
+
+    def test_secciones_esenciales_siguen_presentes_con_servicios_oculta(self):
+        """Ocultar 'Servicios Amelí' no debe afectar a ninguna de las
+        secciones ya confirmadas y publicadas: portada (nav), Sobre
+        Amelí, Sabores, El menú y Encontranos."""
+        self.escribir_config(config_valido(
+            presentacion_sobre_ameli="Texto real ya confirmado."))
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Sobre Amelí", contenido)
+        self.assertIn("Sabores de la casa", contenido)
+        self.assertIn("El menú, a tu manera", contenido)
+        self.assertRegex(contenido, r'<section[^>]+id="sabores"')
+        self.assertRegex(contenido, r'<section[^>]+id="menu"')
+        self.assertRegex(contenido, r'<section[^>]+id="encontranos"')
+        self.assertNotIn("Servicios Amelí", contenido)
 
     def test_tres_secciones_nuevas_se_omiten_si_null(self):
         """Pastelería y pedidos especiales / La experiencia / Preguntas

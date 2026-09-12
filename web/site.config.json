@@ -23,6 +23,9 @@
 
   "presentacion_sobre_ameli": "Amelí nació como un proyecto familiar. Una idea simple: crear en Malargüe un espacio donde valga la pena sentarse a la mesa sin apuro.\n\nSomos una casa de té y brunch pensada para las mañanas largas de charla, las meriendas que se extienden más de lo planeado y las tortas que valen la espera.\n\nTodo lo que sale de nuestra cocina se hace a mano, con recetas propias y productos elegidos con cuidado: desde nuestras tortas de autor hasta cada taza de té que servimos.",
 
+  "_nota_servicios": "Sección 'Servicios Amelí' (mesas dulces, catering, experiencias, boxes, empresas, turismo) -- BORRADOR: nombres, alcance y textos todavía sin confirmar con Ignacio. Oculta a propósito (servicios_habilitado=false) sin borrar el HTML/CSS ya preparado -- ver SERVICIOS_START/END en templates/index.template.html y build_site.py. Cambiar a true recién cuando Ignacio confirme el contenido real; no reemplazar por texto inventado.",
+  "servicios_habilitado": false,
+
   "_nota_datos_legales": "Los 5 campos de abajo (razon_social/cuit/domicilio_comercial/aviso_copyright/informacion_servicio) quedan null a propósito -- ver anexo de cumplimiento 2026-09-10 en memoria del asistente: publicar razón social/CUIT/domicilio o un aviso de copyright antes de que contador/asesor legal confirmen esos datos está explícitamente desaconsejado. No completar sin esa confirmación explícita de Ignacio.",
   "razon_social": null,
   "cuit": null,
