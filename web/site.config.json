@@ -1,17 +1,19 @@
 {
-  "_nota": "Fuente única de datos públicos variables. build_site.py lee este archivo y genera index.html a partir de templates/index.template.html -- index.html ya NO se edita a mano (mismo principio que dist/ en el repo del menú: se genera, no se toca). Ningún dato acá es privado ni secreto. Los valores de contacto se copiaron a mano desde data/menu.json del repositorio del menú en el momento de preparar este prototipo -- no hay fetch de red entre proyectos.",
+  "_nota": "Fuente única de datos públicos variables. build_site.py lee este archivo y genera index.html a partir de templates/index.template.html -- index.html ya NO se edita a mano (mismo principio que dist/ en el repo del menú: se genera, no se toca). Ningún dato acá es privado ni secreto salvo lo indicado más abajo.",
 
   "marca": "Amelí",
   "categoria": "Casa de Té & Brunch",
   "ubicacion_corta": "Malargüe, Mendoza",
   "ubicacion_completa": "Malargüe, Mendoza, Argentina",
-  "tagline": "Patagonia lenta",
+  "tagline": "Donde los momentos encuentran su mesa",
   "descripcion_menu_confirmada": "Desayunos, brunch, pastelería artesanal, café y selección de tés.",
 
   "site_url": "https://amelicasadete.com.ar/",
-  "_nota_menu_url": "Antes apuntaba a https://ameli-casa-de-te-brunch.github.io/ (repo separado). Ahora que la web y el menú se publican como un único artefacto de GitHub Pages (ver build_unificado.py en la raíz del repo), el menú vive bajo /menu/ del mismo origen -- ruta interna, no un dominio externo.",
+  "_nota_menu_url": "El menú vive bajo /menu/ del mismo origen (ver build_unificado.py en la raíz del repo) -- ruta interna, no un dominio externo.",
   "menu_url": "/menu/",
   "whatsapp_e164": "5492604106653",
+  "whatsapp_display": "+54 9 260 410-6653",
+  "contacto_email": "contacto@amelicasadete.com.ar",
   "instagram_handle": "ameli.casadete",
   "google_reviews_url": "https://g.page/r/CQ7xLLR2pchDEBM/review",
   "tripadvisor_url": "https://www.tripadvisor.com.ar/UserReviewEdit-d34258612?m=68676",
@@ -23,18 +25,29 @@
 
   "presentacion_sobre_ameli": "Amelí nació como un proyecto familiar. Una idea simple: crear en Malargüe un espacio donde valga la pena sentarse a la mesa sin apuro.\n\nSomos una casa de té y brunch pensada para las mañanas largas de charla, las meriendas que se extienden más de lo planeado y las tortas que valen la espera.\n\nTodo lo que sale de nuestra cocina se hace a mano, con recetas propias y productos elegidos con cuidado: desde nuestras tortas de autor hasta cada taza de té que servimos.",
 
-  "_nota_servicios": "Sección 'Servicios Amelí' (mesas dulces, catering, experiencias, boxes, empresas, turismo) -- BORRADOR: nombres, alcance y textos todavía sin confirmar con Ignacio. Oculta a propósito (servicios_habilitado=false) sin borrar el HTML/CSS ya preparado -- ver SERVICIOS_START/END en templates/index.template.html y build_site.py. Cambiar a true recién cuando Ignacio confirme el contenido real; no reemplazar por texto inventado.",
-  "servicios_habilitado": false,
+  "_nota_servicios": "Sección 'Experiencias y encuentros' -- categorías aportadas por Ignacio en sus bocetos del 2026-09-13, consolidadas en el prototipo verificado (AMELI_BOCETO_LITERAL_2026-09-14) el 2026-09-15. Se muestran como propuestas sujetas a consulta y disponibilidad, sin afirmar paquetes, precios ni alcances todavía no definidos.",
+  "servicios_habilitado": true,
 
-  "_nota_datos_legales": "Los 5 campos de abajo (razon_social/cuit/domicilio_comercial/aviso_copyright/informacion_servicio) quedan null a propósito -- ver anexo de cumplimiento 2026-09-10 en memoria del asistente: publicar razón social/CUIT/domicilio o un aviso de copyright antes de que contador/asesor legal confirmen esos datos está explícitamente desaconsejado. No completar sin esa confirmación explícita de Ignacio.",
-  "razon_social": null,
-  "cuit": null,
-  "domicilio_comercial": null,
-  "aviso_copyright": null,
+  "_nota_datos_legales": "Datos confirmados por Ignacio a partir de la constancia fiscal compartida el 2026-09-14 y sus respuestas posteriores (mismo valor ya verificado en el prototipo AMELI_BOCETO_LITERAL_2026-09-14/web/site.config.json). La redacción jurídica de las páginas legales sigue necesitando revisión profesional (abogado/contador/Bromatología) antes de presentarse como aprobada -- ver docs/legal en las plantillas terminos/privacidad/informacion-alimentaria, todas en noindex.",
+  "razon_social": "SOTO ITURBE MARTINA ORIANA",
+  "cuit": "27-42862121-8",
+  "domicilio_comercial": "Villegas Oeste 48, Malargüe, Mendoza",
+  "aviso_copyright": "© 2026 Amelí Casa de Té & Brunch. Todos los derechos reservados.",
   "informacion_servicio": null,
+  "_nota_identificacion_legal": "Identidad y responsable confirmados por Ignacio. No confundir domicilio legal con el domicilio comercial. Los textos legales permanecen como material para revisión de abogado/contador antes de presentarse como definitivos.",
+  "domicilio_legal": "Villa del Milagro 1045, Malargüe, Mendoza, 5613",
+  "provincia": "Mendoza",
+  "localidad": "Malargüe",
+  "condicion_fiscal": "Monotributista — categoría C",
+  "responsable_reclamos": "Martina Oriana Soto Iturbe",
 
-  "_nota_secciones_pendientes": "Pastelería y pedidos especiales / La experiencia / Preguntas frecuentes -- pedidas para el cierre de la etapa funcional (2026-09-11), sin texto real confirmado todavía. Quedan null a propósito: no se inventó contenido. Completar con el texto real y aprobado por Ignacio para que cada sección (y su ancla) aparezca.",
-  "pasteleria_pedidos_texto": null,
-  "la_experiencia_texto": null,
-  "preguntas_frecuentes_texto": null
+  "_nota_secciones_boceto": "Contenido construido únicamente con el planteo manuscrito de Ignacio y datos operativos ya confirmados. Las prácticas de origen/sustentabilidad se expresan como dirección de trabajo, no como certificaciones o logros consumados.",
+  "pasteleria_pedidos_texto": "Tortas enteras, boxes de regalo y opciones por docena, siempre sujetos a consulta y disponibilidad.",
+  "sustentabilidad_texto": "Queremos avanzar hacia una operación más consciente: reducir desperdicios, separar mejor y elegir con cuidado. Publicaremos avances concretos a medida que cada práctica esté implementada y pueda verificarse.",
+  "preguntas_frecuentes_texto": "Respuestas rápidas para planificar tu visita o hacer una consulta.",
+
+  "_nota_calendario_y_formularios": "Ninguno de los tres URLs de abajo se inventó -- quedan null hasta que Ignacio los provea. google_calendar_url: enlace externo (nunca embebido, ver CSP) a un calendario real cuando exista. google_form_trabajo_url / google_form_marcas_url: reemplazan el botón 'Formulario en preparación' de la sección Sumate a Amelí por un enlace real a Google Forms, en cuanto Ignacio los pase. Mientras sigan null, esa sección permanece oculta.",
+  "google_calendar_url": null,
+  "google_form_trabajo_url": null,
+  "google_form_marcas_url": null
 }

@@ -20,7 +20,7 @@ __SOCIAL_META_TAGS__
 <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32">
 <link rel="icon" href="assets/img/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=20260915-1">
 </head>
 <body>
 
@@ -28,23 +28,11 @@ __SOCIAL_META_TAGS__
 
 <header class="site-header">
   <div class="site-header-fila">
-    <!-- El nombre accesible del logo ahora vive en el aria-label del
-         propio enlace -- alt="" en la imagen para no anunciarlo dos
-         veces seguidas a un lector de pantalla. -->
     <a class="logo-enlace" href="#contenido" aria-label="Ir al inicio de __MARCA__">
-      <img class="logo-header" src="assets/img/logo.svg" alt="" width="64" height="58">
+      <span class="logo-tipografico" aria-hidden="true">__MARCA__</span>
     </a>
-    <!-- Navegación por anclas reales a secciones que ya existen en la
-         página -- oculta en mobile (ver assets/css/site.css,
-         .nav-principal) para no competir por ancho con el logo y los
-         botones de acción; visible desde el breakpoint de escritorio. -->
-    <nav class="nav-principal" aria-label="Navegación principal">
-      <a href="#sabores">Sabores</a>
-      <a href="#menu">Menú</a>
-      <a href="#encontranos">Encontranos</a>
-    </nav>
     <div class="header-acciones">
-      <a class="header-menu" href="__MENU_URL__">Ver menú</a>
+      <!--PAGINAS_LEGALES_START--><a class="header-legal-link" href="arrepentimiento.html">Botón de arrepentimiento</a><!--PAGINAS_LEGALES_END-->
       <!-- data-a11y-pending: oculta e inhabilita el botón por defecto
            (ver assets/css/site.css). Lo saca site.js recién después de
            encontrar todos los elementos del panel y registrar sus
@@ -52,47 +40,70 @@ __SOCIAL_META_TAGS__
            el script no carga, está bloqueado o falla al inicializar, el
            botón nunca se vuelve visible ni enfocable. -->
       <button class="a11y-btn" id="a11yBtn" type="button" data-a11y-pending aria-haspopup="dialog" aria-expanded="false" aria-controls="a11yPanel" aria-label="Abrir opciones de accesibilidad">Aa</button>
+      <!-- Menú de tres rayas -- reemplaza la barra de anclas siempre
+           visible que había antes. Mismo mecanismo que el panel de
+           accesibilidad (data-a11y-pending): oculto e inhabilitado
+           hasta que site.js confirme que encontró todo lo que
+           necesita, nunca a medias. -->
+      <button class="nav-btn" id="navBtn" type="button" data-nav-pending aria-haspopup="dialog" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú de navegación">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true"><path d="M0 1h22M0 8h22M0 15h22" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
     </div>
   </div>
 </header>
 
+<!-- Panel de navegación -- mismo patrón que el panel de accesibilidad:
+     <dialog> nativo con showModal(), foco contenido y Escape nativos
+     del navegador, sin reimplementar nada de eso a mano. Reemplaza la
+     barra de anclas horizontal (competía por ancho con el logo/CTA y
+     se veía distinta en mobile vs. escritorio); ahora hay un único
+     menú, igual en cualquier tamaño de pantalla. -->
+<dialog class="nav-panel" id="navPanel" aria-labelledby="navTitle">
+  <button class="nav-cerrar" id="navCerrar" type="button" aria-label="Cerrar menú de navegación">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <h2 id="navTitle" class="solo-lectores">Navegación principal</h2>
+  <nav class="nav-principal" aria-label="Navegación principal">
+    <a href="#contenido">Inicio</a>
+    <!--SOBRE_AMELI_START--><a href="#filosofia">Nuestra historia</a><!--SOBRE_AMELI_END-->
+    <!--SERVICIOS_START--><a href="#experiencias">Experiencias y encuentros</a><!--SERVICIOS_END-->
+    <!--PASTELERIA_PEDIDOS_START--><a href="#tienda">Carta y pedidos</a><!--PASTELERIA_PEDIDOS_END-->
+    <!--SUSTENTABILIDAD_START--><a href="#sustentabilidad">Origen y compromiso</a><!--SUSTENTABILIDAD_END-->
+    <!--PREGUNTAS_FRECUENTES_START--><a href="#preguntas-frecuentes">Preguntas frecuentes</a><!--PREGUNTAS_FRECUENTES_END-->
+    <a href="#instagram">Instagram</a>
+    <a href="#ubicacion">Visitarnos</a>
+    <a href="#contacto">Consultas</a>
+    <!--SUMATE_START--><a href="#sumate">Sumate a Amelí</a><!--SUMATE_END-->
+  </nav>
+</dialog>
+
 <main id="contenido">
 
-  <!-- ===== Portada: composición editorial dividida en desktop,
-       vertical simple en mobile (ver assets/css/site.css, .portada) ===== -->
-  <section class="portada">
-    <div class="portada-texto">
+  <!-- Portada estilo foto a sangre completa con texto superpuesto
+       (referencia: puestodelindio.com/isidris). Un único espacio
+       reservado a pantalla completa en vez del collage de 4 -- todavía
+       sin fotografía real (ver política de imágenes), pero ya compuesto
+       como si la tuviera: velo oscuro + texto centrado encima. -->
+  <section class="portada portada-hero" aria-labelledby="titulo-portada">
+    <div class="portada-hero-fondo" aria-hidden="true">Espacio para foto de portada</div>
+    <div class="portada-hero-overlay">
+      <span class="portada-emblema" aria-hidden="true">✻</span>
       <p class="eyebrow-tag">__CATEGORIA__ · __UBICACION_CORTA__</p>
-      <h1 class="titulo-marca">__MARCA__</h1>
-      <p class="tagline-editorial">__TAGLINE__</p>
+      <h1 class="titulo-marca titulo-arquitectura" id="titulo-portada">__MARCA__</h1>
+      <p class="portada-tagline">__TAGLINE__</p>
       <div class="cta-fila">
-        <!-- __MENU_URL__ abre en la MISMA pestaña por decisión funcional:
-             es la navegación principal del sitio hacia el menú, no una
-             referencia externa de consulta como WhatsApp/Instagram/Maps/
-             reseñas (que sí llevan target="_blank"). Aplica a los 4
-             enlaces __MENU_URL__ de este archivo (header, portada, "El
-             menú" y footer) -- no se repite este comentario en los
-             otros tres. -->
+        <!-- __MENU_URL__ abre en la MISMA pestaña: es navegación del
+             mismo sitio. Los destinos externos (WhatsApp, Instagram,
+             mapas y reseñas) sí anuncian una pestaña nueva. -->
         <a class="btn btn-principal" href="__MENU_URL__">Ver el menú</a>
-        <a class="link-secundario" href="__MAPS_URL__" target="_blank" rel="noopener noreferrer">Cómo llegar<span aria-hidden="true"> →</span><span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+        <a class="btn btn-secundario" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
       </div>
-      <!-- Chips cortos de propuesta -- contexto inmediato sin agregar
-           una sección nueva ni repetir __DESCRIPCION_MENU__. -->
-      <ul class="rituales" aria-label="Propuestas de Amelí">
-        <li>Café</li>
-        <li>Té</li>
-        <li>Brunch</li>
-        <li>Pastelería</li>
-      </ul>
-    </div>
-    <div class="portada-visual">
-      <img src="assets/img/hero-tostada.webp" width="1080" height="1440" loading="eager" fetchpriority="high" decoding="async"
-           alt="Tostada de masa madre con queso crema, queso azul, nueces y miel, uno de los platos de __MARCA__">
     </div>
   </section>
 
-  <!--SOBRE_AMELI_START--><section class="sobre-ameli" aria-labelledby="titulo-sobre-ameli">
-    <p class="eyebrow"><span class="indice-num" aria-hidden="true">00</span> <span id="titulo-sobre-ameli">Sobre Amelí</span></p>
+  <!--SOBRE_AMELI_START--><section class="sobre-ameli" id="filosofia" aria-labelledby="titulo-sobre-ameli">
+    <p class="eyebrow" id="titulo-sobre-ameli">Nuestra historia</p>
+    <h2 class="titulo-seccion">Una casa de té para encontrarnos</h2>
     <!-- El marcador de abajo se resuelve en build_site.py con un <p>
          real por cada párrafo del texto de config.json (separados por
          línea en blanco) -- no un único bloque de texto plano, para
@@ -101,246 +112,241 @@ __SOCIAL_META_TAGS__
     __SOBRE_AMELI_TEXTO__
   </section><!--SOBRE_AMELI_END-->
 
-  <!-- ===== Sabores de la casa -- grilla de fotografía de producto
-       real, en tarjetas propias (fondo blanco, esquinas redondeadas,
-       sombra), sobre un bloque de color sólido de punta a punta.
-       Traduce la fuerza fotográfica de referencias de brunch/fast-
-       casual consultadas a la paleta e identidad propias de Amelí --
-       no es una copia de ninguna página. Son 3 fotos reales del
-       negocio, ninguna imagen inventada ni descargada. ===== -->
-  <section class="sabores" id="sabores">
-    <div class="sabores-inner">
-      <p class="eyebrow"><span class="indice-num" aria-hidden="true">01</span> Sabores de la casa</p>
-      <div class="sabores-grid">
-        <figure class="sabor-card sabor-card-destacada">
-          <img src="assets/img/sabor-torta.webp" width="1080" height="1440" loading="lazy" decoding="async"
-               alt="Torta de chocolate con frutos rojos y arándanos, decorada con caramelo">
-          <figcaption>Pastelería artesanal</figcaption>
-        </figure>
-        <figure class="sabor-card">
-          <img src="assets/img/sabor-tarta.webp" width="1080" height="1440" loading="lazy" decoding="async"
-               alt="Tarta con merengue tostado en copetes, una de las opciones de pastelería">
-          <figcaption>Tartas de estación</figcaption>
-        </figure>
-        <figure class="sabor-card">
-          <img src="assets/img/sabor-sandwich.webp" width="1080" height="1440" loading="lazy" decoding="async"
-               alt="Sándwich de jamón crudo, tomates secos y rúcula en pan artesanal">
-          <figcaption>Brunch salado</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Bloque destacado: acceso al menú -- composición dividida
-       con una fotografía real como segundo ritmo visual de la página
-       ===== -->
-  <section class="bloque-menu" id="menu">
-    <div class="bloque-menu-texto">
-      <p class="eyebrow"><span class="indice-num" aria-hidden="true">02</span> Descubrí</p>
-      <!-- "El menú, a tu manera" -- título provisional, uso autorizado
-           explícitamente para esta vista previa (ver reconciliación con
-           borrador-diseno-ameli); sigue en la lista de textos a
-           confirmar de forma definitiva, no un texto cerrado. -->
-      <h2 class="titulo-seccion">El menú, a tu manera</h2>
-      <p class="texto-editorial">__DESCRIPCION_MENU__</p>
-      <a class="btn btn-principal" href="__MENU_URL__">Ver el menú completo</a>
-      <!-- Responde directo al requisito de accesibilidad de marcar
-           cada nombre de idioma con su propio lang="xx" para
-           tecnologías de asistencia (no solo mostrar el texto). -->
-      <div class="menu-inclusion" aria-label="Información de accesibilidad del menú">
-        <div>
-          <p class="menu-dato-titulo">Cinco idiomas</p>
-          <p class="menu-dato-detalle"><span lang="es">Español</span> · <span lang="en">English</span> · <span lang="pt">Português</span> · <span lang="fr">Français</span> · <span lang="it">Italiano</span></p>
-        </div>
-        <div>
-          <p class="menu-dato-titulo">Información clara</p>
-          <p class="menu-dato-detalle">El menú incluye información sobre alérgenos y preferencias alimentarias.</p>
-        </div>
-      </div>
-    </div>
-    <div class="bloque-menu-marco">
-      <img src="assets/img/menu-smoothies.webp" width="1080" height="1440" loading="lazy" decoding="async"
-           alt="Bandeja con licuados de kiwi, frutos rojos, banana y otro sabor claro, servidos en copas altas">
-    </div>
-  </section>
-
-  <!--SERVICIOS_START-->
-  <!-- ===== Servicios -- BORRADOR de diseño/contenido, todavía no
-       validado con Nacho en su forma final. Síntesis editorial de una
-       propuesta comercial suya (mesas dulces, catering, experiencias,
-       boxes, empresas, turismo) organizada en 6 líneas. Tercer bloque
-       de color sólido de punta a punta usando --salvia -- esa variable
-       ya estaba definida en :root desde el origen del proyecto pero
-       nunca se había usado; da un tercer ritmo de color distinto de
-       --crema (Sabores) y blanco (El menú), sin introducir ningún
-       color nuevo a la paleta. Faltan: confirmar qué líneas se lanzan
-       primero, textos finales, y si el CTA final va por WhatsApp
-       (como acá, reutilizando el mismo número ya validado) o por un
-       canal de contacto distinto pensado para consultas de eventos.
-       Oculta a propósito -- ver servicios_habilitado en
-       site.config.json -- hasta que Ignacio confirme el contenido
-       real; el HTML/CSS queda preparado para reactivarla. ===== -->
-  <section class="servicios">
+  <!--SERVICIOS_START--><section class="servicios arquitectura-bloque" id="experiencias" aria-labelledby="titulo-servicios">
     <div class="servicios-inner">
-      <p class="eyebrow"><span class="indice-num" aria-hidden="true">03</span> Ampliá la experiencia</p>
-      <h2 class="titulo-seccion">Servicios Amelí</h2>
-      <p class="servicios-estado">Borrador — nombres, alcance y textos todavía sin confirmar</p>
-      <p class="texto-editorial">
-        Amelí también sale del salón: mesas dulces, catering, experiencias
-        a medida y propuestas para empresas y viajeros — para celebrar,
-        trabajar o descubrir Malargüe de otra forma.
-      </p>
-      <div class="servicios-grid">
-        <article class="servicio-card">
-          <h3>Amelí Eventos</h3>
-          <p>Cumpleaños, baby showers, aniversarios y encuentros — en el salón o a tu medida.</p>
+      <div class="seccion-cabecera seccion-cabecera-centrada">
+        <p class="eyebrow">Una sola consulta, distintas posibilidades</p>
+        <h2 class="titulo-seccion" id="titulo-servicios">Experiencias y encuentros</h2>
+        <p class="texto-editorial">Reunimos en un mismo lugar todas las consultas especiales. Describinos la ocasión y te confirmamos formato y disponibilidad antes de avanzar.</p>
+      </div>
+      <div class="servicios-rutas">
+        <article class="servicio-ruta">
+          <span class="servicio-ruta-num" aria-hidden="true">01</span>
+          <p class="linea-etiqueta">En nuestra casa</p>
+          <h3>Experiencias y eventos</h3>
+          <p>Propuestas para compartir y encuentros especiales, siempre coordinados previamente.</p>
+          <ul class="servicio-categorias" aria-label="Categorías en nuestra casa">
+            <li>Experiencias</li><li>Eventos</li>
+          </ul>
         </article>
-        <article class="servicio-card">
-          <h3>Amelí Catering</h3>
-          <p>Mesas dulces, brunch y coffee breaks para tu celebración o tu empresa.</p>
+        <article class="servicio-ruta">
+          <span class="servicio-ruta-num" aria-hidden="true">02</span>
+          <p class="linea-etiqueta">Para llevar o servir</p>
+          <h3>Catering y boxes</h3>
+          <p>Alternativas que se definen según la ocasión, la cantidad de personas y la fecha.</p>
+          <ul class="servicio-categorias" aria-label="Categorías para llevar o servir">
+            <li>Catering</li><li>Boxes</li>
+          </ul>
         </article>
-        <article class="servicio-card">
-          <h3>Amelí Experiences</h3>
-          <p>Afternoon tea, degustaciones y talleres pensados como una experiencia propia.</p>
-        </article>
-        <article class="servicio-card">
-          <h3>Amelí Boxes</h3>
-          <p>Desayunos, meriendas y regalos para llevar, sorprender o compartir.</p>
-        </article>
-        <article class="servicio-card">
-          <h3>Amelí Empresas</h3>
-          <p>Coffee breaks, desayunos corporativos y regalos con identidad para tu equipo.</p>
-        </article>
-        <article class="servicio-card">
-          <h3>Amelí Turismo</h3>
-          <p>Viandas, lunch boxes y experiencias con producto regional para quienes visitan Malargüe.</p>
+        <article class="servicio-ruta">
+          <span class="servicio-ruta-num" aria-hidden="true">03</span>
+          <p class="linea-etiqueta">Para grupos y equipos</p>
+          <h3>Turismo y empresas</h3>
+          <p>Consultas para grupos, agencias y equipos de trabajo, sujetas a disponibilidad.</p>
+          <ul class="servicio-categorias" aria-label="Categorías para grupos y equipos">
+            <li>Turismo</li><li>Empresas</li>
+          </ul>
         </article>
       </div>
       <div class="servicios-cta">
-        <p class="texto-editorial">¿Organizás un evento o buscás catering para tu empresa?</p>
-        <a class="btn btn-principal" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Trabajemos juntos<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+        <!-- Calendario de Google -- NO embebido a propósito: la CSP de
+             este sitio no permite terceros (connect-src 'none', sin
+             iframes) y todavía no hay política de privacidad activa
+             que cubra lo que Google registraría al cargarlo. Mientras
+             tanto, es un enlace externo simple -- null-gated: si
+             google_calendar_url no está cargada en site.config.json,
+             este bloque entero no aparece (nunca un botón roto). -->
+      <!--CALENDARIO_START-->
+        <a class="btn btn-secundario" href="__GOOGLE_CALENDAR_URL__" target="_blank" rel="noopener noreferrer">Ver disponibilidad en Google Calendar<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+      <!--CALENDARIO_END-->
+        <a class="btn btn-principal" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Contanos qué estás organizando<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+      </div>
+    </div>
+  </section><!--SERVICIOS_END-->
+
+  <!--PASTELERIA_PEDIDOS_START--><section class="tienda-online arquitectura-bloque" id="tienda" aria-labelledby="titulo-tienda">
+    <div class="tienda-contenido">
+      <p class="eyebrow">Salón y encargos</p>
+      <h2 class="titulo-seccion" id="titulo-tienda">Carta y pedidos</h2>
+      <p class="texto-editorial">__PASTELERIA_PEDIDOS_TEXTO__</p>
+      <div class="tienda-opciones">
+        <article><p class="linea-etiqueta">Para disfrutar en Amelí</p><h3>Carta del salón</h3><p>Desayunos, brunch, pastelería artesanal, café y selección de tés.</p></article>
+        <article><p class="linea-etiqueta">Para encargar</p><h3>Pastelería y boxes</h3><p>Consultá opciones, cantidades y disponibilidad para la fecha que necesitás.</p></article>
+        <article><p class="linea-etiqueta">Antes de confirmar</p><h3>Pedidos especiales</h3><p>Recomendamos pedir con 48 horas de anticipación. Con menor plazo, depende de la disponibilidad del día.</p></article>
+      </div>
+      <div class="tienda-acciones">
+        <a class="btn btn-principal" href="__MENU_URL__">Ver el menú completo</a>
+        <a class="btn btn-secundario" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+      </div>
+    </div>
+    <div class="espacio-tienda" aria-hidden="true">Espacio para una imagen de carta o pastelería</div>
+  </section><!--PASTELERIA_PEDIDOS_END-->
+
+  <!--SUSTENTABILIDAD_START--><section class="sustentabilidad" id="sustentabilidad" aria-labelledby="titulo-sustentabilidad">
+    <div class="espacio-sustentabilidad" aria-hidden="true">Espacio para origen e ingredientes</div>
+    <div>
+      <p class="eyebrow">Lo que elegimos construir</p>
+      <h2 class="titulo-seccion" id="titulo-sustentabilidad">Origen y compromiso</h2>
+      <p class="origen-declaracion">Un camino que queremos contar con hechos.</p>
+      <p class="texto-editorial">__SUSTENTABILIDAD_TEXTO__</p>
+    </div>
+  </section><!--SUSTENTABILIDAD_END-->
+
+  <!--PREGUNTAS_FRECUENTES_START--><section class="preguntas-frecuentes" id="preguntas-frecuentes" aria-labelledby="titulo-preguntas-frecuentes">
+    <div class="faq-intro">
+      <p class="eyebrow">Antes de venir o pedir</p>
+      <h2 class="titulo-seccion" id="titulo-preguntas-frecuentes">Lo esencial, sin vueltas</h2>
+      <p class="texto-editorial">__PREGUNTAS_FRECUENTES_TEXTO__</p>
+    </div>
+    <div class="faq-lista">
+      <details>
+        <summary>¿Qué días y horarios abre Amelí?</summary>
+        <!--HORARIOS_START--><div class="horario-info"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
+      </details>
+      <details>
+        <summary>¿Trabajan con reservas?</summary>
+        <p>No trabajamos con reservas. La atención del salón es por orden de llegada.</p>
+      </details>
+      <details>
+        <summary>¿Cómo hago un pedido especial?</summary>
+        <p>Escribinos por WhatsApp. Recomendamos hacerlo con al menos 48 horas de anticipación; con menor plazo, queda sujeto a disponibilidad. El pedido se confirma cuando Amelí lo acepta expresamente.</p>
+      </details>
+      <details>
+        <summary>¿Hacen entregas?</summary>
+        <p>Sí. Podés retirar o consultar por entrega. La disponibilidad y el costo se confirman según la distancia del domicilio.</p>
+      </details>
+      <details>
+        <summary>¿Cómo consulto por ingredientes, alérgenos u opciones alimentarias?</summary>
+        <p>Escribinos antes de pedir. Te informamos las opciones vegetarianas o veganas disponibles y los ingredientes de cada producto consultado.</p>
+      </details>
+    </div>
+  </section><!--PREGUNTAS_FRECUENTES_END-->
+
+  <!-- Comunidad / Instagram -- se ubica antes de Visitarnos y
+       Consultas, como pidió Ignacio. Es una vidriera visual; los
+       canales de contacto no se repiten acá. -->
+  <section class="instagram-preview arquitectura-bloque" id="instagram" aria-labelledby="titulo-instagram">
+    <div class="instagram-cabecera">
+      <div>
+        <p class="eyebrow" id="titulo-instagram">Comunidad</p>
+        <h2 class="titulo-seccion">La mesa sigue en Instagram</h2>
+      </div>
+      <a class="link-secundario" href="https://instagram.com/__INSTAGRAM_HANDLE__" target="_blank" rel="noopener noreferrer">@__INSTAGRAM_HANDLE__<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+    </div>
+    <div class="instagram-grid" aria-hidden="true">
+      <span class="espacio-imagen espacio-instagram">Publicación 01</span>
+      <span class="espacio-imagen espacio-instagram">Publicación 02</span>
+      <span class="espacio-imagen espacio-instagram">Publicación 03</span>
+      <span class="espacio-imagen espacio-instagram">Publicación 04</span>
+    </div>
+  </section>
+
+  <!-- ===== Visitarnos -- contiene únicamente lo necesario para
+       llegar: dirección, horarios y mapas. Consultas vive en su propio
+       bloque oscuro inmediatamente después; así no se repiten canales.
+       El mapa NUNCA es un <iframe>: la CSP de este sitio (frame-src
+       implícito en default-src 'none', connect-src 'none') no permite
+       cargar Google Maps embebido, y activarlo requeriría además tener
+       lista la política de privacidad -- ver bloque legal. Son 3
+       enlaces externos simples (Google/Apple/Waze), calculados los tres
+       desde la misma dirección (maps_query) en build_site.py, nunca
+       tipeados a mano ni inventados acá. No se usa ningún logo/símbolo
+       de marca real de Google, Apple ni Waze -- son marcas de terceros
+       y no hay autorización para reproducirlas; cada enlace lleva solo
+       su nombre en texto. ===== -->
+  <section class="ubicacion visitanos arquitectura-bloque" id="ubicacion" aria-labelledby="titulo-ubicacion">
+    <div class="espacio-mapa" aria-hidden="true">Espacio para mapa</div>
+    <div class="ubicacion-contenido">
+      <p class="eyebrow">Visitarnos</p>
+      <h2 class="titulo-seccion" id="titulo-ubicacion">Encontranos en Malargüe</h2>
+      <p class="ubicacion-direccion">__DIRECCION_CALLE__</p>
+      <!--HORARIOS_START--><div class="horario-info"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
+      <div class="mapa-enlaces" role="group" aria-label="Abrir la ubicación en un mapa">
+        <a class="btn btn-claro" href="__MAPS_URL__" target="_blank" rel="noopener noreferrer">Google Maps<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+        <a class="btn btn-claro" href="__APPLE_MAPS_URL__" target="_blank" rel="noopener noreferrer">Apple Maps<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+        <a class="btn btn-claro" href="__WAZE_URL__" target="_blank" rel="noopener noreferrer">Waze<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
       </div>
     </div>
   </section>
-  <!--SERVICIOS_END-->
 
-  <!-- ===== Información práctica ===== -->
-  <!-- id="contacto" además de "encontranos": el pedido de cierre de
-       etapa lista "Encontranos" y "Contacto" como dos destinos
-       separados, pero esta sección ya cubre exactamente eso (WhatsApp,
-       Instagram, cómo llegar, reseñas) -- se agrega el segundo id como
-       alias en vez de duplicar el contenido en dos secciones. -->
-  <section class="informacion-practica" id="encontranos" aria-labelledby="titulo-practica">
-    <span id="contacto" aria-hidden="true"></span>
-    <div class="practica-intro">
-      <p class="eyebrow"><span class="indice-num" aria-hidden="true">04</span> <span id="titulo-practica">Encontranos</span></p>
-      <p class="texto-editorial">Elegí el canal que te resulte más cómodo para llegar, consultar o conocer la experiencia de otras personas.</p>
+  <!-- Consultas -- toma del ejemplo aportado únicamente el principio
+       de directorio oscuro: gran título a la izquierda y canales
+       ordenados a la derecha. No copia su marca ni repite Instagram,
+       dirección u horarios. -->
+  <section class="consultas-directorio arquitectura-bloque" id="contacto" aria-labelledby="titulo-contacto">
+    <div class="consultas-intro">
+      <p class="eyebrow">Consultas</p>
+      <h2 class="titulo-seccion" id="titulo-contacto">Contanos qué necesitás</h2>
+      <p>No trabajamos con reservas. Los pedidos y consultas se coordinan de manera personal.</p>
+      <a class="btn btn-principal" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
     </div>
-    <!-- Horario de atención -- confirmado, ver site.config.json.
-         Ausente si "horarios" está vacío o null (ver build_site.py). -->
-    <!--HORARIOS_START--><div class="horario-info">
-      <p class="horario-etiqueta">Horario</p>
-      <p class="horario-detalle">__HORARIOS__</p>
-    </div><!--HORARIOS_END-->
-    <address>
-    <ul class="lista-editorial">
-      <li>
-        <a href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">
-          <span class="lista-etiqueta">WhatsApp</span>
-          <span class="lista-detalle">Consultas por mensaje</span>
-          <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://instagram.com/__INSTAGRAM_HANDLE__" target="_blank" rel="noopener noreferrer">
-          <span class="lista-etiqueta">Instagram</span>
-          <span class="lista-detalle">@__INSTAGRAM_HANDLE__</span>
-          <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <li>
-        <a href="__MAPS_URL__" target="_blank" rel="noopener noreferrer">
-          <span class="lista-etiqueta">Cómo llegar</span>
-          <span class="lista-detalle">__DIRECCION_CALLE__</span>
-          <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <li>
-        <a href="__GOOGLE_REVIEWS_URL__" target="_blank" rel="noopener noreferrer">
-          <span class="lista-etiqueta">Reseñas en Google</span><span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <li>
-        <a href="__TRIPADVISOR_URL__" target="_blank" rel="noopener noreferrer">
-          <span class="lista-etiqueta">TripAdvisor</span><span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-    </ul>
+    <address class="consultas-grid">
+      <a class="consulta-ficha" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">
+        <span>WhatsApp</span><strong>__WHATSAPP_DISPLAY__</strong><small>Pedidos, entregas y consultas generales</small>
+        <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+      </a>
+      <a class="consulta-ficha" href="mailto:__CONTACTO_EMAIL__">
+        <span>Correo</span><strong>__CONTACTO_EMAIL__</strong><small>Consultas institucionales y reclamos</small>
+      </a>
+      <div class="consulta-ficha consulta-resenas">
+        <span>Reseñas</span><strong>Tu experiencia también cuenta</strong>
+        <nav aria-label="Reseñas de Amelí">
+          <a href="__GOOGLE_REVIEWS_URL__" target="_blank" rel="noopener noreferrer">Google<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+          <a href="__TRIPADVISOR_URL__" target="_blank" rel="noopener noreferrer">TripAdvisor<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+        </nav>
+      </div>
     </address>
   </section>
 
-  <!-- ===== Información del servicio (reglas de la casa: convivencia,
-       pet friendly, tiempos de mesa, medios de pago, etc.) -- a
-       propósito NO se llama "Términos y Condiciones" ni presenta un
-       "derecho de admisión digital": el anexo de cumplimiento dice que
-       eso no es una obligación demostrada y pide encuadrarlo como
-       información objetiva y no discriminatoria del servicio, con
-       redacción aprobada por Ignacio. Ausente hasta que
-       site.config.json tenga ese texto real. ===== -->
-  <!--INFO_SERVICIO_START--><section class="informacion-servicio" aria-labelledby="titulo-info-servicio">
-    <p class="eyebrow"><span class="indice-num" aria-hidden="true">05</span> <span id="titulo-info-servicio">Información del servicio</span></p>
-    <p class="texto-editorial">__INFORMACION_SERVICIO__</p>
-  </section><!--INFO_SERVICIO_END-->
-
-  <!-- ===== Tres secciones del pedido de cierre de etapa (2026-09-11)
-       que todavía no tienen texto real y aprobado (ver informe para
-       el detalle de cuáles). Mismo mecanismo null-gated que ya usan
-       los otros bloques opcionales más arriba en este archivo --
-       ausentes por completo (sin <nav> ni ancla) hasta que
-       site.config.json tenga contenido real. No se inventó ningún
-       texto para no violar "no inventar servicios ni contenido" del
-       cierre técnico. ===== -->
-  <!--PASTELERIA_PEDIDOS_START--><section class="pasteleria-pedidos" id="pasteleria-pedidos" aria-labelledby="titulo-pasteleria-pedidos">
-    <p class="eyebrow"><span class="indice-num" aria-hidden="true">06</span> <span id="titulo-pasteleria-pedidos">Pastelería y pedidos especiales</span></p>
-    <p class="texto-editorial">__PASTELERIA_PEDIDOS_TEXTO__</p>
-  </section><!--PASTELERIA_PEDIDOS_END-->
-
-  <!--LA_EXPERIENCIA_START--><section class="la-experiencia" id="la-experiencia" aria-labelledby="titulo-la-experiencia">
-    <p class="eyebrow"><span class="indice-num" aria-hidden="true">07</span> <span id="titulo-la-experiencia">La experiencia</span></p>
-    <p class="texto-editorial">__LA_EXPERIENCIA_TEXTO__</p>
-  </section><!--LA_EXPERIENCIA_END-->
-
-  <!--PREGUNTAS_FRECUENTES_START--><section class="preguntas-frecuentes" id="preguntas-frecuentes" aria-labelledby="titulo-preguntas-frecuentes">
-    <p class="eyebrow"><span class="indice-num" aria-hidden="true">08</span> <span id="titulo-preguntas-frecuentes">Preguntas frecuentes</span></p>
-    <p class="texto-editorial">__PREGUNTAS_FRECUENTES_TEXTO__</p>
-  </section><!--PREGUNTAS_FRECUENTES_END-->
+  <!--SUMATE_START--><section class="sumate arquitectura-bloque" id="sumate" aria-labelledby="titulo-sumate">
+    <p class="eyebrow">Sumate a Amelí</p>
+    <h2 class="titulo-seccion" id="titulo-sumate">Personas, marcas y creadores</h2>
+    <p class="texto-editorial">Dos maneras de acercarte a la comunidad de Amelí.</p>
+    <div class="sumate-tabs">
+      <div class="tab-lista" role="tablist" aria-label="Formularios para sumarse a Amelí">
+        <button id="tab-trabajo" type="button" role="tab" aria-selected="true" aria-controls="panel-trabajo">Trabajá con nosotros</button>
+        <button id="tab-marcas" type="button" role="tab" aria-selected="false" aria-controls="panel-marcas" tabindex="-1">Marcas &amp; Creators</button>
+      </div>
+      <div id="panel-trabajo" class="tab-panel" role="tabpanel" aria-labelledby="tab-trabajo">
+        <div class="formulario-maqueta" role="group" aria-label="Vista previa del formulario de trabajo">
+          <span>Nombre completo</span><span>Teléfono</span><span>Área: Cocina/Pastelería · Barismo · Salón/Atención</span><span>Experiencia previa</span><span>Enlace o adjunto para CV</span>
+          <!--FORM_TRABAJO_START-->
+          <a class="btn btn-principal" href="__GOOGLE_FORM_TRABAJO_URL__" target="_blank" rel="noopener noreferrer">Completar formulario<span class="solo-lectores"> (Google Forms, se abre en una pestaña nueva)</span></a>
+          <!--FORM_TRABAJO_END-->
+          <!--FORM_TRABAJO_PENDIENTE_START--><button type="button" disabled>Formulario en preparación</button><!--FORM_TRABAJO_PENDIENTE_END-->
+        </div>
+      </div>
+      <div id="panel-marcas" class="tab-panel" role="tabpanel" aria-labelledby="tab-marcas" hidden>
+        <div class="formulario-maqueta" role="group" aria-label="Vista previa del formulario para marcas y creadores">
+          <span>Nombre o marca</span><span>Red social o sitio web</span><span>Tipo: Colaboración · Canje · Proveedor · Evento conjunto</span><span>Mensaje</span>
+          <!--FORM_MARCAS_START-->
+          <a class="btn btn-principal" href="__GOOGLE_FORM_MARCAS_URL__" target="_blank" rel="noopener noreferrer">Completar formulario<span class="solo-lectores"> (Google Forms, se abre en una pestaña nueva)</span></a>
+          <!--FORM_MARCAS_END-->
+          <!--FORM_MARCAS_PENDIENTE_START--><button type="button" disabled>Formulario en preparación</button><!--FORM_MARCAS_PENDIENTE_END-->
+        </div>
+      </div>
+    </div>
+  </section><!--SUMATE_END-->
 
 </main>
 
 <footer>
-  <!-- Marca de agua decorativa: el mismo logo.svg real, a gran escala
-       y muy baja opacidad, puesta con CSS (footer::before) -- no es
-       un <img> nuevo, es el mismo archivo de siempre usado como
-       textura de fondo. Puramente decorativa, no lleva contenido. -->
   <div class="footer-interior">
     <div class="footer-marca">
-      <!-- Ícono chico decorativo junto al wordmark de texto real --
-           alt="" porque __MARCA__ ya está anunciado por el texto de al
-           lado; no hace falta que un lector de pantalla lo repita. -->
-      <img class="logo-footer-chico" src="assets/img/logo.svg" alt="" width="52" height="47">
       <p class="footer-wordmark">__MARCA__</p>
+      <p class="footer-tagline">__TAGLINE__</p>
     </div>
-    <div class="footer-acciones">
-      <a class="btn btn-principal" href="__MENU_URL__">Ver el menú</a>
-      <nav class="enlaces-footer" aria-label="Redes y reseñas">
-        <a href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
-        <a href="https://instagram.com/__INSTAGRAM_HANDLE__" target="_blank" rel="noopener noreferrer">Instagram<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
-        <a href="__GOOGLE_REVIEWS_URL__" target="_blank" rel="noopener noreferrer">Google<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
-        <a href="__TRIPADVISOR_URL__" target="_blank" rel="noopener noreferrer">TripAdvisor<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
-      </nav>
-    </div>
+    <!-- El pie no repite menú, WhatsApp, dirección, horarios ni redes:
+         todo eso ya tiene un lugar único en la página. -->
+    <nav class="enlaces-footer" aria-label="Enlaces del pie">
+      <!--PAGINAS_LEGALES_START--><a href="terminos.html">Términos y datos legales</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a href="informacion-alimentaria.html">Información alimentaria</a>
+      <a href="arrepentimiento.html">Botón de arrepentimiento</a><!--PAGINAS_LEGALES_END-->
+      <!--PAGINAS_LEGALES_AUSENTES_START--><a href="privacidad.html">Privacidad</a><!--PAGINAS_LEGALES_AUSENTES_END-->
+    </nav>
   </div>
-  <p class="privacidad-breve">Sin publicidad ni seguimiento. Las preferencias de accesibilidad se guardan solo en este dispositivo.</p>
+  <p class="privacidad-breve">Sin publicidad ni seguimiento propio. Las preferencias de accesibilidad se guardan solo en este dispositivo. Más detalle en <a href="privacidad.html">Privacidad</a>.</p>
   <p class="legal">__MARCA__ __CATEGORIA__ — __UBICACION_COMPLETA__.</p>
   <!-- Identidad fiscal (razón social/CUIT/domicilio comercial) --
        ausente hasta que site.config.json tenga los tres datos reales
@@ -353,6 +359,22 @@ __SOCIAL_META_TAGS__
        logo, fotografías y textos, no por defecto. -->
   <!--COPYRIGHT_START--><p class="legal">__AVISO_COPYRIGHT__</p><!--COPYRIGHT_END-->
 </footer>
+
+<!-- Botón flotante de contacto (referencia: puestodelindio.com). Ícono
+     de globo de diálogo genérico dibujado a mano, no el isotipo de
+     WhatsApp -- mismo criterio que ya rige los enlaces de mapa (Google/
+     Apple/Waze): son marcas de terceros y no hay autorización para
+     reproducir su símbolo, el enlace alcanza para identificar el
+     destino. -->
+<a class="whatsapp-flotante" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.3-3.6A7.96 7.96 0 0 1 4 12Z"/>
+    <circle cx="9" cy="12" r=".6" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="12" r=".6" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="12" r=".6" fill="currentColor" stroke="none"/>
+  </svg>
+  <span class="solo-lectores">Escribinos por WhatsApp (se abre en una pestaña nueva)</span>
+</a>
 
 <!-- ===== Panel de accesibilidad (tamaño de texto, alto contraste,
      reducir movimiento, lectura simple) -- mismo criterio que el panel

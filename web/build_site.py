@@ -56,6 +56,10 @@ HERE = Path(__file__).resolve().parent
 CONFIG_PATH = HERE / "site.config.json"
 TEMPLATE_INDEX_PATH = HERE / "templates" / "index.template.html"
 TEMPLATE_404_PATH = HERE / "templates" / "404.template.html"
+TEMPLATE_PRIVACIDAD_PATH = HERE / "templates" / "privacidad.template.html"
+TEMPLATE_TERMINOS_PATH = HERE / "templates" / "terminos.template.html"
+TEMPLATE_INFO_ALIMENTARIA_PATH = HERE / "templates" / "informacion-alimentaria.template.html"
+TEMPLATE_ARREPENTIMIENTO_PATH = HERE / "templates" / "arrepentimiento.template.html"
 ASSETS_SRC = HERE / "assets"
 DIST_PATH = HERE / "dist"
 
@@ -66,6 +70,8 @@ DIST_PATH = HERE / "dist"
 DOMINIOS_MENU = ("ameli-casa-de-te-brunch.github.io",)
 DOMINIOS_GOOGLE = ("google.com", "g.page")
 DOMINIOS_TRIPADVISOR = ("tripadvisor.com", "tripadvisor.com.ar")
+DOMINIOS_GOOGLE_CALENDAR = ("calendar.google.com", "calendar.app.google")
+DOMINIOS_GOOGLE_FORMS = ("forms.gle", "docs.google.com")
 
 # Único dominio válido para site_url -- el que ya está verificado en
 # GitHub para Pages. Política mucho más estricta que _url_https_valida,
@@ -76,7 +82,11 @@ DOMINIO_SITIO = "amelicasadete.com.ar"
 # Extensiones y rutas permitidas dentro de dist/. Cualquier archivo que
 # no calce con esto hace fallar el build antes de reemplazar dist/ --
 # ver _verificar_allowlist_dist().
-ARCHIVOS_RAIZ_PERMITIDOS = {"index.html", "404.html", "robots.txt", "sitemap.xml"}
+ARCHIVOS_RAIZ_PERMITIDOS = {
+    "index.html", "404.html", "privacidad.html", "terminos.html",
+    "informacion-alimentaria.html", "arrepentimiento.html",
+    "robots.txt", "sitemap.xml",
+}
 EXTENSIONES_ASSETS_PERMITIDAS = {
     "assets/css": {".css"},
     "assets/js": {".js"},
@@ -252,6 +262,16 @@ def validar_config(config: dict, requiere_site_url: bool) -> list:
     errores += _campo_texto_valido(config, "descripcion_menu_confirmada", 300)
     errores += _campo_texto_valido(config, "horarios", 500, obligatorio=False)
 
+    contacto_email = config.get("contacto_email")
+    if (
+        not isinstance(contacto_email, str)
+        or not re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@amelicasadete\.com\.ar", contacto_email)
+    ):
+        errores.append(
+            "contacto_email: tiene que ser una dirección del dominio "
+            f"amelicasadete.com.ar -- valor actual: {contacto_email!r}"
+        )
+
     if not _menu_url_valida(config.get("menu_url")):
         errores.append(
             f"menu_url: tiene que ser exactamente la ruta interna {RUTA_MENU_INTERNA!r} "
@@ -276,6 +296,8 @@ def validar_config(config: dict, requiere_site_url: bool) -> list:
             "whatsapp_e164: solo dígitos, entre 8 y 15 -- "
             f"valor actual: {whatsapp!r}"
         )
+
+    errores += _campo_texto_valido(config, "whatsapp_display", 40)
 
     instagram = config.get("instagram_handle")
     if not isinstance(instagram, str) or not re.fullmatch(r"[A-Za-z0-9._]{1,30}", instagram):
@@ -307,8 +329,25 @@ def validar_config(config: dict, requiere_site_url: bool) -> list:
     errores += _campo_texto_valido(config, "aviso_copyright", 300, obligatorio=False)
     errores += _campo_texto_valido(config, "informacion_servicio", 2000, obligatorio=False)
     errores += _campo_texto_valido(config, "pasteleria_pedidos_texto", 2000, obligatorio=False)
-    errores += _campo_texto_valido(config, "la_experiencia_texto", 2000, obligatorio=False)
+    errores += _campo_texto_valido(config, "sustentabilidad_texto", 2000, obligatorio=False)
     errores += _campo_texto_valido(config, "preguntas_frecuentes_texto", 4000, obligatorio=False)
+    errores += _campo_texto_valido(config, "domicilio_legal", 300, obligatorio=False)
+    errores += _campo_texto_valido(config, "provincia", 100, obligatorio=False)
+    errores += _campo_texto_valido(config, "localidad", 100, obligatorio=False)
+    errores += _campo_texto_valido(config, "condicion_fiscal", 100, obligatorio=False)
+    errores += _campo_texto_valido(config, "responsable_reclamos", 300, obligatorio=False)
+
+    for campo, dominios in (
+        ("google_calendar_url", DOMINIOS_GOOGLE_CALENDAR),
+        ("google_form_trabajo_url", DOMINIOS_GOOGLE_FORMS),
+        ("google_form_marcas_url", DOMINIOS_GOOGLE_FORMS),
+    ):
+        valor = config.get(campo)
+        if valor not in (None, "") and not _url_https_valida(valor, dominios):
+            errores.append(
+                f"{campo}: tiene que ser una URL https a un dominio permitido "
+                f"{dominios} o null -- valor actual: {_truncar(valor)}"
+            )
 
     cuit = config.get("cuit")
     if cuit is not None:
@@ -375,6 +414,19 @@ def _parrafos_html(texto: str, clase: str) -> str:
     return "\n    ".join(f'<p class="{clase}">{html.escape(p)}</p>' for p in partes)
 
 
+def _identidad_legal_completa(config: dict) -> bool:
+    """Las páginas legales no se generan con datos parciales. Son una
+    unidad: titular, CUIT, domicilios, condición fiscal y responsable."""
+    campos = (
+        "razon_social", "cuit", "domicilio_comercial", "domicilio_legal",
+        "condicion_fiscal", "responsable_reclamos",
+    )
+    return all(
+        isinstance(config.get(campo), str) and config[campo].strip()
+        for campo in campos
+    )
+
+
 def _escanear_placeholders_restantes(html_generado: str) -> list:
     """Escaneo genérico -- no solo los marcadores que este script conoce
     de antemano. Si el template gana un __PLACEHOLDER__ nuevo y se
@@ -385,6 +437,12 @@ def _escanear_placeholders_restantes(html_generado: str) -> list:
 
 def renderizar_index(config: dict, produccion: bool) -> str:
     plantilla = TEMPLATE_INDEX_PATH.read_text(encoding="utf-8")
+
+    tiene_paginas_legales = _identidad_legal_completa(config)
+    plantilla = _bloque(plantilla, "PAGINAS_LEGALES", tiene_paginas_legales)
+    plantilla = _bloque(
+        plantilla, "PAGINAS_LEGALES_AUSENTES", not tiene_paginas_legales
+    )
 
     sobre_ameli = config.get("presentacion_sobre_ameli")
     tiene_sobre_ameli = isinstance(sobre_ameli, str) and sobre_ameli.strip() != ""
@@ -443,13 +501,90 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     tiene_pasteleria_pedidos = isinstance(pasteleria_pedidos, str) and pasteleria_pedidos.strip() != ""
     plantilla = _bloque(plantilla, "PASTELERIA_PEDIDOS", tiene_pasteleria_pedidos)
 
-    la_experiencia = config.get("la_experiencia_texto")
-    tiene_la_experiencia = isinstance(la_experiencia, str) and la_experiencia.strip() != ""
-    plantilla = _bloque(plantilla, "LA_EXPERIENCIA", tiene_la_experiencia)
+    sustentabilidad = config.get("sustentabilidad_texto")
+    tiene_sustentabilidad = isinstance(sustentabilidad, str) and sustentabilidad.strip() != ""
+    plantilla = _bloque(plantilla, "SUSTENTABILIDAD", tiene_sustentabilidad)
 
     preguntas_frecuentes = config.get("preguntas_frecuentes_texto")
     tiene_preguntas_frecuentes = isinstance(preguntas_frecuentes, str) and preguntas_frecuentes.strip() != ""
     plantilla = _bloque(plantilla, "PREGUNTAS_FRECUENTES", tiene_preguntas_frecuentes)
+
+    # Calendario de Google -- enlace externo simple, nunca un <iframe>
+    # (ver comentario largo en el template, sección Experiencias): la
+    # CSP de este sitio no permite terceros y activar un embed real
+    # necesita antes la política de privacidad lista. Null-gated como
+    # todo lo demás -- si no está cargado, el botón entero no aparece.
+    google_calendar_url = config.get("google_calendar_url")
+    tiene_calendario = (
+        isinstance(google_calendar_url, str)
+        and _url_https_valida(google_calendar_url, DOMINIOS_GOOGLE_CALENDAR)
+    )
+    plantilla = _bloque(plantilla, "CALENDARIO", tiene_calendario)
+
+    # "Sumate a Amelí" -- cada pestaña es un enlace externo a Google
+    # Forms (nunca un <form> propio). La sección completa permanece
+    # oculta hasta que exista al menos un enlace real: mostrar una
+    # maqueta vacía en la web pública agregaba navegación y contenido
+    # sin ofrecer todavía ninguna acción útil.
+    google_form_trabajo_url = config.get("google_form_trabajo_url")
+    tiene_form_trabajo = (
+        isinstance(google_form_trabajo_url, str)
+        and _url_https_valida(google_form_trabajo_url, DOMINIOS_GOOGLE_FORMS)
+    )
+    plantilla = _bloque(plantilla, "FORM_TRABAJO", tiene_form_trabajo)
+    plantilla = _bloque(plantilla, "FORM_TRABAJO_PENDIENTE", not tiene_form_trabajo)
+
+    google_form_marcas_url = config.get("google_form_marcas_url")
+    tiene_form_marcas = (
+        isinstance(google_form_marcas_url, str)
+        and _url_https_valida(google_form_marcas_url, DOMINIOS_GOOGLE_FORMS)
+    )
+    plantilla = _bloque(plantilla, "FORM_MARCAS", tiene_form_marcas)
+    plantilla = _bloque(plantilla, "FORM_MARCAS_PENDIENTE", not tiene_form_marcas)
+    plantilla = _bloque(
+        plantilla, "SUMATE", tiene_form_trabajo or tiene_form_marcas
+    )
+
+    # Identificación legal del proveedor -- ningún dato inventado: cada
+    # campo es independiente y queda null hasta que el dueño lo
+    # confirme (ver _nota_identificacion_legal en site.config.json).
+    # razon_social/cuit/domicilio_comercial ya existen arriba (para el
+    # bloque fiscal del pie, que sigue exigiendo los tres juntos); acá
+    # cada uno se evalúa también por separado, para esta lista, que no
+    # exige la misma regla de "todos o ninguno".
+    tiene_razon_social_legal = isinstance(razon_social, str) and razon_social.strip() != ""
+    tiene_cuit_legal = isinstance(cuit, str) and cuit.strip() != ""
+    tiene_domicilio_comercial_legal = isinstance(domicilio_comercial, str) and domicilio_comercial.strip() != ""
+
+    domicilio_legal = config.get("domicilio_legal")
+    tiene_domicilio_legal = isinstance(domicilio_legal, str) and domicilio_legal.strip() != ""
+
+    provincia = config.get("provincia")
+    localidad = config.get("localidad")
+    tiene_provincia_localidad = (
+        isinstance(provincia, str) and provincia.strip()
+        and isinstance(localidad, str) and localidad.strip()
+    )
+
+    condicion_fiscal = config.get("condicion_fiscal")
+    tiene_condicion_fiscal = isinstance(condicion_fiscal, str) and condicion_fiscal.strip() != ""
+
+    responsable_reclamos = config.get("responsable_reclamos")
+    tiene_responsable_reclamos = isinstance(responsable_reclamos, str) and responsable_reclamos.strip() != ""
+
+    tiene_identificacion_legal = bool(
+        tiene_razon_social_legal or tiene_cuit_legal or tiene_domicilio_comercial_legal
+        or tiene_domicilio_legal or tiene_provincia_localidad
+        or tiene_condicion_fiscal or tiene_responsable_reclamos
+    )
+    plantilla = _bloque(plantilla, "IDENTIFICACION_LEGAL", tiene_identificacion_legal)
+    plantilla = _bloque(plantilla, "RAZON_SOCIAL_LEGAL", tiene_razon_social_legal)
+    plantilla = _bloque(plantilla, "CUIT_LEGAL", tiene_cuit_legal)
+    plantilla = _bloque(plantilla, "DOMICILIO_COMERCIAL_LEGAL", tiene_domicilio_comercial_legal)
+    plantilla = _bloque(plantilla, "DOMICILIO_LEGAL", tiene_domicilio_legal)
+    plantilla = _bloque(plantilla, "PROVINCIA_LOCALIDAD", bool(tiene_provincia_localidad))
+    plantilla = _bloque(plantilla, "CONDICION_FISCAL", tiene_condicion_fiscal)
+    plantilla = _bloque(plantilla, "RESPONSABLE_RECLAMOS", tiene_responsable_reclamos)
 
     if produccion:
         robots_tag = '<meta name="robots" content="index, follow">'
@@ -491,6 +626,8 @@ def renderizar_index(config: dict, produccion: bool) -> str:
         "__DESCRIPCION_MENU__": config["descripcion_menu_confirmada"],
         "__MENU_URL__": config["menu_url"],
         "__WHATSAPP_E164__": config["whatsapp_e164"],
+        "__WHATSAPP_DISPLAY__": config["whatsapp_display"],
+        "__CONTACTO_EMAIL__": config["contacto_email"],
         "__INSTAGRAM_HANDLE__": config["instagram_handle"],
         "__GOOGLE_REVIEWS_URL__": config["google_reviews_url"],
         "__TRIPADVISOR_URL__": config["tripadvisor_url"],
@@ -498,11 +635,39 @@ def renderizar_index(config: dict, produccion: bool) -> str:
             "https://www.google.com/maps/search/?api=1&query="
             + urllib.parse.quote(config["maps_query"])
         ),
+        # Misma dirección (maps_query), mismo criterio que Google Maps
+        # arriba -- ningún dato nuevo, solo el otro esquema de URL de
+        # cada proveedor. Nunca se reproduce el logo/símbolo real de
+        # Apple ni de Waze (son marcas de terceros): cada enlace lleva
+        # solo su nombre en texto, ver template.
+        "__APPLE_MAPS_URL__": (
+            "https://maps.apple.com/?q=" + urllib.parse.quote(config["maps_query"])
+        ),
+        "__WAZE_URL__": (
+            "https://waze.com/ul?q=" + urllib.parse.quote(config["maps_query"]) + "&navigate=yes"
+        ),
     }
-    if tiene_datos_legales:
+    if tiene_razon_social_legal:
         reemplazos["__RAZON_SOCIAL__"] = razon_social
+    if tiene_cuit_legal:
         reemplazos["__CUIT__"] = cuit
+    if tiene_domicilio_comercial_legal:
         reemplazos["__DOMICILIO_COMERCIAL__"] = domicilio_comercial
+    if tiene_domicilio_legal:
+        reemplazos["__DOMICILIO_LEGAL__"] = domicilio_legal
+    if tiene_provincia_localidad:
+        reemplazos["__PROVINCIA__"] = provincia
+        reemplazos["__LOCALIDAD__"] = localidad
+    if tiene_condicion_fiscal:
+        reemplazos["__CONDICION_FISCAL__"] = condicion_fiscal
+    if tiene_responsable_reclamos:
+        reemplazos["__RESPONSABLE_RECLAMOS__"] = responsable_reclamos
+    if tiene_calendario:
+        reemplazos["__GOOGLE_CALENDAR_URL__"] = google_calendar_url
+    if tiene_form_trabajo:
+        reemplazos["__GOOGLE_FORM_TRABAJO_URL__"] = google_form_trabajo_url
+    if tiene_form_marcas:
+        reemplazos["__GOOGLE_FORM_MARCAS_URL__"] = google_form_marcas_url
     if tiene_copyright:
         reemplazos["__AVISO_COPYRIGHT__"] = aviso_copyright
     if tiene_info_servicio:
@@ -515,15 +680,24 @@ def renderizar_index(config: dict, produccion: bool) -> str:
         reemplazos["__HORARIOS__"] = horarios
     if tiene_pasteleria_pedidos:
         reemplazos["__PASTELERIA_PEDIDOS_TEXTO__"] = pasteleria_pedidos
-    if tiene_la_experiencia:
-        reemplazos["__LA_EXPERIENCIA_TEXTO__"] = la_experiencia
+    if tiene_sustentabilidad:
+        reemplazos["__SUSTENTABILIDAD_TEXTO__"] = sustentabilidad
     if tiene_preguntas_frecuentes:
         reemplazos["__PREGUNTAS_FRECUENTES_TEXTO__"] = preguntas_frecuentes
 
+    # URLs ya armadas por este mismo módulo -- no pasan por html.escape()
+    # (evita el riesgo de escapar dos veces un "&" que ya viene de
+    # urllib.parse.quote). Los campos de texto libre (nombre, teléfono,
+    # correo, domicilios, etc.) sí se escapan siempre, incluso los
+    # nuevos de identificación legal.
+    MARCADORES_URL = {
+        "__MAPS_URL__", "__APPLE_MAPS_URL__", "__WAZE_URL__",
+        "__GOOGLE_CALENDAR_URL__", "__GOOGLE_FORM_TRABAJO_URL__", "__GOOGLE_FORM_MARCAS_URL__",
+    }
     salida = plantilla
     for marcador, valor in reemplazos.items():
-        if marcador == "__MAPS_URL__":
-            salida = salida.replace(marcador, valor)  # ya es una URL, no re-escapar
+        if marcador in MARCADORES_URL:
+            salida = salida.replace(marcador, valor)
         else:
             salida = salida.replace(marcador, html.escape(str(valor)))
 
@@ -568,6 +742,89 @@ def renderizar_404(config: dict) -> str:
     if quedan:
         raise SystemExit(f"Quedaron marcadores sin reemplazar en 404.html: {quedan}")
 
+    return salida
+
+
+def renderizar_privacidad(config: dict) -> str:
+    """Página de privacidad -- borrador propio, no un documento legal
+    definitivo (ver el aviso fijo en el propio template). Reutiliza
+    marca/categoría/contacto ya validados; la identificación legal
+    (razón social, CUIT, etc.) es la misma que el resto del sitio y
+    puede seguir ausente sin romper esta página -- cada línea es
+    independiente, igual que en el <dl> de la portada."""
+    plantilla = TEMPLATE_PRIVACIDAD_PATH.read_text(encoding="utf-8")
+
+    razon_social = config.get("razon_social")
+    cuit = config.get("cuit")
+    domicilio_comercial = config.get("domicilio_comercial")
+    responsable_reclamos = config.get("responsable_reclamos")
+
+    tiene_razon_social = isinstance(razon_social, str) and razon_social.strip() != ""
+    tiene_cuit = isinstance(cuit, str) and cuit.strip() != ""
+    tiene_domicilio_comercial = isinstance(domicilio_comercial, str) and domicilio_comercial.strip() != ""
+    tiene_responsable_reclamos = isinstance(responsable_reclamos, str) and responsable_reclamos.strip() != ""
+
+    plantilla = _bloque(plantilla, "RAZON_SOCIAL_PRIV", tiene_razon_social)
+    plantilla = _bloque(plantilla, "CUIT_PRIV", tiene_cuit)
+    plantilla = _bloque(plantilla, "DOMICILIO_COMERCIAL_PRIV", tiene_domicilio_comercial)
+    plantilla = _bloque(plantilla, "RESPONSABLE_RECLAMOS_PRIV", tiene_responsable_reclamos)
+    plantilla = _bloque(plantilla, "IDENTIFICACION_LEGAL_PRIV", bool(
+        tiene_razon_social or tiene_cuit or tiene_domicilio_comercial or tiene_responsable_reclamos
+    ))
+
+    reemplazos = {
+        "__MARCA__": config["marca"],
+        "__CATEGORIA__": config["categoria"],
+        "__CONTACTO_EMAIL__": config["contacto_email"],
+        "__WHATSAPP_E164__": config["whatsapp_e164"],
+    }
+    if tiene_razon_social:
+        reemplazos["__RAZON_SOCIAL__"] = razon_social
+    if tiene_cuit:
+        reemplazos["__CUIT__"] = cuit
+    if tiene_domicilio_comercial:
+        reemplazos["__DOMICILIO_COMERCIAL__"] = domicilio_comercial
+    if tiene_responsable_reclamos:
+        reemplazos["__RESPONSABLE_RECLAMOS__"] = responsable_reclamos
+
+    salida = plantilla
+    for marcador, valor in reemplazos.items():
+        salida = salida.replace(marcador, html.escape(str(valor)))
+
+    quedan = _escanear_placeholders_restantes(salida)
+    if quedan:
+        raise SystemExit(f"Quedaron marcadores sin reemplazar en privacidad.html: {quedan}")
+
+    return salida
+
+
+def renderizar_pagina_legal(ruta_plantilla: Path, config: dict) -> str:
+    """Renderiza las páginas legales estáticas con una única fuente de
+    identidad y contacto. Los textos jurídicos viven en templates para
+    poder revisarlos como documentos completos; los datos variables
+    siguen saliendo exclusivamente de site.config.json."""
+    plantilla = ruta_plantilla.read_text(encoding="utf-8")
+    reemplazos = {
+        "__MARCA__": config["marca"],
+        "__CATEGORIA__": config["categoria"],
+        "__RAZON_SOCIAL__": config["razon_social"],
+        "__CUIT__": config["cuit"],
+        "__DOMICILIO_COMERCIAL__": config["domicilio_comercial"],
+        "__DOMICILIO_LEGAL__": config["domicilio_legal"],
+        "__CONDICION_FISCAL__": config["condicion_fiscal"],
+        "__RESPONSABLE_RECLAMOS__": config["responsable_reclamos"],
+        "__CONTACTO_EMAIL__": config["contacto_email"],
+        "__WHATSAPP_E164__": config["whatsapp_e164"],
+    }
+    salida = plantilla
+    for marcador, valor in reemplazos.items():
+        salida = salida.replace(marcador, html.escape(str(valor)))
+
+    quedan = _escanear_placeholders_restantes(salida)
+    if quedan:
+        raise SystemExit(
+            f"Quedaron marcadores sin reemplazar en {ruta_plantilla.name}: {quedan}"
+        )
     return salida
 
 
@@ -697,6 +954,17 @@ def construir(produccion: bool) -> dict:
     try:
         (staging / "index.html").write_text(renderizar_index(config, produccion), encoding="utf-8")
         (staging / "404.html").write_text(renderizar_404(config), encoding="utf-8")
+        (staging / "privacidad.html").write_text(renderizar_privacidad(config), encoding="utf-8")
+        if _identidad_legal_completa(config):
+            (staging / "terminos.html").write_text(
+                renderizar_pagina_legal(TEMPLATE_TERMINOS_PATH, config), encoding="utf-8"
+            )
+            (staging / "informacion-alimentaria.html").write_text(
+                renderizar_pagina_legal(TEMPLATE_INFO_ALIMENTARIA_PATH, config), encoding="utf-8"
+            )
+            (staging / "arrepentimiento.html").write_text(
+                renderizar_pagina_legal(TEMPLATE_ARREPENTIMIENTO_PATH, config), encoding="utf-8"
+            )
         (staging / "robots.txt").write_text(renderizar_robots_txt(produccion, config), encoding="utf-8")
         if produccion:
             (staging / "sitemap.xml").write_text(renderizar_sitemap_xml(config), encoding="utf-8")
