@@ -1027,15 +1027,47 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         ).replace(" ", "").replace("\n", "")
         self.assertRegex(css, r"\.consultas-grid\{[^}]*font-style:normal")
 
-    def test_variante_boceto_no_muestra_fotografias_y_conserva_sus_espacios(self):
+    def test_fotografias_reales_tienen_atributos_completos_y_mapa_sigue_reservado(self):
+        """Portada, Carta y pedidos, Origen y compromiso, y las 4 fotos de
+        Instagram ya son <img> reales (fotos propias incorporadas el
+        2026-09-16) -- cada una con ancho/alto (evita saltos de layout),
+        srcset+sizes (responsive) y alt no vacío con texto real (no son
+        decorativas). El mapa sigue sin foto ni embed, por diseño."""
+        self.escribir_config(config_valido(
+            presentacion_sobre_ameli="Filosofía confirmada.",
+            servicios_habilitado=True,
+            pasteleria_pedidos_texto="Pedidos sujetos a confirmación.",
+            sustentabilidad_texto="Texto prudente.",
+            preguntas_frecuentes_texto="Consultas frecuentes."))
         build_site.construir(produccion=False)
         contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
-        self.assertNotRegex(contenido, r'<img\b')
-        for clase in ("portada-hero-fondo", "espacio-mapa"):
-            self.assertIn(clase, contenido)
+        imgs = re.findall(r'<img\b[^>]*>', contenido)
+        clases_con_foto = (
+            "portada-hero-fondo", "espacio-tienda", "espacio-sustentabilidad",
+            "espacio-instagram",
+        )
+        for clase in clases_con_foto:
+            etiquetas = [img for img in imgs if f'class="{clase}"' in img or f' {clase}"' in img or f'"{clase} ' in img]
+            self.assertTrue(etiquetas, f"no se encontró <img> con la clase {clase}")
+            for etiqueta in etiquetas:
+                self.assertRegex(etiqueta, r'\balt="[^"]+"')
+                self.assertNotRegex(etiqueta, r'alt=""')
+                self.assertRegex(etiqueta, r'\bwidth="\d+"')
+                self.assertRegex(etiqueta, r'\bheight="\d+"')
+                self.assertIn("srcset=", etiqueta)
+                self.assertIn("sizes=", etiqueta)
+                self.assertIn(".webp", etiqueta)
+        # La foto de portada es la única que NO debe ser lazy (LCP).
+        portada_img = next(img for img in imgs if "portada-hero-fondo" in img)
+        self.assertNotIn('loading="lazy"', portada_img)
+        self.assertIn('loading="eager"', portada_img)
+        # El resto de las fotos sí son lazy.
+        for img in imgs:
+            if "portada-hero-fondo" not in img and ("espacio-tienda" in img or "espacio-sustentabilidad" in img or "espacio-instagram" in img):
+                self.assertIn('loading="lazy"', img)
+        self.assertIn("espacio-mapa", contenido)
+        self.assertNotRegex(contenido, r'<img\b[^>]*espacio-mapa')
         plantilla = build_site.TEMPLATE_INDEX_PATH.read_text(encoding="utf-8")
-        self.assertIn("espacio-sustentabilidad", plantilla)
-        self.assertIn("espacio-tienda", plantilla)
         self.assertNotIn("espacio-turismo", plantilla)
 
     def test_acceso_al_menu_del_salon_esta_en_html_sin_js(self):

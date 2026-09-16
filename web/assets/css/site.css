@@ -942,13 +942,17 @@ html[data-lectura="simple"] .indice-num{font-style:normal}
 .a11y-btn,.nav-btn{background:transparent; color:var(--blanco); border-color:rgba(255,255,255,.7)}
 
 /* Portada estilo foto a sangre completa (referencia: puestodelindio.com
-   /isidris): un solo espacio reservado ocupa todo el bloque, con velo
-   oscuro en degradé y el texto centrado encima -- reemplaza al collage
-   de 4 fotos + panel flotante con sombra de la versión anterior. El
-   espacio reservado usa el mismo patrón diagonal que .espacio-imagen
-   de otras secciones, solo que oscurecido para simular dónde caería
-   la fotografía real. */
-.espacio-imagen,.espacio-foto,.espacio-menu,.espacio-sustentabilidad,.espacio-mapa{
+   /isidris): foto real + velo oscuro en degradé (capa propia, separada
+   de la foto -- un <img> no puede llevar un gradiente de fondo visible
+   encima de su propio contenido) + texto centrado encima. El resto de
+   los espacios reservados (.espacio-imagen/.espacio-foto/.espacio-menu/
+   .espacio-mapa) sigue con el patrón diagonal como marcador -- son los
+   que todavía no tienen foto (ej. el mapa, que nunca la tiene, ver
+   política de mapas). .espacio-sustentabilidad sigue en este grupo
+   (necesita el mismo marco de borde/radio) aunque desde el 2026-09-16
+   sea un <img> real -- el fondo de este bloque queda tapado por la
+   foto. */
+.espacio-imagen,.espacio-foto,.espacio-menu,.espacio-mapa,.espacio-sustentabilidad{
   display:grid; place-items:center; overflow:hidden;
   color:rgba(62,71,54,.58); background:
     linear-gradient(135deg, transparent 49.7%, rgba(83,96,57,.17) 50%, transparent 50.3%),
@@ -956,23 +960,35 @@ html[data-lectura="simple"] .indice-num{font-style:normal}
   border:2px solid var(--verde-osc); border-radius:var(--radius-md);
   font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
 }
+/* Fotos reales incorporadas el 2026-09-16: el <img> hereda la misma
+   caja (tamaño/borde/radio) que ya tenía su espacio reservado -- solo
+   se agrega cómo llenarla. El fondo con el patrón diagonal que algunas
+   de estas clases conservan en reglas de arriba/abajo queda debajo,
+   tapado por la foto, sin que haga falta tocarlo. */
+img.espacio-tienda,img.espacio-sustentabilidad,img.espacio-instagram{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
 .portada-hero{
   position:relative; isolation:isolate; max-width:none; min-height:640px;
   display:flex; align-items:center; justify-content:center;
   margin:0; padding:0; overflow:hidden;
 }
-.portada-hero-fondo{
+img.portada-hero-fondo{
+  /* width/height:100% son necesarios acá pese al inset:0 -- un <img>
+     absolutely positioned es un elemento reemplazado: varios motores
+     igual consultan su relación de aspecto intrínseca cuando width u
+     height quedan en "auto", así que inset:0 solo no alcanza para
+     estirarlo. Con los dos porcentajes explícitos sí llena el bloque
+     (probado en navegador). */
   position:absolute; inset:0; z-index:0;
-  display:flex; align-items:flex-end; justify-content:flex-start; padding:20px 24px;
-  color:rgba(255,253,247,.4);
-  font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  background:
-    linear-gradient(rgba(26,32,19,.4), rgba(26,32,19,.74)),
-    linear-gradient(135deg, transparent 49.7%, rgba(255,253,247,.07) 50%, transparent 50.3%),
-    var(--verde-osc);
+  width:100%; height:100%; object-fit:cover;
+}
+.portada-hero-velo{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(rgba(26,32,19,.4), rgba(26,32,19,.74));
 }
 .portada-hero-overlay{
-  position:relative; z-index:1;
+  position:relative; z-index:2;
   width:min(640px, calc(100% - 48px)); margin:0 auto;
   padding:72px 8px; text-align:center; color:var(--blanco);
 }
@@ -1284,12 +1300,8 @@ footer::before{display:none}
 .arquitectura-bloque{border-bottom:1px solid var(--linea-suave)}
 
 .portada-hero{min-height:min(820px, 92vh)}
-.portada-hero-fondo{
-  padding:24px max(24px, calc((100vw - 1320px) / 2));
-  background:
-    linear-gradient(180deg, rgba(20,27,17,.28), rgba(20,27,17,.76)),
-    linear-gradient(135deg, transparent 49.75%, rgba(255,253,247,.08) 50%, transparent 50.25%),
-    var(--verde-osc);
+.portada-hero-velo{
+  background:linear-gradient(180deg, rgba(20,27,17,.28), rgba(20,27,17,.76));
 }
 .portada-hero-overlay{width:min(760px, calc(100% - 40px)); padding:96px 8px}
 .portada-hero-overlay .titulo-marca{

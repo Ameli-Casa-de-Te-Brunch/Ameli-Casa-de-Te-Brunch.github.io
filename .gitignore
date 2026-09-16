@@ -26,3 +26,9 @@ __pycache__/
 # Nunca se edita dist/ a mano: si necesitás cambiar algo, se edita el Excel
 # maestro (o el template) y se corre build.py de nuevo.
 dist/
+
+# Fotos originales sin procesar (2026-09-16): se conservan completas en el
+# disco de Ignacio como respaldo, pero nunca se versionan ni se publican --
+# lo público son los derivados WebP optimizados y con marca de agua en
+# web/assets/img/. No sobrescribir ni mover manualmente esta carpeta.
+assets-originales-privados/
