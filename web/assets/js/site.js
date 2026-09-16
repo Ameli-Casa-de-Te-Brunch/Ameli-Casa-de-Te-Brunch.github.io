@@ -106,6 +106,91 @@
     var casilleroMovimiento = document.getElementById('a11yMovimiento');
     var casilleroLectura = document.getElementById('a11yLectura');
 
+    /* Menú de navegación (tres rayas) -- mismo patrón exacto que el
+       panel de accesibilidad de arriba: <dialog> nativo, mejora
+       progresiva real (data-nav-pending nunca se saca si falta algún
+       elemento), Escape y foco contenido los maneja el navegador. Se
+       registra en un bloque aparte, independiente del de accesibilidad
+       -- si uno de los dos paneles no encuentra sus elementos, el otro
+       igual queda funcional. */
+    (function () {
+      var botonNav = document.getElementById('navBtn');
+      var panelNav = document.getElementById('navPanel');
+      var botonCerrarNav = document.getElementById('navCerrar');
+      if (!botonNav || !panelNav || !botonCerrarNav) return;
+
+      function abrirNav() {
+        panelNav.showModal();
+        botonNav.setAttribute('aria-expanded', 'true');
+      }
+      function alCerrarNav() {
+        botonNav.setAttribute('aria-expanded', 'false');
+        botonNav.focus();
+      }
+      panelNav.addEventListener('close', alCerrarNav);
+      panelNav.addEventListener('click', function (evento) {
+        if (evento.target !== panelNav) return;
+        var rect = panelNav.getBoundingClientRect();
+        var dentro = evento.clientX >= rect.left && evento.clientX <= rect.right &&
+                     evento.clientY >= rect.top && evento.clientY <= rect.bottom;
+        if (!dentro) {
+          panelNav.close();
+          alCerrarNav();
+        }
+      });
+      botonNav.addEventListener('click', function () {
+        if (!panelNav.open) abrirNav();
+      });
+      botonCerrarNav.addEventListener('click', function () {
+        panelNav.close();
+        alCerrarNav();
+      });
+      panelNav.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' || evento.key === 'Esc') {
+          panelNav.close();
+          alCerrarNav();
+        }
+      });
+      /* Cerrar el panel al tocar un enlace real de la navegación --
+         si no, el <dialog> se queda abierto tapando la sección a la
+         que se acaba de navegar. */
+      panelNav.querySelectorAll('.nav-principal a').forEach(function (enlace) {
+        enlace.addEventListener('click', function () {
+          panelNav.close();
+          alCerrarNav();
+        });
+      });
+
+      botonNav.removeAttribute('data-nav-pending');
+    })();
+
+    /* Pestañas de la maqueta "Sumate". No hay envío de formularios:
+       solo alternan dos paneles locales y accesibles. */
+    var tabsSumate = Array.prototype.slice.call(
+      document.querySelectorAll('.tab-lista [role="tab"]')
+    );
+    function activarTabSumate(tab) {
+      tabsSumate.forEach(function (item) {
+        var activo = item === tab;
+        var panelId = item.getAttribute('aria-controls');
+        var panelTab = document.getElementById(panelId);
+        item.setAttribute('aria-selected', activo ? 'true' : 'false');
+        item.tabIndex = activo ? 0 : -1;
+        if (panelTab) panelTab.hidden = !activo;
+      });
+    }
+    tabsSumate.forEach(function (tab, indice) {
+      tab.addEventListener('click', function () { activarTabSumate(tab); });
+      tab.addEventListener('keydown', function (evento) {
+        if (evento.key !== 'ArrowLeft' && evento.key !== 'ArrowRight') return;
+        evento.preventDefault();
+        var paso = evento.key === 'ArrowRight' ? 1 : -1;
+        var siguiente = (indice + paso + tabsSumate.length) % tabsSumate.length;
+        activarTabSumate(tabsSumate[siguiente]);
+        tabsSumate[siguiente].focus();
+      });
+    });
+
     /* Mejora progresiva real: si falta cualquier elemento que este
        script necesita, no se registra nada y el botón se queda con
        data-a11y-pending -- oculto, inhabilitado, invisible para el
