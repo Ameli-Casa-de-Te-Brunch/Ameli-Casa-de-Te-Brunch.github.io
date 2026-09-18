@@ -22,6 +22,7 @@ CATEGORIAS_VASO_JARRA = ec.CATEGORIAS_VASO_JARRA
 ESTADOS_ALERGENOS_VALIDADOS = ec.ESTADOS_ALERGENOS_VALIDADOS
 _MAPA_ALERGENOS = ec.MAPA_ALERGENOS
 DISPONIBILIDAD_VALORES = ec.DISPONIBILIDAD_VALORES
+COL = ec.COL
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUT = HERE.parent / "data" / "menu.json"
@@ -30,23 +31,10 @@ OVERRIDES_MOMENTOS = HERE / "overrides_momentos.json"
 FILA_CONFIG_INICIO = 16  # ver hoja "Resumen y Configuración": el bloque de
 FILA_CONFIG_FIN = 30     # config empieza después del resumen automático.
 
-# Columnas de la hoja "Productos" (1-indexado). Definidas una sola vez acá
-# porque validate.py las necesita también para armar sus mensajes.
-COL = {
-    "id": 1, "cat": 2, "orden": 3,
-    "nombre": {"es": 4, "en": 5, "pt": 6, "fr": 7, "it": 8},
-    "desc": {"es": 9, "en": 10, "pt": 11, "fr": 12, "it": 13},
-    "activo": 14, "destacado": 15, "recomendado": 16, "mas_vendido": 17, "nuevo": 18,
-    "edicion_limitada": 19, "etiqueta_inicial": 20,
-    "precio_chico": 21, "precio_grande": 22, "moneda": 23,
-    "temperatura": 24, "formato": 25,
-    "img": 26,
-    "slug": {"es": 27, "en": 28, "pt": 29, "fr": 30, "it": 31},
-    "alergenos_inicio": 32, "alergenos_fin": 46,
-    "estado_alergenos": 47, "obs_alergenos": 48, "observaciones": 49,
-    "disponibilidad": 50,
-    "alt": {"es": 51, "en": 52, "pt": 53, "fr": 54, "it": 55},
-}
+# COL (columnas de la hoja "Productos") vive en extract_common.py y se
+# re-exporta acá arriba -- validate.py y extract_sheets.py la necesitan
+# también, y extract_sheets.py no puede darse el lujo de importar este
+# módulo (arrastraría openpyxl).
 
 
 def _sheet(wb, name):

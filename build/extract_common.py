@@ -24,6 +24,25 @@ CATEGORIAS_VASO_JARRA = {"BYJ"}
 # "Pendiente"), sus alérgenos nunca salen en el JSON público.
 ESTADOS_ALERGENOS_VALIDADOS = {"Validado por cocina", "Validado por proveedor"}
 
+# Columnas de la hoja "Productos" (1-indexado), Excel y Sheets por igual --
+# definidas acá (no en extract.py) para que extract_sheets.py las pueda usar
+# sin arrastrar la dependencia de openpyxl que trae importar extract.py.
+COL = {
+    "id": 1, "cat": 2, "orden": 3,
+    "nombre": {"es": 4, "en": 5, "pt": 6, "fr": 7, "it": 8},
+    "desc": {"es": 9, "en": 10, "pt": 11, "fr": 12, "it": 13},
+    "activo": 14, "destacado": 15, "recomendado": 16, "mas_vendido": 17, "nuevo": 18,
+    "edicion_limitada": 19, "etiqueta_inicial": 20,
+    "precio_chico": 21, "precio_grande": 22, "moneda": 23,
+    "temperatura": 24, "formato": 25,
+    "img": 26,
+    "slug": {"es": 27, "en": 28, "pt": 29, "fr": 30, "it": 31},
+    "alergenos_inicio": 32, "alergenos_fin": 46,
+    "estado_alergenos": 47, "obs_alergenos": 48, "observaciones": 49,
+    "disponibilidad": 50,
+    "alt": {"es": 51, "en": 52, "pt": 53, "fr": 54, "it": 55},
+}
+
 # Claves cortas del alérgeno público <- columna del Excel/Sheets.
 MAPA_ALERGENOS = [
     ("veg", "Vegetariano"), ("vgn", "Vegano"), ("tacc", "Sin TACC"), ("lac", "Sin lactosa"),

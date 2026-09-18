@@ -5,9 +5,9 @@ disparado por el botón "Publicar cambios" del Sheet (ver Apps Script en
 el README, sección "Consolidación en Sheets").
 
 El Sheet tiene que replicar el layout del Excel maestro: mismas filas de
-inicio, mismas columnas (ver extract.COL, extract.FILA_CONFIG_INICIO/FIN,
+inicio, mismas columnas (ver extract_common.COL, extract.FILA_CONFIG_INICIO/FIN,
 y las columnas de Categorías más abajo). Esto es deliberado: reescribe
-extract.COL una sola vez y todo el resto del pipeline (render.py,
+extract_common.COL una sola vez y todo el resto del pipeline (render.py,
 validate) no necesita saber de dónde salieron los datos.
 
 Tres hojas, publicadas cada una como su propio CSV (Archivo > Compartir >
@@ -24,7 +24,6 @@ import json
 import urllib.request
 from pathlib import Path
 
-import extract as ex
 import extract_common as ec
 
 HERE = Path(__file__).resolve().parent
@@ -132,9 +131,9 @@ def load_opciones_leche(filas_backoffice: list | None) -> dict:
 
 def load_productos(filas: list, filas_backoffice: list | None = None) -> dict:
     """Misma forma que extract.load_productos(), leyendo de filas de CSV
-    en vez de celdas de openpyxl. Usa extract.COL -- una sola definición
+    en vez de celdas de openpyxl. Usa extract_common.COL -- una sola definición
     de columnas para las dos fuentes."""
-    COL = ex.COL
+    COL = ec.COL
     opciones_leche = load_opciones_leche(filas_backoffice)
     out = {}
     r = 5
