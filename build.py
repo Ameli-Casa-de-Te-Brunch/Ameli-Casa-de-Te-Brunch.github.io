@@ -8,6 +8,10 @@ Uso:
                                    # muestra exactamente qué va a subir y pide
                                    # que escribas "si" para confirmar.
   python build.py --xlsx ruta.xlsx
+  python build.py --sheets-productos URL --sheets-categorias URL --sheets-config URL
+                                   # usa Google Sheets como fuente en vez del Excel (las tres
+                                   # URLs son obligatorias juntas; --sheets-backoffice es
+                                   # opcional). No se puede combinar con --xlsx.
 """
 import argparse
 import json
@@ -220,6 +224,71 @@ def preparar_en_memoria(data: dict, disponibilidad_estricta: bool, consultar_dis
     return json.dumps(documento_publico, ensure_ascii=False, indent=1)
 
 
+def _preparar_o_abortar(args, data) -> str:
+    """Envoltorio de preparar_en_memoria() compartido por ejecutar() (Excel)
+    y ejecutar_sheets() (Google Sheets) -- la validación del documento
+    público y de disponibilidad en vivo no depende de la fuente, solo de
+    `data` (ya en la forma común que arma extract_common.ensamblar()).
+
+    Todo esto ocurre en memoria, ANTES de escribir cualquier archivo.
+    Cuatro modos, según --dry-run/--disponibilidad-estricta:
+      - "--dry-run" solo: valida el documento público, pero NUNCA consulta
+        la hoja de disponibilidad (ni siquiera en modo no estricto) -- no
+        hace falta red para poder decir "esto pasaría".
+      - "--dry-run --disponibilidad-estricta": exige URL y hace la
+        consulta/validación estricta real -- sirve para probar de verdad
+        si la hoja real pasaría el modo estricto, sin escribir nada.
+      - normal sin --disponibilidad-estricta: comportamiento de siempre --
+        aplica disponibilidad en modo NO estricto si hay URL configurada,
+        sigue sin aplicarla si no la hay.
+      - normal con --disponibilidad-estricta: exige URL (una URL ausente
+        es en sí misma un error acá) y valida en modo estricto.
+    Un fallo en cualquiera de los dos controles (JSON público o
+    disponibilidad) nunca deja data/menu.json, dist/index.html ni ningún
+    otro output tocado -- el mensaje "no se generó ni publicó nada" sigue
+    siendo cierto en los cuatro modos."""
+    consultar_disponibilidad = args.disponibilidad_estricta or not args.dry_run
+    try:
+        return preparar_en_memoria(data, args.disponibilidad_estricta, consultar_disponibilidad)
+    except DocumentoPublicoInvalido as e:
+        print()
+        print("[ERROR] El documento público (data/menu.json) no pasa su propia validación: " + str(e))
+        print("Build detenido. No se generó ni publicó nada.")
+        sys.exit(1)
+    except aplicar_disponibilidad.DisponibilidadInvalida as e:
+        print()
+        print("[ERROR] Disponibilidad en vivo (modo estricto): " + str(e))
+        print("Build detenido. Corregí la hoja de disponibilidad o corré sin --disponibilidad-estricta.")
+        print("No se generó ni publicó nada.")
+        sys.exit(1)
+
+
+def _generar_y_publicar(args, data, menu_json_texto: str) -> None:
+    """Paso 3/3 compartido por ejecutar() y ejecutar_sheets(): escribir
+    data/menu.json y dist/index.html, y opcionalmente ofrecer publicar.
+    Nunca se llama si _preparar_o_abortar ya cortó con sys.exit(1), ni en
+    --dry-run (ambos llamadores retornan antes)."""
+    print("3/3 render")
+    MENU_JSON.parent.mkdir(parents=True, exist_ok=True)
+    MENU_JSON.write_text(menu_json_texto, encoding="utf-8")
+    print("      " + str(MENU_JSON) + " (solo campos públicos)")
+
+    template = args.template.read_text(encoding="utf-8")
+    html = render.render(data, template)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(html, encoding="utf-8")
+    print("      " + str(args.out) + " (" + str(len(html)) + " bytes)")
+    render.copiar_assets(args.out.parent)
+    print("      " + str(args.out.parent / "assets") + " (fuentes)")
+    render._escribir_seo_estatico(args.out.parent, data["config"].get("url_base"))
+
+    if args.publicar:
+        publicar(data["config"].get("url_base"))
+    else:
+        print()
+        print("Listo en tu PC. Para publicar de verdad: python build.py --publicar")
+
+
 def ejecutar(args, xlsx_path: Path, extract_mod=None, validate_mod=None) -> None:
     """extract_mod/validate_mod: inyección explícita de los módulos
     extract.py/validate.py (los dos únicos que requieren openpyxl) --
@@ -255,70 +324,76 @@ def ejecutar(args, xlsx_path: Path, extract_mod=None, validate_mod=None) -> None
         print("python build.py. Nada se generó ni se publicó.")
         sys.exit(1)
 
-    # Todo esto (extracción, validación del JSON público y, según el modo,
-    # validación estricta de disponibilidad en vivo) ocurre en memoria,
-    # ANTES de escribir cualquier archivo. Cuatro modos, según
-    # --dry-run/--disponibilidad-estricta:
-    #   - "--dry-run" solo: valida el Excel y el JSON público, pero NUNCA
-    #     consulta la hoja (ni siquiera en modo no estricto) -- no hace
-    #     falta red para poder decir "esto pasaría".
-    #   - "--dry-run --disponibilidad-estricta": exige URL y hace la
-    #     consulta/validación estricta real -- sirve para probar de
-    #     verdad si la hoja real pasaría el modo estricto, sin escribir
-    #     nada.
-    #   - normal sin --disponibilidad-estricta: comportamiento de siempre
-    #     -- aplica disponibilidad en modo NO estricto si hay URL
-    #     configurada, sigue sin aplicarla si no la hay.
-    #   - normal con --disponibilidad-estricta: exige URL (una URL
-    #     ausente es en sí misma un error acá) y valida en modo estricto.
-    # Un fallo en cualquiera de los dos controles (JSON público o
-    # disponibilidad) nunca deja data/menu.json, dist/index.html ni ningún
-    # otro output tocado -- el mensaje "no se generó ni publicó nada"
-    # sigue siendo cierto en los cuatro modos.
-    consultar_disponibilidad = args.disponibilidad_estricta or not args.dry_run
-    try:
-        menu_json_texto = preparar_en_memoria(data, args.disponibilidad_estricta, consultar_disponibilidad)
-    except DocumentoPublicoInvalido as e:
-        print()
-        print("[ERROR] El documento público (data/menu.json) no pasa su propia validación: " + str(e))
-        print("Build detenido. No se generó ni publicó nada.")
-        sys.exit(1)
-    except aplicar_disponibilidad.DisponibilidadInvalida as e:
-        print()
-        print("[ERROR] Disponibilidad en vivo (modo estricto): " + str(e))
-        print("Build detenido. Corregí la hoja de disponibilidad o corré sin --disponibilidad-estricta.")
-        print("No se generó ni publicó nada.")
-        sys.exit(1)
+    menu_json_texto = _preparar_o_abortar(args, data)
 
     if args.dry_run:
         print()
         print("--dry-run: no se generó ni publicó nada")
         return
 
-    print("3/3 render")
-    MENU_JSON.parent.mkdir(parents=True, exist_ok=True)
-    MENU_JSON.write_text(menu_json_texto, encoding="utf-8")
-    print("      " + str(MENU_JSON) + " (solo campos públicos)")
+    _generar_y_publicar(args, data, menu_json_texto)
 
-    template = args.template.read_text(encoding="utf-8")
-    html = render.render(data, template)
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(html, encoding="utf-8")
-    print("      " + str(args.out) + " (" + str(len(html)) + " bytes)")
-    render.copiar_assets(args.out.parent)
-    print("      " + str(args.out.parent / "assets") + " (fuentes)")
-    render._escribir_seo_estatico(args.out.parent, data["config"].get("url_base"))
 
-    if args.publicar:
-        publicar(data["config"].get("url_base"))
-    else:
+def ejecutar_sheets(args, urls: dict, extract_mod=None, validate_mod=None) -> None:
+    """Mismo flujo de tres pasos que ejecutar(), pero leyendo el maestro
+    desde Google Sheets (CSVs publicados) en vez del Excel. `urls` trae
+    'productos'/'categorias'/'config' (obligatorias) y 'backoffice'
+    (opcional, ver extract_sheets.extract()).
+
+    extract_mod/validate_mod: misma inyección explícita que ejecutar() --
+    pensada para que los tests puedan pasar dobles, aunque acá ninguno de
+    los dos módulos reales (extract_sheets.py/validate_sheets.py) depende
+    de openpyxl, así que no hace falta un _cargar_dependencias_xlsx()
+    equivalente: importarlos de verdad es seguro incluso en un runner de
+    CI sin ese paquete instalado."""
+    if extract_mod is None:
+        import extract_sheets as extract_mod
+    if validate_mod is None:
+        import validate_sheets as validate_mod
+
+    print("1/3 extract  (Google Sheets)")
+    data = extract_mod.extract(
+        urls["productos"], urls["categorias"], urls["config"], urls.get("backoffice")
+    )
+    print("      " + str(len(data["prods"])) + " productos activos, " + str(len(data["cats"])) + " categorías")
+
+    print("2/3 validate")
+    filas_productos = extract_mod._leer_csv(urls["productos"])
+    filas_config = extract_mod._leer_csv(urls["config"])
+    errors, warnings = validate_mod.validate(data, filas_productos, filas_config)
+    for w in warnings:
+        print("      [AVISO] " + w)
+    for e in errors:
+        print("      [ERROR] " + e)
+    print("      " + str(len(errors)) + " error(es), " + str(len(warnings)) + " aviso(s)")
+    if errors:
         print()
-        print("Listo en tu PC. Para publicar de verdad: python build.py --publicar")
+        print("Build detenido: corregí los errores de arriba en el Sheet y volvé a correr")
+        print("python build.py --sheets-productos ... Nada se generó ni se publicó.")
+        sys.exit(1)
+
+    menu_json_texto = _preparar_o_abortar(args, data)
+
+    if args.dry_run:
+        print()
+        print("--dry-run: no se generó ni publicó nada")
+        return
+
+    _generar_y_publicar(args, data, menu_json_texto)
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--xlsx", default=None, help="ruta al Excel maestro (si no, se resuelve solo)")
+    ap.add_argument("--sheets-productos", default=None,
+                     help="URL CSV publicada de la hoja Productos -- si se pasa, se usa Google "
+                          "Sheets como fuente en vez del Excel (requiere también --sheets-categorias "
+                          "y --sheets-config).")
+    ap.add_argument("--sheets-categorias", default=None, help="URL CSV publicada de la hoja Categorías")
+    ap.add_argument("--sheets-config", default=None, help="URL CSV publicada de la hoja Config")
+    ap.add_argument("--sheets-backoffice", default=None,
+                     help="URL CSV publicada de 'Productos - Backoffice' (opcional -- sin esto, "
+                          "se publica igual pero sin datos de leche vegetal/sin lactosa)")
     ap.add_argument("--template", type=Path, default=ROOT / "templates" / "menu.template.html")
     ap.add_argument("--out", type=Path, default=ROOT / "dist" / "index.html")
     ap.add_argument("--dry-run", action="store_true", help="solo validar y reportar, no escribir nada")
@@ -330,6 +405,30 @@ def main():
              "la hoja se avisa por consola y se sigue con lo que había.",
     )
     args = ap.parse_args()
+
+    urls_sheets = {
+        "productos": args.sheets_productos,
+        "categorias": args.sheets_categorias,
+        "config": args.sheets_config,
+    }
+    algun_sheets_arg = any(urls_sheets.values()) or args.sheets_backoffice
+    if algun_sheets_arg:
+        faltantes = [nombre for nombre, url in urls_sheets.items() if not url]
+        if faltantes:
+            print(
+                "Faltan URLs para usar Google Sheets como fuente: --sheets-"
+                + ", --sheets-".join(faltantes)
+                + ". Las tres (productos, categorías, config) son obligatorias juntas -- "
+                  "--sheets-backoffice es la única opcional."
+            )
+            sys.exit(1)
+        if args.sheets_backoffice:
+            urls_sheets["backoffice"] = args.sheets_backoffice
+        if args.xlsx:
+            print("No se puede pasar --xlsx junto con --sheets-*: elegí una sola fuente.")
+            sys.exit(1)
+        ejecutar_sheets(args, urls_sheets)
+        return
 
     xlsx_path = config_local.resolver_ruta_xlsx(args.xlsx)
     if not xlsx_path.exists():

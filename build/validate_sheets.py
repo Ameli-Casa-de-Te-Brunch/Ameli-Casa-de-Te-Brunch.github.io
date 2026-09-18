@@ -7,9 +7,6 @@ errores bloquean la publicación, avisos no.
 """
 import re
 
-from openpyxl.utils import get_column_letter
-
-import extract as ex
 import extract_common as ec
 import extract_sheets as es
 
@@ -18,11 +15,23 @@ ID_FORMATO = re.compile(r"^[A-Z]{3}\d{3}$")
 CAMPOS_CONTACTO = {"WhatsApp de pedidos", "Instagram", "Dirección", "URL base del menú", "TripAdvisor", "Google (reseñas)"}
 
 
+def _letra_columna(n: int) -> str:
+    """Número de columna (1-indexado) -> letra estilo Excel/Sheets (1->A,
+    27->AA). Reimplementado acá (en vez de openpyxl.utils.get_column_letter)
+    a propósito: este módulo no puede depender de openpyxl -- es el único
+    validador que sí corre en CI sin ese paquete instalado."""
+    letras = ""
+    while n > 0:
+        n, resto = divmod(n - 1, 26)
+        letras = chr(65 + resto) + letras
+    return letras
+
+
 def _col(nombre_campo, lang=None):
-    c = ex.COL[nombre_campo]
+    c = ec.COL[nombre_campo]
     if lang:
         c = c[lang]
-    return get_column_letter(c)
+    return _letra_columna(c)
 
 
 def _leer_ids_productos(filas):
@@ -31,8 +40,8 @@ def _leer_ids_productos(filas):
     usa como clave de diccionario y pierde duplicados)."""
     out = []
     r = 5
-    while es._celda(filas, r, ex.COL["id"]) is not None:
-        out.append((r, es._celda(filas, r, ex.COL["id"])))
+    while es._celda(filas, r, ec.COL["id"]) is not None:
+        out.append((r, es._celda(filas, r, ec.COL["id"])))
         r += 1
     return out
 
@@ -40,9 +49,9 @@ def _leer_ids_productos(filas):
 def _leer_slugs(filas):
     out = []
     r = 5
-    while es._celda(filas, r, ex.COL["id"]) is not None:
-        idv = es._celda(filas, r, ex.COL["id"])
-        out.append((r, idv, es._celda(filas, r, ex.COL["slug"]["es"]), es._celda(filas, r, ex.COL["slug"]["en"])))
+    while es._celda(filas, r, ec.COL["id"]) is not None:
+        idv = es._celda(filas, r, ec.COL["id"])
+        out.append((r, idv, es._celda(filas, r, ec.COL["slug"]["es"]), es._celda(filas, r, ec.COL["slug"]["en"])))
         r += 1
     return out
 
@@ -126,7 +135,7 @@ def validate(data: dict, filas_productos: list, filas_config: list):
                 f"información hasta entonces."
             )
 
-        disp_crudo = es._celda(filas_productos, fila, ex.COL["disponibilidad"])
+        disp_crudo = es._celda(filas_productos, fila, ec.COL["disponibilidad"])
         if disp_crudo and disp_crudo not in ec.DISPONIBILIDAD_VALORES:
             valores_validos = "', '".join(ec.DISPONIBILIDAD_VALORES)
             warnings.append(
