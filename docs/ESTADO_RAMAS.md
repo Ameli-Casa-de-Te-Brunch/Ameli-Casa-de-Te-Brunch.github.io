@@ -1,6 +1,6 @@
 # Estado de ramas — ameli-menu
 
-Última revisión: 2026-09-17. Objetivo: que nadie (yo, Ignacio, u otra línea de
+Última revisión: 2026-09-21. Objetivo: que nadie (yo, Ignacio, u otra línea de
 trabajo tipo Codex) tenga que reconstruir esto de cero para saber qué rama es
 "la buena" antes de tocar el repo.
 
@@ -10,12 +10,17 @@ trabajo tipo Codex) tenga que reconstruir esto de cero para saber qué rama es
 sitio publicado en `amelicasadete.com.ar`. Cualquier otra rama es, como mucho,
 trabajo en curso — nunca se asume publicado hasta que está en `main`.
 
-## Ramas activas ahora mismo
+## Ramas todavía presentes fuera de `main`
 
 | Rama | Qué es | Estado |
 |---|---|---|
-| `main` | el sitio real | al día con `origin/main` |
-| `corregir-aviso-productos-sellados-2026-09-16` | línea de trabajo paralela (Codex), viva en un worktree separado (`~/.codex/.chatgpt-projects/.../ameli-hotfix-aviso-alimentario`) | **no tocar** — en uso activo por otra sesión |
+| `estado-ramas-cierre-2026-09-21` | actualización de este documento | pendiente de PR; no cambia código ni contenido público |
+| `corregir-aviso-alimentario-2026-09-21` | rama de trabajo del aviso alimentario | **absorbida por PR #15** (`30b6b3e`); puede borrarse cuando se autorice la limpieza |
+| `corregir-aviso-productos-sellados-2026-09-16` | borrador anterior en un worktree separado (`~/.codex/.chatgpt-projects/.../ameli-hotfix-aviso-alimentario`) | **superado por PR #15**; conserva dos cambios sin commit equivalentes a una versión anterior, revisar y limpiar solo con autorización |
+
+`main` y `origin/main` apuntan a `30b6b3e`, el squash merge del PR #15. El
+despliegue #71 terminó correctamente y el aviso actualizado fue comprobado en
+el dominio público.
 
 ## Ramas cerradas el 2026-09-17 (ya no existen, ni local ni remoto)
 
