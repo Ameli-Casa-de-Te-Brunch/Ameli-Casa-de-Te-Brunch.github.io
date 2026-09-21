@@ -783,6 +783,13 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertIn("27-42862121-8", terminos)
         self.assertIn("50 %", terminos)
         self.assertIn("48 horas", terminos)
+        informacion = (build_site.DIST_PATH / "informacion-alimentaria.html").read_text(encoding="utf-8")
+        self.assertIn("los entrega a la mesa sellados en su recipiente original", informacion)
+        self.assertIn("no los abre, fracciona ni emplata", informacion)
+        self.assertIn("pendiente recibir y verificar la documentación de RNE y RNPA", informacion)
+        self.assertIn("consultá el rótulo original", informacion)
+        self.assertNotIn("se manipulan en un entorno que no es exclusivo", informacion)
+        self.assertNotIn("este sitio y su carta no identifican esos productos", informacion)
 
     def test_calendario_google_ausente_sin_url(self):
         self.escribir_config(config_valido(servicios_habilitado=True))
