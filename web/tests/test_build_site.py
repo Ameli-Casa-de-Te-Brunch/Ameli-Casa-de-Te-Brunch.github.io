@@ -786,7 +786,7 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         informacion = (build_site.DIST_PATH / "informacion-alimentaria.html").read_text(encoding="utf-8")
         self.assertIn("los entrega a la mesa sellados en su recipiente original", informacion)
         self.assertIn("no los abre, fracciona ni emplata", informacion)
-        self.assertIn("pendiente recibir y verificar la documentación de RNE y RNPA", informacion)
+        self.assertIn("pendiente recibir y verificar el RNE del establecimiento elaborador y el RNPA correspondiente a cada producto", informacion)
         self.assertIn("consultá el rótulo original", informacion)
         self.assertNotIn("se manipulan en un entorno que no es exclusivo", informacion)
         self.assertNotIn("este sitio y su carta no identifican esos productos", informacion)
