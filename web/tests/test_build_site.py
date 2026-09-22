@@ -469,6 +469,18 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         build_site.construir(produccion=True)
         sitemap = (build_site.DIST_PATH / "sitemap.xml").read_text(encoding="utf-8")
         self.assertIn("<loc>https://amelicasadete.com.ar/</loc>", sitemap)
+        self.assertIn("<loc>https://amelicasadete.com.ar/menu/</loc>", sitemap)
+        self.assertEqual(sitemap.count("<url>"), 2)
+
+    def test_sitemap_no_publica_url_externa_de_rollback(self):
+        config = config_valido(
+            menu_url="https://ameli-casa-de-te-brunch.github.io/")
+        self.escribir_config(config)
+        build_site.construir(produccion=True)
+        sitemap = (build_site.DIST_PATH / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("<loc>https://amelicasadete.com.ar/</loc>", sitemap)
+        self.assertNotIn("ameli-casa-de-te-brunch.github.io", sitemap)
+        self.assertEqual(sitemap.count("<url>"), 1)
 
     def test_produccion_sin_site_url_falla_antes_de_escribir(self):
         config = config_valido()
