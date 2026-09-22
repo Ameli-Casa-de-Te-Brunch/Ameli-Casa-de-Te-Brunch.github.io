@@ -841,16 +841,28 @@ def renderizar_robots_txt(produccion: bool, config: dict) -> str:
 
 
 def renderizar_sitemap_xml(config: dict) -> str:
-    """Solo se llama en modo producción (site_url ya validado). Un único
-    URL: la portada -- este prototipo es una sola página."""
+    """Solo se llama en modo producción (config ya validada).
+
+    Publica las dos URL indexables del artefacto unificado: la portada y,
+    cuando ``menu_url`` es la ruta interna esperada, el menú bajo ``/menu/``.
+    La URL externa de rollback no se agrega porque un sitemap solo debe
+    enumerar URL del mismo origen que lo sirve.
+    """
     site_url = _site_url_normalizada(config["site_url"])
-    loc = html.escape(site_url)
+    urls = [site_url]
+    if config["menu_url"] == RUTA_MENU_INTERNA:
+        urls.append(urllib.parse.urljoin(site_url, RUTA_MENU_INTERNA.lstrip("/")))
+
+    entradas = "".join(
+        "  <url>\n"
+        f"    <loc>{html.escape(url)}</loc>\n"
+        "  </url>\n"
+        for url in urls
+    )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        "  <url>\n"
-        f"    <loc>{loc}</loc>\n"
-        "  </url>\n"
+        f"{entradas}"
         "</urlset>\n"
     )
 
