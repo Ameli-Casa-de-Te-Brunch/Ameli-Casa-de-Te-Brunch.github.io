@@ -42,7 +42,7 @@ html{scroll-behavior:smooth}
 body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
 ::selection{background:var(--rosa)}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:480px;margin:0 auto;padding:18px 20px 0}
-.marca-top{font-family:'Cormorant Garamond',serif;font-size:calc(27px * var(--afs,1));font-weight:600;color:var(--verde);line-height:1}
+.marca-top{font-family:'Cormorant Garamond',serif;font-size:calc(27px * var(--afs,1));font-weight:600;color:var(--verde);line-height:1;font-variant-caps:small-caps;letter-spacing:.06em}
 .topbar-ctrl{display:flex;align-items:center;gap:8px;position:relative}
 .topbar-info{max-width:480px;margin:0 auto;padding:10px 20px 0;text-align:center}
 .topbar-info .sub{font-family:'Karla',sans-serif;font-size:calc(11px * var(--afs,1));letter-spacing:.08em;text-transform:uppercase;color:var(--texto-sec);font-weight:600}
@@ -53,13 +53,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .estado .punto{animation:latir-punto 2.4s ease-in-out infinite}
 @keyframes latir-punto{0%,100%{opacity:1}50%{opacity:.45}}
 
-/* hero: todavía sin fotografía real (0/51 cargadas) -- placeholder con la
-   misma forma/proporción que va a tener la foto real el día que exista,
-   así el layout no se vuelve a tocar cuando llegue. */
-.hero-foto{margin:16px 16px 0;height:220px;border-radius:var(--radius-lg);position:relative;overflow:hidden;background:
-  radial-gradient(120% 90% at 20% 15%, rgba(250,246,236,.9), transparent 55%),
-  linear-gradient(155deg, #FAF6EC 0%, #F3ECDD 55%, #EADFC7 100%)}
-.hero-foto::after{content:'';position:absolute;inset:0;opacity:.1;background-image:radial-gradient(rgba(83,96,57,.35) .6px, transparent .6px);background-size:5px 5px}
+.hero-foto{margin:16px 16px 0;height:220px;border-radius:var(--radius-lg);position:relative;overflow:hidden;display:block;width:calc(100% - 32px);object-fit:cover;background:#F3ECDD}
 .hero-texto{max-width:480px;margin:0 auto;padding:18px 20px 4px;text-align:center}
 .hero-texto .saludo{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(16px * var(--afs,1));color:var(--texto-sec)}
 .hero-texto .pregunta{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:calc(27px * var(--afs,1));color:var(--tinta);margin-top:2px}
@@ -202,7 +196,7 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .destacado-cat .fila{margin-top:10px}
 footer{margin-top:44px;background:var(--footer-bg);color:var(--sobre-verde);text-align:center;padding:44px 24px 110px;position:relative;overflow:hidden}
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
-footer .marca{font-family:'Cormorant Garamond',serif;font-size:calc(34px * var(--afs,1));font-weight:600;letter-spacing:.015em;text-transform:uppercase}
+footer .marca{font-family:'Cormorant Garamond',serif;font-size:calc(34px * var(--afs,1));font-weight:600}
 footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(17px * var(--afs,1));margin-top:6px;color:var(--rosa)}
 .redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
 .redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:calc(13px * var(--afs,1));font-weight:600;transition:transform .12s ease}
@@ -257,7 +251,7 @@ section.cat.sin-resultados .vacio{display:block}
   body{max-width:1280px}
   .topbar{max-width:1280px;padding:28px 40px 0}
   .topbar-info{max-width:640px;padding:12px 20px 0}
-  .hero-foto{height:360px;margin:20px 40px 0}
+  .hero-foto{height:360px;margin:20px 40px 0;width:calc(100% - 80px)}
   .hero-texto{max-width:640px;padding:22px 20px 4px}
   .cat-icons{padding:24px 40px 4px}
   .momentos{margin:12px 40px 0}
