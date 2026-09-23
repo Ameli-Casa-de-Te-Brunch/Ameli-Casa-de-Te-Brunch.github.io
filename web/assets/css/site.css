@@ -647,23 +647,6 @@ a:focus-visible, button:focus-visible{
 }
 .lista-detalle{font-family:var(--font-body); font-size:.85rem; color:var(--texto-sec)}
 
-/* Comunidad / Instagram (referencia: benditoaceite.com) -- grilla de
-   espacios reservados, mismo tratamiento visual que .espacio-imagen ya
-   define (línea diagonal, borde), solo en formato cuadrado y de a 2/4
-   por fila en vez de un collage asimétrico. */
-.instagram-preview{
-  max-width:var(--max-w); margin:0 auto;
-  padding:56px 24px; border-bottom:1px solid var(--linea-suave);
-}
-.instagram-grid{
-  display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;
-  margin:28px 0 24px;
-}
-.espacio-instagram{aspect-ratio:1/1; font-size:.65rem}
-@media(min-width:860px){
-  .instagram-grid{grid-template-columns:repeat(4, 1fr)}
-}
-
 .contacto-grid{display:grid; grid-template-columns:1fr; gap:28px}
 .contacto-canales{
   display:flex; flex-direction:column; font-style:normal;
@@ -965,7 +948,7 @@ html[data-lectura="simple"] .indice-num{font-style:normal}
    se agrega cómo llenarla. El fondo con el patrón diagonal que algunas
    de estas clases conservan en reglas de arriba/abajo queda debajo,
    tapado por la foto, sin que haga falta tocarlo. */
-img.espacio-tienda,img.espacio-sustentabilidad,img.espacio-instagram{
+img.espacio-tienda,img.espacio-sustentabilidad{
   width:100%; height:100%; object-fit:cover; display:block;
 }
 .portada-hero{
@@ -1011,7 +994,7 @@ img.portada-hero-fondo{
   border-bottom:3px solid var(--tinta); text-align:center;
 }
 .sobre-ameli .eyebrow{justify-content:center}
-.sobre-ameli p:not(.eyebrow){max-width:62ch; margin-left:auto; margin-right:auto}
+.sobre-ameli p:not(.eyebrow){max-width:62ch; margin-left:auto; margin-right:auto; text-align:left}
 
 .sabores{border-bottom:3px solid var(--tinta)}
 .sabor-card{border:2px solid var(--verde-osc); box-shadow:none}
@@ -1415,23 +1398,6 @@ footer::before{display:none}
 .contacto-compacto .lista-detalle,.resenas a{overflow-wrap:anywhere; word-break:break-word}
 .mapa-enlaces > *{max-width:100%}
 
-.instagram-preview{padding-top:80px; padding-bottom:88px; border-bottom:1px solid var(--linea-suave)}
-.instagram-cabecera{display:flex; flex-direction:column; align-items:flex-start; gap:12px}
-.instagram-cabecera .titulo-seccion{margin-bottom:0}
-.instagram-grid{gap:10px; margin-top:32px; margin-bottom:0}
-.espacio-instagram{border-color:var(--linea); aspect-ratio:4/5}
-
-/* Enlace normativo visible desde el primer acceso. No compite con las
-   dos herramientas del header: en pantallas angostas conserva un rótulo
-   breve y en desktop gana un poco más de aire. */
-.header-legal-link{
-  min-height:48px; padding:0 14px; display:inline-flex; align-items:center;
-  border:1px solid rgba(255,253,247,.45); border-radius:var(--radius-pill);
-  color:var(--blanco); text-decoration:none; font-size:.7rem; font-weight:700;
-  letter-spacing:.04em; text-transform:uppercase; white-space:nowrap;
-}
-.header-legal-link:hover,.header-legal-link:focus-visible{background:rgba(255,253,247,.12)}
-
 /* Consultas como directorio editorial oscuro: inspirado en la jerarquía
    del ejemplo aportado, sin copiar tipografía, marca ni contenido. */
 .consultas-directorio{
@@ -1506,7 +1472,6 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; backgro
   .ubicacion.visitarnos{grid-template-columns:minmax(320px,.9fr) minmax(420px,1.1fr); align-items:stretch}
   .visitarnos .espacio-mapa{min-height:680px}
   .visitarnos .ubicacion-contenido{padding:88px max(24px, calc((100vw - var(--max-w)) / 2)) 88px 56px}
-  .instagram-cabecera{flex-direction:row; justify-content:space-between; align-items:flex-end}
   .consultas-directorio{padding-top:110px; padding-bottom:110px}
 }
 
@@ -1540,6 +1505,5 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; backgro
   .footer-interior{flex-direction:column; align-items:flex-start}
   .enlaces-footer{justify-content:flex-start}
   .header-acciones{gap:6px}
-  .header-legal-link{max-width:112px; padding:0 10px; font-size:.61rem; text-align:center; line-height:1.1; white-space:normal}
   .consultas-directorio,.consultas-grid,.consulta-ficha{width:100%; max-width:100%; min-width:0}
 }

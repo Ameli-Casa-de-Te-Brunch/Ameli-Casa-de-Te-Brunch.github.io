@@ -865,14 +865,13 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         ):
             self.assertNotIn(frase, contenido)
 
-    def test_instagram_visitarnos_y_consultas_tienen_orden_y_funcion_propios(self):
-        """Instagram va primero; llegar y escribir no se mezclan."""
+    def test_visitarnos_y_consultas_tienen_orden_y_funcion_propios(self):
+        """Llegar y escribir no se mezclan."""
         build_site.construir(produccion=False)
         contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
         self.assertRegex(contenido, r'<section[^>]+id="ubicacion"')
         self.assertRegex(contenido, r'<section[^>]+id="contacto"')
         self.assertIn('class="consultas-directorio', contenido)
-        self.assertLess(contenido.index('id="instagram"'), contenido.index('id="ubicacion"'))
         self.assertLess(contenido.index('id="ubicacion"'), contenido.index('id="contacto"'))
         self.assertIn('id="titulo-ubicacion">Encontranos en Malargüe</h2>', contenido)
         self.assertNotIn("Vení a encontrarnos", contenido)
@@ -940,7 +939,6 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
 
         # 1) contenido esencial presente directamente en el HTML.
         self.assertIn("wa.me/5492604106653", html_crudo)
-        self.assertIn("instagram.com/ameli.casadete", html_crudo)
         self.assertIn(CONFIG_VALIDO["menu_url"], html_crudo)
 
         # 2) el botón de accesibilidad arranca marcado como pendiente.
@@ -974,7 +972,7 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertRegex(contenido, r'<dialog[^>]+id="navPanel"')
         for ancla in (
             "contenido", "filosofia", "experiencias", "tienda",
-            "sustentabilidad", "preguntas-frecuentes", "instagram", "ubicacion", "contacto",
+            "sustentabilidad", "preguntas-frecuentes", "ubicacion", "contacto",
         ):
             self.assertIn(f'href="#{ancla}"', contenido)
             self.assertRegex(contenido, rf'id="{ancla}"')
@@ -1047,11 +1045,11 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertRegex(css, r"\.consultas-grid\{[^}]*font-style:normal")
 
     def test_fotografias_reales_tienen_atributos_completos_y_mapa_sigue_reservado(self):
-        """Portada, Carta y pedidos, Origen y compromiso, y las 4 fotos de
-        Instagram ya son <img> reales (fotos propias incorporadas el
-        2026-09-16) -- cada una con ancho/alto (evita saltos de layout),
-        srcset+sizes (responsive) y alt no vacío con texto real (no son
-        decorativas). El mapa sigue sin foto ni embed, por diseño."""
+        """Portada, Carta y pedidos, y Origen y compromiso ya son <img>
+        reales (fotos propias incorporadas el 2026-09-16) -- cada una con
+        ancho/alto (evita saltos de layout), srcset+sizes (responsive) y
+        alt no vacío con texto real (no son decorativas). El mapa sigue
+        sin foto ni embed, por diseño."""
         self.escribir_config(config_valido(
             presentacion_sobre_ameli="Filosofía confirmada.",
             servicios_habilitado=True,
@@ -1063,7 +1061,6 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         imgs = re.findall(r'<img\b[^>]*>', contenido)
         clases_con_foto = (
             "portada-hero-fondo", "espacio-tienda", "espacio-sustentabilidad",
-            "espacio-instagram",
         )
         for clase in clases_con_foto:
             etiquetas = [img for img in imgs if f'class="{clase}"' in img or f' {clase}"' in img or f'"{clase} ' in img]
@@ -1082,7 +1079,7 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertIn('loading="eager"', portada_img)
         # El resto de las fotos sí son lazy.
         for img in imgs:
-            if "portada-hero-fondo" not in img and ("espacio-tienda" in img or "espacio-sustentabilidad" in img or "espacio-instagram" in img):
+            if "portada-hero-fondo" not in img and ("espacio-tienda" in img or "espacio-sustentabilidad" in img):
                 self.assertIn('loading="lazy"', img)
         self.assertIn("espacio-mapa", contenido)
         self.assertNotRegex(contenido, r'<img\b[^>]*espacio-mapa')
