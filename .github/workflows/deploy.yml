@@ -83,8 +83,7 @@ jobs:
       # argumentos de siempre y ADEMÁS genera la web institucional en
       # la raíz de dist/ -- ver build_unificado.py en la raíz del
       # repo. No cambia nada de la validación/disponibilidad de los
-      # pasos anteriores. PROPUESTO -- ver informe de unificación,
-      # todavía no aplicado a un despliegue real.
+      # pasos anteriores. Es el flujo vigente de producción.
       - run: python build_unificado.py --production
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
