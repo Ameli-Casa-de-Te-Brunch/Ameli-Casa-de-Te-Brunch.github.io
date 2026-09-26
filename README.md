@@ -1,7 +1,7 @@
 # Menú digital Amelí
 
 Pipeline que genera el menú publicado en
-**https://ameli-casa-de-te-brunch.github.io/** a partir de un único archivo:
+**https://amelicasadete.com.ar/menu/** a partir de un único archivo:
 el Excel maestro (`Ameli_Menu_Maestro_Vx.x.xlsx` — la versión más reciente
 que tengas en tu carpeta de OneDrive; el pipeline la encuentra solo).
 
@@ -24,9 +24,9 @@ propósito — no se retoma hasta resolver privacidad y hosting:
 - **Sitio institucional** (una página de marca/presencia separada del menú).
 - **Sistema de "me gusta" / votos** (backend Apps Script, contador en las
   tarjetas). Se sacó del sitio — ver más abajo por qué.
-- **Dominio propio** (`amelicasadete.com.ar`) — todavía no comprado. El
-  proyecto ya está preparado para esa migración (ver "Migración a dominio
-  propio" más abajo); no hay nada que rehacer cuando se compre.
+- **Cambios de dominio o alojamiento** — el dominio propio
+  `amelicasadete.com.ar` ya está activo sobre GitHub Pages. Cualquier cambio
+  futuro debe preservar la portada y `/menu/` como un único artefacto.
 - **Sesión temporal de 180 minutos con backend** (Cloudflare Workers/
   Supabase/etc. + tokens firmados) — arquitectura documentada pero sin
   implementar (ver "Arquitectura futura: sesión de 180 minutos" más abajo).
@@ -423,46 +423,37 @@ de nuevo, ni a ningún archivo versionado):**
 primero. Es mucho más fácil agregar un dato después que sacarlo de un repo
 público una vez que salió.
 
-## Migración a dominio propio
+## Dominio propio en producción
 
-El sitio está armado para que comprar `amelicasadete.com.ar` sea un cambio
-de configuración chico, no una reconstrucción. Todo lo que depende del
-dominio sale de **una sola fuente**: el campo "URL base del menú" en la
-hoja *Resumen y Configuración* del Excel. No hay ningún `github.io`
-hardcodeado en el código — se verificó con una búsqueda completa del
-repositorio. Todos los `href`/`src` de assets son rutas relativas
-(`assets/css/menu.css`, no `/assets/css/menu.css`), así que funcionan igual
-si el sitio se sirve desde la raíz de un dominio o desde un subpath como
-`amelicasadete.com.ar/menu`.
+`amelicasadete.com.ar` ya es el dominio público. La portada vive en `/` y el
+menú en `/menu/`, dentro de un único artefacto de GitHub Pages. La dirección
+anterior `ameli-casa-de-te-brunch.github.io` queda como infraestructura y
+redirige al dominio que ve el cliente.
 
-**Qué ya usa esa URL base hoy** (todo se regenera solo con `python
-build.py` una vez actualizado el campo): `og:url`, `og:image`,
-`<link rel="canonical">`, el JSON-LD (Schema.org), `robots.txt` y
-`sitemap.xml`.
+Las URL públicas tienen dos fuentes explícitas:
 
-### Pasos para cuando se compre el dominio
+- `web/site.config.json`, campo `site_url`, para el sitio institucional;
+- `data/menu.json`, campo `config.url_base`, generado desde "URL base del
+  menú", para la carta digital.
 
-1. Configurar el dominio en GitHub Pages (Settings → Pages → Custom domain)
-   apuntando a `amelicasadete.com.ar` — o, si se prefiere `/menu` como
-   subpath, evaluar en ese momento si GitHub Pages custom domain soporta
-   ese path o si conviene otro hosting (Cloudflare Pages/Netlify, ambos
-   gratis en este volumen) sirviendo este mismo `dist/` bajo `/menu`.
-2. Elegir canónico con o sin `www` y redirigir la variante secundaria.
-3. Actualizar "URL base del menú" en el Excel con la URL definitiva.
-4. Correr `python build.py --publicar` — esto ya regenera OG, canonical,
-   JSON-LD, `robots.txt` y `sitemap.xml` con la URL nueva, sin tocar código.
-5. Dar de alta la propiedad en Google Search Console, verificar por DNS,
-   enviar el `sitemap.xml` nuevo.
-6. Enlazar Google Business Profile al dominio definitivo.
-7. Configurar correo (`hola@amelicasadete.com.ar` y las cuentas que
-   correspondan) con SPF/DKIM/DMARC — recién en este momento, no antes.
-8. Recién acá: generar el QR físico definitivo apuntando al dominio propio,
-   e imprimirlo. No antes — el QR no debería tener que reimprimirse nunca
-   más después de este punto, ni por cambios de precio, de menú, de fotos
-   ni de hosting.
-9. `ameli-casa-de-te-brunch.github.io` queda como infraestructura interna
-   (GitHub Pages la sigue sirviendo) o como redirect al dominio nuevo, pero
-   deja de ser la URL que ve un cliente.
+`python build_unificado.py --production` valida ambas fuentes y genera el
+artefacto completo. No se edita `dist/` a mano. Los assets usan rutas
+relativas y el build genera canonical, Open Graph, JSON-LD, `robots.txt`,
+`sitemap.xml` y `CNAME` con la configuración vigente.
+
+Confirmado al 23/09/2026:
+
+1. GitHub Pages sirve el dominio propio por HTTPS.
+2. DNS y correo institucional están configurados.
+3. Search Console verificó la propiedad y procesó el sitemap raíz, que
+   incluye la portada y `/menu/`.
+
+Controles externos que se mantienen separados del build:
+
+- comprobar la indexación cuando Google termine de procesar las páginas;
+- verificar que el QR físico apunte al dominio definitivo antes de imprimir;
+- revisar Google Business Profile por separado, sin inferir su estado desde
+  el repositorio.
 
 ## Arquitectura futura: sesión de 180 minutos
 

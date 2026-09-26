@@ -39,7 +39,7 @@ procedimiento.
 1. Primero, en GitHub, pestaña **Actions**: confirmá que la corrida más
    reciente terminó en ✅ (eso confirma que el dato se aplicó, no que ya
    se ve).
-2. Recién después, abrí `https://ameli-casa-de-te-brunch.github.io/` con
+2. Recién después, abrí `https://amelicasadete.com.ar/menu/` con
    un refresco forzado (Ctrl+Shift+R, o el equivalente en el celular). Si
    seguís viendo el estado viejo, probá desde otro dispositivo o red
    antes de asumir que algo falló -- puede ser solo la caché pública

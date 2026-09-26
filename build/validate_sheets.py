@@ -70,8 +70,9 @@ def _leer_config_crudo(filas_config):
 
 def validate(data: dict, filas_productos: list, filas_config: list):
     """Misma firma conceptual que validate.validate(data, xlsx_path), pero
-    recibe las filas de CSV ya leídas en vez de un path -- el llamador
-    (build/publicar_sheets.py en CI) es quien decide de dónde vinieron."""
+    recibe las filas de CSV ya leídas en vez de un path. El llamador actual
+    es build.py en el camino local --sheets-productos; CI no importa estas
+    hojas directamente."""
     errors, warnings = [], []
     meta = data.get("_meta", {})
     cat_codes = {c["cod"] for c in data["cats"]}
