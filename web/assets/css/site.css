@@ -22,6 +22,12 @@
   --radius-sm:14px; --radius-md:20px; --radius-pill:999px;
   --max-w:1160px;
 
+  /* Curvas de animación -- ease-out fuerte para elementos que entran o
+     salen de pantalla (los ease nativos de CSS son demasiado débiles),
+     ease estándar para hover/color. Un solo lugar para no repetir el
+     valor cada vez que algo necesita moverse. */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+
   /* ---- Tipografía en 3 niveles (jerarquía deliberada, no accidental) ----
      Nivel 1, DISPLAY: títulos de marca y de sección. Serif editorial
        (Cormorant Garamond), la voz más grande y la única con esa serif.
@@ -140,6 +146,7 @@ a:focus-visible, button:focus-visible{
   transform:translateY(-2px);
   box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
 }
+.btn:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
 .link-secundario{
   display:inline-flex; align-items:center; min-height:48px;
   font-family:var(--font-subhead); font-weight:700; font-size:.9rem;
@@ -189,6 +196,7 @@ a:focus-visible, button:focus-visible{
   transition:color .2s ease, background .2s ease;
 }
 .nav-principal a:hover, .nav-principal a:focus-visible{color:var(--verde); background:var(--crema)}
+.nav-principal a:active{background:var(--linea-suave); transition:background 120ms var(--ease-out)}
 
 .header-acciones{display:flex; align-items:center; gap:12px}
 .header-menu{
@@ -200,6 +208,7 @@ a:focus-visible, button:focus-visible{
   transition:background .2s ease;
 }
 .header-menu:hover, .header-menu:focus-visible{background:var(--verde-osc)}
+.header-menu:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
 
 /* ---------- botón y panel de accesibilidad ---------- */
 .a11y-btn{
@@ -244,7 +253,11 @@ a:focus-visible, button:focus-visible{
 .nav-btn[data-nav-pending]{visibility:hidden}
 
 .nav-panel{
-  position:fixed; top:16px; right:16px; bottom:16px; margin:0;
+  /* left:auto es necesario -- la hoja de estilos del navegador para
+     <dialog> fija left:0 por default (parte del shorthand inset), y
+     sin pisarlo acá el panel queda anclado a la izquierda pese al
+     right:16px de abajo (bug preexistente, no de esta ronda). */
+  position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(380px, calc(100vw - 32px));
   max-width:none; max-height:none;
   overflow-y:auto;
@@ -252,8 +265,22 @@ a:focus-visible, button:focus-visible{
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
   padding:26px 24px;
+  transform:translateX(0); opacity:1;
+  transition:transform 250ms var(--ease-out), opacity 200ms var(--ease-out);
 }
-.nav-panel::backdrop{background:rgba(30,28,20,.35)}
+/* Entra deslizándose desde el borde donde está anclado (derecha), no
+   desde el centro -- coherente con su posición fija. Solo anima la
+   apertura: el cierre queda instantáneo (comportamiento nativo de
+   <dialog>), que sigue siendo mejor que la ausencia total de
+   animación que había antes. Navegadores sin soporte de
+   @starting-style simplemente no animan -- no rompe nada. */
+@starting-style{
+  .nav-panel[open]{transform:translateX(24px); opacity:0}
+}
+.nav-panel::backdrop{background:rgba(30,28,20,.35); transition:opacity 200ms ease}
+@starting-style{
+  .nav-panel[open]::backdrop{opacity:0}
+}
 .nav-cerrar{
   position:absolute; top:14px; right:14px;
   width:48px; height:48px; border-radius:50%;
@@ -269,7 +296,8 @@ a:focus-visible, button:focus-visible{
    ::backdrop que el navegador crea solo mientras showModal() está
    activo. */
 .a11y-panel{
-  position:fixed; top:16px; right:16px; bottom:16px; margin:0;
+  /* left:auto -- mismo motivo que .nav-panel arriba. */
+  position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(340px, calc(100vw - 32px));
   max-width:none; max-height:none;
   overflow-y:auto;
@@ -277,9 +305,18 @@ a:focus-visible, button:focus-visible{
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
   padding:26px 24px;
+  transform:translateX(0); opacity:1;
+  transition:transform 250ms var(--ease-out), opacity 200ms var(--ease-out);
+}
+@starting-style{
+  .a11y-panel[open]{transform:translateX(24px); opacity:0}
 }
 .a11y-panel::backdrop{
   background:rgba(30,28,20,.35);
+  transition:opacity 200ms ease;
+}
+@starting-style{
+  .a11y-panel[open]::backdrop{opacity:0}
 }
 .a11y-panel h3{
   font-family:var(--font-display); font-weight:600; font-size:1.5rem;
@@ -292,6 +329,9 @@ a:focus-visible, button:focus-visible{
   display:flex; align-items:center; justify-content:center; cursor:pointer;
 }
 .a11y-cerrar:hover{border-color:var(--verde)}
+.nav-btn:active, .a11y-btn:active, .nav-cerrar:active, .a11y-cerrar:active{
+  transform:scale(.93); transition:transform 120ms var(--ease-out);
+}
 .a11y-group{
   padding:16px 0; border-top:1px solid var(--linea-suave);
 }
@@ -577,7 +617,18 @@ a:focus-visible, button:focus-visible{
 }
 .faq-intro{margin-bottom:28px}
 .faq-lista{border-top:1px solid var(--linea)}
-.faq-lista details{border-bottom:1px solid var(--linea)}
+.faq-lista details{
+  border-bottom:1px solid var(--linea);
+  display:grid; grid-template-rows:auto 0fr;
+  transition:grid-template-rows 250ms var(--ease-out);
+}
+.faq-lista details[open]{grid-template-rows:auto 1fr}
+/* El navegador oculta con display:none el contenido de un <details>
+   cerrado -- eso impide medir su altura y por lo tanto animarla. Esta
+   regla (origen "autor", siempre gana sobre la hoja de estilos por
+   defecto del navegador) lo mantiene en el layout siempre; el propio
+   grid-template-rows:0fr de arriba ya lo deja en 0px visualmente. */
+.faq-lista details > *:not(summary){overflow:hidden; min-height:0}
 .faq-lista summary{
   position:relative; list-style:none; cursor:pointer;
   padding:22px 48px 22px 0; min-height:48px;
@@ -988,6 +1039,24 @@ img.portada-hero-fondo{
 .portada-hero-overlay .titulo-marca{color:var(--blanco); font-size:clamp(3rem,10vw,5.6rem)}
 .portada-hero-overlay .titulo-marca em{color:var(--salvia)}
 .portada-hero-overlay .cta-fila{justify-content:center}
+/* .btn-secundario de base es un relleno blanco sólido (pensado para
+   fondo claro) -- sobre la foto oscura del hero eso hace que
+   "Pedir por WhatsApp" llame más la atención que "Ver el menú"
+   (el CTA que realmente se quiere priorizar). Mismo tratamiento
+   "outline sobre oscuro" que ya usa .tienda-online .btn-secundario. */
+.portada-hero-overlay .btn-secundario{
+  background:transparent; color:var(--blanco); border-color:rgba(255,253,247,.65);
+}
+.portada-hero-overlay .btn-secundario:hover, .portada-hero-overlay .btn-secundario:focus-visible{
+  background:rgba(255,253,247,.12);
+}
+/* Reusa .horario-info/.horario-detalle (mismo __HORARIOS__ que FAQ y
+   Visitarnos) pero en la versión clara-sobre-oscuro, como
+   .ubicacion-card .horario-detalle más abajo en el archivo. */
+.portada-horario{margin:18px 0 0; text-align:center}
+.portada-horario .horario-detalle{
+  color:rgba(255,253,247,.82); font-size:.82rem; line-height:1.5;
+}
 
 .sobre-ameli{
   min-height:400px; display:flex; flex-direction:column; justify-content:center;
@@ -1163,6 +1232,10 @@ footer::before{display:none}
 .tab-lista button + button{border-left:2px solid var(--verde-osc)}
 .tab-lista button[aria-selected="true"]{background:var(--verde-osc); color:var(--blanco)}
 .tab-panel{padding:28px}
+/* La animación (no transition) se dispara sola cada vez que site.js
+   saca el atributo hidden -- no hace falta tocar el JS. */
+.tab-panel:not([hidden]){animation:tab-panel-entra 150ms var(--ease-out)}
+@keyframes tab-panel-entra{from{opacity:0} to{opacity:1}}
 .formulario-maqueta{display:grid; grid-template-columns:1fr; gap:14px}
 .formulario-maqueta > span{
   display:flex; align-items:center; min-height:52px; padding:10px 14px;
@@ -1326,7 +1399,13 @@ footer::before{display:none}
   color:rgba(83,96,57,.16);
 }
 .servicio-ruta h3{
-  max-width:10ch; margin:16px 0 14px;
+  /* 13ch (no 10ch) para que "Experiencias" (12 caracteres) entre
+     entero antes de saltar de línea -- con 10ch, sumado al
+     overflow-wrap:anywhere que el body aplica a ≤620px, cortaba la
+     palabra a la mitad ("Experiencia/s"). overflow-wrap:normal acá
+     evita que ese corte arbitrario vuelva a aparecer con una palabra
+     larga futura, sin tocar la regla global del body. */
+  max-width:13ch; overflow-wrap:normal; margin:16px 0 14px;
   font-family:var(--font-display); font-size:2rem; line-height:.98;
 }
 .servicio-ruta > p:not(.linea-etiqueta){margin:0 0 28px; color:var(--texto-sec)}
@@ -1482,10 +1561,13 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; backgro
    una columna, que ya se ve bien ahí. */
 @media(min-width:900px){
   .consultas-directorio{grid-template-columns:minmax(280px,.85fr) minmax(380px,1.15fr); gap:56px}
-  .consultas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .consulta-ficha{padding:26px 22px 26px 0}
-  .consulta-ficha:nth-child(even){padding-left:22px; border-left:1px solid rgba(255,253,247,.24)}
-  .consulta-ficha:nth-child(n+3){grid-column:1 / -1}
+  .consulta-ficha{padding:26px 0}
+  /* Antes 2 columnas acá, con WhatsApp y el email uno al lado del
+     otro -- a la mitad del ancho, "contacto@amelicasadete.com.ar" no
+     tiene ningún espacio donde cortar y el overflow-wrap:anywhere de
+     abajo lo partía a la mitad de la palabra. Una sola columna le da
+     a cada ficha el ancho completo de ~380-500px, donde entra sin
+     forzar ningún corte. */
 }
 
 @media(max-width:620px){

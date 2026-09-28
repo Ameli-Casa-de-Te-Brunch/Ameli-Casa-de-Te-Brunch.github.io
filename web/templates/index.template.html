@@ -96,6 +96,14 @@ __SOCIAL_META_TAGS__
         <a class="btn btn-principal" href="__MENU_URL__">Ver el menú</a>
         <a class="btn btn-secundario" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
       </div>
+      <!-- Mismo dato de horario que ya se muestra en Preguntas
+           frecuentes y Visitarnos -- acá solo se agrega una versión
+           visible de entrada, para no obligar a quien llega por
+           primera vez a abrir un acordeón o bajar toda la página para
+           saber si Amelí está abierto ahora. Bloque null-gated igual
+           que los otros dos: si horarios falta en config.json, esta
+           versión también desaparece, no solo las otras. -->
+      <!--HORARIOS_START--><div class="horario-info portada-horario"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
     </div>
   </section>
 
@@ -233,7 +241,7 @@ __SOCIAL_META_TAGS__
        de marca real de Google, Apple ni Waze -- son marcas de terceros
        y no hay autorización para reproducirlas; cada enlace lleva solo
        su nombre en texto. ===== -->
-  <section class="ubicacion visitanos arquitectura-bloque" id="ubicacion" aria-labelledby="titulo-ubicacion">
+  <section class="ubicacion visitarnos arquitectura-bloque" id="ubicacion" aria-labelledby="titulo-ubicacion">
     <div class="espacio-mapa" aria-hidden="true">Espacio para mapa</div>
     <div class="ubicacion-contenido">
       <p class="eyebrow">Visitarnos</p>

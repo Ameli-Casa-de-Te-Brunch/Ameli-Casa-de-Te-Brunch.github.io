@@ -43,7 +43,7 @@
 
   "_nota_secciones_boceto": "Contenido construido únicamente con el planteo manuscrito de Ignacio y datos operativos ya confirmados. Las prácticas de origen/sustentabilidad se expresan como dirección de trabajo, no como certificaciones o logros consumados.",
   "pasteleria_pedidos_texto": "Tortas enteras, boxes de regalo y opciones por docena, siempre sujetos a consulta y disponibilidad.",
-  "sustentabilidad_texto": "Queremos avanzar hacia una operación más consciente: reducir desperdicios, separar mejor y elegir con cuidado. Publicaremos avances concretos a medida que cada práctica esté implementada y pueda verificarse.",
+  "sustentabilidad_texto": null,
   "preguntas_frecuentes_texto": "Respuestas rápidas para planificar tu visita o hacer una consulta.",
 
   "_nota_calendario_y_formularios": "Ninguno de los tres URLs de abajo se inventó -- quedan null hasta que Ignacio los provea. google_calendar_url: enlace externo (nunca embebido, ver CSP) a un calendario real cuando exista. google_form_trabajo_url / google_form_marcas_url: reemplazan el botón 'Formulario en preparación' de la sección Sumate a Amelí por un enlace real a Google Forms, en cuanto Ignacio los pase. Mientras sigan null, esa sección permanece oculta.",
