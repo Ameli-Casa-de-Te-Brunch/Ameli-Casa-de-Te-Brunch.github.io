@@ -92,22 +92,6 @@ const CHIPS = [
  {m:'calentito', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
  {m:'llevar', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
 ];
-/* íconos de línea, minimalistas, uno por categoría real (no decorativos
-   sin sentido: cada uno referencia el tipo de producto de esa categoría) */
-const ICONOS = {
- DYM:'<path d="M4 8h11v3a5.5 5.5 0 0 1-5.5 5.5A5.5 5.5 0 0 1 4 11V8Z"/><path d="M6.5 4.8c-.5.6-.5 1.1 0 1.7M9.5 4.8c-.5.6-.5 1.1 0 1.7"/>',
- TEH:'<path d="M4 16C4 8 10 4 16 4c0 6-4 12-12 12Z"/><path d="M5 15c3-3 6-6 10-10"/>',
- BLE:'<path d="M4 16C4 8 10 4 16 4c0 6-4 12-12 12Z"/><path d="M5 15c3-3 6-6 10-10"/><circle cx="14" cy="6" r="1" fill="currentColor" stroke="none"/>',
- TIS:'<circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"/><path d="M10 3.5c1.4 1.4 1.4 3.2 0 4.6-1.4-1.4-1.4-3.2 0-4.6ZM10 16.5c1.4-1.4 1.4-3.2 0-4.6-1.4 1.4-1.4 3.2 0 4.6ZM3.5 10c1.4-1.4 3.2-1.4 4.6 0-1.4 1.4-3.2 1.4-4.6 0ZM16.5 10c-1.4-1.4-3.2-1.4-4.6 0 1.4 1.4 3.2 1.4 4.6 0Z"/>',
- CCL:'<path d="M4 8h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V8Z"/><path d="M14 9.5h1.2a2 2 0 0 1 0 4H14"/>',
- ESP:'<path d="M10 2.5l1.8 5.4 5.7.1-4.6 3.5 1.7 5.5-4.6-3.4-4.6 3.4 1.7-5.5-4.6-3.5 5.7-.1Z"/>',
- CFR:'<path d="M6 4h8l-1 12a2 2 0 0 1-2 1.8H9A2 2 0 0 1 7 16L6 4Z"/><path d="M7 8h6M7.6 11h4.8"/>',
- BYJ:'<path d="M6 6h8l-.9 9.5A2 2 0 0 1 11.1 17H8.9a2 2 0 0 1-2-1.5L6 6Z"/><path d="M12 6 14 2"/>',
- DEL:'<path d="M3 15 10 5l7 10Z"/><path d="M3 15h14"/><circle cx="10" cy="8.5" r="1" fill="currentColor" stroke="none"/>',
- SAT:'<path d="M3 8l7-4 7 4"/><path d="M4 8h12l-1.2 6.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5L4 8Z"/><path d="M5.5 11h9"/>',
- TYT:'<path d="M3 15 10 5l7 10Z"/><path d="M3 15h14"/><circle cx="10" cy="8.5" r="1" fill="currentColor" stroke="none"/>',
- STC:'<path d="M10 17V6"/><path d="M10 6c-2 0-3-1-3-3M10 6c2 0 3-1 3-3M10 10c-2 0-3-1-3-3M10 10c2 0 3-1 3-3"/><path d="M4 4l12 12"/>',
-};
 const BADGES = {
  fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Favori de la maison',it:'Preferito della casa'}},
  reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
@@ -438,48 +422,65 @@ $('buscarLimpiar').addEventListener('click', ()=>{
   aplicarFiltro(); $('buscarInput').focus();
 });
 
-/* ---------- volver a categorías ---------- */
-$('btnVolver').addEventListener('click', ()=>{
-  const destino=$('navcat');
-  destino.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
-  destino.querySelector('a')?.focus({preventScroll:true});
-});
-window.addEventListener('scroll', ()=>{
-  $('btnVolver').classList.toggle('visible', window.scrollY > window.innerHeight*1.4);
-}, {passive:true});
-
-/* ---------- carrusel: flechas, puntos, drag desktop ---------- */
+/* ---------- carrusel: flechas, indicador numérico, drag desktop ---------- */
+/* cards vive fuera de la función porque se recalcula en cada render()
+   (el HTML de #carrusel se reconstruye entero), pero los listeners de
+   bajo nivel sobre el contenedor #carrusel (que no se recrea, solo su
+   innerHTML) se atan una única vez -- si se reatan en cada render() se
+   acumulan duplicados sobre el mismo elemento para siempre (cada
+   cambio de idioma o de chip llama a
+   render() de nuevo). */
+let carruselCards=[];
+function pad2(n){ return String(n).padStart(2,'0'); }
+/* indicador numérico "01 / 04" en vez de un punto por tarjeta -- con
+   4 tarjetas ya no hacen falta 7 puntos de navegación. Es aria-hidden:
+   decorativo, cada tarjeta ya tiene su propio aria-label individual
+   ("Ver detalle de..."), y las flechas prev/next llevan su propio
+   aria-label real (ver render()) -- son la navegación accesible. */
+function actualizarPuntosCarrusel(){
+  const car=$('carrusel');
+  if(!carruselCards.length) return;
+  const centro=car.scrollLeft+car.clientWidth/2;
+  let idx=0, mejor=Infinity;
+  carruselCards.forEach((c,i)=>{ const d=Math.abs((c.offsetLeft+c.clientWidth/2)-centro); if(d<mejor){mejor=d;idx=i;} });
+  $('carIndicador').textContent = `${pad2(idx+1)} / ${pad2(carruselCards.length)}`;
+}
 function initCarrusel(){
   const car=$('carrusel');
-  const cards=[...car.querySelectorAll('.dcard')];
-  $('carPuntos').innerHTML = cards.map((_,i)=>`<button aria-label="${esc(UI.irA[lang])} ${i+1}"></button>`).join('');
-  const puntos=[...$('carPuntos').querySelectorAll('button')];
-  function actualizarPuntos(){
-    const centro=car.scrollLeft+car.clientWidth/2;
-    let idx=0, mejor=Infinity;
-    cards.forEach((c,i)=>{ const d=Math.abs((c.offsetLeft+c.clientWidth/2)-centro); if(d<mejor){mejor=d;idx=i;} });
-    puntos.forEach((p,i)=>p.classList.toggle('actual', i===idx));
-  }
+  carruselCards=[...car.querySelectorAll('.dcard')];
+  $('carPrev').onclick=()=>car.scrollBy({left:-car.clientWidth*.8, behavior:'smooth'});
+  $('carNext').onclick=()=>car.scrollBy({left:car.clientWidth*.8, behavior:'smooth'});
+  actualizarPuntosCarrusel();
+  if(car.dataset.dragInit) return;  /* el resto solo se ata una vez */
+  car.dataset.dragInit='1';
+
   let ticking=false;
   car.addEventListener('scroll', ()=>{
     if(ticking) return; ticking=true;
-    requestAnimationFrame(()=>{ actualizarPuntos(); ticking=false; });
+    requestAnimationFrame(()=>{ actualizarPuntosCarrusel(); ticking=false; });
   }, {passive:true});
-  puntos.forEach((p,i)=>p.addEventListener('click', ()=>cards[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})));
-  $('carPrev').onclick=()=>car.scrollBy({left:-car.clientWidth*.8, behavior:'smooth'});
-  $('carNext').onclick=()=>car.scrollBy({left:car.clientWidth*.8, behavior:'smooth'});
-  actualizarPuntos();
 
-  /* arrastre con mouse en desktop (touch ya funciona nativo con scroll-snap) */
-  let arrastrando=false, inicioX=0, scrollInicio=0, velocidad=0, ultimoX=0, ultimoT=0;
+  /* arrastre con mouse en desktop (touch ya funciona nativo con scroll-snap).
+     El pointer solo se captura -y el scroll solo se toca- despues de superar
+     un pequeño umbral de movimiento: capturarlo desde el primer pointerdown
+     (como estaba antes) hace que el click/mouseup de un simple tap en una
+     tarjeta se retargetee al contenedor en vez de a la tarjeta -- el click
+     nunca llegaba a .dcard y la ficha no abria. Mismo criterio de histeresis
+     de ~8-10px que pide /apple-design antes de comprometerse con un gesto. */
+  const UMBRAL_ARRASTRE=8;
+  let bajando=false, arrastrando=false, inicioX=0, inicioY=0, scrollInicio=0, velocidad=0, ultimoX=0, ultimoT=0, pointerIdActivo=null;
   car.addEventListener('pointerdown', e=>{
     if(e.pointerType==='touch') return;
-    arrastrando=true; car.classList.add('arrastrando');
-    inicioX=e.clientX; scrollInicio=car.scrollLeft; ultimoX=e.clientX; ultimoT=performance.now();
-    car.setPointerCapture(e.pointerId);
+    bajando=true; arrastrando=false; pointerIdActivo=e.pointerId;
+    inicioX=e.clientX; inicioY=e.clientY; scrollInicio=car.scrollLeft; ultimoX=e.clientX; ultimoT=performance.now();
   });
   car.addEventListener('pointermove', e=>{
-    if(!arrastrando) return;
+    if(!bajando) return;
+    if(!arrastrando){
+      if(Math.abs(e.clientX-inicioX) < UMBRAL_ARRASTRE && Math.abs(e.clientY-inicioY) < UMBRAL_ARRASTRE) return;
+      arrastrando=true; car.classList.add('arrastrando');
+      car.setPointerCapture(pointerIdActivo);
+    }
     const ahora=performance.now();
     car.scrollLeft = scrollInicio-(e.clientX-inicioX);
     const dt=ahora-ultimoT || 16;
@@ -487,8 +488,13 @@ function initCarrusel(){
     ultimoX=e.clientX; ultimoT=ahora;
   });
   function terminarArrastre(){
+    bajando=false;
     if(!arrastrando) return;
     arrastrando=false; car.classList.remove('arrastrando');
+    /* hubo un arrastre real: el click que el navegador dispara a continuacion
+       sobre la tarjeta bajo el puntero no debe abrir su ficha -- se descarta
+       una sola vez, en captura, antes de que llegue a .dcard. */
+    car.addEventListener('click', function descartarClick(e){ e.stopPropagation(); }, {capture:true, once:true});
     let v=velocidad*16;
     function inercia(){
       if(Math.abs(v)<0.5) return;
@@ -542,7 +548,6 @@ function render(){
   $('buscarInput').placeholder=UI.buscarPlaceholder[lang];
   $('buscarLabel').textContent=UI.buscarLabel[lang];
   $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
-  $('btnVolverTxt').textContent=UI.volverCategorias[lang];
   /* chips */
   $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}">${ch.t[lang]}</button>`).join('');
   document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
@@ -552,16 +557,27 @@ function render(){
   }));
   $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
-  $('catIcons').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[c.cod]||ICONOS.CCL}</svg><span>${esc(c.nom[lang])}</span></a>`).join('');
-  /* carrusel destacados */
-  $('carrusel').innerHTML=PRODS.filter(p=>p.dest).map((p,i)=>{
+  /* carrusel destacados -- 4 tarjetas, no 7 (ver dirección de
+     simplificación editorial): los primeros 4 en el orden actual de
+     "destacado" en el Excel, sin reordenar ni inventar cuáles son. El
+     resto de los productos marcados como destacados no desaparece del
+     sitio -- sigue en el listado completo de su categoría más abajo
+     (y, si son el destacado de esa categoría puntual, también en el
+     panel .destacado-cat de esa sección; ver renderDestacadoCategoria).
+     La tarjeta muestra categoría + nombre + precio, no la descripción
+     truncada con puntos suspensivos -- la descripción completa vive en
+     la ficha (abrirDetalle), a un toque de distancia. */
+  const MAX_DESTACADOS_CARRUSEL = 4;
+  $('carrusel').innerHTML=PRODS.filter(p=>p.dest).slice(0, MAX_DESTACADOS_CARRUSEL).map((p,i)=>{
+    const cat=CATS.find(c=>c.cod===p.cat);
     const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
+    const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
     const fotoContenido = p.img
       ? `<img src="${esc(p.img)}" alt="${esc(altProducto(p))}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
     return `<article class="dcard" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
       <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}</div>
-      <div class="cuerpo">${bd}<h3>${esc(p.n[lang])}</h3><p>${esc(p.d[lang])}</p></div></article>`;
+      <div class="cuerpo">${bd}${cat?`<p class="dcard-cat">${esc(cat.nom[lang])}</p>`:''}<h3>${esc(p.n[lang])}</h3>${precio}</div></article>`;
   }).join('');
   document.querySelectorAll('.dcard').forEach(card=>{
     card.addEventListener('click', ()=>abrirDetalle(card.dataset.id));

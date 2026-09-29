@@ -48,8 +48,6 @@ __CSP_META__
   <p class="pregunta" id="heroPregunta"></p>
 </div>
 
-<nav class="cat-icons" id="catIcons" aria-label="Categorías"></nav>
-
 <div class="momentos" id="momentos">
   <h2 id="momTitle"></h2>
   <p class="hint" id="momHint"></p>
@@ -74,10 +72,14 @@ __CSP_META__
 <div class="destacados" id="destacados">
   <p class="eyebrow" id="destEyebrow"></p>
   <h2 id="destTitle"></h2>
-  <button class="car-flecha prev" id="carPrev" aria-label="‹">‹</button>
-  <button class="car-flecha next" id="carNext" aria-label="›">›</button>
+  <button class="car-flecha prev" id="carPrev" aria-label="Anterior">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <button class="car-flecha next" id="carNext" aria-label="Siguiente">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
   <div class="carrusel" id="carrusel"></div>
-  <div class="car-puntos" id="carPuntos"></div>
+  <p class="car-indicador" id="carIndicador" aria-hidden="true"></p>
 </div>
 
 <p class="aviso-moneda" id="avisoMoneda"></p>
@@ -99,11 +101,6 @@ __CSP_META__
   <!--DIRECCION_START--><p class="datos"><a href="__DIRECCION_MAPS_URL__" id="footDireccion" target="_blank" rel="noopener noreferrer">__DIRECCION__</a></p><!--DIRECCION_END-->
   <p class="datos" id="footDatos"></p>
 </footer>
-
-<button class="btn-volver" id="btnVolver">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-  <span id="btnVolverTxt"></span>
-</button>
 
 <!-- Ícono de globo de diálogo genérico dibujado a mano, no el isotipo de
      WhatsApp -- mismo criterio ya documentado en web/templates para
