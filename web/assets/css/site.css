@@ -78,7 +78,7 @@ a{color:var(--verde)}
   transform:translateY(-120%);
   background:var(--verde); color:var(--blanco);
   padding:12px 20px; border-radius:0 0 var(--radius-sm) 0;
-  font-weight:700; z-index:100; transition:transform .2s ease;
+  font-weight:700; z-index:100; transition:transform .2s var(--ease-out);
 }
 .skip-link:focus{transform:translateY(0)}
 
@@ -140,7 +140,7 @@ a:focus-visible, button:focus-visible{
   text-decoration:none; border:none; cursor:pointer;
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(62,71,54,.55);
-  transition:transform .2s ease, box-shadow .2s ease;
+  transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
 }
 .btn:hover, .btn:focus-visible{
   transform:translateY(-2px);
@@ -155,7 +155,7 @@ a:focus-visible, button:focus-visible{
   transition:border-color .2s ease;
 }
 .link-secundario:hover, .link-secundario:focus-visible{border-color:var(--calafate)}
-.link-secundario span{margin-left:6px; transition:transform .2s ease}
+.link-secundario span{margin-left:6px; transition:transform .2s var(--ease-out)}
 .link-secundario:hover span{transform:translateX(3px)}
 
 /* ---------- header ---------- */
@@ -832,7 +832,7 @@ footer p.legal{
   display:flex; align-items:center; justify-content:center;
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(0,0,0,.45);
-  transition:transform .2s ease, box-shadow .2s ease;
+  transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
 }
 .whatsapp-flotante:hover, .whatsapp-flotante:focus-visible{
   transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
@@ -1505,8 +1505,12 @@ footer::before{display:none}
   border-bottom:1px solid rgba(255,253,247,.24); color:var(--blanco);
   text-decoration:none;
 }
-a.consulta-ficha{transition:padding .2s ease,background .2s ease}
-a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; background:rgba(255,253,247,.05)}
+/* transform en vez de padding-left: mismo desplazamiento visual de
+   12px, pero como transform corre en GPU sin disparar layout/paint,
+   a diferencia de animar padding (ver philosophy de Emil Kowalski,
+   "Only animate transform and opacity"). */
+a.consulta-ficha{transition:transform .2s var(--ease-out),background .2s ease}
+a.consulta-ficha:hover,a.consulta-ficha:focus-visible{transform:translateX(12px); background:rgba(255,253,247,.05)}
 .consulta-ficha > span:first-child{
   color:var(--salvia); font-size:.72rem; font-weight:700;
   letter-spacing:.08em; text-transform:uppercase;
