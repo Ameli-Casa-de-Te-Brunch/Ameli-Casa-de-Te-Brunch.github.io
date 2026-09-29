@@ -70,9 +70,11 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 .langs{position:relative}
-.langs-btn{display:flex;align-items:center;gap:7px;min-height:38px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(12.5px * var(--afs,1));letter-spacing:.04em;padding:8px 13px;border-radius:999px;cursor:pointer;transition:all .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+/* min-height:48px, no 38px -- mismo piso táctil que ya exige (y prueba
+   con un test) el sitio institucional para sus controles equivalentes. */
+.langs-btn{display:flex;align-items:center;gap:7px;min-height:48px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(12.5px * var(--afs,1));letter-spacing:.04em;padding:8px 13px;border-radius:999px;cursor:pointer;transition:all .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .langs-btn:active{transform:scale(.95)}
-.a11y-btn{display:flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border-radius:999px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(13px * var(--afs,1));cursor:pointer;transition:transform .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.a11y-btn{display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 13px;border-radius:999px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(13px * var(--afs,1));cursor:pointer;transition:transform .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .a11y-btn:active{transform:scale(.95)}
 .langs-menu{list-style:none;position:absolute;top:calc(100% + 8px);right:0;min-width:172px;background:var(--blanco);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;z-index:30;
   transform-origin:top right;transform:scale(1);opacity:1;
@@ -252,7 +254,8 @@ section.cat.sin-resultados .vacio{display:block}
 .sheet-foto{height:190px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .sheet-foto::after{content:'';position:absolute;inset:0;background:var(--scrim)}
 .sheet-inicial{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(66px * var(--afs,1));color:rgba(255,253,247,.5)}
-.sheet-cerrar{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(20,22,14,.4);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;transition:transform .12s ease;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+/* 48px, no 34px -- mismo piso táctil que el resto del sitio. */
+.sheet-cerrar{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;border:none;background:rgba(20,22,14,.4);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;transition:transform .12s ease;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .sheet-cerrar:active{transform:scale(.9)}
 .sheet-panel{padding:18px 22px 26px;overflow-y:auto;overscroll-behavior:contain;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);background:var(--glass-bg);border-top:1px solid var(--glass-border);margin-top:-26px;border-radius:20px 20px 0 0;position:relative;z-index:1}
 @supports not (backdrop-filter: blur(1px)){.sheet-panel{background:var(--blanco)}}
@@ -318,7 +321,9 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-o
 .a11y-panel[hidden]{display:none}
 .a11y-panel.abierto{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .a11y-panel h3{font-family:'Cormorant Garamond',serif;font-size:calc(21px * var(--afs,1));color:var(--tinta);margin-bottom:16px;padding-right:26px}
-.a11y-cerrar{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:var(--crema);color:var(--tinta);display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* 48px, no 32px -- mismo botón que .a11y-cerrar en el sitio
+   institucional, ahí ya en 48px. */
+.a11y-cerrar{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;border:none;background:var(--crema);color:var(--tinta);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .a11y-group{margin-bottom:18px}
 .a11y-group:last-child{margin-bottom:0}
 .a11y-group h4{font-size:calc(11.5px * var(--afs,1));font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--texto-sec);margin-bottom:10px}
