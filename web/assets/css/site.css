@@ -48,6 +48,13 @@
 }
 
 *{box-sizing:border-box}
+/* Piso de "se siente nativo" en mobile -- ver guía de Emil Kowalski.
+   -webkit-tap-highlight-color: sin esto, iOS/Android pintan un flash
+   gris/celeste sobre cualquier elemento tocado con handler de click.
+   -webkit-text-size-adjust: evita que el texto se infle solo al girar
+   a horizontal (no tiene que ver con el zoom real del usuario, que
+   nunca se toca acá -- no hay ningún maximum-scale en el viewport). */
+html{-webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100%}
 html{
   scroll-behavior:smooth;
   font-size:calc(16px * var(--afs, 1));
@@ -78,7 +85,7 @@ a{color:var(--verde)}
   transform:translateY(-120%);
   background:var(--verde); color:var(--blanco);
   padding:12px 20px; border-radius:0 0 var(--radius-sm) 0;
-  font-weight:700; z-index:100; transition:transform .2s ease;
+  font-weight:700; z-index:100; transition:transform .2s var(--ease-out);
 }
 .skip-link:focus{transform:translateY(0)}
 
@@ -140,11 +147,21 @@ a:focus-visible, button:focus-visible{
   text-decoration:none; border:none; cursor:pointer;
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(62,71,54,.55);
-  transition:transform .2s ease, box-shadow .2s ease;
+  transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
-.btn:hover, .btn:focus-visible{
+.btn:focus-visible{
   transform:translateY(-2px);
   box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
+}
+/* :hover atado a (hover:hover) -- sin esto, el primer toque en mobile
+   deja el botón "levantado" hasta que se toca otra cosa (no hay hover
+   real en touch, el navegador lo simula y no lo suelta solo). */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
+  }
 }
 .btn:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
 .link-secundario{
@@ -155,8 +172,10 @@ a:focus-visible, button:focus-visible{
   transition:border-color .2s ease;
 }
 .link-secundario:hover, .link-secundario:focus-visible{border-color:var(--calafate)}
-.link-secundario span{margin-left:6px; transition:transform .2s ease}
-.link-secundario:hover span{transform:translateX(3px)}
+.link-secundario span{margin-left:6px; transition:transform .2s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .link-secundario:hover span{transform:translateX(3px)}
+}
 
 /* ---------- header ---------- */
 .site-header{
@@ -206,6 +225,7 @@ a:focus-visible, button:focus-visible{
   font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
   text-decoration:none;
   transition:background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .header-menu:hover, .header-menu:focus-visible{background:var(--verde-osc)}
 .header-menu:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
@@ -220,6 +240,7 @@ a:focus-visible, button:focus-visible{
   font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
   cursor:pointer;
   transition:border-color .2s ease, background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .a11y-btn:hover{border-color:var(--verde)}
 .a11y-btn[aria-expanded="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
@@ -247,6 +268,7 @@ a:focus-visible, button:focus-visible{
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
   transition:border-color .2s ease, background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .nav-btn:hover{border-color:var(--verde)}
 .nav-btn[aria-expanded="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
@@ -260,7 +282,7 @@ a:focus-visible, button:focus-visible{
   position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(380px, calc(100vw - 32px));
   max-width:none; max-height:none;
-  overflow-y:auto;
+  overflow-y:auto; overscroll-behavior:contain;
   background:var(--blanco); color:var(--tinta);
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
@@ -268,7 +290,9 @@ a:focus-visible, button:focus-visible{
   transform:translateX(0); opacity:1;
   transition:transform 250ms var(--ease-out), opacity 200ms var(--ease-out);
 }
-/* Entra deslizándose desde el borde donde está anclado (derecha), no
+/* overscroll-behavior:contain -- al llegar al final del contenido del
+   panel, el scroll no se lo pasa a la página de atrás (efecto rebote
+   propio del panel, sin mover nada detrás). Entra deslizándose desde el borde donde está anclado (derecha), no
    desde el centro -- coherente con su posición fija. Solo anima la
    apertura: el cierre queda instantáneo (comportamiento nativo de
    <dialog>), que sigue siendo mejor que la ausencia total de
@@ -286,6 +310,7 @@ a:focus-visible, button:focus-visible{
   width:48px; height:48px; border-radius:50%;
   border:1.5px solid var(--linea); background:none; color:var(--tinta);
   display:flex; align-items:center; justify-content:center; cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .nav-cerrar:hover{border-color:var(--verde)}
 .nav-panel .nav-principal{margin-top:52px}
@@ -300,7 +325,7 @@ a:focus-visible, button:focus-visible{
   position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(340px, calc(100vw - 32px));
   max-width:none; max-height:none;
-  overflow-y:auto;
+  overflow-y:auto; overscroll-behavior:contain;
   background:var(--blanco); color:var(--tinta);
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
@@ -327,6 +352,7 @@ a:focus-visible, button:focus-visible{
   width:48px; height:48px; border-radius:50%;
   border:1.5px solid var(--linea); background:none; color:var(--tinta);
   display:flex; align-items:center; justify-content:center; cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .a11y-cerrar:hover{border-color:var(--verde)}
 .nav-btn:active, .a11y-btn:active, .nav-cerrar:active, .a11y-cerrar:active{
@@ -827,18 +853,24 @@ footer p.legal{
    el ícono ya es genérico (ver template), el color tampoco imita la
    marca de terceros. */
 .whatsapp-flotante{
-  position:fixed; right:20px; bottom:20px; z-index:40;
+  position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); z-index:40;
   width:56px; height:56px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(0,0,0,.45);
-  transition:transform .2s ease, box-shadow .2s ease;
+  transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
-.whatsapp-flotante:hover, .whatsapp-flotante:focus-visible{
+.whatsapp-flotante:focus-visible{
   transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
 }
+@media (hover:hover) and (pointer:fine){
+  .whatsapp-flotante:hover{
+    transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
+  }
+}
 @media(max-width:859px){
-  .whatsapp-flotante{right:16px; bottom:16px; width:52px; height:52px}
+  .whatsapp-flotante{right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); width:52px; height:52px}
 }
 
 .privacidad-breve{
@@ -1233,6 +1265,7 @@ footer::before{display:none}
 .tab-lista button{
   min-height:58px; padding:12px; border:0; background:var(--blanco);
   color:var(--verde-osc); font:700 .9rem var(--font-subhead); cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .tab-lista button + button{border-left:2px solid var(--verde-osc)}
 .tab-lista button[aria-selected="true"]{background:var(--verde-osc); color:var(--blanco)}
@@ -1360,7 +1393,11 @@ footer::before{display:none}
    ritmo, aire, radios suaves y líneas finas. */
 .arquitectura-bloque{border-bottom:1px solid var(--linea-suave)}
 
-.portada-hero{min-height:min(820px, 92vh)}
+/* 92vh primero como respaldo (navegadores sin soporte de svh mantienen
+   esta línea); 92svh después -- la altura más chica que toma el
+   viewport en mobile, nunca cambia mientras aparece/desaparece la
+   barra de direcciones, así que el hero nunca se corta ni salta. */
+.portada-hero{min-height:min(820px, 92vh); min-height:min(820px, 92svh)}
 .portada-hero-velo{
   background:linear-gradient(180deg, rgba(20,27,17,.28), rgba(20,27,17,.76));
 }
@@ -1505,8 +1542,12 @@ footer::before{display:none}
   border-bottom:1px solid rgba(255,253,247,.24); color:var(--blanco);
   text-decoration:none;
 }
-a.consulta-ficha{transition:padding .2s ease,background .2s ease}
-a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; background:rgba(255,253,247,.05)}
+/* transform en vez de padding-left: mismo desplazamiento visual de
+   12px, pero como transform corre en GPU sin disparar layout/paint,
+   a diferencia de animar padding (ver philosophy de Emil Kowalski,
+   "Only animate transform and opacity"). */
+a.consulta-ficha{transition:transform .2s var(--ease-out),background .2s ease}
+a.consulta-ficha:hover,a.consulta-ficha:focus-visible{transform:translateX(12px); background:rgba(255,253,247,.05)}
 .consulta-ficha > span:first-child{
   color:var(--salvia); font-size:.72rem; font-weight:700;
   letter-spacing:.08em; text-transform:uppercase;
@@ -1601,4 +1642,83 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; backgro
   .enlaces-footer{justify-content:flex-start}
   .header-acciones{gap:6px}
   .consultas-directorio,.consultas-grid,.consulta-ficha{width:100%; max-width:100%; min-width:0}
+}
+
+/* ================= DETALLE DE PRECISIÓN (2026-09-29) =================
+   Capa aditiva sobre la síntesis final de arriba, pedida para acercar
+   el sitio a un registro más contenido y preciso. No reemplaza fotos
+   reales, botones ni la paleta existente -- solo agrega un marco de
+   esquinas y una ficha técnica discretos, en los mismos tokens de
+   marca (--salvia/--blanco), nunca un color nuevo. Todo marcado
+   aria-hidden porque es decorativo: la información accesible real
+   (título de sección, dirección, horario) ya existe en otro lugar de
+   cada bloque y no se repite acá. */
+.marco-precision{
+  position:absolute; inset:20px; z-index:2; pointer-events:none;
+}
+.marco-precision .esquina{
+  position:absolute; width:18px; height:18px;
+  border-color:rgba(255,253,247,.5);
+}
+.marco-precision .esquina-tl{top:0; left:0; border-top:1px solid; border-left:1px solid}
+.marco-precision .esquina-tr{top:0; right:0; border-top:1px solid; border-right:1px solid}
+.marco-precision .esquina-bl{bottom:0; left:0; border-bottom:1px solid; border-left:1px solid}
+.marco-precision .esquina-br{bottom:0; right:0; border-bottom:1px solid; border-right:1px solid}
+
+.ficha-tecnica{
+  position:absolute; top:20px; left:32px; right:32px; z-index:2;
+  display:flex; justify-content:space-between; gap:12px;
+  margin:0; font-family:var(--font-subhead); font-weight:700;
+  font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--salvia);
+}
+@media(max-width:859px){
+  .marco-precision{inset:14px}
+  .ficha-tecnica{top:14px; left:20px; right:20px; font-size:.6rem; letter-spacing:.1em}
+}
+
+/* "Carta y pedidos": mismo marco sobre la foto real, más un eco grande
+   del título de la sección superpuesto a la imagen (el título
+   accesible real sigue siendo el <h2> de .tienda-contenido, sin
+   cambios -- este es un segundo, puramente visual). */
+.tienda-online .marco-foto{position:relative; overflow:hidden; min-height:400px}
+.tienda-online .marco-foto .espacio-tienda{
+  position:absolute; inset:0; width:100%; height:100%; margin:0; border:0; border-radius:0;
+}
+.titulo-superpuesto{
+  position:absolute; left:24px; right:24px; bottom:18px; z-index:2;
+  margin:0; font-family:var(--font-display); font-weight:600;
+  font-size:clamp(3rem, 11vw, 6.2rem); line-height:.82;
+  letter-spacing:.005em; text-transform:uppercase; color:var(--blanco);
+  text-shadow:0 2px 24px rgba(0,0,0,.4);
+}
+@media(min-width:760px){
+  .tienda-online .marco-foto{min-height:720px}
+}
+
+/* ================= REVELADO AL HACER SCROLL (2026-09-29) =================
+   Mismo mecanismo ya probado en /menu/ (section.cat + IntersectionObserver
+   en menu.js), traído acá. El hero (.portada-hero) queda afuera a propósito
+   -- es el elemento LCP (fetchpriority="high"), animar el primer pintado
+   compite con la propia prioridad de carga del sitio.
+
+   La regla de "oculto por defecto" vive bajo html.js-reveal, una clase que
+   site.js agrega recién cuando confirma que el IntersectionObserver está
+   listo -- si el script no corre (bloqueado, falla, navegador viejo sin
+   soporte), html.js-reveal nunca se agrega y estas secciones quedan
+   visibles por el CSS normal de arriba, sin depender de JS para mostrarse.
+   Mismo principio de mejora progresiva real que ya usa el botón "Aa"
+   (data-a11y-pending) más arriba en este archivo. */
+html.js-reveal .arquitectura-bloque,
+html.js-reveal .sobre-ameli,
+html.js-reveal .sustentabilidad,
+html.js-reveal .preguntas-frecuentes{
+  opacity:0; transform:translateY(10px);
+  transition:opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+html.js-reveal .arquitectura-bloque.visible,
+html.js-reveal .sobre-ameli.visible,
+html.js-reveal .sustentabilidad.visible,
+html.js-reveal .preguntas-frecuentes.visible{
+  opacity:1; transform:translateY(0);
 }

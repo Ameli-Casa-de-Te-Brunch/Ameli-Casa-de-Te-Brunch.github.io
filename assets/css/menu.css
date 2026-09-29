@@ -32,13 +32,17 @@
   --radio:var(--radius-md);
   --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px; --space-12:48px; --space-16:64px;
   --afs:1;
+  /* Curva de ease-out fuerte para popovers/paneles que entran en pantalla --
+     mismo valor que --ease-out en web/assets/css/site.css, para no crear
+     una curva paralela entre los dos sitios. */
+  --ease-out:cubic-bezier(.23,1,.32,1);
 }
 /* Sin variante de modo oscuro a propósito: el feedback de los clientes fue
    que los tonos oscuros (fondo/verde invertidos) se leían mal en la mesa —
    el sitio siempre usa la paleta clara de :root, sin importar el tema del
    sistema operativo del visitante. */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
 ::selection{background:var(--rosa)}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:480px;margin:0 auto;padding:18px 20px 0}
@@ -61,18 +65,31 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .cat-icons{display:flex;gap:10px;overflow-x:auto;padding:20px 16px 4px;scrollbar-width:none}
 .cat-icons::-webkit-scrollbar{display:none}
 .cat-icons a{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--verde-osc);background:var(--crema);padding:12px 10px;border-radius:var(--radius-md);width:76px}
-.cat-icons a span{font-family:'Karla',sans-serif;font-weight:600;font-size:calc(10.5px * var(--afs,1));text-align:center;line-height:1.25}
+.cat-icons a span{font-family:'Karla',sans-serif;font-weight:600;font-size:calc(11px * var(--afs,1));text-align:center;line-height:1.25}
 
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 .langs{position:relative}
-.langs-btn{display:flex;align-items:center;gap:7px;min-height:38px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(12.5px * var(--afs,1));letter-spacing:.04em;padding:8px 13px;border-radius:999px;cursor:pointer;transition:all .2s}
+/* min-height:48px, no 38px -- mismo piso táctil que ya exige (y prueba
+   con un test) el sitio institucional para sus controles equivalentes. */
+.langs-btn{display:flex;align-items:center;gap:7px;min-height:48px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(12.5px * var(--afs,1));letter-spacing:.04em;padding:8px 13px;border-radius:999px;cursor:pointer;transition:all .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .langs-btn:active{transform:scale(.95)}
-.a11y-btn{display:flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border-radius:999px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(13px * var(--afs,1));cursor:pointer;transition:transform .2s}
+.a11y-btn{display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 13px;border-radius:999px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(13px * var(--afs,1));cursor:pointer;transition:transform .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .a11y-btn:active{transform:scale(.95)}
-.langs-menu{list-style:none;position:absolute;top:calc(100% + 8px);right:0;min-width:172px;background:var(--blanco);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;z-index:30}
+.langs-menu{list-style:none;position:absolute;top:calc(100% + 8px);right:0;min-width:172px;background:var(--blanco);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;z-index:30;
+  transform-origin:top right;transform:scale(1);opacity:1;
+  transition:transform .18s var(--ease-out),opacity .15s ease}
 .langs-menu[hidden]{display:none}
-.langs-menu button{display:flex;width:100%;align-items:center;gap:8px;text-align:left;background:none;border:none;color:var(--tinta);font-family:'Karla',sans-serif;font-size:calc(14px * var(--afs,1));padding:10px 12px;border-radius:9px;cursor:pointer;min-height:40px}
+/* Entra con un scale-in anclado al botón que lo abre (arriba a la derecha),
+   en vez de aparecer de golpe. Mismo criterio que .nav-panel/.a11y-panel en
+   site.css: solo se anima la apertura -- abrirLangs()/cerrarLangs() en
+   menu.js alternan `hidden` de forma instantánea, así que el cierre queda
+   sin transición, igual que esos dos paneles (ya documentado ahí como
+   preferible a no animar nada). */
+@starting-style{
+  .langs-menu{transform:scale(.95);opacity:0}
+}
+.langs-menu button{display:flex;width:100%;align-items:center;gap:8px;text-align:left;background:none;border:none;color:var(--tinta);font-family:'Karla',sans-serif;font-size:calc(14px * var(--afs,1));padding:10px 12px;border-radius:9px;cursor:pointer;min-height:48px}
 .langs-menu button:hover,.langs-menu button:focus-visible{background:var(--crema)}
 .langs-menu button[aria-selected="true"]{font-weight:700;color:var(--verde-osc)}
 .langs-menu button[aria-selected="true"]::after{content:'✓';margin-left:auto;color:var(--verde)}
@@ -82,7 +99,10 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .buscador{margin:14px 16px 0;position:relative;display:flex;align-items:center;gap:8px;background:var(--blanco);border:1.5px solid var(--verde-suave);border-radius:999px;padding:0 8px 0 14px;box-shadow:var(--sombra)}
 .buscador:focus-within{border-color:var(--verde);box-shadow:0 0 0 3px rgba(91,110,74,.22)}
 .buscador svg{flex-shrink:0;color:var(--texto-sec)}
-.buscador input{flex:1;min-width:0;border:none;background:none;padding:12px 0;font-family:'Karla',sans-serif;font-size:calc(14px * var(--afs,1));color:var(--tinta)}
+/* 16px, no 14px: piso de iOS Safari -- un <input> con texto por debajo
+   de 16px hace zoom automático al tocarlo, y no vuelve a alejar solo
+   al perder el foco. El multiplicador --afs sigue funcionando igual. */
+.buscador input{flex:1;min-width:0;border:none;background:none;padding:12px 0;font-family:'Karla',sans-serif;font-size:calc(16px * var(--afs,1));color:var(--tinta)}
 .buscador input:focus{outline:none}
 .buscador input::-webkit-search-cancel-button{display:none}
 .buscador button{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:none;background:var(--crema);border-radius:50%;color:var(--texto-sec);cursor:pointer;flex-shrink:0}
@@ -90,7 +110,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 
 .aviso-moneda{margin:14px 16px 4px;text-align:center;font-size:calc(12px * var(--afs,1));color:var(--texto-sec);font-style:italic}
 
-.btn-volver{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);z-index:39;display:flex;align-items:center;gap:7px;min-height:44px;padding:0 18px;border-radius:999px;border:none;background:var(--marron);color:var(--sobre-verde);font-weight:700;font-family:'Karla',sans-serif;font-size:calc(13px * var(--afs,1));box-shadow:0 8px 22px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;cursor:pointer}
+.btn-volver{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom, 0px));left:50%;transform:translate(-50%,20px);z-index:39;display:flex;align-items:center;gap:7px;min-height:44px;padding:0 18px;border-radius:999px;border:none;background:var(--marron);color:var(--sobre-verde);font-weight:700;font-family:'Karla',sans-serif;font-size:calc(13px * var(--afs,1));box-shadow:0 8px 22px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .btn-volver.visible{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
 .btn-volver:active{transform:translate(-50%,0) scale(.95)}
 .momentos{margin:8px 16px 0;background:var(--crema);border-radius:var(--radio);box-shadow:var(--sombra);padding:20px 18px 22px;position:relative;z-index:5}
@@ -98,7 +118,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .momentos h2 em{font-style:italic}
 .momentos p.hint{text-align:center;font-size:calc(12px * var(--afs,1));color:var(--texto-sec);margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.chip{border:none;background:var(--blanco);color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:calc(13px * var(--afs,1));padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease}
+.chip{border:none;background:var(--blanco);color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:600;font-size:calc(13px * var(--afs,1));padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .chip.activo{background:var(--verde);color:var(--sobre-verde);transform:scale(1.04)}
 .chip:active{transform:scale(.95)}
 /* clases fijas para reemplazar estilos inline dinamicos (la CSP no permite
@@ -115,16 +135,23 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .limpiar{display:none;margin:12px auto 0;background:none;border:none;color:var(--marron-texto);font-size:calc(12.5px * var(--afs,1));font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .limpiar.visible{display:block}
 .navcat{position:sticky;top:0;z-index:20;background:var(--navcat-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0 12px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(83,96,57,.12);margin-top:26px;box-shadow:none;transition:box-shadow .25s ease}
+@media (prefers-reduced-transparency: reduce){
+  .navcat{background:var(--crema);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
 .navcat.scrolled{box-shadow:var(--sombra-nav)}
 .navcat::-webkit-scrollbar{display:none}
-.navcat a{flex:0 0 auto;text-decoration:none;font-size:calc(13px * var(--afs,1));font-weight:600;color:var(--verde-osc);background:var(--blanco);border:1px solid rgba(83,96,57,.16);padding:8px 14px;border-radius:999px;transition:all .2s}
+.navcat a{flex:0 0 auto;text-decoration:none;font-size:calc(13px * var(--afs,1));font-weight:600;color:var(--verde-osc);background:var(--blanco);border:1px solid rgba(83,96,57,.16);padding:8px 14px;border-radius:999px;transition:all .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .navcat a.actual{background:var(--verde);color:var(--sobre-verde);border-color:var(--verde)}
 .navcat a:active{transform:scale(.96)}
 .navcat a:last-child{margin-right:16px}
 .destacados{padding:26px 0 6px;position:relative}
 .eyebrow{padding:0 20px;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--verde-osc)}
 .destacados h2{padding:2px 20px 0;font-family:'Cormorant Garamond',serif;font-size:calc(28px * var(--afs,1));font-weight:500;color:var(--verde-osc)}
-.carrusel{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 10px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;user-select:none}
+/* touch-action:pan-y -- el gesto horizontal (arrastre propio + scroll-
+   snap nativo) lo maneja este elemento; el navegador se queda con el
+   pan vertical, así que un swipe diagonal no queda ambiguo entre
+   "mover el carrusel" y "scrollear la página". */
+.carrusel{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 10px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;user-select:none;touch-action:pan-y}
 .carrusel.arrastrando{cursor:grabbing;scroll-snap-type:none}
 .carrusel::-webkit-scrollbar{display:none}
 .dcard{flex:0 0 78%;scroll-snap-align:start;background:var(--crema);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden;position:relative;cursor:pointer;transition:transform .12s ease}
@@ -135,7 +162,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
    negativo y velo oscuro para que el texto blanco se leyera encima) --
    ahora es un panel claro propio, debajo de la foto. */
 .dcard .cuerpo{padding:14px 16px 16px}
-.badge{display:inline-block;font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
+.badge{display:inline-block;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
 .dcard .cuerpo .badge{margin-right:6px}
 .badge.fav{background:var(--marron);color:var(--sobre-verde)}
 .badge.reco{background:var(--manteca);color:var(--marron)}
@@ -190,7 +217,7 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .destacado-cat .foto{height:160px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .destacado-cat .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(52px * var(--afs,1));color:rgba(255,253,247,.6)}
 .prod.destacado-cat .cont{padding:16px 18px 18px}
-.destacado-cat .eyebrow-cat{font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:4px}
+.destacado-cat .eyebrow-cat{font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:4px}
 .destacado-cat h3{font-size:calc(23px * var(--afs,1))}
 .destacado-cat .desc{margin-bottom:4px}
 .destacado-cat .fila{margin-top:10px}
@@ -198,13 +225,20 @@ footer{margin-top:44px;background:var(--footer-bg);color:var(--sobre-verde);text
 footer svg.botanica{position:absolute;opacity:.1;width:230px;left:50%;top:-40px;transform:translateX(-50%) rotate(90deg)}
 footer .marca{font-family:'Cormorant Garamond',serif;font-size:calc(34px * var(--afs,1));font-weight:600}
 footer .grx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(17px * var(--afs,1));margin-top:6px;color:var(--rosa)}
-.redes{display:flex;justify-content:center;gap:12px;margin-top:22px}
-.redes a{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:calc(13px * var(--afs,1));font-weight:600;transition:transform .12s ease}
-.redes a svg{color:var(--dorado);flex:0 0 auto}
+.redes{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:22px}
+/* min-height:48px -- mismo piso táctil que .resenas a en el sitio
+   institucional (que resuelve el mismo trío Instagram/Google/
+   TripAdvisor, ahí también solo texto, sin íconos). */
+.redes a{display:flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;color:var(--sobre-verde);border:1px solid rgba(242,234,225,.35);padding:9px 16px;border-radius:999px;font-size:calc(13px * var(--afs,1));font-weight:600;transition:transform .12s ease}
 .redes a:active{transform:scale(.96)}
 footer .datos{margin-top:22px;font-size:calc(12.5px * var(--afs,1));color:rgba(255,253,247,.7);line-height:1.7}
 footer .datos a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,253,247,.4)}
-.wsp{position:fixed;bottom:18px;right:16px;z-index:40;background:#3BA55D;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:calc(14px * var(--afs,1));box-shadow:0 8px 22px rgba(0,0,0,.22);transition:transform .2s}
+/* var(--verde), no el verde de WhatsApp -- mismo criterio ya documentado
+   para .whatsapp-flotante en web/assets/css/site.css: el ícono es
+   genérico, el color tampoco imita la marca de terceros. El menú
+   usaba antes #3BA55D (el verde oficial de la app); se corrige acá
+   para que "Pedir por WhatsApp" se vea igual en los dos sitios. */
+.wsp{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom, 0px));right:16px;z-index:40;background:var(--verde);color:var(--sobre-verde);text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:999px;font-weight:700;font-size:calc(14px * var(--afs,1));box-shadow:0 10px 24px -8px rgba(0,0,0,.45);transition:transform .2s;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .wsp:active{transform:scale(.94)}
 @media(min-width:481px){.wsp{right:calc(50% - 224px)}}
 .vacio{display:none;text-align:center;padding:8px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--texto-sec);font-size:calc(16px * var(--afs,1))}
@@ -222,10 +256,18 @@ section.cat.sin-resultados .vacio{display:block}
 .sheet-foto{height:190px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .sheet-foto::after{content:'';position:absolute;inset:0;background:var(--scrim)}
 .sheet-inicial{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(66px * var(--afs,1));color:rgba(255,253,247,.5)}
-.sheet-cerrar{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(20,22,14,.4);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;transition:transform .12s ease}
+/* 48px, no 34px -- mismo piso táctil que el resto del sitio. */
+.sheet-cerrar{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;border:none;background:rgba(20,22,14,.4);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;transition:transform .12s ease;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .sheet-cerrar:active{transform:scale(.9)}
-.sheet-panel{padding:18px 22px 26px;overflow-y:auto;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);background:var(--glass-bg);border-top:1px solid var(--glass-border);margin-top:-26px;border-radius:20px 20px 0 0;position:relative;z-index:1}
+.sheet-panel{padding:18px 22px 26px;overflow-y:auto;overscroll-behavior:contain;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);background:var(--glass-bg);border-top:1px solid var(--glass-border);margin-top:-26px;border-radius:20px 20px 0 0;position:relative;z-index:1}
 @supports not (backdrop-filter: blur(1px)){.sheet-panel{background:var(--blanco)}}
+/* prefers-reduced-transparency: quien la pide no quiere ver el fondo a
+   través del panel -- el blur no ayuda en ese caso, estorba. Mismo
+   fallback opaco que ya existe arriba para navegadores sin soporte de
+   backdrop-filter, ahora también por preferencia explícita. */
+@media (prefers-reduced-transparency: reduce){
+  .sheet-panel{background:var(--blanco);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
 .sheet-etiquetas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .sheet-panel h3{font-family:'Cormorant Garamond',serif;font-size:calc(27px * var(--afs,1));font-weight:600;color:var(--tinta)}
 .sheet-panel p{margin-top:8px;font-size:calc(14.5px * var(--afs,1));line-height:1.6;color:var(--texto-sec)}
@@ -237,7 +279,7 @@ section.cat.sin-resultados .vacio{display:block}
 .alerg-tag.advertencia{background:var(--alerg-warn-bg);color:var(--alerg-warn-color)}
 .sheet-leche{font-size:calc(13px * var(--afs,1));color:var(--texto-sec);margin-top:10px;font-style:italic}
 .sheet-acciones{display:flex;gap:10px;margin-top:20px;align-items:stretch}
-.btn-pedir{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#3BA55D;color:#fff;text-decoration:none;padding:0 16px;border-radius:999px;font-weight:700;font-size:calc(14px * var(--afs,1));transition:transform .12s ease}
+.btn-pedir{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--verde);color:var(--sobre-verde);text-decoration:none;padding:0 16px;border-radius:999px;font-weight:700;font-size:calc(14px * var(--afs,1));transition:transform .12s ease;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .btn-pedir[hidden]{display:none}
 .btn-pedir:active{transform:scale(.96)}
 .btn-pedir svg{width:17px;height:17px}
@@ -270,18 +312,23 @@ section.cat.sin-resultados .vacio{display:block}
 }
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
-a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
+/* Mismo anillo de foco que el sitio institucional -- 3px/3px/radio 2px,
+   antes era 2.5px/2px sin radio acá (mismo color, --marron y --calafate
+   son el mismo #8B2F2F con nombre distinto en cada archivo). */
+a:focus-visible,button:focus-visible{outline:3px solid var(--marron);outline-offset:3px;border-radius:2px}
 
 /* ===== panel de accesibilidad ===== */
 /* el botón .a11y-btn ("Aa") ahora vive en el header, junto al idioma --
    ver reglas cerca de .topbar-ctrl, arriba del archivo. */
 .a11y-backdrop{position:fixed;inset:0;background:rgba(20,22,14,.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .28s ease}
 .a11y-backdrop.abierto{opacity:1;pointer-events:auto}
-.a11y-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.94);width:min(90%,380px);max-height:85dvh;overflow-y:auto;z-index:91;background:var(--blanco);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);padding:24px 22px;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+.a11y-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.94);width:min(90%,380px);max-height:85dvh;overflow-y:auto;overscroll-behavior:contain;z-index:91;background:var(--blanco);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);padding:24px 22px;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
 .a11y-panel[hidden]{display:none}
 .a11y-panel.abierto{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .a11y-panel h3{font-family:'Cormorant Garamond',serif;font-size:calc(21px * var(--afs,1));color:var(--tinta);margin-bottom:16px;padding-right:26px}
-.a11y-cerrar{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:var(--crema);color:var(--tinta);display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* 48px, no 32px -- mismo botón que .a11y-cerrar en el sitio
+   institucional, ahí ya en 48px. */
+.a11y-cerrar{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;border:none;background:var(--crema);color:var(--tinta);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .a11y-group{margin-bottom:18px}
 .a11y-group:last-child{margin-bottom:0}
 .a11y-group h4{font-size:calc(11.5px * var(--afs,1));font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--texto-sec);margin-bottom:10px}

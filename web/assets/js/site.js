@@ -164,6 +164,34 @@
       botonNav.removeAttribute('data-nav-pending');
     })();
 
+    /* Revelado de secciones al hacer scroll -- mismo mecanismo ya probado
+       en /menu/ (section.cat + IntersectionObserver en menu.js), acá
+       aplicado a los bloques editoriales de esta página. Bloque
+       independiente de los de arriba: si esto falla, el resto del sitio
+       sigue funcionando igual. El estado "oculto por defecto" solo se
+       activa (ver site.css, html.js-reveal) después de confirmar acá que
+       el observer está disponible y que el visitante no pidió movimiento
+       reducido -- así una sección nunca queda invisible por depender de
+       JS que no corrió. */
+    (function () {
+      if (typeof IntersectionObserver === 'undefined') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var secciones = document.querySelectorAll(
+        '.arquitectura-bloque, .sobre-ameli, .sustentabilidad, .preguntas-frecuentes'
+      );
+      if (!secciones.length) return;
+
+      raiz.classList.add('js-reveal');
+      var observador = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (entrada) {
+          if (!entrada.isIntersecting) return;
+          entrada.target.classList.add('visible');
+          observador.unobserve(entrada.target);
+        });
+      }, { threshold: .15 });
+      secciones.forEach(function (s) { observador.observe(s); });
+    })();
+
     /* Pestañas de la maqueta "Sumate". No hay envío de formularios:
        solo alternan dos paneles locales y accesibles. */
     var tabsSumate = Array.prototype.slice.call(

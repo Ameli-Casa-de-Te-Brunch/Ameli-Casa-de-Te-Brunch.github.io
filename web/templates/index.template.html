@@ -11,7 +11,8 @@
      presenta como protección real contra clickjacking. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3E4736">
 <title>__MARCA__ Casa de Té &amp; Brunch — __UBICACION_CORTA__</title>
 <meta name="description" content="__MARCA__ __CATEGORIA__ en __UBICACION_CORTA__. __DESCRIPCION_MENU__">
 __ROBOTS_META_TAG__
@@ -105,6 +106,15 @@ __SOCIAL_META_TAGS__
            versión también desaparece, no solo las otras. -->
       <!--HORARIOS_START--><div class="horario-info portada-horario"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
     </div>
+    <!-- Marco de esquinas + ficha técnica: detalle decorativo agregado
+         2026-09-29, no reemplaza la foto ni el texto accesible de
+         arriba. La coordenada es un dato geográfico fijo de Malargüe
+         (no depende de site.config.json); __UBICACION_CORTA__ sí. -->
+    <div class="marco-precision" aria-hidden="true">
+      <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
+      <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
+    </div>
+    <p class="ficha-tecnica" aria-hidden="true"><span>35.4746° S · 69.5878° W</span><span>__UBICACION_CORTA__</span></p>
   </section>
 
   <!--SOBRE_AMELI_START--><section class="sobre-ameli" id="filosofia" aria-labelledby="titulo-sobre-ameli">
@@ -185,7 +195,19 @@ __SOCIAL_META_TAGS__
         <a class="btn btn-secundario" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
       </div>
     </div>
-    <img class="espacio-tienda" alt="Bandeja con cinco batidos de distintos colores, cada uno con sorbete de papel." src="assets/img/carta-pedidos-960.webp" srcset="assets/img/carta-pedidos-480.webp 480w, assets/img/carta-pedidos-720.webp 720w, assets/img/carta-pedidos-960.webp 960w" sizes="(min-width: 900px) 480px, 100vw" width="960" height="1025" loading="lazy" decoding="async">
+    <!-- .marco-foto envuelve la foto real solo para poder superponerle
+         el marco de esquinas y el eco grande del título -- la propia
+         <img>, sus atributos (alt/srcset/sizes/loading) y el título
+         accesible real (h2 de .tienda-contenido, arriba) no cambian. -->
+    <div class="marco-foto">
+      <img class="espacio-tienda" alt="Bandeja con cinco batidos de distintos colores, cada uno con sorbete de papel." src="assets/img/carta-pedidos-960.webp" srcset="assets/img/carta-pedidos-480.webp 480w, assets/img/carta-pedidos-720.webp 720w, assets/img/carta-pedidos-960.webp 960w" sizes="(min-width: 900px) 480px, 100vw" width="960" height="1025" loading="lazy" decoding="async">
+      <div class="marco-precision" aria-hidden="true">
+        <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
+        <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
+      </div>
+      <p class="ficha-tecnica" aria-hidden="true"><span>Salón y encargos</span><span>Temporada 2026</span></p>
+      <p class="titulo-superpuesto" aria-hidden="true">Carta</p>
+    </div>
   </section><!--PASTELERIA_PEDIDOS_END-->
 
   <!--SUSTENTABILIDAD_START--><section class="sustentabilidad" id="sustentabilidad" aria-labelledby="titulo-sustentabilidad">
