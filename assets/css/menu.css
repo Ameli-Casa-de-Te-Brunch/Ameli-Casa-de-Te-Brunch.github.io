@@ -310,7 +310,10 @@ section.cat.sin-resultados .vacio{display:block}
 }
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
-a:focus-visible,button:focus-visible{outline:2.5px solid var(--marron);outline-offset:2px}
+/* Mismo anillo de foco que el sitio institucional -- 3px/3px/radio 2px,
+   antes era 2.5px/2px sin radio acá (mismo color, --marron y --calafate
+   son el mismo #8B2F2F con nombre distinto en cada archivo). */
+a:focus-visible,button:focus-visible{outline:3px solid var(--marron);outline-offset:3px;border-radius:2px}
 
 /* ===== panel de accesibilidad ===== */
 /* el botón .a11y-btn ("Aa") ahora vive en el header, junto al idioma --
