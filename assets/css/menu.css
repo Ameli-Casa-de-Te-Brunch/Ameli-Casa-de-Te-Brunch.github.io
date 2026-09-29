@@ -50,8 +50,12 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .estado{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--verde-osc);background:var(--crema);padding:6px 12px;border-radius:999px}
 .estado .punto{width:7px;height:7px;border-radius:50%;background:#4E9B57;box-shadow:0 0 0 3px rgba(78,155,87,.2)}
 .estado.cerrado .punto{background:var(--marron);box-shadow:0 0 0 3px rgba(139,47,47,.18)}
-.estado .punto{animation:latir-punto 2.4s ease-in-out infinite}
-@keyframes latir-punto{0%,100%{opacity:1}50%{opacity:.45}}
+/* Sin animación a propósito: el estado (abierto/cerrado) se fija una
+   sola vez al cargar la página y no cambia mientras se mira -- un
+   pulso infinito ahí simula "vivo" sin que nada esté realmente
+   actualizándose en pantalla (justo lo que evitar según la filosofía
+   de animación de Emil Kowalski: sin propósito nombrable, visto en
+   cada visita). El punto de color ya comunica el estado solo. */
 
 .hero-foto{margin:16px 16px 0;height:220px;border-radius:var(--radius-lg);position:relative;overflow:hidden;display:block;width:calc(100% - 32px);object-fit:cover;background:#F3ECDD}
 .hero-texto{max-width:480px;margin:0 auto;padding:18px 20px 4px;text-align:center}
