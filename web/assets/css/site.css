@@ -48,6 +48,13 @@
 }
 
 *{box-sizing:border-box}
+/* Piso de "se siente nativo" en mobile -- ver guía de Emil Kowalski.
+   -webkit-tap-highlight-color: sin esto, iOS/Android pintan un flash
+   gris/celeste sobre cualquier elemento tocado con handler de click.
+   -webkit-text-size-adjust: evita que el texto se infle solo al girar
+   a horizontal (no tiene que ver con el zoom real del usuario, que
+   nunca se toca acá -- no hay ningún maximum-scale en el viewport). */
+html{-webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100%}
 html{
   scroll-behavior:smooth;
   font-size:calc(16px * var(--afs, 1));
@@ -141,10 +148,20 @@ a:focus-visible, button:focus-visible{
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(62,71,54,.55);
   transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
-.btn:hover, .btn:focus-visible{
+.btn:focus-visible{
   transform:translateY(-2px);
   box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
+}
+/* :hover atado a (hover:hover) -- sin esto, el primer toque en mobile
+   deja el botón "levantado" hasta que se toca otra cosa (no hay hover
+   real en touch, el navegador lo simula y no lo suelta solo). */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 28px -8px rgba(62,71,54,.6);
+  }
 }
 .btn:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
 .link-secundario{
@@ -156,7 +173,9 @@ a:focus-visible, button:focus-visible{
 }
 .link-secundario:hover, .link-secundario:focus-visible{border-color:var(--calafate)}
 .link-secundario span{margin-left:6px; transition:transform .2s var(--ease-out)}
-.link-secundario:hover span{transform:translateX(3px)}
+@media (hover:hover) and (pointer:fine){
+  .link-secundario:hover span{transform:translateX(3px)}
+}
 
 /* ---------- header ---------- */
 .site-header{
@@ -206,6 +225,7 @@ a:focus-visible, button:focus-visible{
   font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
   text-decoration:none;
   transition:background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .header-menu:hover, .header-menu:focus-visible{background:var(--verde-osc)}
 .header-menu:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
@@ -220,6 +240,7 @@ a:focus-visible, button:focus-visible{
   font-family:var(--font-subhead); font-weight:700; font-size:.85rem;
   cursor:pointer;
   transition:border-color .2s ease, background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .a11y-btn:hover{border-color:var(--verde)}
 .a11y-btn[aria-expanded="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
@@ -247,6 +268,7 @@ a:focus-visible, button:focus-visible{
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
   transition:border-color .2s ease, background .2s ease;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .nav-btn:hover{border-color:var(--verde)}
 .nav-btn[aria-expanded="true"]{background:var(--verde); color:var(--blanco); border-color:var(--verde)}
@@ -260,7 +282,7 @@ a:focus-visible, button:focus-visible{
   position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(380px, calc(100vw - 32px));
   max-width:none; max-height:none;
-  overflow-y:auto;
+  overflow-y:auto; overscroll-behavior:contain;
   background:var(--blanco); color:var(--tinta);
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
@@ -268,7 +290,9 @@ a:focus-visible, button:focus-visible{
   transform:translateX(0); opacity:1;
   transition:transform 250ms var(--ease-out), opacity 200ms var(--ease-out);
 }
-/* Entra deslizándose desde el borde donde está anclado (derecha), no
+/* overscroll-behavior:contain -- al llegar al final del contenido del
+   panel, el scroll no se lo pasa a la página de atrás (efecto rebote
+   propio del panel, sin mover nada detrás). Entra deslizándose desde el borde donde está anclado (derecha), no
    desde el centro -- coherente con su posición fija. Solo anima la
    apertura: el cierre queda instantáneo (comportamiento nativo de
    <dialog>), que sigue siendo mejor que la ausencia total de
@@ -286,6 +310,7 @@ a:focus-visible, button:focus-visible{
   width:48px; height:48px; border-radius:50%;
   border:1.5px solid var(--linea); background:none; color:var(--tinta);
   display:flex; align-items:center; justify-content:center; cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .nav-cerrar:hover{border-color:var(--verde)}
 .nav-panel .nav-principal{margin-top:52px}
@@ -300,7 +325,7 @@ a:focus-visible, button:focus-visible{
   position:fixed; top:16px; right:16px; bottom:16px; left:auto; margin:0;
   width:min(340px, calc(100vw - 32px));
   max-width:none; max-height:none;
-  overflow-y:auto;
+  overflow-y:auto; overscroll-behavior:contain;
   background:var(--blanco); color:var(--tinta);
   border:none; border-radius:var(--radius-md);
   box-shadow:0 12px 40px rgba(30,28,20,.28);
@@ -327,6 +352,7 @@ a:focus-visible, button:focus-visible{
   width:48px; height:48px; border-radius:50%;
   border:1.5px solid var(--linea); background:none; color:var(--tinta);
   display:flex; align-items:center; justify-content:center; cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .a11y-cerrar:hover{border-color:var(--verde)}
 .nav-btn:active, .a11y-btn:active, .nav-cerrar:active, .a11y-cerrar:active{
@@ -827,18 +853,24 @@ footer p.legal{
    el ícono ya es genérico (ver template), el color tampoco imita la
    marca de terceros. */
 .whatsapp-flotante{
-  position:fixed; right:20px; bottom:20px; z-index:40;
+  position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); z-index:40;
   width:56px; height:56px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:var(--verde); color:var(--blanco);
   box-shadow:0 10px 24px -8px rgba(0,0,0,.45);
   transition:transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
-.whatsapp-flotante:hover, .whatsapp-flotante:focus-visible{
+.whatsapp-flotante:focus-visible{
   transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
 }
+@media (hover:hover) and (pointer:fine){
+  .whatsapp-flotante:hover{
+    transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
+  }
+}
 @media(max-width:859px){
-  .whatsapp-flotante{right:16px; bottom:16px; width:52px; height:52px}
+  .whatsapp-flotante{right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); width:52px; height:52px}
 }
 
 .privacidad-breve{
@@ -1233,6 +1265,7 @@ footer::before{display:none}
 .tab-lista button{
   min-height:58px; padding:12px; border:0; background:var(--blanco);
   color:var(--verde-osc); font:700 .9rem var(--font-subhead); cursor:pointer;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
 .tab-lista button + button{border-left:2px solid var(--verde-osc)}
 .tab-lista button[aria-selected="true"]{background:var(--verde-osc); color:var(--blanco)}
@@ -1360,7 +1393,11 @@ footer::before{display:none}
    ritmo, aire, radios suaves y líneas finas. */
 .arquitectura-bloque{border-bottom:1px solid var(--linea-suave)}
 
-.portada-hero{min-height:min(820px, 92vh)}
+/* 92vh primero como respaldo (navegadores sin soporte de svh mantienen
+   esta línea); 92svh después -- la altura más chica que toma el
+   viewport en mobile, nunca cambia mientras aparece/desaparece la
+   barra de direcciones, así que el hero nunca se corta ni salta. */
+.portada-hero{min-height:min(820px, 92vh); min-height:min(820px, 92svh)}
 .portada-hero-velo{
   background:linear-gradient(180deg, rgba(20,27,17,.28), rgba(20,27,17,.76));
 }
