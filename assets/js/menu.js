@@ -70,13 +70,14 @@ const UI = {
  a11yContraste:{es:'Alto contraste',en:'High contrast',pt:'Alto contraste',fr:'Contraste élevé',it:'Alto contrasto'},
  a11yMovimiento:{es:'Reducir movimiento',en:'Reduce motion',pt:'Reduzir movimento',fr:'Réduire les animations',it:'Riduci movimento'},
  a11yLectura:{es:'Lectura simple',en:'Simple reading',pt:'Leitura simples',fr:'Lecture simplifiée',it:'Lettura semplice'},
+ a11yReset:{es:'Restablecer',en:'Reset',pt:'Restaurar',fr:'Réinitialiser',it:'Ripristina'},
  idioma:{es:'Idioma',en:'Language',pt:'Idioma',fr:'Langue',it:'Lingua'},
  avisoAlergias:{es:'Si tenés alguna alergia o intolerancia alimentaria, informanos antes de realizar tu pedido.',en:'If you have any food allergy or intolerance, please let us know before ordering.',pt:'Se você tem alguma alergia ou intolerância alimentar, avise-nos antes de pedir.',fr:'Si vous avez une allergie ou une intolérance alimentaire, informez-nous avant de commander.',it:'Se hai un’allergia o un’intolleranza alimentare, informaci prima di ordinare.'},
  avisoMoneda:{es:'Precios expresados en pesos argentinos (ARS). Las conversiones a otras monedas son orientativas.',en:'Prices shown in Argentine pesos (ARS). Conversions to other currencies are approximate.',pt:'Preços em pesos argentinos (ARS). As conversões para outras moedas são apenas orientativas.',fr:'Prix indiqués en pesos argentins (ARS). Les conversions dans d’autres devises sont indicatives.',it:'Prezzi in pesos argentini (ARS). Le conversioni in altre valute sono indicative.'},
  buscarLabel:{es:'Buscar en el menú',en:'Search the menu',pt:'Buscar no menu',fr:'Rechercher dans le menu',it:'Cerca nel menu'},
  buscarPlaceholder:{es:'¿Qué estás buscando?',en:'What are you looking for?',pt:'O que você está procurando?',fr:'Que recherchez-vous ?',it:'Cosa stai cercando?'},
  buscarLimpiar:{es:'Limpiar búsqueda',en:'Clear search',pt:'Limpar busca',fr:'Effacer la recherche',it:'Cancella ricerca'},
- buscarSinResultados:{es:'Sin resultados para tu búsqueda',en:'No results for your search',pt:'Nenhum resultado para sua busca',fr:'Aucun résultat pour votre recherche',it:'Nessun risultato per la tua ricerca'},
+ buscarSinResultados:{es:'Sin resultados para tu búsqueda. Probá con otra palabra.',en:'No results for your search. Try a different word.',pt:'Nenhum resultado para sua busca. Tente outra palavra.',fr:'Aucun résultat pour votre recherche. Essayez un autre mot.',it:'Nessun risultato per la tua ricerca. Prova con un’altra parola.'},
  buscarResultados:{es:'resultados encontrados',en:'results found',pt:'resultados encontrados',fr:'résultats trouvés',it:'risultati trovati'},
  volverCategorias:{es:'Categorías',en:'Categories',pt:'Categorias',fr:'Catégories',it:'Categorie'},
  agotadoHoy:{es:'Agotado por hoy',en:'Sold out today',pt:'Esgotado por hoje',fr:'Épuisé pour aujourd’hui',it:'Esaurito per oggi'},
@@ -380,6 +381,9 @@ document.querySelectorAll('.a11y-opts button').forEach(b=>{
 $('a11yContraste').addEventListener('change', e=>{ a11yPrefs.contraste=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
 $('a11yMovimiento').addEventListener('change', e=>{ a11yPrefs.movimiento=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
 $('a11yLectura').addEventListener('change', e=>{ a11yPrefs.lectura=e.target.checked; guardarA11y(a11yPrefs); aplicarA11y(); });
+/* mismo criterio que .a11y-reset en el sitio institucional: vacía el
+   estado entero (no solo afs) y reaplica desde cero. */
+$('a11yReset').addEventListener('click', ()=>{ a11yPrefs={}; guardarA11y(a11yPrefs); aplicarA11y(); });
 aplicarA11y();
 
 /* ---------- selector de idioma (desplegable) ---------- */
@@ -528,6 +532,7 @@ function render(){
   $('a11yContrasteLabel').textContent=UI.a11yContraste[lang];
   $('a11yMovimientoLabel').textContent=UI.a11yMovimiento[lang];
   $('a11yLecturaLabel').textContent=UI.a11yLectura[lang];
+  $('a11yReset').textContent=UI.a11yReset[lang];
   $('a11yCerrar').setAttribute('aria-label', UI.cerrarSheet[lang]);
   $('carPrev').setAttribute('aria-label', UI.anterior[lang]);
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
