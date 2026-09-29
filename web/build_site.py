@@ -401,6 +401,20 @@ def _bloque(texto: str, marcador: str, mantener: bool) -> str:
     return patron.sub("", texto)
 
 
+_PATRON_COMENTARIO_HTML = re.compile(r"<!--.*?-->", re.S)
+
+
+def _quitar_comentarios_html(html: str) -> str:
+    """Los comentarios explicativos del template (por qué tal decisión
+    de diseño, notas para quien edite después) son para quien lee el
+    código fuente del repo -- no para quien abre "ver código fuente"
+    del sitio publicado. Se corren al final del renderizado, después
+    de que _bloque() ya resolvió los propios marcadores _START/_END;
+    a esta altura lo que queda son solo comentarios explicativos
+    comunes, sin marcador que cumpla ninguna función."""
+    return _PATRON_COMENTARIO_HTML.sub("", html)
+
+
 def _parrafos_html(texto: str, clase: str) -> str:
     """Texto plano de config.json con párrafos separados por una línea
     en blanco (\\n\\n) -> una etiqueta <p class="clase"> por párrafo,
@@ -629,6 +643,7 @@ def renderizar_index(config: dict, produccion: bool) -> str:
         "__WHATSAPP_DISPLAY__": config["whatsapp_display"],
         "__CONTACTO_EMAIL__": config["contacto_email"],
         "__INSTAGRAM_HANDLE__": config["instagram_handle"],
+        "__INSTAGRAM_URL__": f"https://www.instagram.com/{config['instagram_handle']}/",
         "__GOOGLE_REVIEWS_URL__": config["google_reviews_url"],
         "__TRIPADVISOR_URL__": config["tripadvisor_url"],
         "__MAPS_URL__": (
@@ -693,6 +708,7 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     MARCADORES_URL = {
         "__MAPS_URL__", "__APPLE_MAPS_URL__", "__WAZE_URL__",
         "__GOOGLE_CALENDAR_URL__", "__GOOGLE_FORM_TRABAJO_URL__", "__GOOGLE_FORM_MARCAS_URL__",
+        "__INSTAGRAM_URL__",
     }
     salida = plantilla
     for marcador, valor in reemplazos.items():
@@ -722,7 +738,7 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     if quedan:
         raise SystemExit(f"Quedaron marcadores sin reemplazar en index.html: {quedan}")
 
-    return salida
+    return _quitar_comentarios_html(salida)
 
 
 def renderizar_404(config: dict) -> str:
@@ -742,7 +758,7 @@ def renderizar_404(config: dict) -> str:
     if quedan:
         raise SystemExit(f"Quedaron marcadores sin reemplazar en 404.html: {quedan}")
 
-    return salida
+    return _quitar_comentarios_html(salida)
 
 
 def renderizar_privacidad(config: dict) -> str:
@@ -795,7 +811,7 @@ def renderizar_privacidad(config: dict) -> str:
     if quedan:
         raise SystemExit(f"Quedaron marcadores sin reemplazar en privacidad.html: {quedan}")
 
-    return salida
+    return _quitar_comentarios_html(salida)
 
 
 def renderizar_pagina_legal(ruta_plantilla: Path, config: dict) -> str:
@@ -825,7 +841,7 @@ def renderizar_pagina_legal(ruta_plantilla: Path, config: dict) -> str:
         raise SystemExit(
             f"Quedaron marcadores sin reemplazar en {ruta_plantilla.name}: {quedan}"
         )
-    return salida
+    return _quitar_comentarios_html(salida)
 
 
 def renderizar_robots_txt(produccion: bool, config: dict) -> str:
