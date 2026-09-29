@@ -1602,3 +1602,55 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{padding-left:12px; backgro
   .header-acciones{gap:6px}
   .consultas-directorio,.consultas-grid,.consulta-ficha{width:100%; max-width:100%; min-width:0}
 }
+
+/* ================= DETALLE DE PRECISIÓN (2026-09-29) =================
+   Capa aditiva sobre la síntesis final de arriba, pedida para acercar
+   el sitio a un registro más contenido y preciso. No reemplaza fotos
+   reales, botones ni la paleta existente -- solo agrega un marco de
+   esquinas y una ficha técnica discretos, en los mismos tokens de
+   marca (--salvia/--blanco), nunca un color nuevo. Todo marcado
+   aria-hidden porque es decorativo: la información accesible real
+   (título de sección, dirección, horario) ya existe en otro lugar de
+   cada bloque y no se repite acá. */
+.marco-precision{
+  position:absolute; inset:20px; z-index:2; pointer-events:none;
+}
+.marco-precision .esquina{
+  position:absolute; width:18px; height:18px;
+  border-color:rgba(255,253,247,.5);
+}
+.marco-precision .esquina-tl{top:0; left:0; border-top:1px solid; border-left:1px solid}
+.marco-precision .esquina-tr{top:0; right:0; border-top:1px solid; border-right:1px solid}
+.marco-precision .esquina-bl{bottom:0; left:0; border-bottom:1px solid; border-left:1px solid}
+.marco-precision .esquina-br{bottom:0; right:0; border-bottom:1px solid; border-right:1px solid}
+
+.ficha-tecnica{
+  position:absolute; top:20px; left:32px; right:32px; z-index:2;
+  display:flex; justify-content:space-between; gap:12px;
+  margin:0; font-family:var(--font-subhead); font-weight:700;
+  font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--salvia);
+}
+@media(max-width:859px){
+  .marco-precision{inset:14px}
+  .ficha-tecnica{top:14px; left:20px; right:20px; font-size:.6rem; letter-spacing:.1em}
+}
+
+/* "Carta y pedidos": mismo marco sobre la foto real, más un eco grande
+   del título de la sección superpuesto a la imagen (el título
+   accesible real sigue siendo el <h2> de .tienda-contenido, sin
+   cambios -- este es un segundo, puramente visual). */
+.tienda-online .marco-foto{position:relative; overflow:hidden; min-height:400px}
+.tienda-online .marco-foto .espacio-tienda{
+  position:absolute; inset:0; width:100%; height:100%; margin:0; border:0; border-radius:0;
+}
+.titulo-superpuesto{
+  position:absolute; left:24px; right:24px; bottom:18px; z-index:2;
+  margin:0; font-family:var(--font-display); font-weight:600;
+  font-size:clamp(3rem, 11vw, 6.2rem); line-height:.82;
+  letter-spacing:.005em; text-transform:uppercase; color:var(--blanco);
+  text-shadow:0 2px 24px rgba(0,0,0,.4);
+}
+@media(min-width:760px){
+  .tienda-online .marco-foto{min-height:720px}
+}
