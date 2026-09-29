@@ -1188,7 +1188,7 @@ class TestEnlacesYRecursosSeguros(SandboxConstruirTestCase):
                     # único artefacto de GitHub Pages -- la ruta interna
                     # exacta del menú), nunca otra cosa.
                     self.assertTrue(
-                        href in ("index.html", "privacidad.html")
+                        href in ("index.html", "privacidad.html", "informacion-alimentaria.html")
                         or href.startswith("assets/")
                         or href == build_site.RUTA_MENU_INTERNA,
                         msg=f"href inesperado (ni https:// ni relativo propio) en {nombre}: {href!r}",
