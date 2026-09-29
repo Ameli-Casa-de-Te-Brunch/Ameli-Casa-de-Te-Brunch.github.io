@@ -1016,14 +1016,15 @@ html[data-lectura="simple"] .indice-num{font-style:normal}
    /isidris): foto real + velo oscuro en degradé (capa propia, separada
    de la foto -- un <img> no puede llevar un gradiente de fondo visible
    encima de su propio contenido) + texto centrado encima. El resto de
-   los espacios reservados (.espacio-imagen/.espacio-foto/.espacio-menu/
-   .espacio-mapa) sigue con el patrón diagonal como marcador -- son los
-   que todavía no tienen foto (ej. el mapa, que nunca la tiene, ver
-   política de mapas). .espacio-sustentabilidad sigue en este grupo
-   (necesita el mismo marco de borde/radio) aunque desde el 2026-09-16
-   sea un <img> real -- el fondo de este bloque queda tapado por la
-   foto. */
-.espacio-imagen,.espacio-foto,.espacio-menu,.espacio-mapa,.espacio-sustentabilidad{
+   los espacios reservados (.espacio-imagen/.espacio-foto/.espacio-menu)
+   sigue con el patrón diagonal como marcador -- son los que todavía no
+   tienen foto. .espacio-sustentabilidad sigue en este grupo (necesita
+   el mismo marco de borde/radio) aunque desde el 2026-09-16 sea un
+   <img> real -- el fondo de este bloque queda tapado por la foto.
+   .espacio-mapa (Visitarnos) salió de este grupo el 2026-09-29: nunca
+   iba a tener foto -- ahí no había mapa, ahora es .marco-ubicacion,
+   ver esa clase más abajo. */
+.espacio-imagen,.espacio-foto,.espacio-menu,.espacio-sustentabilidad{
   display:grid; place-items:center; overflow:hidden;
   color:rgba(62,71,54,.58); background:
     linear-gradient(135deg, transparent 49.7%, rgba(83,96,57,.17) 50%, transparent 50.3%),
@@ -1087,12 +1088,32 @@ img.portada-hero-fondo{
 .portada-hero-overlay .btn-secundario:hover, .portada-hero-overlay .btn-secundario:focus-visible{
   background:rgba(255,253,247,.12);
 }
-/* Reusa .horario-info/.horario-detalle (mismo __HORARIOS__ que FAQ y
-   Visitarnos) pero en la versión clara-sobre-oscuro, como
-   .ubicacion-card .horario-detalle más abajo en el archivo. */
-.portada-horario{margin:18px 0 0; text-align:center}
-.portada-horario .horario-detalle{
-  color:rgba(255,253,247,.82); font-size:.82rem; line-height:1.5;
+/* Franja secundaria del hero (punto 6, unificación 2026-09-29): coordenada
+   real + localidad + horario, todo lo que antes se acumulaba dentro del
+   primer bloque del hero (ver template, sección "Primer bloque del
+   hero") -- movido a esta franja propia, delgada, entre la portada y
+   "Nuestra historia". Fondo claro propio (ya no está sobre la foto),
+   mismo patrón de .marco-ubicacion en Visitarnos: sin altura mínima
+   forzada, ocupa lo que su contenido pide. */
+.portada-franja{
+  max-width:none; margin:0; padding:22px max(24px, calc((100vw - var(--max-w)) / 2));
+  background:var(--crema); border-bottom:1px solid var(--linea-suave);
+  display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;
+}
+/* selector compuesto (no la sola clase) a propósito -- misma
+   especificidad que .marco-ubicacion .ficha-tecnica en Visitarnos, para
+   ganarle de verdad a la regla base .ficha-tecnica{position:absolute},
+   que en el archivo aparece después (más abajo, sección "DETALLE DE
+   PRECISIÓN"): con igual especificidad gana la que esté más abajo, y
+   .portada-franja-coords sola quedaba con la misma especificidad que
+   esa regla base y perdía. */
+.portada-franja .ficha-tecnica{
+  position:static; color:var(--texto-sec);
+  justify-content:center; flex-wrap:wrap; gap:6px 18px;
+}
+.portada-franja .portada-horario{margin:0}
+.portada-franja .horario-detalle{
+  color:var(--texto-sec); font-size:.82rem; line-height:1.5;
 }
 
 .sobre-ameli{
@@ -1325,7 +1346,6 @@ footer::before{display:none}
   display:grid; grid-template-columns:1fr; gap:28px;
   background:var(--crema);
 }
-.ubicacion .espacio-mapa{min-height:240px}
 .ubicacion-direccion{
   font-family:var(--font-display); font-size:1.3rem; color:var(--tinta); margin:0 0 8px;
 }
@@ -1420,6 +1440,26 @@ footer::before{display:none}
   border-bottom:0; text-align:center;
 }
 .sobre-ameli .titulo-seccion{font-size:clamp(2.8rem, 7vw, 4.8rem)}
+/* text-wrap:pretty evita que la última línea de un párrafo o título
+   quede con una sola palabra suelta -- soporte parcial (Chrome/Firefox
+   recientes), no-op donde falta, así que no hace falta respaldo. */
+.sobre-ameli .titulo-seccion,.sobre-ameli p:not(.eyebrow){text-wrap:pretty}
+/* Punto 7 (unificación 2026-09-29): en mobile el título de 2.8rem+96px
+   de padding arriba/abajo hacía que "Nuestra historia" ocupara casi
+   toda la pantalla antes de llegar al primer párrafo. Tamaño fluido
+   más chico, interlineado más cómodo, menos aire vertical -- la
+   presencia editorial (título grande, centrado) se mantiene igual en
+   escritorio, esto solo actúa por debajo de 640px. */
+@media(max-width:640px){
+  .sobre-ameli{padding:64px 24px}
+  .sobre-ameli .titulo-seccion{
+    font-size:clamp(2rem, 9vw, 2.8rem);
+    line-height:1.12;
+    margin-bottom:16px;
+  }
+  .sobre-ameli .eyebrow{margin-bottom:12px}
+  .sobre-ameli p:not(.eyebrow){line-height:1.7; margin-bottom:18px}
+}
 
 .servicios{background:var(--crema); border-bottom:0}
 .servicios-inner{padding:88px 24px 96px}
@@ -1506,7 +1546,25 @@ footer::before{display:none}
   display:grid; grid-template-columns:1fr; gap:0; padding:0;
   background:var(--blanco);
 }
-.visitarnos .espacio-mapa{min-height:360px; margin:0; border:0; border-radius:0}
+/* Reemplaza el espacio reservado vacío ("Espacio para mapa"): nunca hay
+   mapa embebido acá (ver nota en el template), así que en vez de un
+   bloque en blanco a la espera de una foto que no va a llegar, esto es
+   una ficha editorial terminada -- marco de esquinas + coordenada real
+   + el emblema de marca, sin altura mínima forzada: ocupa lo que su
+   propio contenido pide, no un alto de mapa inventado. */
+.marco-ubicacion{
+  position:relative; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  padding:48px 24px; text-align:center;
+  background:var(--crema); border-bottom:1px solid var(--linea-suave);
+}
+.marco-ubicacion .marco-precision{inset:16px}
+.marco-ubicacion .esquina{border-color:rgba(62,71,54,.4)}
+.marco-ubicacion-emblema{font-size:1.3rem; color:var(--verde); opacity:.75}
+.marco-ubicacion .ficha-tecnica{
+  position:static; color:var(--texto-sec);
+  justify-content:center; flex-wrap:wrap; gap:6px 18px;
+}
 .visitarnos .ubicacion-contenido{padding:72px 24px}
 .visitarnos .ubicacion-direccion{font-size:clamp(1.9rem, 5vw, 2.7rem); max-width:16ch; margin-bottom:12px}
 .contacto-compacto{margin-top:38px; padding-top:28px; border-top:1px solid var(--linea)}
@@ -1603,7 +1661,6 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{transform:translateX(12px)
   .tienda-contenido{padding:88px max(48px, calc((100vw - var(--max-w)) / 2)) 88px max(24px, calc((100vw - var(--max-w)) / 2))}
   .tienda-online .espacio-tienda{min-height:720px}
   .ubicacion.visitarnos{grid-template-columns:minmax(320px,.9fr) minmax(420px,1.1fr); align-items:stretch}
-  .visitarnos .espacio-mapa{min-height:680px}
   .visitarnos .ubicacion-contenido{padding:88px max(24px, calc((100vw - var(--max-w)) / 2)) 88px 56px}
   .consultas-directorio{padding-top:110px; padding-bottom:110px}
 }

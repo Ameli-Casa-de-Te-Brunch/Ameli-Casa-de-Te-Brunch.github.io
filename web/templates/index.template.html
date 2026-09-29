@@ -82,12 +82,20 @@ __SOCIAL_META_TAGS__
        (referencia: puestodelindio.com/isidris). Foto real del salón +
        velo oscuro (capa aparte, no puede ir en el <img>) + texto
        centrado encima. -->
+  <!-- Primer bloque del hero: solo lo que pide seguir arriba del pliegue
+       en mobile (punto 6, ronda de unificación 2026-09-29) -- nombre,
+       categoría, tagline y los dos CTA. Coordenadas, localidad y horario
+       se sacaron de acá (antes se acumulaban: emblema + categoría+
+       localidad + nombre + tagline + 2 botones + horario, todo en el
+       mismo bloque centrado) y se mudaron a la franja secundaria de
+       abajo -- .portada-franja, después de cerrar esta section. No se
+       eliminó ningún dato, solo se reordenó. -->
   <section class="portada portada-hero" aria-labelledby="titulo-portada">
     <img class="portada-hero-fondo" alt="Interior del salón de Amelí, con mesas y sillas de madera y la vitrina de pastelería al fondo." src="assets/img/portada-960.webp" srcset="assets/img/portada-640.webp 640w, assets/img/portada-960.webp 960w" sizes="100vw" width="960" height="1280" loading="eager" fetchpriority="high" decoding="async">
     <div class="portada-hero-velo" aria-hidden="true"></div>
     <div class="portada-hero-overlay">
       <span class="portada-emblema" aria-hidden="true">✻</span>
-      <p class="eyebrow-tag">__CATEGORIA__ · __UBICACION_CORTA__</p>
+      <p class="eyebrow-tag">__CATEGORIA__</p>
       <h1 class="titulo-marca titulo-arquitectura" id="titulo-portada">__MARCA__</h1>
       <p class="portada-tagline">__TAGLINE__</p>
       <div class="cta-fila">
@@ -97,25 +105,23 @@ __SOCIAL_META_TAGS__
         <a class="btn btn-principal" href="__MENU_URL__">Ver el menú</a>
         <a class="btn btn-secundario" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
       </div>
-      <!-- Mismo dato de horario que ya se muestra en Preguntas
-           frecuentes y Visitarnos -- acá solo se agrega una versión
-           visible de entrada, para no obligar a quien llega por
-           primera vez a abrir un acordeón o bajar toda la página para
-           saber si Amelí está abierto ahora. Bloque null-gated igual
-           que los otros dos: si horarios falta en config.json, esta
-           versión también desaparece, no solo las otras. -->
-      <!--HORARIOS_START--><div class="horario-info portada-horario"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
     </div>
-    <!-- Marco de esquinas + ficha técnica: detalle decorativo agregado
-         2026-09-29, no reemplaza la foto ni el texto accesible de
-         arriba. La coordenada es un dato geográfico fijo de Malargüe
-         (no depende de site.config.json); __UBICACION_CORTA__ sí. -->
+    <!-- Marco de esquinas: puramente decorativo (sin texto), se queda
+         sobre la foto. La ficha técnica con el texto (coordenada +
+         localidad) se mudó a .portada-franja, abajo. -->
     <div class="marco-precision" aria-hidden="true">
       <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
       <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
     </div>
-    <p class="ficha-tecnica" aria-hidden="true"><span>35.4746° S · 69.5878° W</span><span>__UBICACION_CORTA__</span></p>
   </section>
+
+  <!-- Franja secundaria: coordenada real, localidad y horario -- el
+       mismo contenido que antes competía por espacio en el primer
+       bloque del hero, ahora en su propia franja delgada, debajo. -->
+  <div class="portada-franja">
+    <p class="ficha-tecnica" aria-hidden="true"><span>35.4746° S · 69.5878° W</span><span>__UBICACION_CORTA__</span></p>
+    <!--HORARIOS_START--><div class="horario-info portada-horario"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
+  </div>
 
   <!--SOBRE_AMELI_START--><section class="sobre-ameli" id="filosofia" aria-labelledby="titulo-sobre-ameli">
     <p class="eyebrow" id="titulo-sobre-ameli">Nuestra historia</p>
@@ -262,9 +268,25 @@ __SOCIAL_META_TAGS__
        tipeados a mano ni inventados acá. No se usa ningún logo/símbolo
        de marca real de Google, Apple ni Waze -- son marcas de terceros
        y no hay autorización para reproducirlas; cada enlace lleva solo
-       su nombre en texto. ===== -->
+       su nombre en texto.
+
+       El bloque reservado vacío ("Espacio para mapa") se reemplaza acá
+       por una ficha editorial hecha solo con HTML/CSS -- mismo patrón
+       de marco de esquinas + ficha técnica que ya existe en la portada
+       (.marco-precision/.ficha-tecnica), reutilizando la misma
+       coordenada real de Malargüe, no una nueva. Sigue sin ser mapa,
+       logo ni imagen: es puramente decorativo (aria-hidden), la
+       dirección accesible real está en .ubicacion-contenido, al lado.
+       ===== -->
   <section class="ubicacion visitarnos arquitectura-bloque" id="ubicacion" aria-labelledby="titulo-ubicacion">
-    <div class="espacio-mapa" aria-hidden="true">Espacio para mapa</div>
+    <div class="marco-ubicacion" aria-hidden="true">
+      <div class="marco-precision">
+        <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
+        <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
+      </div>
+      <span class="marco-ubicacion-emblema">✻</span>
+      <p class="ficha-tecnica"><span>35.4746° S · 69.5878° W</span><span>__UBICACION_CORTA__</span></p>
+    </div>
     <div class="ubicacion-contenido">
       <p class="eyebrow">Visitarnos</p>
       <h2 class="titulo-seccion" id="titulo-ubicacion">Encontranos en Malargüe</h2>

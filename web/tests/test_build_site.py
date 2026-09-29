@@ -1049,7 +1049,10 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         reales (fotos propias incorporadas el 2026-09-16) -- cada una con
         ancho/alto (evita saltos de layout), srcset+sizes (responsive) y
         alt no vacío con texto real (no son decorativas). El mapa sigue
-        sin foto ni embed, por diseño."""
+        sin foto, sin iframe ni embed, por diseño -- desde el 2026-09-29
+        ya no es un espacio reservado vacío (.espacio-mapa, "Espacio para
+        mapa") sino una ficha editorial hecha solo con HTML/CSS
+        (.marco-ubicacion, ver Visitarnos en el template)."""
         self.escribir_config(config_valido(
             presentacion_sobre_ameli="Filosofía confirmada.",
             servicios_habilitado=True,
@@ -1081,8 +1084,11 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         for img in imgs:
             if "portada-hero-fondo" not in img and ("espacio-tienda" in img or "espacio-sustentabilidad" in img):
                 self.assertIn('loading="lazy"', img)
-        self.assertIn("espacio-mapa", contenido)
-        self.assertNotRegex(contenido, r'<img\b[^>]*espacio-mapa')
+        self.assertIn("marco-ubicacion", contenido)
+        self.assertNotIn("espacio-mapa", contenido)
+        self.assertNotIn("Espacio para mapa", contenido)
+        self.assertNotIn("<iframe", contenido)
+        self.assertNotRegex(contenido, r'<img\b[^>]*marco-ubicacion')
         plantilla = build_site.TEMPLATE_INDEX_PATH.read_text(encoding="utf-8")
         self.assertNotIn("espacio-turismo", plantilla)
 
