@@ -32,6 +32,10 @@
   --radio:var(--radius-md);
   --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px; --space-12:48px; --space-16:64px;
   --afs:1;
+  /* Curva de ease-out fuerte para popovers/paneles que entran en pantalla --
+     mismo valor que --ease-out en web/assets/css/site.css, para no crear
+     una curva paralela entre los dos sitios. */
+  --ease-out:cubic-bezier(.23,1,.32,1);
 }
 /* Sin variante de modo oscuro a propósito: el feedback de los clientes fue
    que los tonos oscuros (fondo/verde invertidos) se leían mal en la mesa —
@@ -70,8 +74,19 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .langs-btn:active{transform:scale(.95)}
 .a11y-btn{display:flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border-radius:999px;background:var(--crema);border:none;color:var(--verde-osc);font-family:'Karla',sans-serif;font-weight:700;font-size:calc(13px * var(--afs,1));cursor:pointer;transition:transform .2s}
 .a11y-btn:active{transform:scale(.95)}
-.langs-menu{list-style:none;position:absolute;top:calc(100% + 8px);right:0;min-width:172px;background:var(--blanco);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;z-index:30}
+.langs-menu{list-style:none;position:absolute;top:calc(100% + 8px);right:0;min-width:172px;background:var(--blanco);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;z-index:30;
+  transform-origin:top right;transform:scale(1);opacity:1;
+  transition:transform .18s var(--ease-out),opacity .15s ease}
 .langs-menu[hidden]{display:none}
+/* Entra con un scale-in anclado al botón que lo abre (arriba a la derecha),
+   en vez de aparecer de golpe. Mismo criterio que .nav-panel/.a11y-panel en
+   site.css: solo se anima la apertura -- abrirLangs()/cerrarLangs() en
+   menu.js alternan `hidden` de forma instantánea, así que el cierre queda
+   sin transición, igual que esos dos paneles (ya documentado ahí como
+   preferible a no animar nada). */
+@starting-style{
+  .langs-menu{transform:scale(.95);opacity:0}
+}
 .langs-menu button{display:flex;width:100%;align-items:center;gap:8px;text-align:left;background:none;border:none;color:var(--tinta);font-family:'Karla',sans-serif;font-size:calc(14px * var(--afs,1));padding:10px 12px;border-radius:9px;cursor:pointer;min-height:40px}
 .langs-menu button:hover,.langs-menu button:focus-visible{background:var(--crema)}
 .langs-menu button[aria-selected="true"]{font-weight:700;color:var(--verde-osc)}

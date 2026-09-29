@@ -1658,3 +1658,30 @@ a.consulta-ficha:hover,a.consulta-ficha:focus-visible{transform:translateX(12px)
 @media(min-width:760px){
   .tienda-online .marco-foto{min-height:720px}
 }
+
+/* ================= REVELADO AL HACER SCROLL (2026-09-29) =================
+   Mismo mecanismo ya probado en /menu/ (section.cat + IntersectionObserver
+   en menu.js), traído acá. El hero (.portada-hero) queda afuera a propósito
+   -- es el elemento LCP (fetchpriority="high"), animar el primer pintado
+   compite con la propia prioridad de carga del sitio.
+
+   La regla de "oculto por defecto" vive bajo html.js-reveal, una clase que
+   site.js agrega recién cuando confirma que el IntersectionObserver está
+   listo -- si el script no corre (bloqueado, falla, navegador viejo sin
+   soporte), html.js-reveal nunca se agrega y estas secciones quedan
+   visibles por el CSS normal de arriba, sin depender de JS para mostrarse.
+   Mismo principio de mejora progresiva real que ya usa el botón "Aa"
+   (data-a11y-pending) más arriba en este archivo. */
+html.js-reveal .arquitectura-bloque,
+html.js-reveal .sobre-ameli,
+html.js-reveal .sustentabilidad,
+html.js-reveal .preguntas-frecuentes{
+  opacity:0; transform:translateY(10px);
+  transition:opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+html.js-reveal .arquitectura-bloque.visible,
+html.js-reveal .sobre-ameli.visible,
+html.js-reveal .sustentabilidad.visible,
+html.js-reveal .preguntas-frecuentes.visible{
+  opacity:1; transform:translateY(0);
+}
