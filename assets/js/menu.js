@@ -45,7 +45,6 @@ const UI = {
  productoDestacado:{es:'Producto destacado',en:'Featured product',pt:'Produto em destaque',fr:'Produit vedette',it:'Prodotto in evidenza'},
  vacio:{es:'Nada por acá para este momento… probá otro antojo ❧',en:'Nothing here for this moment… try another craving ❧',pt:'Nada por aqui para este momento… tente outra vontade ❧',fr:'Rien par ici pour ce moment… essayez une autre envie ❧',it:'Niente qui per questo momento… prova un’altra voglia ❧'},
  grx:{es:'Gracias por elegirnos ❧',en:'Thank you for choosing us ❧',pt:'Obrigado por nos escolher ❧',fr:'Merci de nous avoir choisis ❧',it:'Grazie per averci scelto ❧'},
- googleReview:{es:'Reseña en Google',en:'Review on Google',pt:'Avaliação no Google',fr:'Avis sur Google',it:'Recensione su Google'},
  datos:{es:'Martes a sábado · 9:00–13:00 y 17:30–21:00<br>Domingo · 17:30–21:00',
         en:'Tuesday–Saturday · 9 am–1 pm & 5:30–9 pm<br>Sunday · 5:30–9 pm',
         pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
@@ -522,7 +521,6 @@ function render(){
   $('destEyebrow').textContent=UI.destEyebrow[lang];
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
-  if($('footGoogleTxt')) $('footGoogleTxt').textContent=UI.googleReview[lang];
   $('footDatos').innerHTML=UI.datos[lang];
   $('a11yBtn').setAttribute('aria-label', UI.a11yBtn[lang]);
   $('a11yTitle').textContent=UI.a11yTitle[lang];
