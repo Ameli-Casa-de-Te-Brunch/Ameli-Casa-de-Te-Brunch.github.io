@@ -65,7 +65,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .cat-icons{display:flex;gap:10px;overflow-x:auto;padding:20px 16px 4px;scrollbar-width:none}
 .cat-icons::-webkit-scrollbar{display:none}
 .cat-icons a{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--verde-osc);background:var(--crema);padding:12px 10px;border-radius:var(--radius-md);width:76px}
-.cat-icons a span{font-family:'Karla',sans-serif;font-weight:600;font-size:calc(10.5px * var(--afs,1));text-align:center;line-height:1.25}
+.cat-icons a span{font-family:'Karla',sans-serif;font-weight:600;font-size:calc(11px * var(--afs,1));text-align:center;line-height:1.25}
 
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
@@ -150,7 +150,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
    negativo y velo oscuro para que el texto blanco se leyera encima) --
    ahora es un panel claro propio, debajo de la foto. */
 .dcard .cuerpo{padding:14px 16px 16px}
-.badge{display:inline-block;font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
+.badge{display:inline-block;font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:8px}
 .dcard .cuerpo .badge{margin-right:6px}
 .badge.fav{background:var(--marron);color:var(--sobre-verde)}
 .badge.reco{background:var(--manteca);color:var(--marron)}
@@ -205,7 +205,7 @@ section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .destacado-cat .foto{height:160px;position:relative;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .destacado-cat .foto span.inicial{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:calc(52px * var(--afs,1));color:rgba(255,253,247,.6)}
 .prod.destacado-cat .cont{padding:16px 18px 18px}
-.destacado-cat .eyebrow-cat{font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:4px}
+.destacado-cat .eyebrow-cat{font-size:calc(11px * var(--afs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:4px}
 .destacado-cat h3{font-size:calc(23px * var(--afs,1))}
 .destacado-cat .desc{margin-bottom:4px}
 .destacado-cat .fila{margin-top:10px}
