@@ -26,13 +26,16 @@ mismo archivo — ver `build_site.py::_copiar_assets`).
 
 ## Fotografías
 
-| Ruta | SHA-256 | Autor o proveedor | Procedencia | Fecha de recepción | Fundamento de uso | Ubicación de la evidencia | Estado | Observaciones |
-|---|---|---|---|---|---|---|---|---|
-| `assets/img/hero-tostada.webp` | `56786a62c9904963e863e70abe416509b42f65caefbe246dac68e79e8df19bd1` | Desconocido | Según README: foto real del negocio, provista para este uso | Desconocida | Propio (afirmado, sin confirmación escrita) | `README.md` (prosa) | `PENDIENTE` | Optimizada a WebP calidad 82, sin metadatos EXIF (según README) |
-| `assets/img/menu-smoothies.webp` | `55808169d4e936b06a0d26c9932a69336ec4614abf2033184ae57c64bcb11aa7` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
-| `assets/img/sabor-torta.webp` | `53c691018ec41dc59311a4d45f7feb165baeb420dfc20713679a319891af6808` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
-| `assets/img/sabor-tarta.webp` | `8dbbf7f5a4ae96459952c57af77e5ae62dc825cebaeb25737a9b272cec35ee9c` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
-| `assets/img/sabor-sandwich.webp` | `7bf7bb6b52c2a3e25e0b39ac992fa7b9773f0e82e2b3a92a01f53b6eb4b98a55` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
+Ninguna fotografía sigue publicada hoy. Las 5 que existieron (`hero-tostada.webp`,
+`menu-smoothies.webp`, `sabor-torta.webp`, `sabor-tarta.webp`,
+`sabor-sandwich.webp`) dejaron de estar enlazadas en el HTML a partir del
+rediseño del 2026-09-15 (commit `1879586`), pero `build_site.py` copia toda
+`assets/img/` tal cual a `dist/`, así que quedaron publicadas sin estar
+enlazadas desde ningún template, con su estado de licencia todavía
+`PENDIENTE`. Se eliminaron del repo el 2026-09-30 en el barrido de detalles
+sueltos pedido por Ignacio, en vez de dejarlas huérfanas indefinidamente.
+Si en el futuro se quieren retomar, están en el historial de git (commit
+previo a este cambio).
 
 ## Íconos (derivados del logo)
 
