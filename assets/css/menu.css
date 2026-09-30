@@ -203,6 +203,12 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .dcard-cat{font-size:calc(10.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-sec)}
 .dcard .precio{display:block;margin-top:4px;font-weight:700;font-size:calc(14px * var(--afs,1));color:var(--verde-osc)}
 .dcard .precio small{font-weight:500;font-size:calc(11px * var(--afs,1));color:var(--texto-sec)}
+/* Chico/Grande, Vaso/Jarra separados en dos líneas (2026-09-30) en vez
+   de un único string con "·" -- ver textoPrecio() en menu.js. white-space
+   normal acá: cada nivel (p.ej. "Grande $ 5.600") sí se puede cortar si
+   hace falta, a diferencia del precio único de .prod .precio de abajo. */
+.precio-nivel{display:block;white-space:normal}
+.precio-nivel + .precio-nivel{margin-top:1px}
 /* flechas finas y claras: círculo de línea 1px (no sombra ni relleno)
    con un trazo SVG delgado adentro, no el glifo ‹ › en negrita de antes. */
 .car-flecha{display:none}

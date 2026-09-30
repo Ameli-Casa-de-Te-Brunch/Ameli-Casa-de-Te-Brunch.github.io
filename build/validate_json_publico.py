@@ -49,7 +49,8 @@ CAMPOS_RAIZ_PERMITIDOS = ("cats", "prods", "precios", "config")
 CAMPOS_CATEGORIA_PERMITIDOS = ("cod", "orden", "nom")
 CAMPOS_PROD_OBLIGATORIOS = ("id", "cat", "orden", "dest", "n", "d", "m", "b", "img")
 CAMPOS_PROD_OPCIONALES = tuple(c for c in ec.CAMPOS_PROD_PUBLICOS if c not in CAMPOS_PROD_OBLIGATORIOS)
-CAMPOS_PRECIO_PERMITIDOS = ("ars", "usd", "eur", "brl")
+CAMPOS_PRECIO_PERMITIDOS = ("ars", "usd", "eur", "brl", "niveles")
+CAMPOS_NIVEL_PERMITIDOS = ("etiqueta", "ars", "usd", "eur", "brl")
 
 # Mismos valores que efectivamente consume assets/js/menu.js (BADGES,
 # ALERG_TXT, los chips de "momentos", y las opciones de leche del
@@ -387,6 +388,35 @@ def validate_menu_json(data) -> tuple[list[str], list[str]]:
         for campo in ("usd", "eur", "brl"):
             if campo in entrada and not isinstance(entrada[campo], str):
                 errors.append(f"{etiqueta_precio}.{campo}: tiene que ser un string (ya viene formateado).")
+        # niveles: opcional -- solo aparece cuando el producto tiene dos
+        # precios cargados (Chico/Grande o Vaso/Jarra, ver
+        # extract_common.niveles_precio()). Cuando está, son exactamente
+        # 2 objetos con 'etiqueta' + 'ars' obligatorios (mismo criterio de
+        # 'ars' que en la entrada de precio normal) y usd/eur/brl opcionales,
+        # solo esperables en el primer nivel (nunca se satura el segundo).
+        if "niveles" in entrada:
+            niveles = entrada["niveles"]
+            if not isinstance(niveles, list) or len(niveles) != 2:
+                errors.append(f"{etiqueta_precio}.niveles: tiene que ser una lista de exactamente 2 niveles.")
+            else:
+                for idx, nivel in enumerate(niveles):
+                    etiqueta_nivel = f"{etiqueta_precio}.niveles[{idx}]"
+                    if not isinstance(nivel, dict):
+                        errors.append(f"{etiqueta_nivel}: tiene que ser un objeto.")
+                        continue
+                    campos_desconocidos_nivel = set(nivel.keys()) - set(CAMPOS_NIVEL_PERMITIDOS)
+                    if campos_desconocidos_nivel:
+                        errors.append(
+                            f"{etiqueta_nivel}: tiene {len(campos_desconocidos_nivel)} campo(s) no permitido(s). "
+                            f"Solo se permiten {list(CAMPOS_NIVEL_PERMITIDOS)}."
+                        )
+                    if not isinstance(nivel.get("etiqueta"), str) or not nivel.get("etiqueta"):
+                        errors.append(f"{etiqueta_nivel}.etiqueta: tiene que ser un string no vacío.")
+                    if not isinstance(nivel.get("ars"), str) or not nivel.get("ars"):
+                        errors.append(f"{etiqueta_nivel}.ars: tiene que ser un string no vacío (ya viene formateado).")
+                    for campo in ("usd", "eur", "brl"):
+                        if campo in nivel and not isinstance(nivel[campo], str):
+                            errors.append(f"{etiqueta_nivel}.{campo}: tiene que ser un string (ya viene formateado).")
 
     # --- config: solo campos públicos, y válidos si están presentes ---
     campos_config_desconocidos = set(config.keys()) - set(ec.CAMPOS_CONFIG_PUBLICOS)

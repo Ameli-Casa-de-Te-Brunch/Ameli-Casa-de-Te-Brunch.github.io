@@ -2395,7 +2395,20 @@
    "ars": "Vaso $ 7.500 · Jarra $ 16.000",
    "usd": "≈ USD 5",
    "eur": "≈ EUR 4",
-   "brl": "≈ R$ 26"
+   "brl": "≈ R$ 26",
+   "niveles": [
+    {
+     "etiqueta": "Vaso",
+     "ars": "$ 7.500",
+     "usd": "≈ USD 5",
+     "eur": "≈ EUR 4",
+     "brl": "≈ R$ 26"
+    },
+    {
+     "etiqueta": "Jarra",
+     "ars": "$ 16.000"
+    }
+   ]
   },
   "BYJ005": {
    "ars": "$ 6.500",
@@ -2407,55 +2420,172 @@
    "ars": "Vaso $ 6.000 · Jarra $ 13.000",
    "usd": "≈ USD 4",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 21"
+   "brl": "≈ R$ 21",
+   "niveles": [
+    {
+     "etiqueta": "Vaso",
+     "ars": "$ 6.000",
+     "usd": "≈ USD 4",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 21"
+    },
+    {
+     "etiqueta": "Jarra",
+     "ars": "$ 13.000"
+    }
+   ]
   },
   "BYJ004": {
    "ars": "Vaso $ 7.000 · Jarra $ 14.000",
    "usd": "≈ USD 5",
    "eur": "≈ EUR 4",
-   "brl": "≈ R$ 24"
+   "brl": "≈ R$ 24",
+   "niveles": [
+    {
+     "etiqueta": "Vaso",
+     "ars": "$ 7.000",
+     "usd": "≈ USD 5",
+     "eur": "≈ EUR 4",
+     "brl": "≈ R$ 24"
+    },
+    {
+     "etiqueta": "Jarra",
+     "ars": "$ 14.000"
+    }
+   ]
   },
   "BYJ006": {
    "ars": "Vaso $ 7.500 · Jarra $ 16.000",
    "usd": "≈ USD 5",
    "eur": "≈ EUR 4",
-   "brl": "≈ R$ 26"
+   "brl": "≈ R$ 26",
+   "niveles": [
+    {
+     "etiqueta": "Vaso",
+     "ars": "$ 7.500",
+     "usd": "≈ USD 5",
+     "eur": "≈ EUR 4",
+     "brl": "≈ R$ 26"
+    },
+    {
+     "etiqueta": "Jarra",
+     "ars": "$ 16.000"
+    }
+   ]
   },
   "BLE001": {
    "ars": "Chico $ 4.800 · Grande $ 5.600",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   },
   "BLE002": {
    "ars": "Chico $ 4.800 · Grande $ 5.600",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   },
   "BLE003": {
    "ars": "Chico $ 4.800 · Grande $ 5.600",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   },
   "BLE004": {
    "ars": "Chico $ 4.800 · Grande $ 5.600",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   },
   "CCL001": {
    "ars": "Chico $ 4.000 · Grande $ 5.000",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 2",
-   "brl": "≈ R$ 14"
+   "brl": "≈ R$ 14",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.000",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 2",
+     "brl": "≈ R$ 14"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.000"
+    }
+   ]
   },
   "CCL003": {
    "ars": "Chico $ 4.700 · Grande $ 6.200",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 16"
+   "brl": "≈ R$ 16",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.700",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 16"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 6.200"
+    }
+   ]
   },
   "CCL006": {
    "ars": "$ 6.500",
@@ -2467,13 +2597,39 @@
    "ars": "Chico $ 4.700 · Grande $ 6.000",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 16"
+   "brl": "≈ R$ 16",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.700",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 16"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 6.000"
+    }
+   ]
   },
   "CCL004": {
    "ars": "Chico $ 4.200 · Grande $ 5.000",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 2",
-   "brl": "≈ R$ 15"
+   "brl": "≈ R$ 15",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.200",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 2",
+     "brl": "≈ R$ 15"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.000"
+    }
+   ]
   },
   "CCL005": {
    "ars": "$ 7.700",
@@ -2629,25 +2785,77 @@
    "ars": "Chico $ 4.800 · Grande $ 5.600",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   },
   "TIS001": {
    "ars": "Chico $ 5.000 · Grande $ 5.800",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 5.000",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.800"
+    }
+   ]
   },
   "TIS002": {
    "ars": "Chico $ 5.000 · Grande $ 5.800",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 5.000",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.800"
+    }
+   ]
   },
   "TIS003": {
    "ars": "Chico $ 5.000 · Grande $ 5.800",
    "usd": "≈ USD 3",
    "eur": "≈ EUR 3",
-   "brl": "≈ R$ 17"
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 5.000",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.800"
+    }
+   ]
   },
   "TYT003": {
    "ars": "$ 9.300",

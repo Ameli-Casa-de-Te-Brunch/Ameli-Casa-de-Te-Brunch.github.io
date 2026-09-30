@@ -164,6 +164,7 @@ def load_productos(filas: list, filas_backoffice: list | None = None) -> dict:
             "nuevo": _celda(filas, r, COL["nuevo"]) == "Sí",
             "precio": ec.formatear_precio(chico, grande, cat_cod),
             "precio_chico_ars": chico if chico not in (None, "") else grande,
+            "precio_grande_ars": grande if grande not in (None, "") else None,
             "temperatura": _celda(filas, r, COL["temperatura"]) or "",
             "formato": _celda(filas, r, COL["formato"]) or "",
             "img": _celda(filas, r, COL["img"]) or None,

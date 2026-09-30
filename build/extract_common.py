@@ -67,18 +67,57 @@ DISPONIBILIDAD_VALORES = {
 }
 
 
+def _fmt_precio_ars(v):
+    return f"$ {v:,.0f}".replace(",", ".")
+
+
+def etiquetas_niveles(cat_cod):
+    """Vaso/Jarra para batidos y jugos (así lo pide el menú físico),
+    Chico/Grande para el resto."""
+    return ("Vaso", "Jarra") if cat_cod in CATEGORIAS_VASO_JARRA else ("Chico", "Grande")
+
+
 def formatear_precio(chico, grande, cat_cod):
     """Un solo precio -> "$ X". Dos precios -> "Chico $ X · Grande $ Y"
-    (o "Vaso/Jarra" para batidos y jugos), según lo que haya cargado."""
+    (o "Vaso/Jarra" para batidos y jugos), según lo que haya cargado.
+    Sigue existiendo (además de niveles_precio(), más abajo) como el
+    string de respaldo en 'ars' -- ver armar_datos_publicos()."""
     if chico in (None, "") and grande in (None, ""):
         return None
-    et1, et2 = ("Vaso", "Jarra") if cat_cod in CATEGORIAS_VASO_JARRA else ("Chico", "Grande")
-    fmt = lambda v: f"$ {v:,.0f}".replace(",", ".")
+    et1, et2 = etiquetas_niveles(cat_cod)
     if grande in (None, ""):
-        return fmt(chico)
+        return _fmt_precio_ars(chico)
     if chico in (None, ""):
-        return f"{et2} {fmt(grande)}"
-    return f"{et1} {fmt(chico)} · {et2} {fmt(grande)}"
+        return f"{et2} {_fmt_precio_ars(grande)}"
+    return f"{et1} {_fmt_precio_ars(chico)} · {et2} {_fmt_precio_ars(grande)}"
+
+
+def niveles_precio(chico, grande, cat_cod, tasa_usd, tasa_eur, tasa_brl):
+    """Cuando un producto tiene los dos precios cargados (chico Y grande),
+    arma la lista de niveles separados -- para mostrarlos en dos filas/chips
+    en vez de un único string concatenado con "·" (2026-09-30, a pedido de
+    Ignacio: "diferenciar chico-grande, vaso-jarra... ponerlos por
+    separado"). None si solo hay un precio: ahí 'ars' (formatear_precio())
+    ya alcanza, no hay nada que separar.
+
+    El equivalente en otras monedas solo va en el primer nivel -- mismo
+    criterio que equivalente() ya usaba para 'ars' (nunca el grande, para
+    no saturar la tarjeta con cuatro números)."""
+    if chico in (None, "") or grande in (None, ""):
+        return None
+    et1, et2 = etiquetas_niveles(cat_cod)
+    nivel1 = {"etiqueta": et1, "ars": _fmt_precio_ars(chico)}
+    usd = equivalente(chico, tasa_usd, "USD")
+    eur = equivalente(chico, tasa_eur, "EUR")
+    brl = equivalente(chico, tasa_brl, "R$")
+    if usd:
+        nivel1["usd"] = usd
+    if eur:
+        nivel1["eur"] = eur
+    if brl:
+        nivel1["brl"] = brl
+    nivel2 = {"etiqueta": et2, "ars": _fmt_precio_ars(grande)}
+    return [nivel1, nivel2]
 
 
 def equivalente(precio_ars, tasa, simbolo):
@@ -392,6 +431,11 @@ def ensamblar(productos: dict, cats: list, config: dict, overrides: dict) -> dic
                 entrada["eur"] = eur
             if brl:
                 entrada["brl"] = brl
+            niveles = niveles_precio(
+                prod["precio_chico_ars"], prod.get("precio_grande_ars"),
+                prod["cat"], config["tasa_usd"], config["tasa_eur"], config["tasa_brl"])
+            if niveles:
+                entrada["niveles"] = niveles
             precios[prod_id] = entrada
         item = {
             "id": prod_id,
