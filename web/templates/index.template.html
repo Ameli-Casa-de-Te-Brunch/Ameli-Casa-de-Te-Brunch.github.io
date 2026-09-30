@@ -91,7 +91,12 @@ __SOCIAL_META_TAGS__
        abajo -- .portada-franja, después de cerrar esta section. No se
        eliminó ningún dato, solo se reordenó. -->
   <section class="portada portada-hero" aria-labelledby="titulo-portada">
-    <img class="portada-hero-fondo" alt="Interior del salón de Amelí, con mesas y sillas de madera y la vitrina de pastelería al fondo." src="assets/img/portada-960.webp" srcset="assets/img/portada-640.webp 640w, assets/img/portada-960.webp 960w" sizes="100vw" width="960" height="1280" loading="eager" fetchpriority="high" decoding="async">
+    <!-- Sin foto propia por ahora (Ignacio va a pasar versiones de mejor
+         calidad) -- el espacio queda reservado con el mismo tratamiento
+         que .espacio-imagen/.espacio-foto/.espacio-menu (ver CSS), listo
+         para que vuelva a ser <img class="portada-hero-fondo"> apenas
+         haya foto nueva. -->
+    <div class="portada-hero-fondo" aria-hidden="true"></div>
     <div class="portada-hero-velo" aria-hidden="true"></div>
     <div class="portada-hero-overlay">
       <span class="portada-emblema" aria-hidden="true">✻</span>
@@ -206,7 +211,9 @@ __SOCIAL_META_TAGS__
          <img>, sus atributos (alt/srcset/sizes/loading) y el título
          accesible real (h2 de .tienda-contenido, arriba) no cambian. -->
     <div class="marco-foto">
-      <img class="espacio-tienda" alt="Bandeja con cinco batidos de distintos colores, cada uno con sorbete de papel." src="assets/img/carta-pedidos-960.webp" srcset="assets/img/carta-pedidos-480.webp 480w, assets/img/carta-pedidos-720.webp 720w, assets/img/carta-pedidos-960.webp 960w" sizes="(min-width: 900px) 480px, 100vw" width="960" height="1025" loading="lazy" decoding="async">
+      <!-- Sin foto propia por ahora (Ignacio va a pasar versiones de
+           mejor calidad) -- espacio reservado, ver nota en portada-hero-fondo. -->
+      <div class="espacio-tienda" aria-hidden="true"></div>
       <div class="marco-precision" aria-hidden="true">
         <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
         <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
@@ -217,7 +224,9 @@ __SOCIAL_META_TAGS__
   </section><!--PASTELERIA_PEDIDOS_END-->
 
   <!--SUSTENTABILIDAD_START--><section class="sustentabilidad" id="sustentabilidad" aria-labelledby="titulo-sustentabilidad">
-    <img class="espacio-sustentabilidad" alt="Torta con capas de bizcocho y caramelo, cubierta con higos bañados en chocolate cortados al medio." src="assets/img/origen-compromiso-960.webp" srcset="assets/img/origen-compromiso-480.webp 480w, assets/img/origen-compromiso-720.webp 720w, assets/img/origen-compromiso-960.webp 960w" sizes="(min-width: 900px) 480px, 100vw" width="960" height="1280" loading="lazy" decoding="async">
+    <!-- Sin foto propia por ahora (Ignacio va a pasar versiones de mejor
+         calidad) -- espacio reservado, ver nota en portada-hero-fondo. -->
+    <div class="espacio-sustentabilidad" aria-hidden="true"></div>
     <div>
       <p class="eyebrow">Compromiso real</p>
       <h2 class="titulo-seccion" id="titulo-sustentabilidad">Origen y compromiso</h2>
