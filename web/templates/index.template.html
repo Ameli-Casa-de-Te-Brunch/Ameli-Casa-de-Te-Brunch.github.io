@@ -251,7 +251,7 @@ __SOCIAL_META_TAGS__
       </details>
       <details>
         <summary>¿Cómo consulto por ingredientes, alérgenos u opciones alimentarias?</summary>
-        <p>Escribinos antes de pedir. Te informamos las opciones vegetarianas o veganas disponibles y los ingredientes de cada producto consultado. Más detalle en <a href="informacion-alimentaria.html">información alimentaria</a>.</p>
+        <p>Escribinos antes de pedir. Te informamos las opciones vegetarianas o veganas disponibles y los ingredientes de cada producto consultado.<!--INFO_ALIMENTARIA_LINK_START--> Más detalle en <a href="informacion-alimentaria.html">información alimentaria</a>.<!--INFO_ALIMENTARIA_LINK_END--></p>
       </details>
     </div>
   </section><!--PREGUNTAS_FRECUENTES_END-->
@@ -373,15 +373,25 @@ __SOCIAL_META_TAGS__
     </div>
     <!-- El pie no repite menú, WhatsApp, dirección, horarios ni redes:
          todo eso ya tiene un lugar único en la página. -->
+    <!-- informacion-alimentaria.html vive fuera del bloque
+         PAGINAS_LEGALES a propósito (2026-09-29): tiene su propio
+         interruptor (_informacion_alimentaria_habilitada), separado
+         del resto del paquete (términos de compra/arrepentimiento/
+         identidad fiscal), para poder mantenerla disponible aunque el
+         resto siga pausado -- ver build_site.py. -->
     <nav class="enlaces-footer" aria-label="Enlaces del pie">
       <!--PAGINAS_LEGALES_START--><a href="terminos.html">Términos y datos legales</a>
       <a href="privacidad.html">Privacidad</a>
-      <a href="informacion-alimentaria.html">Información alimentaria</a>
       <a href="arrepentimiento.html">Botón de arrepentimiento</a><!--PAGINAS_LEGALES_END-->
       <!--PAGINAS_LEGALES_AUSENTES_START--><a href="privacidad.html">Privacidad</a><!--PAGINAS_LEGALES_AUSENTES_END-->
+      <!--INFO_ALIMENTARIA_FOOTER_START--><a href="informacion-alimentaria.html">Información alimentaria</a><!--INFO_ALIMENTARIA_FOOTER_END-->
     </nav>
   </div>
-  <p class="privacidad-breve">Sin publicidad ni seguimiento propio. Las preferencias de accesibilidad se guardan solo en este dispositivo. Más detalle en <a href="privacidad.html">Privacidad</a>.</p>
+  <!-- Gateado igual que privacidad.html en build_site.py -- el link de
+       acá adentro apunta a esa página, así que si no se genera (pausa
+       explícita de paginas_legales_habilitadas) este párrafo tampoco
+       debe aparecer: un link roto sería peor que no mostrar nada. -->
+  <!--PRIVACIDAD_BREVE_START--><p class="privacidad-breve">Sin publicidad ni seguimiento propio. Las preferencias de accesibilidad se guardan solo en este dispositivo. Más detalle en <a href="privacidad.html">Privacidad</a>.</p><!--PRIVACIDAD_BREVE_END-->
   <p class="legal">__MARCA__ __CATEGORIA__ — __UBICACION_COMPLETA__.</p>
   <!-- Identidad fiscal (razón social/CUIT/domicilio comercial) --
        ausente hasta que site.config.json tenga los tres datos reales

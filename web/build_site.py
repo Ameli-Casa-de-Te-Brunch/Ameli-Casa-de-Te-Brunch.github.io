@@ -428,9 +428,33 @@ def _parrafos_html(texto: str, clase: str) -> str:
     return "\n    ".join(f'<p class="{clase}">{html.escape(p)}</p>' for p in partes)
 
 
+def _paginas_legales_pausadas(config: dict) -> bool:
+    """Pausa explícita y total del paquete legal (2026-09-29): mientras
+    no haya respuesta de abogado/contador/Bromatología, ninguna página
+    legal se genera -- ni siquiera privacidad.html ni el enlace mínimo
+    de respaldo. `paginas_legales_habilitadas` es exactamente False
+    cuando está pausado; ausente (None) se sigue tratando como "todavía
+    no hay una decisión explícita" para no romper el comportamiento
+    previo a este campo (ver _identidad_legal_completa e
+    renderizar_index)."""
+    return config.get("paginas_legales_habilitadas") is False
+
+
 def _identidad_legal_completa(config: dict) -> bool:
-    """Las páginas legales no se generan con datos parciales. Son una
-    unidad: titular, CUIT, domicilios, condición fiscal y responsable."""
+    """Gatea el paquete de identidad fiscal/comercial: términos (compra,
+    anticipo, condiciones) y arrepentimiento (revocación) -- ver
+    _informacion_alimentaria_habilitada() más abajo para la página de
+    alérgenos/Sin TACC, que NO forma parte de esta unidad (2026-09-29:
+    Ignacio pidió mantenerla disponible aunque este paquete siga
+    pausado, por estar directamente ligada al menú real, no a
+    condiciones de compra). No se generan con datos parciales: titular,
+    CUIT, domicilios, condición fiscal y responsable son una unidad.
+    Además exige que paginas_legales_habilitadas sea EXACTAMENTE True
+    -- igual criterio que servicios_habilitado: publicar este paquete
+    tiene que ser una decisión explícita, nunca un efecto colateral de
+    que los seis campos ya estén completos."""
+    if config.get("paginas_legales_habilitadas") is not True:
+        return False
     campos = (
         "razon_social", "cuit", "domicilio_comercial", "domicilio_legal",
         "condicion_fiscal", "responsable_reclamos",
@@ -439,6 +463,17 @@ def _identidad_legal_completa(config: dict) -> bool:
         isinstance(config.get(campo), str) and config[campo].strip()
         for campo in campos
     )
+
+
+def _informacion_alimentaria_habilitada(config: dict) -> bool:
+    """Interruptor propio de informacion-alimentaria.html (2026-09-29),
+    independiente de _paginas_legales_pausadas()/_identidad_legal_completa():
+    alérgenos, Sin TACC y el aviso de Dulce Carola siguen publicándose
+    aunque el resto del paquete legal (compra/arrepentimiento/identidad
+    fiscal) esté pausado -- Ignacio la pidió disponible por estar
+    directamente relacionada con lo que ya se ofrece en el menú real,
+    a diferencia de términos de compra o el botón de arrepentimiento."""
+    return config.get("informacion_alimentaria_habilitada") is True
 
 
 def _escanear_placeholders_restantes(html_generado: str) -> list:
@@ -454,9 +489,29 @@ def renderizar_index(config: dict, produccion: bool) -> str:
 
     tiene_paginas_legales = _identidad_legal_completa(config)
     plantilla = _bloque(plantilla, "PAGINAS_LEGALES", tiene_paginas_legales)
+    # El enlace mínimo de respaldo (solo "Privacidad") existe para la
+    # etapa de "todavía no está completo el paquete legal" -- con una
+    # pausa EXPLÍCITA (paginas_legales_habilitadas=False) no corresponde
+    # ni ese mínimo: acá no falta un dato, se decidió activamente no
+    # publicar nada legal todavía. Ver _paginas_legales_pausadas().
     plantilla = _bloque(
-        plantilla, "PAGINAS_LEGALES_AUSENTES", not tiene_paginas_legales
+        plantilla,
+        "PAGINAS_LEGALES_AUSENTES",
+        not tiene_paginas_legales and not _paginas_legales_pausadas(config),
     )
+    # Mismo criterio que privacidad.html en construir(): el párrafo cita
+    # esa página, así que si no se genera, el párrafo tampoco aparece.
+    plantilla = _bloque(
+        plantilla, "PRIVACIDAD_BREVE", not _paginas_legales_pausadas(config)
+    )
+    # informacion-alimentaria.html tiene su propio interruptor (ver
+    # _informacion_alimentaria_habilitada) -- tanto el link de la FAQ
+    # como el del pie dependen de ESE, no de la pausa del resto del
+    # paquete legal: sigue disponible aunque términos/arrepentimiento
+    # estén pausados.
+    tiene_info_alimentaria = _informacion_alimentaria_habilitada(config)
+    plantilla = _bloque(plantilla, "INFO_ALIMENTARIA_LINK", tiene_info_alimentaria)
+    plantilla = _bloque(plantilla, "INFO_ALIMENTARIA_FOOTER", tiene_info_alimentaria)
 
     sobre_ameli = config.get("presentacion_sobre_ameli")
     tiene_sobre_ameli = isinstance(sobre_ameli, str) and sobre_ameli.strip() != ""
@@ -480,7 +535,8 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     cuit = config.get("cuit")
     domicilio_comercial = config.get("domicilio_comercial")
     tiene_datos_legales = (
-        isinstance(razon_social, str) and razon_social.strip()
+        not _paginas_legales_pausadas(config)
+        and isinstance(razon_social, str) and razon_social.strip()
         and isinstance(cuit, str) and cuit.strip()
         and isinstance(domicilio_comercial, str) and domicilio_comercial.strip()
     )
@@ -982,16 +1038,32 @@ def construir(produccion: bool) -> dict:
     try:
         (staging / "index.html").write_text(renderizar_index(config, produccion), encoding="utf-8")
         (staging / "404.html").write_text(renderizar_404(config), encoding="utf-8")
-        (staging / "privacidad.html").write_text(renderizar_privacidad(config), encoding="utf-8")
+        # privacidad.html es la única página legal que en general se
+        # genera igual, completo o no el resto del paquete (ver
+        # docstring de renderizar_privacidad) -- pero durante una pausa
+        # EXPLÍCITA (paginas_legales_habilitadas=False) tampoco se
+        # publica: nada legal queda accesible, ni siquiera este mínimo.
+        if not _paginas_legales_pausadas(config):
+            (staging / "privacidad.html").write_text(renderizar_privacidad(config), encoding="utf-8")
         if _identidad_legal_completa(config):
             (staging / "terminos.html").write_text(
                 renderizar_pagina_legal(TEMPLATE_TERMINOS_PATH, config), encoding="utf-8"
             )
-            (staging / "informacion-alimentaria.html").write_text(
-                renderizar_pagina_legal(TEMPLATE_INFO_ALIMENTARIA_PATH, config), encoding="utf-8"
-            )
             (staging / "arrepentimiento.html").write_text(
                 renderizar_pagina_legal(TEMPLATE_ARREPENTIMIENTO_PATH, config), encoding="utf-8"
+            )
+        # informacion-alimentaria.html tiene su PROPIO interruptor,
+        # independiente del resto del paquete legal (2026-09-29): a
+        # diferencia de términos/arrepentimiento (condiciones de
+        # compra, revocación), esta página es información alimentaria
+        # -- alérgenos, Sin TACC, Dulce Carola -- directamente
+        # relacionada con lo que ya se pide en el menú real, así que
+        # Ignacio pidió que siguiera disponible aunque el resto del
+        # paquete legal (compra/arrepentimiento/identidad fiscal) siga
+        # pausado hasta tener respuesta de los profesionales.
+        if _informacion_alimentaria_habilitada(config):
+            (staging / "informacion-alimentaria.html").write_text(
+                renderizar_pagina_legal(TEMPLATE_INFO_ALIMENTARIA_PATH, config), encoding="utf-8"
             )
         (staging / "robots.txt").write_text(renderizar_robots_txt(produccion, config), encoding="utf-8")
         if produccion:

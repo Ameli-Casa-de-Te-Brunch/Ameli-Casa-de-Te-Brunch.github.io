@@ -610,6 +610,7 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
 
     def test_datos_legales_se_incluyen_si_completos(self):
         self.escribir_config(config_valido(
+            paginas_legales_habilitadas=True,
             razon_social="Amelí SRL", cuit="30-12345678-9",
             domicilio_comercial="Av. San Martín 123, Malargüe, Mendoza"))
         build_site.construir(produccion=False)
@@ -774,6 +775,8 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
 
     def test_identidad_completa_genera_paquete_legal_enlazado(self):
         self.escribir_config(config_valido(
+            paginas_legales_habilitadas=True,
+            informacion_alimentaria_habilitada=True,
             razon_social="SOTO ITURBE MARTINA ORIANA",
             cuit="27-42862121-8",
             domicilio_comercial="Villegas Oeste 48, Malargüe, Mendoza",
@@ -802,6 +805,74 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertIn("consultá el rótulo original", informacion)
         self.assertNotIn("se manipulan en un entorno que no es exclusivo", informacion)
         self.assertNotIn("este sitio y su carta no identifican esos productos", informacion)
+
+    def test_informacion_alimentaria_requiere_su_propio_flag_explicito(self):
+        """Tener los seis campos de identidad fiscal completos y
+        paginas_legales_habilitadas=True no alcanza -- desde el
+        2026-09-29, informacion-alimentaria.html tiene su PROPIO
+        interruptor (informacion_alimentaria_habilitada), separado del
+        resto del paquete legal."""
+        self.escribir_config(config_valido(
+            paginas_legales_habilitadas=True,
+            razon_social="SOTO ITURBE MARTINA ORIANA",
+            cuit="27-42862121-8",
+            domicilio_comercial="Villegas Oeste 48, Malargüe, Mendoza",
+            domicilio_legal="Villa del Milagro 1045, Malargüe, Mendoza, 5613",
+            condicion_fiscal="Monotributista — categoría C",
+            responsable_reclamos="Martina Oriana Soto Iturbe",
+        ))
+        build_site.construir(produccion=False)
+        self.assertTrue((build_site.DIST_PATH / "terminos.html").is_file())
+        self.assertTrue((build_site.DIST_PATH / "arrepentimiento.html").is_file())
+        self.assertFalse((build_site.DIST_PATH / "informacion-alimentaria.html").exists())
+        index = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('href="informacion-alimentaria.html"', index)
+
+    def test_paginas_legales_pausadas_mantiene_solo_info_alimentaria_y_copyright(self):
+        """Estado real de esta ronda (2026-09-29): paquete legal de
+        compra/identidad fiscal pausado hasta respuesta profesional,
+        pero informacion-alimentaria.html (alérgenos/Sin TACC/Dulce
+        Carola) sigue publicada por estar ligada al menú real, y el
+        aviso de copyright sigue visible por no ser un dato pendiente
+        de revisión."""
+        self.escribir_config(config_valido(
+            paginas_legales_habilitadas=False,
+            informacion_alimentaria_habilitada=True,
+            aviso_copyright="© 2026 Amelí Casa de Té & Brunch. Todos los derechos reservados.",
+            preguntas_frecuentes_texto="Respuestas rápidas para planificar tu visita o hacer una consulta.",
+            razon_social="SOTO ITURBE MARTINA ORIANA",
+            cuit="27-42862121-8",
+            domicilio_comercial="Villegas Oeste 48, Malargüe, Mendoza",
+            domicilio_legal="Villa del Milagro 1045, Malargüe, Mendoza, 5613",
+            condicion_fiscal="Monotributista — categoría C",
+            responsable_reclamos="Martina Oriana Soto Iturbe",
+        ))
+        build_site.construir(produccion=False)
+        self.assertFalse((build_site.DIST_PATH / "terminos.html").exists())
+        self.assertFalse((build_site.DIST_PATH / "privacidad.html").exists())
+        self.assertFalse((build_site.DIST_PATH / "arrepentimiento.html").exists())
+        self.assertTrue((build_site.DIST_PATH / "informacion-alimentaria.html").is_file())
+
+        index = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        sin_comentarios = re.sub(r"<!--.*?-->", "", index, flags=re.S)
+        # nada de identidad fiscal ni de las 3 páginas pausadas
+        self.assertNotIn("27-42862121-8", sin_comentarios)
+        self.assertNotIn("SOTO ITURBE MARTINA ORIANA", sin_comentarios)
+        self.assertNotIn('class="identificacion-legal', sin_comentarios)
+        self.assertNotIn('href="terminos.html"', index)
+        self.assertNotIn('href="privacidad.html"', index)
+        self.assertNotIn('href="arrepentimiento.html"', index)
+        # el párrafo "Sin publicidad ni seguimiento..." cita privacidad.html
+        # -- tampoco debe sobrevivir sin esa página.
+        self.assertNotIn("Sin publicidad ni seguimiento", sin_comentarios)
+        # información alimentaria sí sigue enlazada, en el pie y en la FAQ
+        self.assertIn('href="informacion-alimentaria.html"', index)
+        self.assertIn("información alimentaria", sin_comentarios)
+        # copyright sigue visible -- es lo único que debe quedar de "legal"
+        self.assertIn("© 2026 Amelí Casa de Té &amp; Brunch. Todos los derechos reservados.", sin_comentarios)
+
+        informacion = (build_site.DIST_PATH / "informacion-alimentaria.html").read_text(encoding="utf-8")
+        self.assertIn("pendiente recibir y verificar el RNE del establecimiento elaborador y el RNPA correspondiente a cada producto", informacion)
 
     def test_calendario_google_ausente_sin_url(self):
         self.escribir_config(config_valido(servicios_habilitado=True))
