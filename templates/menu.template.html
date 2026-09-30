@@ -52,8 +52,22 @@ __CSP_META__
 
 <!-- Sin foto propia por ahora (Ignacio va a pasar una versión de mejor
      calidad) -- .hero-foto ya tiene alto fijo + fondo neutro (#F3ECDD)
-     como base, así que el espacio queda reservado sin salto de layout. -->
-<div class="hero-foto" aria-hidden="true"></div>
+     como base, así que el espacio queda reservado sin salto de layout.
+     Cuando vuelva la foto real, reemplazar SOLO .hero-foto-contenido por
+     un <img> (mismo patrón que .marco-foto en la web institucional:
+     contenido + .marco-precision como hermanos dentro de un contenedor
+     position:relative) -- .marco-precision no se toca.
+     .marco-precision/.esquina-*: mismo marco de esquinas decorativo que
+     usa la web institucional (ver .marco-precision en site.css) sobre
+     fondo claro (misma variante que .marco-ubicacion ahí), para que el
+     menú y la web compartan una firma visual reconocible. -->
+<div class="hero-foto">
+  <div class="hero-foto-contenido" aria-hidden="true"></div>
+  <div class="marco-precision" aria-hidden="true">
+    <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
+    <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
+  </div>
+</div>
 <div class="hero-texto">
   <p class="saludo" id="heroSaludo"></p>
   <p class="pregunta" id="heroPregunta"></p>
