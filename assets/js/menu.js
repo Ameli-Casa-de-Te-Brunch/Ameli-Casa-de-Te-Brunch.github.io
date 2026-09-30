@@ -72,7 +72,7 @@ const UI = {
  a11yLectura:{es:'Lectura simple',en:'Simple reading',pt:'Leitura simples',fr:'Lecture simplifiée',it:'Lettura semplice'},
  a11yReset:{es:'Restablecer',en:'Reset',pt:'Restaurar',fr:'Réinitialiser',it:'Ripristina'},
  idioma:{es:'Idioma',en:'Language',pt:'Idioma',fr:'Langue',it:'Lingua'},
- avisoAlergias:{es:'Si tenés alguna alergia o intolerancia alimentaria, informanos antes de realizar tu pedido.',en:'If you have any food allergy or intolerance, please let us know before ordering.',pt:'Se você tem alguma alergia ou intolerância alimentar, avise-nos antes de pedir.',fr:'Si vous avez une allergie ou une intolérance alimentaire, informez-nous avant de commander.',it:'Se hai un’allergia o un’intolleranza alimentare, informaci prima di ordinare.'},
+ avisoAlergias:{es:'Si tenés alguna alergia o intolerancia alimentaria, informanos antes de realizar tu pedido. <a href="/informacion-alimentaria.html">Más información</a>.',en:'If you have any food allergy or intolerance, please let us know before ordering. <a href="/informacion-alimentaria.html">More information</a>.',pt:'Se você tem alguma alergia ou intolerância alimentar, avise-nos antes de pedir. <a href="/informacion-alimentaria.html">Mais informações</a>.',fr:'Si vous avez une allergie ou une intolérance alimentaire, informez-nous avant de commander. <a href="/informacion-alimentaria.html">Plus d’informations</a>.',it:'Se hai un’allergia o un’intolleranza alimentare, informaci prima di ordinare. <a href="/informacion-alimentaria.html">Maggiori informazioni</a>.'},
  avisoMoneda:{es:'Precios expresados en pesos argentinos (ARS). Las conversiones a otras monedas son orientativas.',en:'Prices shown in Argentine pesos (ARS). Conversions to other currencies are approximate.',pt:'Preços em pesos argentinos (ARS). As conversões para outras moedas são apenas orientativas.',fr:'Prix indiqués en pesos argentins (ARS). Les conversions dans d’autres devises sont indicatives.',it:'Prezzi in pesos argentini (ARS). Le conversioni in altre valute sono indicative.'},
  buscarLabel:{es:'Buscar en el menú',en:'Search the menu',pt:'Buscar no menu',fr:'Rechercher dans le menu',it:'Cerca nel menu'},
  buscarPlaceholder:{es:'¿Qué estás buscando?',en:'What are you looking for?',pt:'O que você está procurando?',fr:'Que recherchez-vous ?',it:'Cosa stai cercando?'},
@@ -546,7 +546,11 @@ function render(){
     if(sheetProdId) abrirDetalle(sheetProdId);  /* si hay un panel de detalle abierto, refrescarlo tambien */
   }));
   /* aviso de alergias, moneda y buscador */
-  $('avisoAlergias').textContent=UI.avisoAlergias[lang];
+  /* innerHTML, no textContent: la traducción trae un <a> real hacia
+     información alimentaria (ver hallazgo de linking interno) -- el
+     string es propio, no viene de un dato externo/usuario, así que no
+     hay riesgo de inyección acá. */
+  $('avisoAlergias').innerHTML=UI.avisoAlergias[lang];
   $('avisoMoneda').textContent=UI.avisoMoneda[lang];
   $('buscarInput').placeholder=UI.buscarPlaceholder[lang];
   $('buscarLabel').textContent=UI.buscarLabel[lang];

@@ -23,7 +23,15 @@ __CSP_META__
 </head>
 <body>
 <header class="topbar">
-  <h1 class="marca-top">Amelí</h1>
+  <!-- Antes texto plano: el menú (/menu/, mismo dominio) no tenía
+       ningún enlace de vuelta al sitio institucional -- ver hallazgo
+       de linking interno 2026-09-29: /menu/ recibía 2 links desde la
+       portada pero no devolvía ninguno, un callejón sin salida en el
+       grafo de enlaces del dominio. Ruta absoluta "/" (no relativa)
+       porque coincide con el mismo criterio ya usado para menu_url en
+       site.config.json -- estable sin importar la profundidad real
+       de la URL servida. -->
+  <h1 class="marca-top"><a href="/" aria-label="Ir al inicio de Amelí">Amelí</a></h1>
   <div class="topbar-ctrl">
     <div class="langs" id="langs">
       <button class="langs-btn" id="langsBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="langsMenu">
