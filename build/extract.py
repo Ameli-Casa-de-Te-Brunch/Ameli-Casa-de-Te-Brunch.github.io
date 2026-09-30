@@ -136,6 +136,7 @@ def load_productos(wb):
             "nuevo": ws.cell(row=r, column=COL["nuevo"]).value == "Sí",
             "precio": ec.formatear_precio(chico, grande, cat_cod),
             "precio_chico_ars": chico if chico not in (None, "") else grande,
+            "precio_grande_ars": grande if grande not in (None, "") else None,
             "temperatura": ws.cell(row=r, column=COL["temperatura"]).value or "",
             "formato": ws.cell(row=r, column=COL["formato"]).value or "",
             "img": ws.cell(row=r, column=COL["img"]).value or None,

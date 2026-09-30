@@ -238,5 +238,76 @@ class TestHandleInstagramSano(unittest.TestCase):
         self.assertIsNone(ec.handle_instagram_sano(None))
 
 
+class TestEtiquetasNiveles(unittest.TestCase):
+    def test_vaso_jarra_para_categorias_de_batidos_y_jugos(self):
+        for cod in ec.CATEGORIAS_VASO_JARRA:
+            self.assertEqual(ec.etiquetas_niveles(cod), ("Vaso", "Jarra"))
+
+    def test_chico_grande_para_el_resto(self):
+        for cod in ("DYM", "CCL", "TEH", "TIS", "BLE"):
+            self.assertEqual(ec.etiquetas_niveles(cod), ("Chico", "Grande"))
+
+
+class TestFormatearPrecio(unittest.TestCase):
+    """formatear_precio() sigue existiendo como el string de respaldo en
+    'ars' (ver armar_datos_publicos) aunque ahora niveles_precio() sea la
+    fuente de los dos precios separados -- mismo comportamiento de antes,
+    sin regresiones."""
+
+    def test_un_solo_precio(self):
+        self.assertEqual(ec.formatear_precio(4800, None, "CCL"), "$ 4.800")
+        self.assertEqual(ec.formatear_precio(4800, "", "CCL"), "$ 4.800")
+
+    def test_dos_precios_chico_grande(self):
+        self.assertEqual(ec.formatear_precio(4800, 5600, "CCL"), "Chico $ 4.800 · Grande $ 5.600")
+
+    def test_dos_precios_vaso_jarra(self):
+        self.assertEqual(ec.formatear_precio(7500, 16000, "BYJ"), "Vaso $ 7.500 · Jarra $ 16.000")
+
+    def test_solo_grande_cargado(self):
+        self.assertEqual(ec.formatear_precio(None, 5600, "CCL"), "Grande $ 5.600")
+
+    def test_ningun_precio_cargado(self):
+        self.assertIsNone(ec.formatear_precio(None, None, "CCL"))
+        self.assertIsNone(ec.formatear_precio("", "", "CCL"))
+
+
+class TestNivelesPrecio(unittest.TestCase):
+    """niveles_precio(): la lista separada que consume textoPrecio() en
+    menu.js para mostrar Chico/Grande o Vaso/Jarra como dos filas en vez
+    de un único string con '·' (2026-09-30, a pedido de Ignacio)."""
+
+    def test_dos_precios_arma_dos_niveles_chico_grande(self):
+        niveles = ec.niveles_precio(4800, 5600, "CCL", 950, 1050, 172)
+        self.assertEqual(len(niveles), 2)
+        self.assertEqual(niveles[0]["etiqueta"], "Chico")
+        self.assertEqual(niveles[0]["ars"], "$ 4.800")
+        self.assertEqual(niveles[1]["etiqueta"], "Grande")
+        self.assertEqual(niveles[1]["ars"], "$ 5.600")
+
+    def test_dos_precios_vaso_jarra(self):
+        niveles = ec.niveles_precio(7500, 16000, "BYJ", 950, 1050, 172)
+        self.assertEqual(niveles[0]["etiqueta"], "Vaso")
+        self.assertEqual(niveles[1]["etiqueta"], "Jarra")
+
+    def test_equivalentes_solo_en_el_primer_nivel_nunca_en_el_segundo(self):
+        """Mismo criterio que equivalente() ya usaba para 'ars': el
+        equivalente en otras monedas nunca va en el precio grande, para no
+        saturar la tarjeta con cuatro números."""
+        niveles = ec.niveles_precio(4800, 5600, "CCL", 950, 1050, 172)
+        self.assertIn("usd", niveles[0])
+        self.assertIn("eur", niveles[0])
+        self.assertIn("brl", niveles[0])
+        self.assertNotIn("usd", niveles[1])
+        self.assertNotIn("eur", niveles[1])
+        self.assertNotIn("brl", niveles[1])
+
+    def test_un_solo_precio_no_arma_niveles(self):
+        self.assertIsNone(ec.niveles_precio(4800, None, "CCL", 950, 1050, 172))
+        self.assertIsNone(ec.niveles_precio(None, 5600, "CCL", 950, 1050, 172))
+        self.assertIsNone(ec.niveles_precio(None, None, "CCL", 950, 1050, 172))
+        self.assertIsNone(ec.niveles_precio("", "", "CCL", 950, 1050, 172))
+
+
 if __name__ == "__main__":
     unittest.main()

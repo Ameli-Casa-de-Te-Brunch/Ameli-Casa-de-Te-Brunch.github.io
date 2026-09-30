@@ -170,12 +170,27 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
    (lo pidio el dueño para cualquier idioma); EUR ademas solo para FR/IT,
    los idiomas de zona euro. Los dos equivalentes son fijos del ultimo
    build (tasa manual del Excel), no una cotizacion en vivo -- ver README. */
+function extrasPrecio(o){
+  let extra = [];
+  if(o.usd) extra.push(esc(o.usd));
+  if(o.eur && (lang==='fr' || lang==='it')) extra.push(esc(o.eur));
+  if(o.brl && lang==='pt') extra.push(esc(o.brl));
+  return extra;
+}
+/* entry.niveles (2026-09-30): productos con Chico/Grande o Vaso/Jarra
+   cargados los dos -- en vez de un único string "Chico $ X · Grande $ Y",
+   se muestran como dos líneas separadas (.precio-nivel, ver menu.css),
+   a pedido de Ignacio. Sin niveles, sigue el string de siempre. */
 function textoPrecio(entry){
   if(!entry) return '';
-  let extra = [];
-  if(entry.usd) extra.push(esc(entry.usd));
-  if(entry.eur && (lang==='fr' || lang==='it')) extra.push(esc(entry.eur));
-  if(entry.brl && lang==='pt') extra.push(esc(entry.brl));
+  if(entry.niveles){
+    return entry.niveles.map(n=>{
+      const extra = extrasPrecio(n);
+      const base = `${esc(n.etiqueta)} ${esc(n.ars)}`;
+      return `<span class="precio-nivel">${extra.length ? `${base} <small>(${extra.join(' · ')})</small>` : base}</span>`;
+    }).join('');
+  }
+  const extra = extrasPrecio(entry);
   return extra.length ? `${esc(entry.ars)} <small>(${extra.join(' · ')})</small>` : esc(entry.ars);
 }
 

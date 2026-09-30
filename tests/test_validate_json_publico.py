@@ -135,6 +135,69 @@ class TestCamposYTipos(unittest.TestCase):
         self.assertFalse(any("n.it" in w for w in warnings))
 
 
+class TestNivelesPrecio(unittest.TestCase):
+    """'niveles' (2026-09-30): opcional, solo aparece en productos con
+    Chico/Grande o Vaso/Jarra cargados los dos (ver
+    extract_common.niveles_precio()). Mismo criterio de validación que el
+    resto de 'precios': campos permitidos, tipos correctos."""
+
+    def _doc_con_niveles(self, niveles):
+        doc = _doc_valido()
+        doc["precios"]["BEB001"]["niveles"] = niveles
+        return doc
+
+    def test_niveles_validos_no_es_error(self):
+        doc = self._doc_con_niveles([
+            {"etiqueta": "Chico", "ars": "$ 800", "usd": "≈ USD 1"},
+            {"etiqueta": "Grande", "ars": "$ 1.000"},
+        ])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertEqual(errors, [])
+
+    def test_niveles_no_es_lista_es_error(self):
+        doc = self._doc_con_niveles({"etiqueta": "Chico", "ars": "$ 800"})
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("niveles" in e for e in errors), errors)
+
+    def test_niveles_con_un_solo_elemento_es_error(self):
+        doc = self._doc_con_niveles([{"etiqueta": "Chico", "ars": "$ 800"}])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("niveles" in e for e in errors), errors)
+
+    def test_niveles_con_tres_elementos_es_error(self):
+        doc = self._doc_con_niveles([
+            {"etiqueta": "Chico", "ars": "$ 800"},
+            {"etiqueta": "Mediano", "ars": "$ 900"},
+            {"etiqueta": "Grande", "ars": "$ 1.000"},
+        ])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("niveles" in e for e in errors), errors)
+
+    def test_nivel_sin_etiqueta_es_error(self):
+        doc = self._doc_con_niveles([
+            {"ars": "$ 800"},
+            {"etiqueta": "Grande", "ars": "$ 1.000"},
+        ])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("etiqueta" in e for e in errors), errors)
+
+    def test_nivel_con_ars_numerico_es_error(self):
+        doc = self._doc_con_niveles([
+            {"etiqueta": "Chico", "ars": 800},
+            {"etiqueta": "Grande", "ars": "$ 1.000"},
+        ])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("niveles[0].ars" in e for e in errors), errors)
+
+    def test_nivel_con_campo_no_permitido_es_error(self):
+        doc = self._doc_con_niveles([
+            {"etiqueta": "Chico", "ars": "$ 800", "descuento": "10%"},
+            {"etiqueta": "Grande", "ars": "$ 1.000"},
+        ])
+        errors, _ = vjp.validate_menu_json(doc)
+        self.assertTrue(any("niveles[0]" in e and "no permitido" in e for e in errors), errors)
+
+
 class TestIdsYReferencias(unittest.TestCase):
     def test_id_duplicado(self):
         doc = _doc_valido()
