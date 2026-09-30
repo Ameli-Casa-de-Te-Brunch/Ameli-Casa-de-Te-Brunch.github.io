@@ -468,11 +468,12 @@ def _identidad_legal_completa(config: dict) -> bool:
 def _informacion_alimentaria_habilitada(config: dict) -> bool:
     """Interruptor propio de informacion-alimentaria.html (2026-09-29),
     independiente de _paginas_legales_pausadas()/_identidad_legal_completa():
-    alérgenos, Sin TACC y el aviso de Dulce Carola siguen publicándose
-    aunque el resto del paquete legal (compra/arrepentimiento/identidad
-    fiscal) esté pausado -- Ignacio la pidió disponible por estar
-    directamente relacionada con lo que ya se ofrece en el menú real,
-    a diferencia de términos de compra o el botón de arrepentimiento."""
+    alérgenos, Sin TACC y el aviso de productos tercerizados siguen
+    publicándose aunque el resto del paquete legal (compra/
+    arrepentimiento/identidad fiscal) esté pausado -- Ignacio la pidió
+    disponible por estar directamente relacionada con lo que ya se
+    ofrece en el menú real, a diferencia de términos de compra o el
+    botón de arrepentimiento."""
     return config.get("informacion_alimentaria_habilitada") is True
 
 
@@ -1056,7 +1057,7 @@ def construir(produccion: bool) -> dict:
         # independiente del resto del paquete legal (2026-09-29): a
         # diferencia de términos/arrepentimiento (condiciones de
         # compra, revocación), esta página es información alimentaria
-        # -- alérgenos, Sin TACC, Dulce Carola -- directamente
+        # -- alérgenos, Sin TACC, productos tercerizados -- directamente
         # relacionada con lo que ya se pide en el menú real, así que
         # Ignacio pidió que siguiera disponible aunque el resto del
         # paquete legal (compra/arrepentimiento/identidad fiscal) siga

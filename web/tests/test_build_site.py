@@ -831,10 +831,10 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
     def test_paginas_legales_pausadas_mantiene_solo_info_alimentaria_y_copyright(self):
         """Estado real de esta ronda (2026-09-29): paquete legal de
         compra/identidad fiscal pausado hasta respuesta profesional,
-        pero informacion-alimentaria.html (alérgenos/Sin TACC/Dulce
-        Carola) sigue publicada por estar ligada al menú real, y el
-        aviso de copyright sigue visible por no ser un dato pendiente
-        de revisión."""
+        pero informacion-alimentaria.html (alérgenos/Sin TACC/aviso de
+        productos tercerizados) sigue publicada por estar ligada al
+        menú real, y el aviso de copyright sigue visible por no ser un
+        dato pendiente de revisión."""
         self.escribir_config(config_valido(
             paginas_legales_habilitadas=False,
             informacion_alimentaria_habilitada=True,
