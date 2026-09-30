@@ -1055,6 +1055,17 @@ img.portada-hero-fondo{
   position:absolute; inset:0; z-index:0;
   width:100%; height:100%; object-fit:cover;
 }
+/* div.portada-hero-fondo: espacio reservado sin foto (2026-09-30, ver
+   nota en el template) -- mismo patrón diagonal que .espacio-imagen,
+   pero absolutely positioned para llenar .portada-hero igual que la
+   versión <img>. .portada-hero-velo (degradé oscuro) sigue encima,
+   sin cambios -- por eso el patrón se ve tenue detrás del texto. */
+div.portada-hero-fondo{
+  position:absolute; inset:0; z-index:0;
+  background:
+    linear-gradient(135deg, transparent 49.7%, rgba(83,96,57,.17) 50%, transparent 50.3%),
+    var(--blanco);
+}
 .portada-hero-velo{
   position:absolute; inset:0; z-index:1;
   background:linear-gradient(rgba(26,32,19,.4), rgba(26,32,19,.74));

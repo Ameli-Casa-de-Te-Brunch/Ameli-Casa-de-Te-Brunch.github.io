@@ -1115,15 +1115,17 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         ).replace(" ", "").replace("\n", "")
         self.assertRegex(css, r"\.consultas-grid\{[^}]*font-style:normal")
 
-    def test_fotografias_reales_tienen_atributos_completos_y_mapa_sigue_reservado(self):
-        """Portada, Carta y pedidos, y Origen y compromiso ya son <img>
-        reales (fotos propias incorporadas el 2026-09-16) -- cada una con
-        ancho/alto (evita saltos de layout), srcset+sizes (responsive) y
-        alt no vacío con texto real (no son decorativas). El mapa sigue
-        sin foto, sin iframe ni embed, por diseño -- desde el 2026-09-29
-        ya no es un espacio reservado vacío (.espacio-mapa, "Espacio para
-        mapa") sino una ficha editorial hecha solo con HTML/CSS
-        (.marco-ubicacion, ver Visitarnos en el template)."""
+    def test_portada_tienda_y_sustentabilidad_son_espacio_reservado_y_mapa_sigue_reservado(self):
+        """Portada, Carta y pedidos, y Origen y compromiso volvieron a ser
+        espacio reservado sin foto (2026-09-30 -- Ignacio va a pasar fotos
+        de mejor calidad): son <div aria-hidden="true"> con la misma clase
+        que tenían como <img>, sin src/srcset/alt, para heredar el mismo
+        tratamiento visual (patrón diagonal / fondo neutro) hasta que haya
+        foto real de nuevo. El mapa sigue sin foto, sin iframe ni embed,
+        por diseño -- desde el 2026-09-29 ya no es un espacio reservado
+        vacío (.espacio-mapa, "Espacio para mapa") sino una ficha editorial
+        hecha solo con HTML/CSS (.marco-ubicacion, ver Visitarnos en el
+        template)."""
         self.escribir_config(config_valido(
             presentacion_sobre_ameli="Filosofía confirmada.",
             servicios_habilitado=True,
@@ -1132,29 +1134,21 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
             preguntas_frecuentes_texto="Consultas frecuentes."))
         build_site.construir(produccion=False)
         contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
-        imgs = re.findall(r'<img\b[^>]*>', contenido)
-        clases_con_foto = (
+        clases_sin_foto = (
             "portada-hero-fondo", "espacio-tienda", "espacio-sustentabilidad",
         )
-        for clase in clases_con_foto:
-            etiquetas = [img for img in imgs if f'class="{clase}"' in img or f' {clase}"' in img or f'"{clase} ' in img]
-            self.assertTrue(etiquetas, f"no se encontró <img> con la clase {clase}")
+        divs = re.findall(r'<div\b[^>]*>', contenido)
+        for clase in clases_sin_foto:
+            etiquetas = [div for div in divs if f'class="{clase}"' in div or f' {clase}"' in div or f'"{clase} ' in div]
+            self.assertTrue(etiquetas, f"no se encontró <div> con la clase {clase}")
             for etiqueta in etiquetas:
-                self.assertRegex(etiqueta, r'\balt="[^"]+"')
-                self.assertNotRegex(etiqueta, r'alt=""')
-                self.assertRegex(etiqueta, r'\bwidth="\d+"')
-                self.assertRegex(etiqueta, r'\bheight="\d+"')
-                self.assertIn("srcset=", etiqueta)
-                self.assertIn("sizes=", etiqueta)
-                self.assertIn(".webp", etiqueta)
-        # La foto de portada es la única que NO debe ser lazy (LCP).
-        portada_img = next(img for img in imgs if "portada-hero-fondo" in img)
-        self.assertNotIn('loading="lazy"', portada_img)
-        self.assertIn('loading="eager"', portada_img)
-        # El resto de las fotos sí son lazy.
-        for img in imgs:
-            if "portada-hero-fondo" not in img and ("espacio-tienda" in img or "espacio-sustentabilidad" in img):
-                self.assertIn('loading="lazy"', img)
+                self.assertIn('aria-hidden="true"', etiqueta)
+                self.assertNotIn("src=", etiqueta)
+        imgs = re.findall(r'<img\b[^>]*>', contenido)
+        for clase in clases_sin_foto:
+            self.assertFalse(
+                [img for img in imgs if clase in img],
+                f"{clase} no debería ser <img> mientras no haya foto real")
         self.assertIn("marco-ubicacion", contenido)
         self.assertNotIn("espacio-mapa", contenido)
         self.assertNotIn("Espacio para mapa", contenido)
