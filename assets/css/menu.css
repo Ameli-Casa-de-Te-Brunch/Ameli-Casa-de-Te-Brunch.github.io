@@ -203,8 +203,19 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 @media(min-width:768px) and (hover:hover) and (pointer:fine){
   .car-flecha:hover{border-color:var(--verde)}
 }
-/* indicador numérico "01 / 04" en vez de 7 puntos de navegación. */
+/* Estado deshabilitado real (auditoría 2026-09-30): cuando el carrusel
+   no tiene nada para desplazar (scrollWidth<=clientWidth, ver
+   actualizarEstadoCarrusel en menu.js), las flechas quedan con el
+   atributo disabled -- no solo atenuadas visualmente, también fuera
+   del orden de tabulación y sin click, que es lo que hace disabled de
+   forma nativa. */
+.car-flecha[disabled]{opacity:.35;cursor:default;pointer-events:none}
+/* indicador numérico "01 / 04" en vez de 7 puntos de navegación. Se le
+   pone [hidden] por JS en el mismo estado "nada para desplazar" -- un
+   indicador de posición no tiene sentido cuando no hay nada que
+   recorrer (ver mismo comentario arriba). */
 .car-indicador{text-align:center;padding:10px 0 2px;font-family:'Karla',sans-serif;font-size:calc(11.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;color:var(--texto-sec)}
+.car-indicador[hidden]{display:none}
 section.cat{padding:30px 20px 4px;scroll-margin-top:64px;opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
 section.cat.visible{opacity:1;transform:translateY(0)}
 section.cat header{margin-bottom:14px}
@@ -214,7 +225,11 @@ section.cat p.desc-cat{color:var(--texto-sec);margin-top:4px;font-style:italic;f
 .prod{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .35s ease, opacity .3s ease, margin-top .35s ease, transform .15s ease;cursor:pointer}
 .prod:active{transform:scale(.97)}
 .prod .prod-inner{overflow:hidden;min-height:0;background:var(--crema);border-radius:16px;border:1px solid var(--linea-suave)}
-.prod.oculto{grid-template-rows:0fr;opacity:0;margin-top:-12px}
+/* pointer-events:none es un respaldo visual -- el bloqueo real de foco/
+   puntero/árbol accesible lo hace el atributo inert que aplicarFiltro()
+   agrega en menu.js (equivalente a aria-hidden + tabindex=-1 + bloqueo
+   de eventos, todo junto, con soporte nativo del navegador). */
+.prod.oculto{grid-template-rows:0fr;opacity:0;margin-top:-12px;pointer-events:none}
 section.cat.visible .lista .prod{opacity:1;transform:translateY(0)}
 .lista .prod{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease,grid-template-rows .35s ease,margin-top .35s ease}
 .prod .cont{padding:12px 14px 14px}
