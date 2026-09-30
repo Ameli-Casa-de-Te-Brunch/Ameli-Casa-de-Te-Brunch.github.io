@@ -445,10 +445,28 @@ function pad2(n){ return String(n).padStart(2,'0'); }
    4 tarjetas ya no hacen falta 7 puntos de navegación. Es aria-hidden:
    decorativo, cada tarjeta ya tiene su propio aria-label individual
    ("Ver detalle de..."), y las flechas prev/next llevan su propio
-   aria-label real (ver render()) -- son la navegación accesible. */
-function actualizarPuntosCarrusel(){
+   aria-label real (ver render()) -- son la navegación accesible.
+
+   Auditoría 2026-09-30: si scrollWidth<=clientWidth no hay nada para
+   desplazar -- todas las tarjetas ya están visibles a la vez. Antes,
+   en pantallas anchas donde las 4 tarjetas entraban sin scroll, el
+   cálculo de "tarjeta más cercana al centro del viewport" igual
+   encontraba una "más cercana" (con 4 tarjetas, típicamente la 3ra) y
+   mostraba "03 / 04" con scrollLeft=0, un estado incoherente. En ese
+   caso ahora se deshabilitan las flechas (atributo disabled real, no
+   solo atenuado) y se oculta el indicador -- ninguno de los dos tiene
+   sentido si no hay nada que recorrer. En mobile (scrollWidth siempre
+   mayor que clientWidth con estas tarjetas) este bloque no cambia
+   nada: sigue mostrando el indicador correcto y el drag/touch nativo
+   sigue funcionando igual que antes. */
+function actualizarEstadoCarrusel(){
   const car=$('carrusel');
   if(!carruselCards.length) return;
+  const sinScroll = car.scrollWidth <= car.clientWidth + 1; // +1: redondeo subpíxel
+  $('carPrev').disabled = sinScroll;
+  $('carNext').disabled = sinScroll;
+  $('carIndicador').hidden = sinScroll;
+  if(sinScroll) return;
   const centro=car.scrollLeft+car.clientWidth/2;
   let idx=0, mejor=Infinity;
   carruselCards.forEach((c,i)=>{ const d=Math.abs((c.offsetLeft+c.clientWidth/2)-centro); if(d<mejor){mejor=d;idx=i;} });
@@ -459,15 +477,24 @@ function initCarrusel(){
   carruselCards=[...car.querySelectorAll('.dcard')];
   $('carPrev').onclick=()=>car.scrollBy({left:-car.clientWidth*.8, behavior:'smooth'});
   $('carNext').onclick=()=>car.scrollBy({left:car.clientWidth*.8, behavior:'smooth'});
-  actualizarPuntosCarrusel();
+  actualizarEstadoCarrusel();
   if(car.dataset.dragInit) return;  /* el resto solo se ata una vez */
   car.dataset.dragInit='1';
 
   let ticking=false;
   car.addEventListener('scroll', ()=>{
     if(ticking) return; ticking=true;
-    requestAnimationFrame(()=>{ actualizarPuntosCarrusel(); ticking=false; });
+    requestAnimationFrame(()=>{ actualizarEstadoCarrusel(); ticking=false; });
   }, {passive:true});
+  /* el ancho de la ventana decide si hay algo para desplazar (ver
+     comentario de actualizarEstadoCarrusel) -- un resize puede cruzar
+     ese límite en vivo (redimensionar la ventana, rotar una tablet),
+     así que se recalcula ahí también, no solo al cargar. */
+  let resizeTimer=null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(actualizarEstadoCarrusel, 120);
+  });
 
   /* arrastre con mouse en desktop (touch ya funciona nativo con scroll-snap).
      El pointer solo se captura -y el scroll solo se toca- despues de superar
@@ -561,7 +588,12 @@ function render(){
   $('buscarLabel').textContent=UI.buscarLabel[lang];
   $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
   /* chips */
-  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}">${ch.t[lang]}</button>`).join('');
+  /* aria-pressed sincronizado con .activo en el mismo template string --
+     como los chips se regeneran enteros en cada render() (cambio de
+     idioma, click de chip, limpiar), y esas tres acciones ya llaman a
+     render() después de actualizar moodActivo, el valor siempre queda
+     al día sin lógica aparte que pueda desincronizarse. */
+  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}" aria-pressed="${moodActivo===ch.m}">${ch.t[lang]}</button>`).join('');
   document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
     moodActivo = moodActivo===ch.dataset.mood ? null : ch.dataset.mood;
     render(); aplicarFiltro();
@@ -664,13 +696,35 @@ function haystackProducto(p, cat){
   if(p.alerg){ ALERG_POSITIVOS.forEach(k=>{ if(p.alerg[k]) partes.push(ALERG_TXT[k][lang]); }); }
   return normalizar(partes.join(' '));
 }
+/* Auditoría 2026-09-30: ".oculto" solo actuaba en CSS (grid-template-
+   rows:0fr + opacity:0) -- la tarjeta seguía en el árbol accesible,
+   alcanzable con Tab y clickeable si algo la superponía. Un producto
+   visualmente oculto tiene que quedar TAMBIÉN fuera del foco, del
+   puntero y del árbol accesible. Se usa "inert" (bloquea foco, puntero
+   y lo saca del árbol accesible de una sola vez, con soporte nativo
+   del navegador) más aria-hidden y tabindex=-1 explícitos como
+   respaldo -- no todo lector de pantalla/navegador interpreta inert
+   igual, así que no se depende de un solo mecanismo. tabindex se
+   restaura a "0" (el valor original de estas tarjetas, ver
+   renderCardCompacta/renderDestacadoCategoria) al volver a mostrarse,
+   nunca a un valor inventado. */
 function aplicarFiltro(){
   const termino=normalizar(terminoBusqueda);
   document.querySelectorAll('.prod').forEach(p=>{
     const moods=(p.dataset.moods||'').split(',');
     const moodOk=!moodActivo || moods.includes(moodActivo);
     const textoOk=!termino || (p.dataset.haystack||'').includes(termino);
-    p.classList.toggle('oculto', !(moodOk && textoOk));
+    const visible=moodOk && textoOk;
+    p.classList.toggle('oculto', !visible);
+    if(visible){
+      p.removeAttribute('inert');
+      p.removeAttribute('aria-hidden');
+      p.setAttribute('tabindex','0');
+    } else {
+      p.setAttribute('inert','');
+      p.setAttribute('aria-hidden','true');
+      p.setAttribute('tabindex','-1');
+    }
   });
   document.querySelectorAll('section.cat').forEach(sec=>{
     sec.classList.toggle('sin-resultados', sec.querySelectorAll('.prod:not(.oculto)').length===0);
