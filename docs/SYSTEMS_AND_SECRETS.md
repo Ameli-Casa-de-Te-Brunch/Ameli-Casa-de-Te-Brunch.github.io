@@ -6,6 +6,16 @@ completa de una hoja privada. Si en algún momento alguien pega un valor
 real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 — nunca simplemente borrar la línea y seguir.
 
+**2026-09-30 — direcciones de Gmail redactadas, a pedido de Ignacio**: las
+direcciones exactas de la cuenta institucional y de la cuenta personal con
+acceso de respaldo dejaron de escribirse acá (se reemplazan por "la cuenta
+institucional de Google" / "la cuenta personal de respaldo"). Este
+documento es público en GitHub, y conocer la dirección exacta de estas
+cuentas facilita intentos de phishing o recuperación de cuenta dirigidos
+contra ellas -- mismo criterio de seguridad que ya se aplicaba acá al
+Spreadsheet ID y al gid de la hoja de disponibilidad (ver más abajo).
+Quien mantiene el proyecto ya sabe cuál es cada una.
+
 ## Sistemas involucrados
 
 | Sistema | Para qué | Quién tiene acceso |
@@ -13,7 +23,7 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 | GitHub — repositorio del menú | Código, `data/menu.json`, GitHub Actions, GitHub Pages | Quien mantiene el código |
 | GitHub Pages | Hosting del sitio publicado | (automático, vía Actions) |
 | Google Sheets — hoja de disponibilidad | Estado "agotado/últimas porciones" por producto, editable desde el celular | Cuenta institucional (propietaria) + dueño (editor, acceso de respaldo) + personal del local |
-| Apps Script (vinculado a la hoja de disponibilidad) | Avisa a GitHub cuando cambia una celda de disponibilidad | Cuenta institucional `ameli.casadete@gmail.com` (vive en Google, no en este repo) |
+| Apps Script (vinculado a la hoja de disponibilidad) | Avisa a GitHub cuando cambia una celda de disponibilidad | Cuenta institucional de Google (vive en Google, no en este repo -- dirección no publicada acá, ver nota de seguridad arriba) |
 | Excel maestro (`Ameli_Menu_Maestro_V*.xlsx`, en OneDrive) | Fuente real de productos, precios, alérgenos, config | Dueño |
 
 ## Credenciales activas hoy
@@ -27,8 +37,8 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
   Contents, sin Workflows, sin permisos organizacionales adicionales.
 - **Vencimiento**: 24/12/2026.
 - **Dónde vive**: Propiedad de script `GITHUB_TOKEN_ACTIONS` en el Apps
-  Script productivo, bajo la cuenta institucional
-  `ameli.casadete@gmail.com`.
+  Script productivo, bajo la cuenta institucional de Google (dirección no
+  publicada acá, ver nota de seguridad arriba).
 - **Para qué se usa**: única función de aviso en el código productivo
   confirmado — `avisarGitHubViaActions()` dispara el workflow vía
   `workflow_dispatch` sobre `deploy.yml`, rama `main`. El código
@@ -60,7 +70,8 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
   Contents/Workflows/permisos de organización), cargarlo en la propiedad
   de script `GITHUB_TOKEN_ACTIONS`, probar con una edición real de
   disponibilidad, y recién después revocar el PAT que se reemplaza.
-- **Responsable institucional**: `ameli.casadete@gmail.com`.
+- **Responsable institucional**: la cuenta institucional de Google
+  (dirección no publicada acá, ver nota de seguridad arriba).
 - **Rollback**: hoy no queda ningún PAT de respaldo activo (el anterior
   ya fue revocado) — si `GITHUB_TOKEN_ACTIONS` fallara, hay que generar
   uno nuevo de inmediato con el mismo procedimiento de arriba.
@@ -101,10 +112,11 @@ real acá por error, hay que rotarlo/revocarlo como si se hubiera filtrado
 
 ## Propiedad de la hoja de disponibilidad (confirmado 25/09/2026)
 
-- **Propietaria**: cuenta institucional `ameli.casadete@gmail.com`
-  (transferencia ya aceptada).
-- **Editor**: `nacho.asoto03@gmail.com` (acceso de respaldo/recuperación,
-  decisión deliberada — no un descuido).
+- **Propietaria**: cuenta institucional de Google (transferencia ya
+  aceptada, dirección no publicada acá, ver nota de seguridad arriba).
+- **Editor**: cuenta personal de respaldo del dueño (acceso de
+  respaldo/recuperación, decisión deliberada — no un descuido; dirección
+  no publicada acá).
 - **Acceso general**: restringido.
 - El Spreadsheet ID, el gid de la pestaña y el ID del proyecto de Apps
   Script **no se documentan en este archivo público** — quedan
