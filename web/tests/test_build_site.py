@@ -1115,17 +1115,16 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         ).replace(" ", "").replace("\n", "")
         self.assertRegex(css, r"\.consultas-grid\{[^}]*font-style:normal")
 
-    def test_portada_tienda_y_sustentabilidad_son_espacio_reservado_y_mapa_sigue_reservado(self):
-        """Portada, Carta y pedidos, y Origen y compromiso volvieron a ser
-        espacio reservado sin foto (2026-09-30 -- Ignacio va a pasar fotos
-        de mejor calidad): son <div aria-hidden="true"> con la misma clase
-        que tenían como <img>, sin src/srcset/alt, para heredar el mismo
-        tratamiento visual (patrón diagonal / fondo neutro) hasta que haya
-        foto real de nuevo. El mapa sigue sin foto, sin iframe ni embed,
-        por diseño -- desde el 2026-09-29 ya no es un espacio reservado
-        vacío (.espacio-mapa, "Espacio para mapa") sino una ficha editorial
-        hecha solo con HTML/CSS (.marco-ubicacion, ver Visitarnos en el
-        template)."""
+    def test_portada_y_tienda_tienen_foto_real_sustentabilidad_sigue_reservada_y_mapa_sin_iframe(self):
+        """Portada y Carta y pedidos volvieron a tener foto real (2026-10-05,
+        aportadas por Ignacio): <img> con ancho/alto (evita saltos de
+        layout), srcset+sizes (responsive) y alt no vacío con texto real.
+        La portada es el LCP (eager + fetchpriority high); la de Carta y
+        pedidos es lazy. Origen y compromiso sigue siendo un <div
+        aria-hidden="true"> reservado sin src (esa sección todavía no tiene
+        foto). El mapa sigue sin foto, sin iframe ni embed, por diseño --
+        desde el 2026-09-29 es una ficha editorial hecha solo con HTML/CSS
+        (.marco-ubicacion, ver Visitarnos en el template)."""
         self.escribir_config(config_valido(
             presentacion_sobre_ameli="Filosofía confirmada.",
             servicios_habilitado=True,
@@ -1134,21 +1133,29 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
             preguntas_frecuentes_texto="Consultas frecuentes."))
         build_site.construir(produccion=False)
         contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
-        clases_sin_foto = (
-            "portada-hero-fondo", "espacio-tienda", "espacio-sustentabilidad",
-        )
-        divs = re.findall(r'<div\b[^>]*>', contenido)
-        for clase in clases_sin_foto:
-            etiquetas = [div for div in divs if f'class="{clase}"' in div or f' {clase}"' in div or f'"{clase} ' in div]
-            self.assertTrue(etiquetas, f"no se encontró <div> con la clase {clase}")
-            for etiqueta in etiquetas:
-                self.assertIn('aria-hidden="true"', etiqueta)
-                self.assertNotIn("src=", etiqueta)
         imgs = re.findall(r'<img\b[^>]*>', contenido)
-        for clase in clases_sin_foto:
-            self.assertFalse(
-                [img for img in imgs if clase in img],
-                f"{clase} no debería ser <img> mientras no haya foto real")
+        for clase in ("portada-hero-fondo", "espacio-tienda"):
+            etiquetas = [img for img in imgs if f'class="{clase}"' in img]
+            self.assertEqual(len(etiquetas), 1, f"tiene que haber exactamente un <img> con la clase {clase}")
+            etiqueta = etiquetas[0]
+            self.assertRegex(etiqueta, r'\balt="[^"]{10,}"')
+            self.assertRegex(etiqueta, r'\bwidth="\d+"')
+            self.assertRegex(etiqueta, r'\bheight="\d+"')
+            self.assertIn("srcset=", etiqueta)
+            self.assertIn("sizes=", etiqueta)
+            self.assertIn(".webp", etiqueta)
+            for ruta in re.findall(r'assets/img/[\w.-]+\.webp', etiqueta):
+                self.assertTrue((build_site.DIST_PATH / ruta).exists(), f"{ruta} no existe en dist/")
+        portada = next(i for i in imgs if "portada-hero-fondo" in i)
+        self.assertIn('loading="eager"', portada)
+        self.assertIn('fetchpriority="high"', portada)
+        tienda = next(i for i in imgs if "espacio-tienda" in i)
+        self.assertIn('loading="lazy"', tienda)
+        reservados = [d for d in re.findall(r'<div\b[^>]*>', contenido) if 'class="espacio-sustentabilidad"' in d]
+        self.assertTrue(reservados, "no se encontró el <div> reservado de espacio-sustentabilidad")
+        self.assertIn('aria-hidden="true"', reservados[0])
+        self.assertNotIn("src=", reservados[0])
+        self.assertFalse([i for i in imgs if "espacio-sustentabilidad" in i])
         self.assertIn("marco-ubicacion", contenido)
         self.assertNotIn("espacio-mapa", contenido)
         self.assertNotIn("Espacio para mapa", contenido)
