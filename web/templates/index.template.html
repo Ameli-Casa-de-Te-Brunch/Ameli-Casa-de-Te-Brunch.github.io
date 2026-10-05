@@ -91,12 +91,12 @@ __SOCIAL_META_TAGS__
        abajo -- .portada-franja, después de cerrar esta section. No se
        eliminó ningún dato, solo se reordenó. -->
   <section class="portada portada-hero" aria-labelledby="titulo-portada">
-    <!-- Sin foto propia por ahora (Ignacio va a pasar versiones de mejor
-         calidad) -- el espacio queda reservado con el mismo tratamiento
-         que .espacio-imagen/.espacio-foto/.espacio-menu (ver CSS), listo
-         para que vuelva a ser <img class="portada-hero-fondo"> apenas
-         haya foto nueva. -->
-    <div class="portada-hero-fondo" aria-hidden="true"></div>
+    <!-- Foto del salón (2026-10-05, aportada por Ignacio). Es un panorama
+         horizontal 2.2:1: en celular el hero es mucho más alto que ancho y
+         object-fit:cover usa solo una franja central, por eso el sizes
+         pide ~4 veces el ancho de pantalla en mobile (si no, el navegador
+         elegiría una variante chica y la estiraría). -->
+    <img class="portada-hero-fondo" alt="Salón de Amelí con mesas y sillas de madera, banco tapizado, piso a cuadros y la vitrina de pastelería junto a la barra." src="assets/img/portada-1800.webp" srcset="assets/img/portada-1200.webp 1200w, assets/img/portada-1800.webp 1800w, assets/img/portada-2400.webp 2400w" sizes="(max-width: 859px) 400vw, 100vw" width="2400" height="1080" loading="eager" fetchpriority="high" decoding="async">
     <div class="portada-hero-velo" aria-hidden="true"></div>
     <div class="portada-hero-overlay">
       <span class="portada-emblema" aria-hidden="true">✻</span>
@@ -211,9 +211,7 @@ __SOCIAL_META_TAGS__
          <img>, sus atributos (alt/srcset/sizes/loading) y el título
          accesible real (h2 de .tienda-contenido, arriba) no cambian. -->
     <div class="marco-foto">
-      <!-- Sin foto propia por ahora (Ignacio va a pasar versiones de
-           mejor calidad) -- espacio reservado, ver nota en portada-hero-fondo. -->
-      <div class="espacio-tienda" aria-hidden="true"></div>
+      <img class="espacio-tienda" alt="Mesa de madera con una porción de torta de chocolate, una tartita con crema, un bagel con huevo y panceta, tostadas y bowls de huevos revueltos con palta y semillas." src="assets/img/carta-pedidos-720.webp" srcset="assets/img/carta-pedidos-480.webp 480w, assets/img/carta-pedidos-720.webp 720w, assets/img/carta-pedidos-900.webp 900w" sizes="(min-width: 900px) 480px, 100vw" width="900" height="1600" loading="lazy" decoding="async">
       <div class="marco-precision" aria-hidden="true">
         <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
         <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>

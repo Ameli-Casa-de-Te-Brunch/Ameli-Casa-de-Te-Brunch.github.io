@@ -26,16 +26,17 @@ mismo archivo — ver `build_site.py::_copiar_assets`).
 
 ## Fotografías
 
-Ninguna fotografía sigue publicada hoy. Las 5 que existieron (`hero-tostada.webp`,
-`menu-smoothies.webp`, `sabor-torta.webp`, `sabor-tarta.webp`,
-`sabor-sandwich.webp`) dejaron de estar enlazadas en el HTML a partir del
-rediseño del 2026-09-15 (commit `1879586`), pero `build_site.py` copia toda
-`assets/img/` tal cual a `dist/`, así que quedaron publicadas sin estar
-enlazadas desde ningún template, con su estado de licencia todavía
-`PENDIENTE`. Se eliminaron del repo el 2026-09-30 en el barrido de detalles
-sueltos pedido por Ignacio, en vez de dejarlas huérfanas indefinidamente.
-Si en el futuro se quieren retomar, están en el historial de git (commit
-previo a este cambio).
+El 2026-09-30 se retiraron las fotos anteriores (5 huérfanas y 4 de contenido).
+Desde el 2026-10-05 hay 3 fotografías aportadas por Ignacio desde su carpeta
+`Imagenes_WEB`. Se publican como variantes WebP generadas por nosotros (los
+originales no están en el repo). Autoría y titularidad siguen sin confirmación
+escrita: estado `PENDIENTE` hasta que Ignacio lo confirme.
+
+| Ruta (variante principal) | SHA-256 | Origen | Autor | Fundamento de uso | Estado | Observaciones |
+|---|---|---|---|---|---|---|
+| `assets/img/portada-2400.webp` (+1200/1800) | `0659ea356fcfee6d02b2c1c257fe65d5a10caf9a3ec8b0814473ee019a2273d0` | `Salon.png` (2400×1080) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Portada de la web. La imagen se ve suavizada (¿reescalada o retocada?): si existe el original de cámara, conviene reemplazarla. |
+| `assets/img/carta-pedidos-900.webp` (+480/720) | `d9bf1d3e57993a8444af90f1e24093876cd3ff880518819b02259271981de2fd` | `Carta.jpeg` (900×1600) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Sección Carta y pedidos. |
+| `assets/img/hero-salon-960.webp` (+480), en el menú | `496c10f67bad5965db08e4688be9795e5e1773f05d5d8f3491cbda09991d94bc` | Recorte 3:2 de `Salon.png` | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Hero del menú (`/menu/`); no tiene registro propio de procedencia, se documenta acá. |
 
 ## Íconos (derivados del logo)
 
