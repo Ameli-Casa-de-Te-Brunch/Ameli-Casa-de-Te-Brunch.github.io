@@ -36,7 +36,7 @@ escrita: estado `PENDIENTE` hasta que Ignacio lo confirme.
 |---|---|---|---|---|---|---|
 | `assets/img/portada-2400.webp` (+1200/1800) | `0659ea356fcfee6d02b2c1c257fe65d5a10caf9a3ec8b0814473ee019a2273d0` | `Salon.png` (2400×1080) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Portada de la web. La imagen se ve suavizada (¿reescalada o retocada?): si existe el original de cámara, conviene reemplazarla. |
 | `assets/img/carta-pedidos-900.webp` (+480/720) | `d9bf1d3e57993a8444af90f1e24093876cd3ff880518819b02259271981de2fd` | `Carta.jpeg` (900×1600) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Sección Carta y pedidos. |
-| `assets/img/hero-salon-960.webp` (+480), en el menú | `42c94f7a8fa53e4647788ff06b43dbafae92cde66c55f866329014929e52f122` | Recorte 3:2 de `31.png` (1080×1440, sin reescalar) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Hero del menú (`/menu/`); no tiene registro propio de procedencia, se documenta acá. |
+| `assets/img/hero-salon-960.webp` (+480), en el menú | `0e928386089ed67d47d58157b6f4c81f439e45c1cb97d6cc7b7189bd1097b28c` | Recorte 3:2 de `Salón.jpeg` (960×1280, sin reescalar) | Desconocido | Propio (afirmado, sin confirmación escrita) | `PENDIENTE` | Hero del menú (`/menu/`); no tiene registro propio de procedencia, se documenta acá. `Salon.png` (portada web) parece una versión ensanchada de esta misma foto. |
 
 ## Íconos (derivados del logo)
 
