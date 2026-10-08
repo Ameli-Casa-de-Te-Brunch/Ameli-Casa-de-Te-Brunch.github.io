@@ -27,6 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      # false = la pestaña del calendario tenía errores y NO se aplicó (ver el
+      # paso 'Aplicar calendario de temas' y el job avisar-calendario).
+      calendario_ok: ${{ steps.calendario.outputs.calendario_ok }}
     steps:
       # Actions fijadas por SHA, no por tag (una tag se puede re-apuntar;
       # un SHA no) — endurecimiento estándar recomendado por GitHub,
@@ -79,6 +83,21 @@ jobs:
       # había antes de pisarlo con la hoja en vivo.
       - name: Validar data/menu.json (después de disponibilidad, antes de publicar)
         run: python build/validate_json_publico.py data/menu.json
+      # Calendario de temas (Halloween, Navidad, etc.) desde una pestaña de
+      # Google Sheets publicada -- ver build/aplicar_calendario.py y
+      # docs/operations/TEMAS_Y_CALENDARIO.md. CALENDARIO_CSV_URL es una repo
+      # variable (no un secreto: URL pública por diseño al publicar la hoja).
+      # A DIFERENCIA de la disponibilidad, este paso NO es fail-closed: un
+      # calendario roto no puede impedir que se publique un 'agotado por hoy'.
+      # Si la hoja tiene errores, no se pisa nada (queda el data/calendario.json
+      # commiteado, el último válido), el paso termina bien con
+      # calendario_ok=false y el job avisar-calendario, más abajo, pone la
+      # corrida en rojo DESPUÉS de publicar, para que llegue el mail de GitHub.
+      - name: Aplicar calendario de temas desde la hoja (con respaldo)
+        id: calendario
+        env:
+          CALENDARIO_CSV_URL: ${{ vars.CALENDARIO_CSV_URL }}
+        run: python build/aplicar_calendario.py
       # build_unificado.py corre build/render.py con los mismos
       # argumentos de siempre y ADEMÁS genera la web institucional en
       # la raíz de dist/ -- ver build_unificado.py en la raíz del
@@ -101,3 +120,17 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  # Corre solo si la hoja del calendario tenía errores. El sitio YA se publicó
+  # (con el último calendario válido y la disponibilidad al día); acá solo se
+  # marca la corrida como fallida para que alguien se entere y lo corrija. No
+  # necesita ningún permiso.
+  avisar-calendario:
+    needs: [build, deploy]
+    if: ${{ always() && needs.build.outputs.calendario_ok == 'false' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: |
+          echo "::error::La pestaña del calendario tiene errores y NO se aplicó. El sitio se publicó igual, con el último calendario válido. Mirá el paso 'Aplicar calendario de temas' del job build para ver qué fila corregir."
+          exit 1

@@ -69,9 +69,9 @@ los temas y también la previsualización.
 - Tipos de evento previstos pero **no implementados**: `cierre`,
   `horario_especial` y `aviso` (hoy el cartel "Abierto/Cerrado" del menú no
   considera feriados).
-- Hoy el calendario se edita en el repositorio. El plan acordado es leerlo
-  desde una pestaña de Google Sheets, con el mismo circuito que ya usa la hoja
-  de disponibilidad (el cambio dispara el build y el calendario se valida
-  igual; si la hoja tiene un error se conserva el último calendario válido).
-  Cambiar de Sheets a otra herramienta solo implica cambiar quién escribe
-  `data/calendario.json`.
+- El calendario se puede editar en `data/calendario.json` (PR) o, una vez
+  configurada, desde una pestaña de Google Sheets: ver
+  `docs/operations/CALENDARIO_SHEETS.md`. Si la hoja tiene un error no se aplica
+  y queda el calendario del repositorio (la corrida de GitHub queda en rojo
+  para avisar). Cambiar de Sheets a otra herramienta solo implica cambiar quién
+  escribe `data/calendario.json`.
