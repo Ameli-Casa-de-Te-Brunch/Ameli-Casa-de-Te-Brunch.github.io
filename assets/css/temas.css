@@ -1,0 +1,37 @@
+/* Temas estacionales del menú (ver build/calendario.py y assets/js/tema.js).
+   TODAS las reglas cuelgan de html[data-tema="..."]: sin ese atributo
+   (fuera de fechas o con el interruptor apagado) el menú es el diseño
+   original. Se carga después de menu.css.
+
+   Reglas de diseño del tema en el menú, más estrictas que en la web:
+   - Solo colores y un adorno estático. Sin animaciones: es una lista que
+     se lee en la mesa, de un vistazo y desde el celular.
+   - Nunca fondos oscuros en la lectura de productos (el feedback de los
+     clientes fue que los tonos oscuros se leían mal en la mesa, ver el
+     comentario de modo oscuro en menu.css): los fondos siguen claros;
+     el color nuevo va en acentos, títulos, chips y botones.
+   - Los avisos de alérgenos y de moneda no se tocan.
+   - No pisan el alto contraste del panel de accesibilidad. */
+
+html[data-tema="encantada"]:not([data-contraste="alto"]){
+  --verde:#5C3D84;
+  --verde-osc:#34254A;
+  --verde-suave:#8E75B0;
+  --dorado:#F2A93B;
+  --crema:#F5EADF;
+  --blanco:#FFFBF4;
+  --linea:rgba(92,61,132,.22);
+  --linea-suave:rgba(92,61,132,.12);
+  --navcat-bg:rgba(245,234,223,.92);
+}
+
+/* Papel picado en el borde superior. La barra de arriba se baja lo justo
+   para que el adorno no tape el logo ni los controles. */
+html[data-tema="encantada"]:not([data-contraste="alto"]) body::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:38px; z-index:5;
+  background:url("../img/tema-encantada-papel-picado.svg") repeat-x left top / auto 38px;
+  pointer-events:none;
+}
+html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar{
+  padding-top:50px;
+}

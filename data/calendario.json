@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "zona_horaria": "America/Argentina/Mendoza",
+  "activo": true,
+  "eventos": [
+    {
+      "id": "encantada-2026",
+      "tipo": "tema",
+      "tema": "encantada",
+      "desde": "2026-10-19",
+      "hasta": "2026-11-02",
+      "prioridad": 10
+    }
+  ]
+}

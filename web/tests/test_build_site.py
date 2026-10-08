@@ -1115,6 +1115,28 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         ).replace(" ", "").replace("\n", "")
         self.assertRegex(css, r"\.consultas-grid\{[^}]*font-style:normal")
 
+    def test_index_embebe_el_calendario_de_temas_y_publica_tema_js_y_temas_css(self):
+        """Temas por calendario (2026-10-08): la portada lleva el bloque JSON de
+        datos (no se ejecuta, la CSP no lo bloquea) y tema.js en el head; los
+        assets del tema llegan a dist/ (los valida la allowlist del build). Sin
+        ningún <script> inline ejecutable, y la CSP sigue estricta."""
+        self.escribir_config(config_valido())
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn("__CALENDARIO_JSON__", contenido)
+        m = re.search(r'<script type="application/json" id="ameli-calendario">(.*?)</script>', contenido, re.S)
+        self.assertIsNotNone(m)
+        datos = json.loads(m.group(1))
+        self.assertIn("encantada", datos["temas"])
+        head = contenido.split("</head>")[0]
+        self.assertIn('<script src="assets/js/tema.js', head)
+        self.assertIn('href="assets/css/temas.css', head)
+        for ruta in ("assets/js/tema.js", "assets/css/temas.css",
+                     "assets/img/tema-encantada-papel-picado.svg", "assets/img/tema-encantada-petalos.svg"):
+            self.assertTrue((build_site.DIST_PATH / ruta).exists(), f"{ruta} no llegó a dist/")
+        ejecutables = [t for t in re.findall(r"<script([^>]*)>", contenido) if "src=" not in t and "application/" not in t]
+        self.assertEqual(ejecutables, [], "no debe haber <script> inline ejecutable")
+
     def test_portada_y_tienda_tienen_foto_real_sustentabilidad_sigue_reservada_y_mapa_sin_iframe(self):
         """Portada y Carta y pedidos volvieron a tener foto real (2026-10-05,
         aportadas por Ignacio): <img> con ancho/alto (evita saltos de

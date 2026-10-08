@@ -48,11 +48,17 @@ import json
 import os
 import re
 import shutil
+import sys
 import tempfile
 import urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+# El calendario de temas (data/calendario.json) y su validación son
+# compartidos con el menú: una sola fuente, un solo validador (build/calendario.py).
+# Es lo único que este build toma de afuera de web/.
+sys.path.insert(0, str(HERE.parent / "build"))
+import calendario  # noqa: E402
 CONFIG_PATH = HERE / "site.config.json"
 TEMPLATE_INDEX_PATH = HERE / "templates" / "index.template.html"
 TEMPLATE_404_PATH = HERE / "templates" / "404.template.html"
@@ -780,6 +786,7 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     salida = salida.replace("__ROBOTS_META_TAG__", robots_tag)
     salida = salida.replace("__CANONICAL_TAG__", canonical_tag)
     salida = salida.replace("__SOCIAL_META_TAGS__", social_meta_tags)
+    salida = salida.replace("__CALENDARIO_JSON__", calendario.json_embebido_default())
 
     # __SOBRE_AMELI_TEXTO__ también se resuelve aparte -- a diferencia
     # de los demás campos de texto, acá SÍ queremos un <p> por párrafo

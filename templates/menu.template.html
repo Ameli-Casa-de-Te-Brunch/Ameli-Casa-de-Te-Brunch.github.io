@@ -19,6 +19,12 @@ __CSP_META__
 <!--OG_IMAGE_START--><meta property="og:image" content="__OG_IMAGE_URL__">
 <meta name="twitter:card" content="summary_large_image"><!--OG_IMAGE_END-->
 <link rel="stylesheet" href="assets/css/menu.css">
+<link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
+<!-- Temas por calendario (2026-10-08): ver build/calendario.py. Bloque JSON de datos
+     (la CSP no lo trata como script ejecutable) + script en el head, sin defer, para
+     que html[data-tema] exista antes del primer pintado. -->
+<script type="application/json" id="ameli-calendario">__CALENDARIO_JSON__</script>
+<script src="assets/js/tema.js?v=20261008-1"></script>
 <!--JSONLD_START--><script type="application/ld+json">__JSONLD__</script><!--JSONLD_END-->
 </head>
 <body>
