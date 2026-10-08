@@ -1,0 +1,60 @@
+/* Temas estacionales de la web institucional (ver build/calendario.py y
+   assets/js/tema.js). TODAS las reglas de este archivo cuelgan de
+   html[data-tema="..."]: sin ese atributo (fuera de las fechas del
+   calendario, o con el interruptor apagado) no se aplica ninguna y el
+   sitio es el diseño original. Se carga después de site.css.
+
+   Reglas de diseño de todo tema:
+   - Solo cambian colores (vía los mismos tokens de :root), adornos y
+     animaciones suaves. La estructura, los textos y los avisos de
+     alérgenos no se tocan.
+   - No pisan el modo de alto contraste del panel de accesibilidad
+     (los tokens se aplican solo con :not([data-contraste="alto"]) y los
+     adornos se ocultan en alto contraste).
+   - La animación respeta "movimiento reducido": site.css ya anula
+     animation en todo el sitio con ese ajuste (y con prefers-reduced-
+     motion), y el adorno queda quieto.
+   - Nada externo: imágenes solo del propio sitio (img-src 'self'). */
+
+/* ================= "Merienda encantada" =================
+   Halloween + Día de los Muertos (cempasúchil, papel picado, violeta).
+   Inspirada en la merienda de té loca del libro de Lewis Carroll
+   (dominio público) y en la tradición mexicana -- sin personajes,
+   logos ni imágenes de películas. */
+html[data-tema="encantada"]:not([data-contraste="alto"]){
+  --verde:#5C3D84;
+  --verde-osc:#34254A;
+  --verde-linea:#7A5AA3;
+  --salvia:#F6C36A;
+  --crema:#F5EADF;
+  --blanco:#FFFBF4;
+  --calafate:#B23A1B;
+  --linea:rgba(92,61,132,.22);
+  --linea-suave:rgba(92,61,132,.12);
+}
+html[data-tema="encantada"]:not([data-contraste="alto"]) .portada-hero-velo{
+  background:linear-gradient(180deg, rgba(31,18,48,.34), rgba(31,18,48,.78));
+}
+html[data-tema="encantada"]:not([data-contraste="alto"]) .consultas-directorio{
+  background:#1B1226;
+}
+
+/* Papel picado colgando del borde superior de la portada. */
+html[data-tema="encantada"]:not([data-contraste="alto"]) .portada-hero::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:46px; z-index:3;
+  background:url("../img/tema-encantada-papel-picado.svg") repeat-x left top / auto 46px;
+  pointer-events:none;
+}
+/* Pétalos de cempasúchil que caen despacio. La capa es una baldosa de
+   480 px que se repite en vertical y se desplaza exactamente 480 px por
+   vuelta: el loop no tiene salto. Solo transform (no repinta). */
+html[data-tema="encantada"]:not([data-contraste="alto"]) .portada-hero::after{
+  content:""; position:absolute; left:0; right:0; top:-480px; bottom:0; z-index:1;
+  background:url("../img/tema-encantada-petalos.svg") repeat left top / 480px 480px;
+  opacity:.8; pointer-events:none;
+  animation:encantada-caer 34s linear infinite;
+}
+@keyframes encantada-caer{
+  from{transform:translateY(0)}
+  to{transform:translateY(480px)}
+}

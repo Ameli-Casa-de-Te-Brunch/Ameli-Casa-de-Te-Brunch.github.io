@@ -12,6 +12,8 @@ import urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import calendario  # noqa: E402
 DEFAULT_JSON = HERE.parent / "data" / "menu.json"
 DEFAULT_TEMPLATE = HERE.parent / "templates" / "menu.template.html"
 DEFAULT_OUT = HERE.parent / "dist" / "index.html"
@@ -148,6 +150,7 @@ def render(data: dict, template: str) -> str:
     url_base = cfg.get("url_base")
 
     out = template
+    out = out.replace("__CALENDARIO_JSON__", calendario.json_embebido_default())
     out = out.replace("__CATS_JSON__", _safe_json(data["cats"]))
     out = out.replace("__PRODS_JSON__", _safe_json(data["prods"]))
     out = out.replace("__PRECIOS_JSON__", _safe_json(data["precios"]))

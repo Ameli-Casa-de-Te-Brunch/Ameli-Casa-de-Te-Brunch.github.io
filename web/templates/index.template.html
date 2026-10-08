@@ -22,6 +22,12 @@ __SOCIAL_META_TAGS__
 <link rel="icon" href="assets/img/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/css/site.css?v=20260915-1">
+<link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
+<!-- Temas por calendario (2026-10-08): datos del calendario (bloque JSON, no se
+     ejecuta) + script que pone html[data-tema]. Va en el head y sin defer para
+     que el tema exista antes del primer pintado. Ver build/calendario.py. -->
+<script type="application/json" id="ameli-calendario">__CALENDARIO_JSON__</script>
+<script src="assets/js/tema.js?v=20261008-1"></script>
 </head>
 <body>
 
