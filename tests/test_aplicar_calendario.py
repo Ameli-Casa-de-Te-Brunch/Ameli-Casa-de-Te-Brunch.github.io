@@ -5,6 +5,7 @@ roto NUNCA pise el último válido ni frene la publicación. Sin red: la
 descarga se reemplaza por texto. Solo biblioteca estándar."""
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
@@ -223,11 +224,17 @@ class TestMain(unittest.TestCase):
 
 
 class TestPlantillaCsv(unittest.TestCase):
-    def test_la_plantilla_del_repo_es_valida(self):
-        ruta = Path(__file__).resolve().parent.parent / "docs" / "operations" / "calendario_plantilla.csv"
-        doc, problemas = ac.parsear_csv(ruta.read_text(encoding="utf-8"))
+    def test_la_plantilla_de_la_guia_es_valida(self):
+        """La plantilla vive dentro de docs/operations/CALENDARIO_SHEETS.md (los
+        *.csv están en .gitignore a propósito, así que no puede ser un archivo)."""
+        guia = (Path(__file__).resolve().parent.parent / "docs" / "operations" / "CALENDARIO_SHEETS.md").read_text(encoding="utf-8")
+        bloque = re.search(r"```csv\r?\n(.*?)```", guia, re.S)
+        self.assertIsNotNone(bloque, "falta el bloque ```csv en la guía")
+        contenido = "\n".join(linea.strip() for linea in bloque.group(1).splitlines())
+        doc, problemas = ac.parsear_csv(contenido)
         self.assertEqual(problemas, [])
         self.assertEqual(calendario.validar(doc), [])
+        self.assertEqual(len(doc["eventos"]), 1)
 
 
 if __name__ == "__main__":

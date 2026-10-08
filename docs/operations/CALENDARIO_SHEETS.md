@@ -15,9 +15,18 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
 
 1. **Pestaña nueva.** En la planilla de disponibilidad (cuenta institucional),
    agregar una pestaña llamada `Calendario`.
-2. **Cargar la plantilla.** Archivo > Importar > Subir
-   `docs/operations/calendario_plantilla.csv` > "Insertar hoja(s) nueva(s)" (o
-   copiar la primera fila de encabezados a mano). Las columnas son:
+2. **Cargar la plantilla.** Pegar estas dos filas en la pestaña (la primera es el
+   encabezado y la segunda el evento de Halloween y Día de los Muertos de este
+   año; si se pega todo en la celda A1 y Sheets lo deja en una sola columna:
+   Datos > Dividir texto en columnas > coma). Un test del repo verifica que esta
+   plantilla sea siempre válida:
+
+   ```csv
+   id,tipo,tema,desde,hasta,prioridad,activo,nota
+   encantada-2026,tema,encantada,2026-10-19,2026-11-02,10,Sí,Halloween y Día de los Muertos
+   ```
+
+   Las columnas son:
 
    | Columna | Obligatoria | Qué va |
    |---|---|---|
