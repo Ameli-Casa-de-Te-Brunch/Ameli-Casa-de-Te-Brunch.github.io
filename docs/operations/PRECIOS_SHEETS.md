@@ -34,6 +34,8 @@ nunca frena un "agotado por hoy".
 
 ## Armado, una sola vez
 
+**Todo con la cuenta institucional de Google.** Iniciá sesión con ella antes de abrir la planilla, publicar la pestaña o abrir Apps Script. Nada de esto va en la cuenta personal.
+
 1. **Pestaña nueva.** En la planilla de disponibilidad, agregar una pestaña
    llamada `Precios`.
 2. **Cargar los precios de hoy.** Importar `PLANTILLA_Precios.csv` (Archivo >

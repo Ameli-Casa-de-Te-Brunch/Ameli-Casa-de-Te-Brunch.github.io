@@ -14,6 +14,8 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
 
 ## Armado, una sola vez (lo hace quien administra la planilla)
 
+**Todo con la cuenta institucional de Google.** Iniciá sesión con ella antes de abrir la planilla, publicar la pestaña o abrir Apps Script. Nada de esto va en la cuenta personal.
+
 1. **Pestaña nueva.** En la planilla de disponibilidad (cuenta institucional),
    agregar una pestaña llamada `Calendario`.
 2. **Cargar la plantilla.** Pegar estas filas en la pestaña (la primera es el
