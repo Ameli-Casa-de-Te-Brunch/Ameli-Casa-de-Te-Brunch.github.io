@@ -28,6 +28,7 @@ __SOCIAL_META_TAGS__
      que el tema exista antes del primer pintado. Ver build/calendario.py. -->
 <script type="application/json" id="ameli-calendario">__CALENDARIO_JSON__</script>
 <script src="assets/js/tema.js?v=20261008-1"></script>
+<script src="assets/js/agenda.js?v=20261012-1"></script>
 </head>
 <body>
 
@@ -57,6 +58,10 @@ __SOCIAL_META_TAGS__
     </div>
   </div>
 </header>
+
+<!-- Aviso del día: cierres, horarios especiales y avisos del calendario. Lo escribe
+     assets/js/agenda.js (data-auto) con textContent; vacío = oculto. Ver build/calendario.py. -->
+<div class="aviso-dia" id="avisoDia" data-auto role="status" hidden></div>
 
 <!-- Panel de navegación -- mismo patrón que el panel de accesibilidad:
      <dialog> nativo con showModal(), foco contenido y Escape nativos

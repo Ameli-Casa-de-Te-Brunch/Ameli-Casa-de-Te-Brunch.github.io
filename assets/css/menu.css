@@ -495,3 +495,12 @@ html[data-lectura="simple"] .prod p{line-height:1.85}
 .drag-584{transform:translateY(584px)}
 .drag-592{transform:translateY(592px)}
 .drag-600{transform:translateY(600px)}
+
+/* Aviso del día (cierres, horarios especiales y avisos del calendario; lo
+   escribe assets/js/agenda.js). Vacío = oculto. */
+.aviso-dia{max-width:480px;margin:12px 16px 0;padding:10px 14px;border:1px solid var(--linea);border-radius:var(--radius-md);background:var(--crema);color:var(--verde-osc);font-size:calc(14px * var(--afs,1));line-height:1.45;text-align:center}
+.aviso-dia[hidden]{display:none}
+.aviso-dia p{margin:0}
+.aviso-dia p+p{margin-top:4px}
+.aviso-dia p.cierre{color:var(--marron);font-weight:700}
+@media(min-width:860px){.aviso-dia{margin:12px 40px 0}}

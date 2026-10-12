@@ -19,8 +19,15 @@ avisar-calendario de deploy.yml), así llega el mail de GitHub y alguien lo
 corrige, en vez de quedar un cambio "aplicado" que no se aplicó.
 
 Columnas de la pestaña (primera fila = encabezado, en cualquier orden):
-  tipo, tema, desde, hasta            obligatorias
+  tipo, desde, hasta                  obligatorias
+  tema                                obligatoria solo si tipo = tema
+  horario                             obligatoria si tipo = horario_especial
+                                      (ej. 10:00-14:00; 18:00-21:00)
+  mensaje                             obligatoria si tipo = aviso; opcional en
+                                      cierre y horario_especial
+  mensaje_en                          opcional (versión en inglés del mensaje)
   id, prioridad, activo, nota         opcionales
+  - tipo: tema, cierre, horario_especial o aviso (ver build/calendario.py).
   - desde/hasta: AAAA-MM-DD (formato de columna "texto sin formato" o
     personalizado aaaa-mm-dd; el CSV publicado exporta lo que se VE).
   - activo: vacío o "Sí" = vale; "No" = la fila se ignora (sirve para apagar
@@ -45,8 +52,9 @@ import aplicar_disponibilidad as ad  # noqa: E402  (mismo allowlist de Google y 
 import calendario  # noqa: E402
 import extract_common as ec  # noqa: E402
 
-ENCABEZADOS_PERMITIDOS = ("id", "tipo", "tema", "desde", "hasta", "prioridad", "activo", "nota")
-ENCABEZADOS_OBLIGATORIOS = ("tipo", "tema", "desde", "hasta")
+ENCABEZADOS_PERMITIDOS = ("id", "tipo", "tema", "desde", "hasta", "prioridad", "activo", "nota",
+                          "horario", "mensaje", "mensaje_en")
+ENCABEZADOS_OBLIGATORIOS = ("tipo", "desde", "hasta")
 MAX_FILAS = 500
 TAMANO_MAXIMO_BYTES = ad.TAMANO_MAXIMO_BYTES
 VALORES_ACTIVO_SI = {"", "si", "sí"}
@@ -133,11 +141,20 @@ def parsear_csv(contenido: str) -> tuple:
 
         ev = {
             "id": celda(fila, "id").lower() or f"fila-{numero}",
-            "tipo": celda(fila, "tipo").lower(),
-            "tema": celda(fila, "tema").lower(),
+            # "horario especial" (con espacio) también vale: se normaliza a horario_especial
+            "tipo": celda(fila, "tipo").lower().replace(" ", "_"),
             "desde": celda(fila, "desde"),
             "hasta": celda(fila, "hasta"),
         }
+        # Los campos opcionales solo viajan si la celda tiene algo: una celda
+        # vacía es "no aplica", no un texto vacío. Si se completó uno que no
+        # corresponde al tipo (ej. un tema en una fila de cierre), el
+        # validador lo marca como error en vez de ignorarlo en silencio.
+        if celda(fila, "tema"):
+            ev["tema"] = celda(fila, "tema").lower()
+        for campo in ("horario", "mensaje", "mensaje_en"):
+            if celda(fila, campo):
+                ev[campo] = celda(fila, campo)
         prioridad = celda(fila, "prioridad")
         if prioridad:
             if not prioridad.isdigit():

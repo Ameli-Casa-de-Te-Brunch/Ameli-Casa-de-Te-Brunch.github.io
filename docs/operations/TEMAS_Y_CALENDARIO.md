@@ -32,8 +32,9 @@ antes de publicar nada.
 dirección (web o menú). Para ver el diseño normal aunque haya un tema activo:
 `?tema=ninguno`.
 
-**Apagar todo ya.** Poner `"activo": false` en `data/calendario.json`. Apaga
-los temas y también la previsualización.
+**Apagar los temas ya.** Poner `"activo": false` en `data/calendario.json`. Apaga
+los temas y también la previsualización (los cierres y avisos siguen: se
+apagan borrando el evento o con `No` en su fila de la hoja).
 
 **Crear un tema nuevo.**
 1. Agregar el CSS bajo `html[data-tema="nuevo"]:not([data-contraste="alto"])`
@@ -44,6 +45,33 @@ los temas y también la previsualización.
 3. Agregar el id a `TEMAS_CONOCIDOS` en `build/calendario.py`.
 4. Agregar el evento al calendario. Los tests de `tests/test_calendario.py`
    verifican que el tema tenga CSS en los dos sitios y que cumpla las reglas.
+
+## Cierres, horarios especiales y avisos
+
+Además de temas, el calendario tiene tres tipos de evento más (los lee
+`assets/js/agenda.js`, idéntico en la web y el menú):
+
+- `cierre`: el local no abre. El cartel del menú dice "Cerrado hoy" y los dos
+  sitios muestran un aviso rojo ("Hoy estamos cerrados." o el mensaje).
+- `horario_especial` (campo `horario`, ej. `09:00-14:00; 18:00-21:00`): reemplaza
+  el horario habitual solo en esas fechas; el cartel "Abierto/Cerrado" usa
+  esas franjas.
+- `aviso` (campo `mensaje`): un texto visible en esas fechas.
+
+Un cierre le gana a un horario especial; entre eventos del mismo tipo gana la
+mayor `prioridad`. Los mensajes (`mensaje`, `mensaje_en`) son texto corto
+(140 caracteres), sin enlaces ni HTML, y siempre se escriben con `textContent`.
+Sin mensaje se usa un texto automático en 5 idiomas. El aviso aparece debajo
+de la barra superior de la web y debajo del encabezado del menú, y se oculta
+solo cuando no hay nada para hoy.
+
+Ejemplo en `data/calendario.json`:
+
+```json
+{"id": "navidad-cerrado", "tipo": "cierre", "desde": "2026-12-25", "hasta": "2026-12-25"},
+{"id": "nochebuena", "tipo": "horario_especial", "desde": "2026-12-24", "hasta": "2026-12-24",
+ "horario": "09:00-14:00", "mensaje": "Nochebuena: abrimos solo a la mañana"}
+```
 
 ## Reglas de todo tema
 
@@ -66,9 +94,10 @@ los temas y también la previsualización.
 
 - Las páginas de información alimentaria y el 404 no llevan tema (son páginas
   serias, con su propia política de seguridad).
-- Tipos de evento previstos pero **no implementados**: `cierre`,
-  `horario_especial` y `aviso` (hoy el cartel "Abierto/Cerrado" del menú no
-  considera feriados).
+- El horario **semanal habitual** sigue estando en el código (`HORARIO` de
+  `assets/js/menu.js`, `site.config.json` y los datos estructurados de Google):
+  los feriados y excepciones van como eventos del calendario, pero un cambio
+  permanente de horario todavía se hace en el repositorio.
 - El calendario se puede editar en `data/calendario.json` (PR) o, una vez
   configurada, desde una pestaña de Google Sheets: ver
   `docs/operations/CALENDARIO_SHEETS.md`. Si la hoja tiene un error no se aplica

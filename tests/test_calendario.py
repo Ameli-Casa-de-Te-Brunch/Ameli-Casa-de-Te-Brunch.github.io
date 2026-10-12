@@ -73,7 +73,7 @@ class TestValidacion(unittest.TestCase):
 
     def test_tema_o_tipo_desconocido(self):
         self.assertTrue(self._errores(lambda d: d["eventos"][0].update(tema="halowen")))
-        self.assertTrue(self._errores(lambda d: d["eventos"][0].update(tipo="cierre")))
+        self.assertTrue(self._errores(lambda d: d["eventos"][0].update(tipo="vacaciones")))
 
     def test_fechas_invalidas(self):
         for malo in ("2026-13-01", "2026-02-30", "19/10/2026", "2026-1-1", "", None, 20261019):

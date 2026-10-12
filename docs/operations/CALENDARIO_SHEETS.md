@@ -1,6 +1,7 @@
-# Calendario de temas desde Google Sheets
+# Calendario (temas, cierres, horarios y avisos) desde Google Sheets
 
-Con esto, mover o agregar fechas de un tema (Halloween, Navidad, etc.) se hace
+Con esto, mover o agregar fechas de un tema (Halloween, Navidad, etc.), avisar
+un cierre por feriado, un horario especial o un mensaje del día se hace
 editando una pestaña de la planilla, sin tocar el repositorio. El circuito es el
 mismo que ya usa la disponibilidad ("agotado por hoy").
 
@@ -15,39 +16,68 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
 
 1. **Pestaña nueva.** En la planilla de disponibilidad (cuenta institucional),
    agregar una pestaña llamada `Calendario`.
-2. **Cargar la plantilla.** Pegar estas dos filas en la pestaña (la primera es el
-   encabezado y la segunda el evento de Halloween y Día de los Muertos de este
-   año; si se pega todo en la celda A1 y Sheets lo deja en una sola columna:
-   Datos > Dividir texto en columnas > coma). Un test del repo verifica que esta
-   plantilla sea siempre válida:
+2. **Cargar la plantilla.** Pegar estas filas en la pestaña (la primera es el
+   encabezado; la segunda, el tema de Halloween y Día de los Muertos de este
+   año; las otras tres son ejemplos con `No` en `activo`, que se ignoran hasta
+   que los pases a `Sí`). Si queda todo en una sola columna: Datos > Dividir
+   texto en columnas > coma. Un test del repo verifica que esta plantilla sea
+   siempre válida:
 
    ```csv
-   id,tipo,tema,desde,hasta,prioridad,activo,nota
-   encantada-2026,tema,encantada,2026-10-19,2026-11-02,10,Sí,Halloween y Día de los Muertos
+   id,tipo,tema,desde,hasta,prioridad,activo,horario,mensaje,mensaje_en,nota
+   encantada-2026,tema,encantada,2026-10-19,2026-11-02,10,Sí,,,,Halloween y Día de los Muertos
+   ejemplo-feriado,cierre,,2026-12-25,2026-12-25,,No,,,,Ejemplo: cerrado por feriado
+   ejemplo-horario,horario_especial,,2026-12-24,2026-12-24,,No,09:00-14:00,,,Ejemplo: Nochebuena solo a la mañana
+   ejemplo-aviso,aviso,,2026-10-20,2026-10-21,,No,,Hoy no hay medialunas,No croissants today,Ejemplo de aviso
    ```
 
-   Las columnas son:
+   **Tipos de fila:**
+
+   | `tipo` | Qué hace | Columnas que usa |
+   |---|---|---|
+   | `tema` | Cambia colores y adornos de la web y del menú (ver más abajo). | `tema` |
+   | `cierre` | El local no abre. En el menú el cartel dice "Cerrado hoy" y aparece un aviso. | `mensaje` (opcional) |
+   | `horario_especial` | Reemplaza el horario habitual solo en esas fechas; el cartel "Abierto/Cerrado" lo respeta. | `horario` (obligatorio), `mensaje` (opcional) |
+   | `aviso` | Un mensaje visible en esas fechas (por ejemplo "hoy no hay medialunas"). | `mensaje` (obligatorio) |
+
+   **Columnas:**
 
    | Columna | Obligatoria | Qué va |
    |---|---|---|
-   | `tipo` | sí | hoy solo `tema` |
-   | `tema` | sí | hoy solo `encantada` (cada tema nuevo se suma en el código) |
-   | `desde` / `hasta` | sí | fechas **AAAA-MM-DD**, ambas incluidas |
-   | `prioridad` | no | 0 a 100; si dos eventos se pisan gana el mayor |
+   | `tipo` | sí | `tema`, `cierre`, `horario_especial` o `aviso` |
+   | `desde` / `hasta` | sí | fechas **AAAA-MM-DD**, ambas incluidas (un solo día: la misma fecha en las dos) |
+   | `tema` | solo en `tipo = tema` | hoy `encantada` (cada tema nuevo se suma en el código) |
+   | `horario` | solo en `horario_especial` | de 1 a 3 franjas `HH:MM-HH:MM` separadas por `;`, por ejemplo `09:00-13:00; 17:30-21:00` |
+   | `mensaje` | en `aviso`; opcional en cierre y horario especial | hasta 140 caracteres, sin enlaces ni `< >` |
+   | `mensaje_en` | no | el mismo mensaje en inglés (se muestra si el menú está en inglés; sin él se muestra el español) |
+   | `prioridad` | no | 0 a 100; si dos filas se pisan gana el mayor |
    | `activo` | no | vacío o `Sí` = vale, `No` = se ignora la fila (sirve para apagar sin borrar) |
    | `id` | no | si queda vacío se arma solo (`fila-N`) |
    | `nota` | no | texto para las personas; no se publica |
+
+   Si una fila no tiene `mensaje`, el sitio muestra un texto automático en los
+   5 idiomas ("Hoy estamos cerrados", "Hoy: horario especial 09:00–14:00").
+   Una columna que no corresponde al tipo (por ejemplo un `tema` en una fila de
+   `cierre`) es un error, no se ignora en silencio.
+
+   **Qué pasa si hay varias filas el mismo día:** un `cierre` le gana a un
+   `horario_especial`; entre filas del mismo tipo gana la de mayor `prioridad`
+   (si empatan, la que empieza más tarde); se muestran hasta 3 textos por día.
+   Los cierres y avisos no dependen del interruptor `activo` general del
+   calendario (ese es solo de los temas): se apagan con `No` en su fila.
 
 3. **Fechas como texto.** Seleccionar las columnas `desde` y `hasta` y
    Formato > Número > **Texto sin formato**, *antes* de escribir las fechas. Si
    no, Sheets las convierte a `19/10/2026` y el sitio las rechaza (por eso el
    formato es estricto: `10/11` podría ser 10 de noviembre o 11 de octubre).
+   Lo mismo para la columna `horario` (para que `09:00` no se vuelva una hora).
 4. **Listas desplegables** (Datos > Validación de datos > Menú desplegable):
-   `tipo` con `tema`; `tema` con `encantada`; `activo` con `Sí, No`.
+   `tipo` con `tema, cierre, horario_especial, aviso`; `tema` con `encantada`;
+   `activo` con `Sí, No`.
 5. **Publicar solo esa pestaña.** Archivo > Compartir > Publicar en la Web >
    elegir la pestaña `Calendario` y el formato "Valores separados por comas
    (.csv)" > Publicar. Copiar el enlace. Solo se publica esa pestaña (las demás
-   no), y solo contiene fechas y nombres de temas, nada sensible.
+   no), y solo contiene fechas, horarios y avisos que igual se ven en el sitio, nada sensible.
 6. **Guardar el enlace en GitHub.** Repositorio > Settings > Secrets and
    variables > Actions > pestaña **Variables** > New repository variable:
    nombre `CALENDARIO_CSV_URL`, valor el enlace. Es una variable, no un secreto

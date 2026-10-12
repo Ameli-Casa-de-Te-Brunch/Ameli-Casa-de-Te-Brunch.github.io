@@ -25,6 +25,7 @@ __CSP_META__
      que html[data-tema] exista antes del primer pintado. -->
 <script type="application/json" id="ameli-calendario">__CALENDARIO_JSON__</script>
 <script src="assets/js/tema.js?v=20261008-1"></script>
+<script src="assets/js/agenda.js?v=20261012-1"></script>
 <!--JSONLD_START--><script type="application/ld+json">__JSONLD__</script><!--JSONLD_END-->
 </head>
 <body>
@@ -55,6 +56,9 @@ __CSP_META__
   <p class="estado" id="estadoChip"><span class="punto"></span><span id="estadoTexto"></span></p>
   <p class="lugar" id="heroLugar"></p>
 </div>
+<!-- Aviso del día: cierres, horarios especiales y avisos del calendario (data/calendario.json
+     o la pestaña Calendario de la planilla). Lo escribe assets/js/agenda.js con textContent; vacío = oculto. -->
+<div class="aviso-dia" id="avisoDia" role="status" hidden></div>
 
 <!-- Foto del salón (2026-10-05, aportada por Ignacio): recorte 3:2 de
      "Salón.jpeg" de su carpeta Imagenes_WEB, tomado sin reescalar. Se usa
