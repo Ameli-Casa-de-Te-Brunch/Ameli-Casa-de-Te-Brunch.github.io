@@ -107,7 +107,7 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
   temas": debe decir `N evento(s) aplicados desde la hoja`.
 - Para ver un tema antes de que empiece: `?tema=encantada` al final de la
   dirección.
-- Si llega el mail de GitHub "avisar-calendario falló": una fila tiene un error.
+- Si llega el mail de GitHub "avisar-hojas falló": una fila tiene un error.
   El paso "Aplicar calendario" del job `build` dice el **número de fila** y qué
   campo (nunca copia el contenido de la celda). El sitio sigue funcionando con
   el calendario anterior.

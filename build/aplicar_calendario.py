@@ -41,22 +41,19 @@ import io
 import json
 import os
 import sys
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-import aplicar_disponibilidad as ad  # noqa: E402  (mismo allowlist de Google y tope de tamaño)
 import calendario  # noqa: E402
 import extract_common as ec  # noqa: E402
+import hoja_publica  # noqa: E402  (descarga restringida a Google, común con aplicar_precios)
 
 ENCABEZADOS_PERMITIDOS = ("id", "tipo", "tema", "desde", "hasta", "prioridad", "activo", "nota",
                           "horario", "mensaje", "mensaje_en")
 ENCABEZADOS_OBLIGATORIOS = ("tipo", "desde", "hasta")
 MAX_FILAS = 500
-TAMANO_MAXIMO_BYTES = ad.TAMANO_MAXIMO_BYTES
 VALORES_ACTIVO_SI = {"", "si", "sí"}
 VALORES_ACTIVO_NO = {"no"}
 
@@ -66,31 +63,11 @@ class CalendarioInvalido(Exception):
     la URL ni el texto crudo de ninguna celda."""
 
 
-class _RedirectHandlerRestringido(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        if not ec.url_https_valida(newurl, ad.DOMINIOS_REDIRECCION_PERMITIDOS):
-            raise CalendarioInvalido("La hoja del calendario redirigió a un destino no permitido -- corto acá.")
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
+_RedirectHandlerRestringido = hoja_publica.manejador_de_redirecciones(CalendarioInvalido, "del calendario")
 
 
 def _descargar(url: str, timeout: int = 10) -> str:
-    if not ec.url_https_valida(url, ec.DOMINIOS_DISPONIBILIDAD):
-        raise CalendarioInvalido("La URL del calendario configurada no es https de docs.google.com -- no se descarga.")
-    opener = urllib.request.build_opener(_RedirectHandlerRestringido)
-    try:
-        with opener.open(url, timeout=timeout) as resp:
-            crudo = resp.read(TAMANO_MAXIMO_BYTES + 1)
-    except CalendarioInvalido:
-        raise
-    except Exception as e:
-        # Nunca str(e): algunos errores de urllib incluyen la URL completa.
-        raise CalendarioInvalido(f"No se pudo descargar la hoja del calendario ({type(e).__name__}).") from None
-    if len(crudo) > TAMANO_MAXIMO_BYTES:
-        raise CalendarioInvalido(f"La hoja del calendario supera el máximo permitido ({TAMANO_MAXIMO_BYTES} bytes).")
-    try:
-        return crudo.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        raise CalendarioInvalido("La hoja del calendario no es un CSV de texto en una codificación válida.") from None
+    return hoja_publica.descargar_csv(url, "del calendario", CalendarioInvalido, timeout)
 
 
 def parsear_csv(contenido: str) -> tuple:
