@@ -54,6 +54,7 @@ const UI = {
  title:{es:'Menú | Amelí Casa de Té & Brunch · Malargüe',en:'Menu | Amelí Tea House & Brunch · Malargüe',pt:'Menu | Amelí Casa de Chá & Brunch · Malargüe',fr:'Menu | Amelí Maison de thé & Brunch · Malargüe',it:'Menu | Amelí Casa del tè & Brunch · Malargüe'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
  cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
+ cerradoHoy:{es:'Cerrado hoy',en:'Closed today',pt:'Fechado hoje',fr:'Fermé aujourd’hui',it:'Chiuso oggi'},
  abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
  cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar',fr:'Fermer',it:'Chiudi'},
  pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
@@ -203,7 +204,11 @@ function ahoraMendoza(){
 }
 function estadoNegocio(){
   const {dia,min} = ahoraMendoza();
-  const rangos = HORARIO[dia]||[];
+  /* Calendario (assets/js/agenda.js): un cierre de hoy le gana a todo; un
+     horario especial reemplaza al habitual solo por hoy. */
+  const ag = window.AmeliAgenda ? window.AmeliAgenda.hoy() : null;
+  if(ag && ag.cierre) return {abierto:false, cierreHoy:true};
+  const rangos = (ag && ag.franjas) || HORARIO[dia] || [];
   for(const [h1,m1,h2,m2] of rangos){
     const ini=h1*60+m1, fin=h2*60+m2;
     if(min>=ini && min<fin) return {abierto:true};
@@ -223,6 +228,8 @@ function pintarEstado(){
   chip.classList.toggle('cerrado', !est.abierto);
   if(est.abierto){
     $('estadoTexto').textContent = UI.abierto[lang];
+  } else if(est.cierreHoy){
+    $('estadoTexto').textContent = UI.cerradoHoy[lang];
   } else if(est.proximaApertura!=null){
     const hh=String(Math.floor(est.proximaApertura/60)).padStart(2,'0');
     const mm=String(est.proximaApertura%60).padStart(2,'0');
@@ -585,6 +592,8 @@ function render(){
   $('carPrev').setAttribute('aria-label', UI.anterior[lang]);
   $('carNext').setAttribute('aria-label', UI.siguiente[lang]);
   pintarEstado();
+  /* aviso del día (cierres, horarios especiales y avisos del calendario) */
+  if(window.AmeliAgenda) window.AmeliAgenda.pintar(lang);
   /* selector de idioma */
   $('langsBtnTxt').textContent=lang.toUpperCase();
   $('langsBtn').setAttribute('aria-label', `${UI.idioma[lang]}: ${IDIOMA_LABEL[lang]}`);

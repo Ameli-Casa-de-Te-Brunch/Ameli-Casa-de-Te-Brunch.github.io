@@ -1790,3 +1790,11 @@ html.js-reveal .sustentabilidad.visible,
 html.js-reveal .preguntas-frecuentes.visible{
   opacity:1; transform:translateY(0);
 }
+
+/* Aviso del día (cierres, horarios especiales y avisos del calendario; lo
+   escribe assets/js/agenda.js). Vacío = oculto. */
+.aviso-dia{background:var(--crema);border-bottom:1px solid var(--linea);color:var(--verde-osc);text-align:center;padding:10px 20px;font-family:var(--font-body);font-size:.95rem;line-height:1.45}
+.aviso-dia[hidden]{display:none}
+.aviso-dia p{margin:0 auto;max-width:var(--max-w)}
+.aviso-dia p+p{margin-top:4px}
+.aviso-dia p.cierre{color:var(--calafate);font-weight:700}

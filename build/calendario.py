@@ -27,17 +27,40 @@ ZONA_HORARIA = "America/Argentina/Mendoza"
 # primero el CSS del tema y después se lo agrega a esta lista.
 TEMAS_CONOCIDOS = ("encantada",)
 
-# Tipos de evento soportados hoy. Más adelante: cierre, horario_especial,
-# aviso (ver docs/operations/TEMAS_Y_CALENDARIO.md).
-TIPOS_CONOCIDOS = ("tema",)
+# Tipos de evento:
+#   tema              cambia colores/adornos (ver assets/js/tema.js)
+#   cierre            el local no abre en esas fechas
+#   horario_especial  horario distinto al habitual en esas fechas
+#   aviso             un mensaje visible en esas fechas
+# Los tres últimos los lee assets/js/agenda.js (cartel "Abierto/Cerrado" y
+# aviso del día).
+TIPOS_CONOCIDOS = ("tema", "cierre", "horario_especial", "aviso")
 
 CAMPOS_RAIZ_PERMITIDOS = ("version", "zona_horaria", "activo", "eventos")
-CAMPOS_EVENTO_PERMITIDOS = ("id", "tipo", "tema", "desde", "hasta", "prioridad")
-CAMPOS_EVENTO_OBLIGATORIOS = ("id", "tipo", "tema", "desde", "hasta")
+CAMPOS_COMUNES = ("id", "tipo", "desde", "hasta", "prioridad")
+# Campos propios de cada tipo: lo que no corresponde al tipo es un error (una
+# fila de cierre con un tema cargado casi siempre es una fila mal copiada).
+CAMPOS_PROPIOS = {
+    "tema": ("tema",),
+    "cierre": ("mensaje", "mensaje_en"),
+    "horario_especial": ("horario", "mensaje", "mensaje_en"),
+    "aviso": ("mensaje", "mensaje_en"),
+}
+CAMPOS_OBLIGATORIOS_PROPIOS = {
+    "tema": ("tema",),
+    "cierre": (),
+    "horario_especial": ("horario",),
+    "aviso": ("mensaje",),
+}
+CAMPOS_EVENTO_PERMITIDOS = CAMPOS_COMUNES + ("tema", "horario", "mensaje", "mensaje_en")
+CAMPOS_EVENTO_OBLIGATORIOS = ("id", "tipo", "desde", "hasta")
 
+MAX_MENSAJE = 140
+MAX_FRANJAS = 3
 MAX_EVENTOS = 200
 _RE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 _RE_FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_RE_FRANJA = re.compile(r"^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$")
 
 
 def _fecha_valida(valor) -> bool:
@@ -48,6 +71,47 @@ def _fecha_valida(valor) -> bool:
     except ValueError:
         return False
     return True
+
+
+def franjas_de_horario(texto):
+    """'10:00-14:00; 18:00-21:00' -> [[10,0,14,0],[18,0,21,0]]; None si el
+    texto no es un horario válido (1 a 3 franjas separadas por ';', cada una
+    HH:MM-HH:MM del mismo día, en orden y sin superponerse)."""
+    if not isinstance(texto, str):
+        return None
+    partes = [p.strip() for p in texto.split(";")]
+    if not 1 <= len(partes) <= MAX_FRANJAS:
+        return None
+    franjas, fin_anterior = [], -1
+    for p in partes:
+        m = _RE_FRANJA.match(p)
+        if not m:
+            return None
+        h1, m1, h2, m2 = (int(x) for x in m.groups())
+        if h1 > 23 or h2 > 23 or m1 > 59 or m2 > 59:
+            return None
+        ini, fin = h1 * 60 + m1, h2 * 60 + m2
+        if fin <= ini or ini < fin_anterior:
+            return None
+        fin_anterior = fin
+        franjas.append([h1, m1, h2, m2])
+    return franjas
+
+
+def horario_canonico(franjas) -> str:
+    return "; ".join(f"{a:02d}:{b:02d}-{c:02d}:{d:02d}" for a, b, c, d in franjas)
+
+
+def mensaje_valido(texto) -> bool:
+    """Texto corto, imprimible, sin HTML ni enlaces. Se muestra siempre con
+    textContent (nunca como HTML), pero igual se rechaza lo que podría usarse
+    para engañar: etiquetas, URLs."""
+    if not isinstance(texto, str) or not texto.strip() or len(texto) > MAX_MENSAJE:
+        return False
+    if texto != texto.strip() or not texto.isprintable():
+        return False
+    bajo = texto.lower()
+    return not any(x in texto for x in "<>") and "://" not in bajo and "www." not in bajo
 
 
 def validar(doc) -> list:
@@ -84,12 +148,20 @@ def validar(doc) -> list:
         ev_id = ev.get("id")
         if isinstance(ev_id, str) and _RE_ID.match(ev_id):
             etiqueta = f"evento {ev_id!r}"
+        tipo = ev.get("tipo")
         faltan = [c for c in CAMPOS_EVENTO_OBLIGATORIOS if c not in ev]
+        if tipo in TIPOS_CONOCIDOS:
+            faltan += [c for c in CAMPOS_OBLIGATORIOS_PROPIOS[tipo] if c not in ev]
         if faltan:
             errores.append(f"{etiqueta}: faltan campos obligatorios {faltan}.")
         extra = set(ev.keys()) - set(CAMPOS_EVENTO_PERMITIDOS)
         if extra:
             errores.append(f"{etiqueta}: {len(extra)} campo(s) no permitido(s). Solo {list(CAMPOS_EVENTO_PERMITIDOS)}.")
+        if tipo in TIPOS_CONOCIDOS:
+            ajenos = [c for c in ev if c in CAMPOS_EVENTO_PERMITIDOS and c not in CAMPOS_COMUNES
+                      and c not in CAMPOS_PROPIOS[tipo]]
+            if ajenos:
+                errores.append(f"{etiqueta}: {ajenos} no corresponde(n) a un evento de tipo '{tipo}'.")
 
         if "id" in ev:
             if not (isinstance(ev_id, str) and _RE_ID.match(ev_id)):
@@ -98,10 +170,17 @@ def validar(doc) -> list:
                 errores.append(f"{etiqueta}: 'id' repetido.")
             else:
                 ids_vistos.add(ev_id)
-        if "tipo" in ev and ev["tipo"] not in TIPOS_CONOCIDOS:
+        if "tipo" in ev and tipo not in TIPOS_CONOCIDOS:
             errores.append(f"{etiqueta}: 'tipo' tiene que ser uno de {list(TIPOS_CONOCIDOS)}.")
         if "tema" in ev and ev["tema"] not in TEMAS_CONOCIDOS:
             errores.append(f"{etiqueta}: 'tema' tiene que ser uno de {list(TEMAS_CONOCIDOS)}.")
+        if "horario" in ev and franjas_de_horario(ev["horario"]) is None:
+            errores.append(f"{etiqueta}: 'horario' tiene que ser de 1 a {MAX_FRANJAS} franjas HH:MM-HH:MM separadas por ';', "
+                           "en orden y sin superponerse (ej. 10:00-14:00; 18:00-21:00).")
+        for campo in ("mensaje", "mensaje_en"):
+            if campo in ev and not mensaje_valido(ev[campo]):
+                errores.append(f"{etiqueta}: '{campo}' tiene que ser un texto de hasta {MAX_MENSAJE} caracteres, "
+                               "sin < >, sin enlaces y sin espacios al principio o al final.")
         fechas_ok = True
         for campo in ("desde", "hasta"):
             if campo in ev and not _fecha_valida(ev[campo]):
@@ -136,14 +215,17 @@ def json_embebido(doc: dict) -> str:
     los separadores de línea Unicode) para que nada pueda cerrar el
     <script> ni inyectar HTML. Incluye 'temas' (los ids con CSS real) para
     que tema.js pueda validar el parámetro ?tema= de la previsualización."""
-    eventos = [
-        {
-            "tipo": e["tipo"], "tema": e["tema"],
-            "desde": e["desde"], "hasta": e["hasta"],
-            "prioridad": e.get("prioridad", 0),
-        }
-        for e in doc["eventos"]
-    ]
+    eventos = []
+    for e in doc["eventos"]:
+        item = {"tipo": e["tipo"], "desde": e["desde"], "hasta": e["hasta"], "prioridad": e.get("prioridad", 0)}
+        if e["tipo"] == "tema":
+            item["tema"] = e["tema"]
+        if "horario" in e:
+            item["franjas"] = franjas_de_horario(e["horario"])
+        for campo in ("mensaje", "mensaje_en"):
+            if campo in e:
+                item[campo] = e[campo]
+        eventos.append(item)
     salida = json.dumps(
         {"activo": doc["activo"], "zona": doc["zona_horaria"],
          "temas": list(TEMAS_CONOCIDOS), "eventos": eventos},
