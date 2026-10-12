@@ -34,6 +34,9 @@ jobs:
       # false = la pestaña de precios tenía errores y NO se aplicó (ver el paso
       # 'Aplicar precios' y el job avisar-hojas).
       precios_ok: ${{ steps.precios.outputs.precios_ok }}
+      # false = la pestaña de productos tenía filas que NO se aplicaron (ver el paso
+      # 'Aplicar productos' y el job avisar-hojas).
+      productos_ok: ${{ steps.productos.outputs.productos_ok }}
     steps:
       # Actions fijadas por SHA, no por tag (una tag se puede re-apuntar;
       # un SHA no) — endurecimiento estándar recomendado por GitHub,
@@ -95,7 +98,19 @@ jobs:
         env:
           PRECIOS_CSV_URL: ${{ vars.PRECIOS_CSV_URL }}
         run: python build/aplicar_precios.py
-      # Se valida de nuevo DESPUÉS de aplicar disponibilidad y precios: los
+      # Columnas de producto del Excel maestro (Producto activo, Destacado, Recomendado,
+      # Más vendido, Nuevo, Edición limitada, Etiqueta inicial) desde una pestaña de
+      # Google Sheets -- ver build/aplicar_productos.py y
+      # docs/operations/PRODUCTOS_SHEETS.md. PRODUCTOS_CSV_URL es una repo variable (no un
+      # secreto). Acá cada fila es independiente: una fila mala no frena las demás, pero
+      # marca productos_ok=false y el job avisar-hojas pone la corrida en rojo DESPUÉS de
+      # publicar. La hoja nunca puede publicar un producto que el Excel tiene en pausa.
+      - name: Aplicar productos desde la hoja (con respaldo)
+        id: productos
+        env:
+          PRODUCTOS_CSV_URL: ${{ vars.PRODUCTOS_CSV_URL }}
+        run: python build/aplicar_productos.py
+      # Se valida de nuevo DESPUÉS de aplicar disponibilidad, precios y productos: los
       # pasos anteriores reescriben data/menu.json en disco, así que esta corrida
       # revisa el JSON exacto que se va a renderizar y publicar, no el que
       # había antes de pisarlo con la hoja en vivo.
@@ -139,16 +154,16 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
-  # Corre solo si una hoja (calendario o precios) tenía errores. El sitio YA se
+  # Corre solo si una hoja (calendario, precios o productos) tenía errores. El sitio YA se
   # publicó (con el último calendario y los últimos precios válidos y la
   # disponibilidad al día); acá solo se marca la corrida como fallida para que
   # alguien se entere y lo corrija. No necesita ningún permiso.
   avisar-hojas:
     needs: [build, deploy]
-    if: ${{ always() && (needs.build.outputs.calendario_ok == 'false' || needs.build.outputs.precios_ok == 'false') }}
+    if: ${{ always() && (needs.build.outputs.calendario_ok == 'false' || needs.build.outputs.precios_ok == 'false' || needs.build.outputs.productos_ok == 'false') }}
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - run: |
-          echo "::error::Una hoja de la planilla (calendario o precios) tiene errores y NO se aplicó. El sitio se publicó igual, con lo último que era válido. Mirá los pasos 'Aplicar calendario de temas' y 'Aplicar precios' del job build para ver qué fila corregir."
+          echo "::error::Una hoja de la planilla (calendario, precios o productos) tiene errores y NO se aplicó (en productos, solo las filas con error). El sitio se publicó igual, con lo último que era válido. Mirá los pasos 'Aplicar calendario de temas', 'Aplicar precios' y 'Aplicar productos' del job build para ver qué fila corregir."
           exit 1
