@@ -150,7 +150,7 @@ class TestDescarga(unittest.TestCase):
             handler.redirect_request(None, None, 307, "x", {}, "https://evil.example.com/robado")
 
     def test_redireccion_al_host_de_contenido_de_google_se_permite(self):
-        permitido = ac.ec.url_https_valida("https://doc-00-2k-sheets.googleusercontent.com/pub/x", ac.ad.DOMINIOS_REDIRECCION_PERMITIDOS)
+        permitido = ac.ec.url_https_valida("https://doc-00-2k-sheets.googleusercontent.com/pub/x", ac.hoja_publica.ad.DOMINIOS_REDIRECCION_PERMITIDOS)
         self.assertTrue(permitido)
 
 

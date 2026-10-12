@@ -29,8 +29,11 @@ jobs:
       contents: read
     outputs:
       # false = la pestaña del calendario tenía errores y NO se aplicó (ver el
-      # paso 'Aplicar calendario de temas' y el job avisar-calendario).
+      # paso 'Aplicar calendario de temas' y el job avisar-hojas).
       calendario_ok: ${{ steps.calendario.outputs.calendario_ok }}
+      # false = la pestaña de precios tenía errores y NO se aplicó (ver el paso
+      # 'Aplicar precios' y el job avisar-hojas).
+      precios_ok: ${{ steps.precios.outputs.precios_ok }}
     steps:
       # Actions fijadas por SHA, no por tag (una tag se puede re-apuntar;
       # un SHA no) — endurecimiento estándar recomendado por GitHub,
@@ -77,8 +80,23 @@ jobs:
         env:
           DISPONIBILIDAD_CSV_URL: ${{ vars.DISPONIBILIDAD_CSV_URL }}
         run: python build/aplicar_disponibilidad.py
-      # Se valida de nuevo DESPUÉS de aplicar disponibilidad: el paso
-      # anterior reescribe data/menu.json en disco, así que esta corrida
+      # Precios (y tipos de cambio) desde una pestaña de Google Sheets publicada
+      # -- ver build/aplicar_precios.py y docs/operations/PRECIOS_SHEETS.md.
+      # PRECIOS_CSV_URL es una repo variable (no un secreto: los precios del
+      # menú son públicos). Igual que el calendario, NO es fail-closed: un error
+      # de la hoja no puede impedir que se publique un 'agotado por hoy'. Con
+      # cualquier problema (producto ausente, un cero de más, un tamaño
+      # agregado...) no se aplica NADA, quedan los precios de data/menu.json, el
+      # paso termina bien con precios_ok=false y el job avisar-hojas pone la
+      # corrida en rojo DESPUÉS de publicar. Va antes de la validación de abajo
+      # para que se valide el JSON exacto que se publica.
+      - name: Aplicar precios desde la hoja (con respaldo)
+        id: precios
+        env:
+          PRECIOS_CSV_URL: ${{ vars.PRECIOS_CSV_URL }}
+        run: python build/aplicar_precios.py
+      # Se valida de nuevo DESPUÉS de aplicar disponibilidad y precios: los
+      # pasos anteriores reescriben data/menu.json en disco, así que esta corrida
       # revisa el JSON exacto que se va a renderizar y publicar, no el que
       # había antes de pisarlo con la hoja en vivo.
       - name: Validar data/menu.json (después de disponibilidad, antes de publicar)
@@ -121,16 +139,16 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
-  # Corre solo si la hoja del calendario tenía errores. El sitio YA se publicó
-  # (con el último calendario válido y la disponibilidad al día); acá solo se
-  # marca la corrida como fallida para que alguien se entere y lo corrija. No
-  # necesita ningún permiso.
-  avisar-calendario:
+  # Corre solo si una hoja (calendario o precios) tenía errores. El sitio YA se
+  # publicó (con el último calendario y los últimos precios válidos y la
+  # disponibilidad al día); acá solo se marca la corrida como fallida para que
+  # alguien se entere y lo corrija. No necesita ningún permiso.
+  avisar-hojas:
     needs: [build, deploy]
-    if: ${{ always() && needs.build.outputs.calendario_ok == 'false' }}
+    if: ${{ always() && (needs.build.outputs.calendario_ok == 'false' || needs.build.outputs.precios_ok == 'false') }}
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - run: |
-          echo "::error::La pestaña del calendario tiene errores y NO se aplicó. El sitio se publicó igual, con el último calendario válido. Mirá el paso 'Aplicar calendario de temas' del job build para ver qué fila corregir."
+          echo "::error::Una hoja de la planilla (calendario o precios) tiene errores y NO se aplicó. El sitio se publicó igual, con lo último que era válido. Mirá los pasos 'Aplicar calendario de temas' y 'Aplicar precios' del job build para ver qué fila corregir."
           exit 1
