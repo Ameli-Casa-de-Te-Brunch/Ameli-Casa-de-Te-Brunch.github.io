@@ -680,6 +680,29 @@ a:focus-visible, button:focus-visible{
 }
 .pagina-404 .btn{margin:8px 12px 0 0}
 
+/* Taza con vapor de la página 404. Es decorativa (aria-hidden) y aparece
+   muy pocas veces: por eso se permite un movimiento suave y continuo. Solo
+   transform y opacity. Con "reducir movimiento" el vapor queda quieto y
+   tenue (la regla global de arriba apaga la animación; la opacidad base
+   es la que se ve). */
+.taza-404{display:block; margin:0 0 22px}
+.taza-404 .vapor{
+  fill:none; stroke:var(--verde-linea); stroke-width:3; stroke-linecap:round;
+  opacity:.35; transform-box:fill-box; transform-origin:50% 100%;
+  animation:vapor-taza 3.6s var(--ease-out) infinite;
+}
+.taza-404 .vapor:nth-of-type(2){animation-delay:1.2s}
+.taza-404 .vapor:nth-of-type(3){animation-delay:2.4s}
+@keyframes vapor-taza{
+  0%{opacity:0; transform:translateY(8px) scaleY(.85)}
+  30%{opacity:.6}
+  100%{opacity:0; transform:translateY(-14px) scaleY(1.1)}
+}
+.taza-404 .taza-plato{fill:var(--linea-suave); stroke:var(--verde-linea); stroke-width:2}
+.taza-404 .taza-cuerpo{fill:var(--blanco); stroke:var(--verde-osc); stroke-width:3; stroke-linejoin:round}
+.taza-404 .taza-asa{fill:none; stroke:var(--verde-osc); stroke-width:3; stroke-linecap:round}
+.taza-404 .taza-te{fill:var(--salvia); stroke:var(--verde-osc); stroke-width:3}
+
 /* ================= INFORMACIÓN PRÁCTICA ================= */
 .informacion-practica{
   max-width:var(--max-w); margin:0 auto;
