@@ -888,6 +888,7 @@ footer p.legal{
 .whatsapp-flotante:focus-visible{
   transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
 }
+.whatsapp-flotante:active{transform:scale(.94); transition-duration:.12s}
 @media (hover:hover) and (pointer:fine){
   .whatsapp-flotante:hover{
     transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(0,0,0,.5);
@@ -1819,6 +1820,8 @@ html.js-reveal .preguntas-frecuentes.visible{
    escribe assets/js/agenda.js). Vacío = oculto. */
 .aviso-dia{background:var(--crema);border-bottom:1px solid var(--linea);color:var(--verde-osc);text-align:center;padding:10px 20px;font-family:var(--font-body);font-size:.95rem;line-height:1.45}
 .aviso-dia[hidden]{display:none}
+@keyframes aviso-entra{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.aviso-dia:not([hidden]){animation:aviso-entra 240ms var(--ease-out) both}
 .aviso-dia p{margin:0 auto;max-width:var(--max-w)}
 .aviso-dia p+p{margin-top:4px}
 .aviso-dia p.cierre{color:var(--calafate);font-weight:700}
