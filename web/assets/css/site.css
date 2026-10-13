@@ -1825,3 +1825,62 @@ html.js-reveal .preguntas-frecuentes.visible{
 .aviso-dia p{margin:0 auto;max-width:var(--max-w)}
 .aviso-dia p+p{margin-top:4px}
 .aviso-dia p.cierre{color:var(--calafate);font-weight:700}
+
+/* ==================================================================
+   DIRECCIÓN "CURVAS DE NIVEL" -- PRUEBA LOCAL (2026-10-13)
+   Inspirada en el relieve de la cordillera (Malargüe/Payunia) y en la
+   lógica editorial de las leyendas: número + título + lugar. Todo CSS y
+   un SVG propio; sin JS nuevo. Solo transform/opacity en movimiento.
+   ================================================================== */
+
+/* 1. Textura: curvas de nivel como máscara, así el color sale del CSS. */
+.portada-franja{position:relative; isolation:isolate; overflow:hidden}
+.portada-franja::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--verde-linea); opacity:.2;
+  -webkit-mask:url('../img/curvas-nivel.svg') 20% 60% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 20% 60% / cover no-repeat;
+}
+footer::after{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:var(--blanco); opacity:.08;
+  -webkit-mask:url('../img/curvas-nivel.svg') 70% 30% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 70% 30% / cover no-repeat;
+}
+
+/* 2. Encabezado fijo con un único botón de acento: "Menú". */
+.site-header{position:sticky; top:0; z-index:30}
+.site-header .header-menu{background:var(--salvia); color:var(--verde-osc)}
+.site-header .header-menu:hover,
+.site-header .header-menu:focus-visible{background:var(--blanco); color:var(--verde-osc)}
+main [id]{scroll-margin-top:84px}
+
+/* 3. Leyendas editoriales: 01 · TÍTULO ———— lugar. El número sale de un
+   contador CSS, así que si una sección se apaga la numeración se corrige sola. */
+main{counter-reset:seccion}
+.eyebrow-editorial{align-items:center; gap:14px; width:100%; margin-bottom:22px}
+.eyebrow-editorial::before{
+  counter-increment:seccion; content:counter(seccion, decimal-leading-zero);
+  font-family:var(--font-display); font-style:italic; font-weight:600;
+  font-size:1.15rem; letter-spacing:0; color:var(--calafate);
+}
+.eyebrow-editorial::after{content:""; order:2; flex:1; height:1px; background:var(--linea)}
+.eyebrow-lugar{order:3; font-weight:600; letter-spacing:.1em; color:var(--texto-sec)}
+
+/* 4. Escala: títulos grandes con aire, alineados a la izquierda. */
+.titulo-seccion{font-size:clamp(2.4rem, 7.4vw, 4.6rem); line-height:.98; letter-spacing:-.012em}
+.sobre-ameli,
+.seccion-cabecera-centrada{text-align:left}
+.sobre-ameli .eyebrow{justify-content:flex-start}
+.sobre-ameli p:not(.eyebrow){margin-left:0}
+.seccion-cabecera-centrada .texto-editorial{margin-left:0}
+@media (min-width:900px){
+  .sobre-ameli{
+    display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    column-gap:72px; align-content:center; justify-content:stretch;
+    max-width:var(--max-w); width:100%;
+  }
+  .sobre-ameli .eyebrow{grid-column:1 / -1}
+  .sobre-ameli .titulo-seccion{grid-column:1; grid-row:2 / span 6; align-self:start; position:sticky; top:104px; margin:0}
+  .sobre-ameli p:not(.eyebrow){grid-column:2}
+}
