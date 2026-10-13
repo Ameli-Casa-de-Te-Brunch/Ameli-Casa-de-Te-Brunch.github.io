@@ -1884,3 +1884,55 @@ main{counter-reset:seccion}
   .sobre-ameli .titulo-seccion{grid-column:1; grid-row:2 / span 6; align-self:start; position:sticky; top:104px; margin:0}
   .sobre-ameli p:not(.eyebrow){grid-column:2}
 }
+
+/* ==================================================================
+   COLECCIÓN DE TÉS (blends y tisanas) y SELLO
+   Cada té es una pieza coleccionable: una muestra de color (la infusión),
+   una leyenda numerada y su descripción. Carril con scroll táctil y
+   encaje (scroll-snap); sin JS.
+   ================================================================== */
+.coleccion-tes{max-width:var(--max-w); margin:0 auto; padding:56px 24px 64px}
+.tes-rail{
+  list-style:none; margin:28px -24px 28px; padding:4px 24px 18px;
+  display:flex; gap:16px; overflow-x:auto; overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory; scroll-padding-inline:24px;
+  scrollbar-width:thin; scrollbar-color:var(--verde-linea) transparent;
+}
+.te-card{
+  flex:0 0 min(74%, 252px); scroll-snap-align:start;
+  background:var(--blanco); border:1px solid var(--linea); border-radius:var(--radius-md);
+  padding:22px 20px 24px;
+}
+.te-card h3{
+  font-family:var(--font-display); font-weight:600; font-size:1.55rem; line-height:1.05;
+  margin:6px 0 8px; color:var(--tinta);
+}
+.te-card p:last-child{margin:0; color:var(--texto-sec); font-size:.95rem; line-height:1.5}
+.te-card .linea-etiqueta{margin:16px 0 0}
+.te-muestra{
+  display:block; width:56px; height:56px; border-radius:50%;
+  background:var(--te, var(--verde-linea));
+  box-shadow:inset 0 0 0 5px rgba(255,253,247,.55), 0 0 0 1px var(--linea);
+}
+.te-ble001{--te:#4F5B3A}
+.te-ble002{--te:#A9BF7E}
+.te-ble003{--te:#D9A441}
+.te-ble004{--te:#B25A5A}
+.te-tis001{--te:#A99BC4}
+.te-tis002{--te:#C9D68A}
+.te-tis003{--te:#E6D49A}
+@media (min-width:900px){
+  .tes-rail{margin-left:0; margin-right:0; padding-left:0; padding-right:0}
+  .te-card{flex-basis:260px}
+}
+
+/* Sello: firma de marca, usado una sola vez y chico (inspirado en el hanko).
+   Es decorativo: no lleva texto que leer. */
+.sello{
+  display:inline-grid; place-items:center; width:48px; height:48px; margin-top:20px;
+  background:var(--calafate); color:var(--blanco);
+  font-family:var(--font-display); font-weight:600; font-size:1.7rem; line-height:1;
+  border-radius:4px; transform:rotate(-4deg);
+  box-shadow:inset 0 0 0 2px rgba(255,253,247,.4);
+}
+@media (min-width:900px){ .sobre-ameli .sello{grid-column:2; justify-self:start} }

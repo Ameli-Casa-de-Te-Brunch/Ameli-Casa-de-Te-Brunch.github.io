@@ -28,7 +28,7 @@ __SOCIAL_META_TAGS__
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/karla.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261013-1">
+<link rel="stylesheet" href="assets/css/site.css?v=20261013-2">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): datos del calendario (bloque JSON, no se
      ejecuta) + script que pone html[data-tema]. Va en el head y sin defer para
@@ -85,6 +85,7 @@ __SOCIAL_META_TAGS__
   <nav class="nav-principal" aria-label="Navegación principal">
     <a href="#contenido">Inicio</a>
     <!--SOBRE_AMELI_START--><a href="#filosofia">Nuestra historia</a><!--SOBRE_AMELI_END-->
+    <!--COLECCION_TES_START--><a href="#tes">Colección de tés</a><!--COLECCION_TES_END-->
     <!--SERVICIOS_START--><a href="#experiencias">Experiencias y encuentros</a><!--SERVICIOS_END-->
     <!--PASTELERIA_PEDIDOS_START--><a href="#tienda">Carta y pedidos</a><!--PASTELERIA_PEDIDOS_END-->
     <!--SUSTENTABILIDAD_START--><a href="#sustentabilidad">Origen y compromiso</a><!--SUSTENTABILIDAD_END-->
@@ -156,7 +157,22 @@ __SOCIAL_META_TAGS__
          que un lector de pantalla anuncie cada idea como su propio
          párrafo. -->
     __SOBRE_AMELI_TEXTO__
+    <span class="sello" aria-hidden="true">A</span>
   </section><!--SOBRE_AMELI_END-->
+
+  <!--COLECCION_TES_START--><section class="coleccion-tes arquitectura-bloque" id="tes" aria-labelledby="titulo-tes">
+    <div class="seccion-cabecera seccion-cabecera-centrada">
+      <p class="eyebrow eyebrow-editorial">Colección de tés<span class="eyebrow-lugar" aria-hidden="true">Blends y tisanas</span></p>
+      <h2 class="titulo-seccion" id="titulo-tes">Para quedarse un rato más</h2>
+      <p class="texto-editorial">Nuestros blends y tisanas. Elegí el tuyo en el menú.</p>
+    </div>
+    <!-- Carril horizontal con scroll táctil. tabindex="0" para poder recorrerlo con el
+         teclado (una región que se desplaza tiene que ser enfocable). -->
+    <ul class="tes-rail" tabindex="0" aria-label="Blends y tisanas de la casa">
+      __COLECCION_TES_ITEMS__
+    </ul>
+    <a class="btn btn-secundario" href="__MENU_URL__">Ver todos los tés en el menú</a>
+  </section><!--COLECCION_TES_END-->
 
   <!--SERVICIOS_START--><section class="servicios arquitectura-bloque" id="experiencias" aria-labelledby="titulo-servicios">
     <div class="servicios-inner">

@@ -68,6 +68,10 @@ TEMPLATE_INFO_ALIMENTARIA_PATH = HERE / "templates" / "informacion-alimentaria.t
 TEMPLATE_ARREPENTIMIENTO_PATH = HERE / "templates" / "arrepentimiento.template.html"
 ASSETS_SRC = HERE / "assets"
 DIST_PATH = HERE / "dist"
+# Datos públicos del menú (los mismos que publica /menu/): de ahí sale la
+# colección de tés de la portada, así los nombres y descripciones tienen una
+# sola fuente. Si el archivo no existe, la sección simplemente no se muestra.
+MENU_DATA_PATH = HERE.parent / "data" / "menu.json"
 
 # Dominios permitidos por campo -- hosts explícitos y completos (nunca
 # fragmentos como "tripadvisor."). Esquema https obligatorio, y el host
@@ -537,6 +541,8 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     sobre_ameli = config.get("presentacion_sobre_ameli")
     tiene_sobre_ameli = isinstance(sobre_ameli, str) and sobre_ameli.strip() != ""
     plantilla = _bloque(plantilla, "SOBRE_AMELI", tiene_sobre_ameli)
+    coleccion_tes = _cargar_coleccion_tes()
+    plantilla = _bloque(plantilla, "COLECCION_TES", bool(coleccion_tes))
 
     # "Servicios Amelí" -- BORRADOR de diseño/contenido (nombres, alcance
     # y textos todavía sin confirmar con Ignacio, ver comentario en el
@@ -821,6 +827,8 @@ def renderizar_index(config: dict, produccion: bool) -> str:
     if tiene_sobre_ameli:
         salida = salida.replace(
             "__SOBRE_AMELI_TEXTO__", _parrafos_html(sobre_ameli, "texto-editorial"))
+    if coleccion_tes:
+        salida = salida.replace("__COLECCION_TES_ITEMS__", _html_coleccion_tes(coleccion_tes))
 
     quedan = _escanear_placeholders_restantes(salida)
     if quedan:
@@ -868,6 +876,58 @@ def _jsonld_negocio(config: dict, site_url: str) -> str:
     if not calle:
         del obj["address"]["streetAddress"]
     return json.dumps(obj, ensure_ascii=False).replace("</", "<" + chr(92) + "/")
+
+
+# Categorías del menú que forman la colección de tés de la portada.
+_TIPOS_COLECCION_TES = (("BLE", "Blend"), ("TIS", "Tisana"))
+# Palabras que la portada no puede mostrar (bloque legal 2026-09-14: sin
+# afirmaciones de salud sin respaldo). El producto sigue en el menú; solo se
+# omite de esta colección.
+_PALABRAS_NO_PUBLICAR_EN_PORTADA = ("detox",)
+
+
+def _cargar_coleccion_tes() -> list:
+    """Blends y tisanas publicados en data/menu.json, en el orden del menú.
+    Devuelve [] si el archivo no existe (la sección no se muestra); un
+    archivo ilegible o con otra forma es un error de build, no se ignora."""
+    ruta = MENU_DATA_PATH
+    if not ruta.is_file():
+        return []
+    try:
+        datos = json.loads(ruta.read_text(encoding="utf-8"))
+        productos = datos["prods"]
+        items = []
+        for codigo, etiqueta in _TIPOS_COLECCION_TES:
+            for p in productos:
+                if p["cat"] != codigo:
+                    continue
+                nombre = str(p["n"]["es"]).strip()
+                descripcion = str(p["d"]["es"]).strip()
+                if not nombre or not descripcion:
+                    continue
+                if any(w in nombre.lower() or w in descripcion.lower() for w in _PALABRAS_NO_PUBLICAR_EN_PORTADA):
+                    continue
+                # "Tisana 1 · Cedrón & lavanda" -> "Cedrón & lavanda" (el tipo ya va en la etiqueta)
+                nombre = re.sub(r"^Tisana\s+\d+\s*·\s*", "", nombre)
+                items.append((etiqueta, str(p["id"]), nombre, descripcion))
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        raise SystemExit(f"data/menu.json no tiene la forma esperada para la colección de tés: {type(e).__name__}")
+    return items
+
+
+def _html_coleccion_tes(items: list) -> str:
+    """<li> por blend/tisana. El color de cada muestra sale del CSS por el
+    id del producto (clase te-ble001, etc.); uno nuevo sin color definido
+    toma el verde de la marca."""
+    filas = []
+    for numero, (etiqueta, pid, nombre, descripcion) in enumerate(items, start=1):
+        clase = re.sub(r"[^a-z0-9]", "", pid.lower())
+        filas.append(
+            f'<li class="te-card te-{clase}"><span class="te-muestra" aria-hidden="true"></span>'
+            f'<p class="linea-etiqueta">{html.escape(etiqueta)} · {numero:02d}</p>'
+            f'<h3>{html.escape(nombre)}</h3><p>{html.escape(descripcion)}</p></li>'
+        )
+    return "\n      ".join(filas)
 
 
 def renderizar_404(config: dict) -> str:
