@@ -1235,6 +1235,53 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         # nunca hay imagen de compartir en el preview
         self.assertNotIn('og:image', preview)
 
+    def test_coleccion_de_tes_sale_del_menu_publicado_y_omite_lo_que_la_portada_no_puede_decir(self):
+        """Blends y tisanas se leen de data/menu.json (misma fuente que /menu/).
+        'Detox' queda afuera de la portada por el bloque legal 2026-09-14."""
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertRegex(contenido, r'<section[^>]+id="tes"')
+        self.assertIn('<a href="#tes">Colección de tés</a>', contenido)
+        self.assertIn("<h3>Del bosque</h3>", contenido)
+        self.assertIn("<h3>Cedrón &amp; lavanda</h3>", contenido)  # sin el prefijo "Tisana 1 ·"
+        self.assertNotIn("Detox", contenido)
+        # numeración correlativa sobre lo que realmente se muestra
+        numeros = re.findall(r'class="linea-etiqueta">(?:Blend|Tisana) · (\d\d)</p>', contenido)
+        self.assertEqual(numeros, [f"{i:02d}" for i in range(1, len(numeros) + 1)])
+        self.assertGreaterEqual(len(numeros), 4)
+        # el carril que se desplaza tiene que poder recorrerse con teclado
+        self.assertIn('class="tes-rail" tabindex="0"', contenido)
+
+    def test_sin_menu_json_la_coleccion_de_tes_no_se_muestra_y_el_build_sigue(self):
+        original = build_site.MENU_DATA_PATH
+        try:
+            build_site.MENU_DATA_PATH = self.sandbox / "no-existe" / "menu.json"
+            build_site.construir(produccion=False)
+        finally:
+            build_site.MENU_DATA_PATH = original
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('id="tes"', contenido)
+        self.assertNotIn('href="#tes"', contenido)
+        self.assertNotIn("__COLECCION_TES", contenido)
+
+    def test_menu_json_con_otra_forma_rompe_el_build_en_vez_de_ocultarse(self):
+        original = build_site.MENU_DATA_PATH
+        roto = self.sandbox / "menu-roto.json"
+        roto.write_text('{"prods": [{"cat": "BLE"}]}', encoding="utf-8")
+        try:
+            build_site.MENU_DATA_PATH = roto
+            with self.assertRaises(SystemExit):
+                build_site.construir(produccion=False)
+        finally:
+            build_site.MENU_DATA_PATH = original
+
+    def test_el_sello_es_decorativo_y_aparece_una_sola_vez(self):
+        self.escribir_config(config_valido(presentacion_sobre_ameli="Primer párrafo.\n\nSegundo párrafo."))
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(contenido.count('class="sello"'), 1)
+        self.assertIn('class="sello" aria-hidden="true"', contenido)
+
     def test_esquema_local_solo_en_produccion_y_con_datos_confirmados(self):
         build_site.construir(produccion=False)
         preview = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
