@@ -502,7 +502,19 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
     def test_404_permite_volver_al_inicio(self):
         build_site.construir(produccion=False)
         contenido = (build_site.DIST_PATH / "404.html").read_text(encoding="utf-8")
-        self.assertIn('href="index.html"', contenido)
+        self.assertIn('href="/"', contenido)
+        self.assertIn('href="/menu/"', contenido)
+
+    def test_404_usa_rutas_absolutas_para_que_funcione_en_cualquier_url(self):
+        """GitHub Pages sirve el mismo 404.html en /a/b/c: con rutas
+        relativas ("assets/css/site.css") el CSS se buscaba en
+        /a/b/assets/... y la página salía sin estilos."""
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "404.html").read_text(encoding="utf-8")
+        for ref in re.findall(r'(?:href|src)="([^"]*)"', contenido):
+            if ref.startswith(("#", "https://", "mailto:")):
+                continue
+            self.assertTrue(ref.startswith("/"), msg=f"ruta relativa en el 404: {ref!r}")
 
     def test_privacidad_siempre_noindex_en_ambos_modos(self):
         """privacidad.html es un borrador (ver aviso PROPUESTO adentro)
@@ -522,6 +534,17 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertIn("Tus derechos", contenido)
         self.assertIn("Ley 25.326", contenido)
         self.assertIn('href="index.html"', contenido)
+
+    def test_404_usa_rutas_absolutas_para_que_funcione_en_cualquier_url(self):
+        """GitHub Pages sirve el mismo 404.html en /a/b/c: con rutas
+        relativas ("assets/css/site.css") el CSS se buscaba en
+        /a/b/assets/... y la página salía sin estilos."""
+        build_site.construir(produccion=False)
+        contenido = (build_site.DIST_PATH / "404.html").read_text(encoding="utf-8")
+        for ref in re.findall(r'(?:href|src)="([^"]*)"', contenido):
+            if ref.startswith(("#", "https://", "mailto:")):
+                continue
+            self.assertTrue(ref.startswith("/"), msg=f"ruta relativa en el 404: {ref!r}")
 
     def test_privacidad_identificacion_legal_ausente_por_defecto(self):
         build_site.construir(produccion=False)
@@ -1205,8 +1228,42 @@ class TestConstruirPreviewYProduccion(SandboxConstruirTestCase):
         self.assertIn('property="og:type" content="website"', produccion)
         self.assertIn('property="og:locale" content="es_AR"', produccion)
         self.assertIn('property="og:url" content="https://amelicasadete.com.ar/"', produccion)
-        self.assertIn('name="twitter:card" content="summary"', produccion)
-        self.assertNotIn('property="og:image"', produccion)
+        self.assertIn('name="twitter:card" content="summary_large_image"', produccion)
+        self.assertIn('property="og:image" content="https://amelicasadete.com.ar/assets/img/og-image.png"', produccion)
+        self.assertIn('name="twitter:image" content="https://amelicasadete.com.ar/assets/img/og-image.png"', produccion)
+        self.assertTrue((build_site.DIST_PATH / "assets" / "img" / "og-image.png").is_file())
+        # nunca hay imagen de compartir en el preview
+        self.assertNotIn('og:image', preview)
+
+    def test_esquema_local_solo_en_produccion_y_con_datos_confirmados(self):
+        build_site.construir(produccion=False)
+        preview = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('application/ld+json', preview)
+
+        build_site.construir(produccion=True)
+        produccion = (build_site.DIST_PATH / "index.html").read_text(encoding="utf-8")
+        m = re.search(r'<script type="application/ld\+json">(.*?)</script>', produccion, re.S)
+        self.assertIsNotNone(m)
+        datos = json.loads(m.group(1))
+        self.assertEqual(datos["@type"], "CafeOrCoffeeShop")
+        self.assertEqual(datos["address"]["streetAddress"], CONFIG_VALIDO["direccion_calle"].split(",")[0])
+        self.assertEqual(datos["address"]["addressLocality"], "Malargüe")
+        self.assertEqual(datos["hasMenu"], "https://amelicasadete.com.ar/menu/")
+        self.assertEqual(datos["telephone"], "+5492604106653")
+        # no se inventan calificaciones, reseñas ni coordenadas
+        for prohibido in ("aggregateRating", "review", "geo"):
+            self.assertNotIn(prohibido, datos)
+
+    def test_horario_del_esquema_local_coincide_con_el_del_menu_y_el_texto(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "build"))
+        try:
+            import render as render_menu
+        finally:
+            sys.path.pop(0)
+        self.assertEqual(build_site.HORARIO_JSONLD, render_menu.HORARIO_JSONLD)
+        config = json.loads((Path(__file__).resolve().parents[1] / "site.config.json").read_text(encoding="utf-8"))
+        self.assertIn("Martes a sábado: 9:00–13:00 y 17:30–21:00", config["horarios"])
+        self.assertIn("Domingo: 17:30–21:00", config["horarios"])
 
     def test_controles_del_panel_tienen_objetivo_tactil_minimo(self):
         # 48px, no 44px: piso más estricto que el mínimo WCAG (24px en
@@ -1282,8 +1339,8 @@ class TestEnlacesYRecursosSeguros(SandboxConstruirTestCase):
                     # único artefacto de GitHub Pages -- la ruta interna
                     # exacta del menú), nunca otra cosa.
                     self.assertTrue(
-                        href in ("index.html", "privacidad.html", "informacion-alimentaria.html")
-                        or href.startswith("assets/")
+                        href in ("index.html", "privacidad.html", "informacion-alimentaria.html", "/")
+                        or href.startswith(("assets/", "/assets/"))
                         or href == build_site.RUTA_MENU_INTERNA,
                         msg=f"href inesperado (ni https:// ni relativo propio) en {nombre}: {href!r}",
                     )

@@ -45,6 +45,7 @@ escrita: estado `PENDIENTE` hasta que Ignacio lo confirme.
 | `assets/img/favicon-16.png` | `b4491b448c4fb22cdf5b4d096096ef3b86203699555a69d7a0c2035756497938` | Desconocido | Derivado del logo (ver arriba) | Desconocida | Propio (afirmado, sin confirmación escrita) | `README.md` (prosa) | `PENDIENTE` | Mismo estado que el logo del que se derivan |
 | `assets/img/favicon-32.png` | `153ea10d655dec74eeadb1c0874f29ec4696caf11a4c30fedd74a954ad62ea1b` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
 | `assets/img/apple-touch-icon.png` | `599cf2ea0ad0f3a656da62790b97280f23a2c1fd4f1abf9e12ea33d46cc31ac1` | Desconocido | ídem | Desconocida | ídem | `README.md` (prosa) | `PENDIENTE` | ídem |
+| `assets/img/og-image.png` | `4f94830910162c91c2a8a306610bb1cb0399dbd3f674f27e782e890fa85e5760` | Desconocido | Derivado del logo (copia en PNG de `assets/img/og-image.jpg` del menú, 1200×630) | Desconocida | Propio (afirmado, sin confirmación escrita) | `README.md` (prosa) | `PENDIENTE` | Imagen para compartir el link de la portada (WhatsApp, Instagram, etc.). Es el logo sobre fondo crema, no una foto. Mismo estado que el logo. |
 
 ## Fuentes tipográficas
 
