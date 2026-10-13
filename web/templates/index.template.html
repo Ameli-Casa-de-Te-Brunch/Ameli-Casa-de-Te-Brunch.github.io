@@ -21,7 +21,7 @@ __SOCIAL_META_TAGS__
 <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32">
 <link rel="icon" href="assets/img/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-<link rel="stylesheet" href="assets/css/site.css?v=20260915-1">
+<link rel="stylesheet" href="assets/css/site.css?v=20261013-1">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): datos del calendario (bloque JSON, no se
      ejecuta) + script que pone html[data-tema]. Va en el head y sin defer para
@@ -40,6 +40,7 @@ __SOCIAL_META_TAGS__
       <span class="logo-tipografico" aria-hidden="true">__MARCA__</span>
     </a>
     <div class="header-acciones">
+      <a class="header-menu" href="__MENU_URL__">Menú</a>
       <!-- data-a11y-pending: oculta e inhabilita el botón por defecto
            (ver assets/css/site.css). Lo saca site.js recién después de
            encontrar todos los elementos del panel y registrar sus
@@ -140,7 +141,7 @@ __SOCIAL_META_TAGS__
   </div>
 
   <!--SOBRE_AMELI_START--><section class="sobre-ameli" id="filosofia" aria-labelledby="titulo-sobre-ameli">
-    <p class="eyebrow" id="titulo-sobre-ameli">Nuestra historia</p>
+    <p class="eyebrow eyebrow-editorial" id="titulo-sobre-ameli">Nuestra historia<span class="eyebrow-lugar" aria-hidden="true">Desde Malargüe</span></p>
     <h2 class="titulo-seccion">Una casa de té para encontrarnos</h2>
     <!-- El marcador de abajo se resuelve en build_site.py con un <p>
          real por cada párrafo del texto de config.json (separados por
@@ -153,7 +154,7 @@ __SOCIAL_META_TAGS__
   <!--SERVICIOS_START--><section class="servicios arquitectura-bloque" id="experiencias" aria-labelledby="titulo-servicios">
     <div class="servicios-inner">
       <div class="seccion-cabecera seccion-cabecera-centrada">
-        <p class="eyebrow">Un solo lugar</p>
+        <p class="eyebrow eyebrow-editorial">Un solo lugar</p>
         <h2 class="titulo-seccion" id="titulo-servicios">Experiencias y encuentros</h2>
         <p class="texto-editorial">Reunimos en un mismo lugar todas las consultas especiales. Describinos la ocasión y te confirmamos formato y disponibilidad antes de avanzar.</p>
       </div>
@@ -204,7 +205,7 @@ __SOCIAL_META_TAGS__
 
   <!--PASTELERIA_PEDIDOS_START--><section class="tienda-online arquitectura-bloque" id="tienda" aria-labelledby="titulo-tienda">
     <div class="tienda-contenido">
-      <p class="eyebrow">Salón y encargos</p>
+      <p class="eyebrow eyebrow-editorial">Salón y encargos</p>
       <h2 class="titulo-seccion" id="titulo-tienda">Carta y pedidos</h2>
       <p class="texto-editorial">__PASTELERIA_PEDIDOS_TEXTO__</p>
       <div class="tienda-opciones">
@@ -246,7 +247,7 @@ __SOCIAL_META_TAGS__
 
   <!--PREGUNTAS_FRECUENTES_START--><section class="preguntas-frecuentes" id="preguntas-frecuentes" aria-labelledby="titulo-preguntas-frecuentes">
     <div class="faq-intro">
-      <p class="eyebrow">Antes de venir o pedir</p>
+      <p class="eyebrow eyebrow-editorial">Antes de venir o pedir</p>
       <h2 class="titulo-seccion" id="titulo-preguntas-frecuentes">Lo esencial, sin vueltas</h2>
       <p class="texto-editorial">__PREGUNTAS_FRECUENTES_TEXTO__</p>
     </div>
@@ -306,7 +307,7 @@ __SOCIAL_META_TAGS__
       <p class="ficha-tecnica"><span>35.4746° S · 69.5878° W</span><span>__UBICACION_CORTA__</span></p>
     </div>
     <div class="ubicacion-contenido">
-      <p class="eyebrow">Visitarnos</p>
+      <p class="eyebrow eyebrow-editorial">Visitarnos<span class="eyebrow-lugar" aria-hidden="true">Cuyo, Argentina</span></p>
       <h2 class="titulo-seccion" id="titulo-ubicacion">Encontranos en Malargüe</h2>
       <p class="ubicacion-direccion">__DIRECCION_CALLE__</p>
       <!--HORARIOS_START--><div class="horario-info"><p class="horario-detalle">__HORARIOS__</p></div><!--HORARIOS_END-->
@@ -330,7 +331,7 @@ __SOCIAL_META_TAGS__
        dirección u horarios. -->
   <section class="consultas-directorio arquitectura-bloque" id="contacto" aria-labelledby="titulo-contacto">
     <div class="consultas-intro">
-      <p class="eyebrow">Consultas</p>
+      <p class="eyebrow eyebrow-editorial">Consultas</p>
       <h2 class="titulo-seccion" id="titulo-contacto">Contanos qué necesitás</h2>
       <p>No trabajamos con reservas. Los pedidos y consultas se coordinan de manera personal. Respondemos tus mensajes dentro de unas horas, en horario de atención.</p>
       <a class="btn btn-principal" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
