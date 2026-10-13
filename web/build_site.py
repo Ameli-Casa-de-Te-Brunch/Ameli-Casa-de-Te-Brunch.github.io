@@ -102,6 +102,20 @@ EXTENSIONES_ASSETS_PERMITIDAS = {
 
 TRUNCADO_LIMITE = 60
 
+# Imagen para compartir el link (WhatsApp, Instagram, Facebook): logo sobre
+# fondo crema, 1200x630.
+IMAGEN_SOCIAL_RUTA = "assets/img/og-image.png"
+
+# Horario regular para el esquema local (JSON-LD). Es el mismo que el texto
+# "horarios" de site.config.json y que build/render.py::HORARIO_JSONLD (menú);
+# hay un test que compara los tres para que no se desalineen.
+HORARIO_JSONLD = [
+    {"dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+     "opens": "09:00", "closes": "13:00"},
+    {"dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+     "opens": "17:30", "closes": "21:00"},
+]
+
 
 def _truncar(valor) -> str:
     """No reproducir un valor completo y no confiable en un mensaje de
@@ -675,18 +689,28 @@ def renderizar_index(config: dict, produccion: bool) -> str:
             f'{config["ubicacion_corta"]}. {config["descripcion_menu_confirmada"]}'
         )
         url_social = html.escape(site_url)
-        # Metadatos de texto para compartir. No se declara og:image:
-        # todavía no existe una pieza social aprobada y nunca se usa una
-        # imagen genérica o improvisada como sustituto.
+        # Metadatos para compartir. La imagen es el logo sobre fondo crema
+        # (derivado del logo, ver PROCEDENCIA_VISUAL.md): nunca una foto
+        # genérica o improvisada.
+        imagen_social = html.escape(f"{site_url.rstrip('/')}/{IMAGEN_SOCIAL_RUTA}")
+        alt_social = html.escape(f'{config["marca"]} {config["categoria"]}')
         social_meta_tags = (
             '<meta property="og:type" content="website">\n'
             '<meta property="og:locale" content="es_AR">\n'
             f'<meta property="og:title" content="{titulo_social}">\n'
             f'<meta property="og:description" content="{descripcion_social}">\n'
             f'<meta property="og:url" content="{url_social}">\n'
-            '<meta name="twitter:card" content="summary">\n'
+            f'<meta property="og:image" content="{imagen_social}">\n'
+            '<meta property="og:image:width" content="1200">\n'
+            '<meta property="og:image:height" content="630">\n'
+            f'<meta property="og:image:alt" content="{alt_social}">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n'
             f'<meta name="twitter:title" content="{titulo_social}">\n'
-            f'<meta name="twitter:description" content="{descripcion_social}">'
+            f'<meta name="twitter:description" content="{descripcion_social}">\n'
+            f'<meta name="twitter:image" content="{imagen_social}">\n'
+            '<script type="application/ld+json">'
+            + _jsonld_negocio(config, site_url)
+            + "</script>"
         )
     else:
         robots_tag = '<meta name="robots" content="noindex, nofollow"><!-- preview: nunca indexable -->'
@@ -803,6 +827,47 @@ def renderizar_index(config: dict, produccion: bool) -> str:
         raise SystemExit(f"Quedaron marcadores sin reemplazar en index.html: {quedan}")
 
     return _quitar_comentarios_html(salida)
+
+
+def _jsonld_negocio(config: dict, site_url: str) -> str:
+    """Esquema local (Schema.org) de la portada, solo en producción. Usa solo
+    datos ya confirmados y publicados en el sitio: dirección (calle y altura),
+    teléfono de WhatsApp, Instagram y horario. No lleva calificaciones ni
+    reseñas (no se inventan) ni coordenadas (la que muestra la portada es la
+    de Malargüe, no la del local)."""
+    base = site_url.rstrip("/")
+    calle = config.get("direccion_calle") or ""
+    # "General Villegas Oeste 48, Malargüe" -> solo la calle y altura.
+    calle = calle.split(",")[0].strip()
+    obj = {
+        "@context": "https://schema.org",
+        "@type": "CafeOrCoffeeShop",
+        "@id": f"{base}/#negocio",
+        "name": f'{config["marca"]} {config["categoria"]}',
+        "url": f"{base}/",
+        "image": f"{base}/{IMAGEN_SOCIAL_RUTA}",
+        "description": config["descripcion_menu_confirmada"],
+        "servesCuisine": ["Café", "Té", "Brunch", "Pastelería"],
+        "priceRange": "$$",
+        "hasMenu": f"{base}{RUTA_MENU_INTERNA}",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": calle,
+            "addressLocality": config.get("localidad") or "Malargüe",
+            "addressRegion": config.get("provincia") or "Mendoza",
+            "addressCountry": "AR",
+        },
+        "openingHoursSpecification": [
+            {"@type": "OpeningHoursSpecification", **h} for h in HORARIO_JSONLD
+        ],
+    }
+    if config.get("whatsapp_e164"):
+        obj["telephone"] = f'+{config["whatsapp_e164"]}'
+    if config.get("instagram_handle"):
+        obj["sameAs"] = [f'https://www.instagram.com/{config["instagram_handle"]}/']
+    if not calle:
+        del obj["address"]["streetAddress"]
+    return json.dumps(obj, ensure_ascii=False).replace("</", "<" + chr(92) + "/")
 
 
 def renderizar_404(config: dict) -> str:

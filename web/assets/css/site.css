@@ -678,6 +678,7 @@ a:focus-visible, button:focus-visible{
   padding:80px 24px 100px;
   min-height:50vh;
 }
+.pagina-404 .btn{margin:8px 12px 0 0}
 
 /* ================= INFORMACIÓN PRÁCTICA ================= */
 .informacion-practica{
