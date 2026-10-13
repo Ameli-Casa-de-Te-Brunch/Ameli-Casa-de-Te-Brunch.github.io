@@ -65,6 +65,7 @@ const UI = {
  leche:{es:'Disponible con leche vegetal o sin lactosa',en:'Available with plant-based or lactose-free milk',pt:'Disponível com leite vegetal ou sem lactose',fr:'Disponible avec du lait végétal ou sans lactose',it:'Disponibile con latte vegetale o senza lattosio'},
  lecheVeg:{es:'Disponible con leche vegetal',en:'Available with plant-based milk',pt:'Disponível com leite vegetal',fr:'Disponible avec du lait végétal',it:'Disponibile con latte vegetale'},
  lecheLac:{es:'Disponible con leche sin lactosa',en:'Available with lactose-free milk',pt:'Disponível com leite sem lactose',fr:'Disponible avec du lait sans lactose',it:'Disponibile con latte senza lattosio'},
+ inicio:{es:'Inicio',en:'Home',pt:'Início',fr:'Accueil',it:'Home'},
  a11yBtn:{es:'Accesibilidad',en:'Accessibility',pt:'Acessibilidade',fr:'Accessibilité',it:'Accessibilità'},
  a11yTitle:{es:'Accesibilidad',en:'Accessibility',pt:'Acessibilidade',fr:'Accessibilité',it:'Accessibilità'},
  a11yTexto:{es:'Tamaño de texto',en:'Text size',pt:'Tamanho do texto',fr:'Taille du texte',it:'Dimensione del testo'},
@@ -581,6 +582,7 @@ function render(){
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
   $('footDatos').innerHTML=UI.datos[lang];
+  $('homeLink').textContent=UI.inicio[lang];
   $('a11yBtn').setAttribute('aria-label', UI.a11yBtn[lang]);
   $('a11yTitle').textContent=UI.a11yTitle[lang];
   $('a11yTextoLabel').textContent=UI.a11yTexto[lang];

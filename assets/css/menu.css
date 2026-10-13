@@ -510,3 +510,88 @@ html[data-lectura="simple"] .prod p{line-height:1.85}
 .aviso-dia p+p{margin-top:4px}
 .aviso-dia p.cierre{color:var(--marron);font-weight:700}
 @media(min-width:860px){.aviso-dia{margin:12px 40px 0}}
+
+/* ==================================================================
+   UNIFICACIÓN CON LA PORTADA (2026-10-13)
+   El menú y la portada son una sola casa: mismo encabezado verde,
+   mismo botón de acento, mismas curvas de nivel, misma leyenda y el
+   mismo botón flotante. Lo que cambia es el comportamiento: el menú es
+   una herramienta de uso rápido, así que su encabezado NO es fijo (la
+   barra de categorías ya lo es) y no lleva numeración de secciones.
+   ================================================================== */
+:root{--salvia:#C7D6A6; --verde-linea:#6B7A57}
+/* Las bandas a todo el ancho son solo color (box-shadow + clip-path): no suman ancho de scroll. Las curvas de nivel quedan dentro de la columna a propósito: una capa más ancha que la pantalla agrandaría el área de scroll en el celular. */
+
+/* 1. Encabezado: banda verde oscuro a todo el ancho, logotipo claro. */
+.topbar{
+  background:var(--verde-osc);
+  padding:12px 20px;
+  box-shadow:0 0 0 100vmax var(--verde-osc);
+  clip-path:inset(0 -100vmax);
+}
+.marca-top{color:var(--blanco); font-size:calc(30px * var(--afs,1))}
+.topbar-ctrl .langs-btn,
+.topbar-ctrl .a11y-btn{
+  background:transparent; color:var(--blanco);
+  border:1.5px solid rgba(255,253,247,.5);
+  transition:border-color .2s ease, background .2s ease;
+}
+.topbar-ctrl .a11y-btn{padding:0; width:48px; justify-content:center}
+@media (hover:hover) and (pointer:fine){
+  .topbar-ctrl .langs-btn:hover,
+  .topbar-ctrl .a11y-btn:hover{border-color:var(--blanco)}
+}
+.header-menu{
+  min-height:48px; display:inline-flex; align-items:center; padding:0 17px;
+  border-radius:var(--radius-pill); background:var(--salvia); color:var(--verde-osc);
+  font-family:'Karla',sans-serif; font-weight:700; font-size:calc(13.5px * var(--afs,1));
+  text-decoration:none; touch-action:manipulation; user-select:none; -webkit-user-select:none;
+  transition:background .2s ease, transform 120ms var(--ease-out);
+}
+.header-menu:hover,.header-menu:focus-visible{background:var(--blanco)}
+.header-menu:active{transform:scale(.97)}
+@media (max-width:339px){ .header-menu{display:none} }
+@media (min-width:900px){ .topbar{padding:14px 40px} }
+
+/* 2. Foto a todo el ancho (como la portada) y franja crema con curvas de nivel debajo. */
+.hero-foto{margin:0; width:100%; border-radius:0; height:240px}
+@media (min-width:900px){ .hero-foto{margin:0; width:100%; height:380px} }
+.topbar-info{
+  position:relative; isolation:isolate; max-width:none; margin:0 auto; padding:16px 20px 18px;
+  background:var(--crema); box-shadow:0 0 0 100vmax var(--crema); clip-path:inset(0 -100vmax);
+  border-bottom:1px solid var(--linea-suave);
+}
+.topbar-info::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--verde-linea); opacity:.14;
+  -webkit-mask:url('../img/curvas-nivel.svg') 20% 60% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 20% 60% / cover no-repeat;
+}
+.topbar-info .estado{margin-top:10px; background:var(--blanco)}
+
+/* 3. Saludo con más presencia; mismas curvas de tipografía que los títulos de la portada. */
+.hero-texto{padding-top:26px}
+.hero-texto .pregunta{font-size:calc(34px * var(--afs,1)); line-height:1.02; letter-spacing:-.012em}
+
+/* 4. Leyenda editorial: texto + línea fina (como en la portada, sin numerar). */
+.eyebrow{display:flex; align-items:center; gap:14px; letter-spacing:.16em}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--linea)}
+.destacados h2{font-size:calc(34px * var(--afs,1)); line-height:1.02; letter-spacing:-.012em}
+
+/* 5. Pie: mismas curvas de nivel que el pie de la portada (sin el dibujo botánico). */
+footer{
+  isolation:isolate;
+  box-shadow:0 0 0 100vmax var(--footer-bg); clip-path:inset(0 -100vmax);
+}
+footer svg.botanica{display:none}
+footer::after{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--blanco); opacity:.08;
+  -webkit-mask:url('../img/curvas-nivel.svg') 70% 30% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 70% 30% / cover no-repeat;
+}
+
+/* 6. Botón flotante: círculo con ícono, igual que en la portada. */
+.wsp{width:56px; height:56px; padding:0; gap:0; justify-content:center; border-radius:50%}
+.wsp svg{width:24px; height:24px}
+@media (max-width:859px){ .wsp{width:52px; height:52px} }

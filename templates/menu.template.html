@@ -25,7 +25,7 @@ __CSP_META__
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/karla.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/menu.css">
+<link rel="stylesheet" href="assets/css/menu.css?v=20261013-3">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): ver build/calendario.py. Bloque JSON de datos
      (la CSP no lo trata como script ejecutable) + script en el head, sin defer, para
@@ -47,6 +47,7 @@ __CSP_META__
        de la URL servida. -->
   <h1 class="marca-top"><a href="/" aria-label="Ir al inicio de Amelí">Amelí</a></h1>
   <div class="topbar-ctrl">
+    <a class="header-menu" id="homeLink" href="/">Inicio</a>
     <div class="langs" id="langs">
       <button class="langs-btn" id="langsBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="langsMenu">
         <span id="langsBtnTxt">ES</span>
@@ -58,11 +59,6 @@ __CSP_META__
   </div>
 </header>
 
-<div class="topbar-info">
-  <p class="sub" id="heroSub"></p>
-  <p class="estado" id="estadoChip"><span class="punto"></span><span id="estadoTexto"></span></p>
-  <p class="lugar" id="heroLugar"></p>
-</div>
 <!-- Aviso del día: cierres, horarios especiales y avisos del calendario (data/calendario.json
      o la pestaña Calendario de la planilla). Lo escribe assets/js/agenda.js con textContent; vacío = oculto. -->
 <div class="aviso-dia" id="avisoDia" role="status" hidden></div>
@@ -80,6 +76,11 @@ __CSP_META__
     <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
     <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
   </div>
+</div>
+<div class="topbar-info">
+  <p class="sub" id="heroSub"></p>
+  <p class="estado" id="estadoChip"><span class="punto"></span><span id="estadoTexto"></span></p>
+  <p class="lugar" id="heroLugar"></p>
 </div>
 <div class="hero-texto">
   <p class="saludo" id="heroSaludo"></p>
@@ -150,7 +151,7 @@ __CSP_META__
     <circle cx="12" cy="12" r=".6" fill="currentColor" stroke="none"/>
     <circle cx="15" cy="12" r=".6" fill="currentColor" stroke="none"/>
   </svg>
-  <span>WhatsApp</span>
+  <span class="sr-only">WhatsApp</span>
 </a><!--WSP_END-->
 
 <div class="a11y-backdrop" id="a11yBackdrop" hidden></div>
