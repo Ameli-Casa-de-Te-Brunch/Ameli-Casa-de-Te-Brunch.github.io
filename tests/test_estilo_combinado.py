@@ -94,7 +94,7 @@ class TestCssDelDisenoCombinado(unittest.TestCase):
 
     def test_en_320_px_el_logotipo_no_pisa_los_controles(self):
         """Medido en el navegador a 320 px: centrado, el logotipo pisaba Aa (portada) y el idioma (menú)."""
-        self.assertRegex(BLOQUES["web"], r"@media \(max-width:359px\)\{[^}]*\.logo-enlace\{position:static; transform:none\}")
+        self.assertRegex(BLOQUES["web"], r"@media \(max-width:359px\)\{[^@]*\.logo-enlace\{position:static; transform:none\}")
         self.assertRegex(BLOQUES["menú"], r"@media \(max-width:359px\)\{[^}]*\.marca-top\{position:static; transform:none\}")
 
     def test_los_titulos_grandes_se_reparten_sin_palabra_huerfana(self):
