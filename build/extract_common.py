@@ -145,7 +145,7 @@ def moments_for(prod, overrides):
         m.append("calentito")
     if "Fría" in temp:
         m.append("fresco")
-    if "jarra" in formato or cat_cod == "TYT":
+    if "jarra" in formato.lower() or cat_cod == "TYT":  # "Vaso o jarra" y "Vaso / Jarra 1,2 L"
         m.append("compartir")
     if "Unidad" in formato or cat_cod == "STC":
         m.append("llevar")

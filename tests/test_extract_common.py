@@ -324,3 +324,15 @@ class TestEquivalente(unittest.TestCase):
         self.assertIsNone(ec.equivalente(None, 1485, "USD"))
         self.assertIsNone(ec.equivalente(8000, 0, "USD"))
 
+
+class TestMomentosPorFormato(unittest.TestCase):
+    def _prod(self, formato, cat="BYJ", temp="Fría"):
+        return {"temperatura": temp, "formato": formato, "cat": cat}
+
+    def test_jarra_en_cualquier_redaccion_suma_compartir(self):
+        for formato in ("Vaso o jarra", "Vaso / Jarra 1,2 L", "jarra"):
+            self.assertIn("compartir", ec.moments_for(self._prod(formato), {}), formato)
+
+    def test_sin_jarra_no_suma_compartir(self):
+        self.assertNotIn("compartir", ec.moments_for(self._prod("Vaso"), {}))
+
