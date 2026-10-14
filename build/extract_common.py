@@ -130,6 +130,9 @@ def equivalente(precio_ars, tasa, simbolo):
     if precio_ars in (None, "") or tasa in (None, "") or tasa == 0:
         return None
     valor = precio_ars / tasa
+    if round(valor) < 1:
+        # "≈ EUR 0" no informa nada (un precio chico en pesos): se omite esa moneda.
+        return None
     return f"≈ {simbolo} {valor:,.0f}".replace(",", ".")
 
 
