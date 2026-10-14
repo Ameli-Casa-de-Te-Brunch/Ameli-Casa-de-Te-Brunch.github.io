@@ -311,3 +311,16 @@ class TestNivelesPrecio(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestEquivalente(unittest.TestCase):
+    def test_precio_chico_no_muestra_una_moneda_en_cero(self):
+        """$ 800 con euro a 1715 da 0,47: "≈ EUR 0" no informa nada, se omite."""
+        self.assertIsNone(ec.equivalente(800, 1715, "EUR"))
+        self.assertEqual(ec.equivalente(800, 1485, "USD"), "≈ USD 1")
+        self.assertEqual(ec.equivalente(800, 289, "R$"), "≈ R$ 3")
+
+    def test_precios_normales_no_cambian(self):
+        self.assertEqual(ec.equivalente(8000, 1485, "USD"), "≈ USD 5")
+        self.assertIsNone(ec.equivalente(None, 1485, "USD"))
+        self.assertIsNone(ec.equivalente(8000, 0, "USD"))
+
