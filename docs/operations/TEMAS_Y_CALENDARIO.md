@@ -104,3 +104,14 @@ Ejemplo en `data/calendario.json`:
   y queda el calendario del repositorio (la corrida de GitHub queda en rojo
   para avisar). Cambiar de Sheets a otra herramienta solo implica cambiar quién
   escribe `data/calendario.json`.
+
+
+## Campañas (tipo `campana`)
+
+Un bloque destacado para fechas como el Día de la Madre: un capítulo a todo el
+ancho en la portada y una tarjeta en el menú, con título, texto y el botón
+"Hacer mi pedido" (abre WhatsApp con "Hola Amelí! Quiero hacer un pedido: <título>").
+Se carga en la pestaña `Calendario` con `tipo = campana`, `titulo` y, si querés,
+`mensaje`, `titulo_en` y `mensaje_en`. Si hay varias el mismo día, se muestra la de
+mayor `prioridad`. Todo se escribe con `textContent` (nunca como HTML) y el botón
+solo acepta enlaces de WhatsApp.

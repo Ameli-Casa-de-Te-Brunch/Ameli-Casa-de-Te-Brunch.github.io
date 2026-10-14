@@ -595,3 +595,40 @@ footer::after{
 .wsp{width:56px; height:56px; padding:0; gap:0; justify-content:center; border-radius:50%}
 .wsp svg{width:24px; height:24px}
 @media (max-width:859px){ .wsp{width:52px; height:52px} }
+
+/* ==================================================================
+   CAMPAÑA vigente (tipo "campana" de la hoja Calendario): tarjeta verde
+   con título, texto y botón de pedido por WhatsApp. La rellena
+   assets/js/agenda.js solo dentro de las fechas de la campaña.
+   ================================================================== */
+.campana{
+  position:relative; isolation:isolate; overflow:hidden;
+  margin:16px 16px 0; padding:24px 22px 26px; border-radius:var(--radius-lg);
+  background:var(--verde-osc); color:var(--blanco);
+}
+.campana[hidden]{display:none}
+.campana:not([hidden]){animation:aviso-entra 240ms var(--ease-out) both}
+.campana::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--blanco); opacity:.09;
+  -webkit-mask:url('../img/curvas-nivel.svg') 80% 40% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 80% 40% / cover no-repeat;
+}
+.campana-etiqueta{
+  font-weight:700; font-size:calc(11px * var(--afs,1)); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--salvia); margin:0 0 10px;
+}
+.campana-titulo{
+  font-family:'Cormorant Garamond',serif; font-weight:500; color:var(--blanco);
+  font-size:calc(34px * var(--afs,1)); line-height:.98; letter-spacing:-.012em; margin:0 0 10px;
+}
+.campana-mensaje{color:rgba(255,253,247,.88); font-size:calc(14.5px * var(--afs,1)); line-height:1.45; margin:0 0 18px}
+.campana-cta{
+  display:inline-flex; align-items:center; min-height:48px; padding:0 22px;
+  border-radius:var(--radius-pill); background:var(--salvia); color:var(--verde-osc);
+  font-weight:700; font-size:calc(14px * var(--afs,1)); text-decoration:none;
+  touch-action:manipulation; transition:transform 120ms var(--ease-out), background .2s ease;
+}
+.campana-cta:hover,.campana-cta:focus-visible{background:var(--blanco)}
+.campana-cta:active{transform:scale(.97)}
+@media (min-width:900px){ .campana{margin:20px 40px 0} }

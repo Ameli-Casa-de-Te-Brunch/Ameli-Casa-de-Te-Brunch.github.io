@@ -24,10 +24,13 @@ Columnas de la pestaña (primera fila = encabezado, en cualquier orden):
   horario                             obligatoria si tipo = horario_especial
                                       (ej. 10:00-14:00; 18:00-21:00)
   mensaje                             obligatoria si tipo = aviso; opcional en
-                                      cierre y horario_especial
+                                      cierre, horario_especial y campana
   mensaje_en                          opcional (versión en inglés del mensaje)
+  titulo                              obligatoria si tipo = campana (hasta 40
+                                      caracteres: el título grande del bloque)
+  titulo_en                           opcional (versión en inglés del título)
   id, prioridad, activo, nota         opcionales
-  - tipo: tema, cierre, horario_especial o aviso (ver build/calendario.py).
+  - tipo: tema, cierre, horario_especial, aviso o campana (ver build/calendario.py).
   - desde/hasta: AAAA-MM-DD (formato de columna "texto sin formato" o
     personalizado aaaa-mm-dd; el CSV publicado exporta lo que se VE).
   - activo: vacío o "Sí" = vale; "No" = la fila se ignora (sirve para apagar
@@ -51,7 +54,7 @@ import extract_common as ec  # noqa: E402
 import hoja_publica  # noqa: E402  (descarga restringida a Google, común con aplicar_precios)
 
 ENCABEZADOS_PERMITIDOS = ("id", "tipo", "tema", "desde", "hasta", "prioridad", "activo", "nota",
-                          "horario", "mensaje", "mensaje_en")
+                          "horario", "mensaje", "mensaje_en", "titulo", "titulo_en")
 ENCABEZADOS_OBLIGATORIOS = ("tipo", "desde", "hasta")
 MAX_FILAS = 500
 VALORES_ACTIVO_SI = {"", "si", "sí"}
@@ -129,7 +132,7 @@ def parsear_csv(contenido: str) -> tuple:
         # validador lo marca como error en vez de ignorarlo en silencio.
         if celda(fila, "tema"):
             ev["tema"] = celda(fila, "tema").lower()
-        for campo in ("horario", "mensaje", "mensaje_en"):
+        for campo in ("horario", "mensaje", "mensaje_en", "titulo", "titulo_en"):
             if celda(fila, campo):
                 ev[campo] = celda(fila, campo)
         prioridad = celda(fila, "prioridad")
