@@ -9,6 +9,8 @@
      (si empatan, el que empieza más tarde).
    - horario_especial: reemplaza el horario habitual de hoy. Un cierre le gana.
    - aviso: se muestran hasta 3 en total, de mayor a menor prioridad.
+   - campana: un bloque destacado (#campanaDia) con título, texto y un botón
+     de pedido por WhatsApp. Se muestra la de mayor prioridad.
    - Un evento con mensaje muestra ese texto (mensaje_en si el idioma es
      inglés y existe); sin mensaje se usa un texto automático en 5 idiomas.
    Los mensajes se escriben SIEMPRE con textContent, nunca como HTML.
@@ -32,6 +34,14 @@
     cierre: {
       es: 'Hoy estamos cerrados.', en: 'We are closed today.', pt: 'Hoje estamos fechados.',
       fr: 'Nous sommes fermés aujourd’hui.', it: 'Oggi siamo chiusi.'
+    },
+    pedir: {
+      es: 'Hacer mi pedido', en: 'Place my order', pt: 'Fazer meu pedido',
+      fr: 'Passer ma commande', it: 'Fai il tuo ordine'
+    },
+    ahora: {
+      es: 'Ahora en Amelí', en: 'Now at Amelí', pt: 'Agora na Amelí',
+      fr: 'En ce moment chez Amelí', it: 'Ora da Amelí'
     },
     especial: {
       es: 'Hoy: horario especial', en: 'Today: special hours', pt: 'Hoje: horário especial',
@@ -75,7 +85,8 @@
       cierre: cierre,
       especial: especial,
       franjas: especial ? especial.franjas : null,
-      avisos: activos('aviso', fecha).sort(masImportante)
+      avisos: activos('aviso', fecha).sort(masImportante),
+      campana: elegir(activos('campana', fecha))
     };
   }
 
@@ -107,6 +118,7 @@
 
   /* Escribe los textos de hoy en #avisoDia (uno por <p>) y lo oculta si no hay. */
   function pintar(lang) {
+    pintarCampana(lang);
     var cont = document.getElementById('avisoDia');
     if (!cont) return;
     var textos = textosDeHoy(lang);
@@ -120,11 +132,55 @@
     cont.hidden = textos.length === 0;
   }
 
-  window.AmeliAgenda = { hoy: hoy, textosDeHoy: textosDeHoy, pintar: pintar };
+  /* Campaña de hoy en el idioma pedido: { titulo, mensaje, tituloOriginal } o null.
+     El mensaje de WhatsApp usa siempre el título en español (así lo lee el local). */
+  function campanaDeHoy(lang) {
+    var ev = hoy().campana;
+    if (!ev) return null;
+    var idioma = TEXTOS.cierre[lang] ? lang : 'es';
+    return {
+      titulo: (idioma === 'en' && ev.titulo_en) ? ev.titulo_en : ev.titulo,
+      mensaje: mensajeDe(ev, idioma) || '',
+      tituloOriginal: ev.titulo
+    };
+  }
+
+  /* Rellena #campanaDia (con textContent) y lo oculta si hoy no hay campaña.
+     El botón es un enlace de WhatsApp ya escrito en el HTML: acá solo se le
+     agrega el texto del mensaje. */
+  function pintarCampana(lang) {
+    var cont = document.getElementById('campanaDia');
+    if (!cont) return;
+    var idioma = TEXTOS.cierre[lang] ? lang : 'es';
+    var c = campanaDeHoy(idioma);
+    if (!c) { cont.hidden = true; return; }
+    var poner = function (sel, texto) {
+      var nodo = cont.querySelector(sel);
+      if (nodo) { nodo.textContent = texto; if (nodo.tagName === 'P') nodo.hidden = !texto; }
+    };
+    poner('.campana-etiqueta', TEXTOS.ahora[idioma]);
+    poner('.campana-titulo', c.titulo);
+    poner('.campana-mensaje', c.mensaje);
+    poner('.campana-cta-texto', TEXTOS.pedir[idioma]);
+    var enlace = cont.querySelector('.campana-cta');
+    if (enlace) {
+      if (!enlace.dataset.base) enlace.dataset.base = enlace.href.split('?')[0];
+      if (enlace.dataset.base.indexOf('https://wa.me/') === 0) {
+        enlace.href = enlace.dataset.base + '?text=' +
+          encodeURIComponent('Hola Amelí! Quiero hacer un pedido: ' + c.tituloOriginal);
+      }
+    }
+    cont.hidden = false;
+  }
+
+  window.AmeliAgenda = { hoy: hoy, textosDeHoy: textosDeHoy, pintar: pintar,
+                         campanaDeHoy: campanaDeHoy, pintarCampana: pintarCampana };
 
   function automatico() {
     var cont = document.getElementById('avisoDia');
+    var camp = document.getElementById('campanaDia');
     if (cont && cont.hasAttribute('data-auto')) pintar('es');
+    else if (camp && camp.hasAttribute('data-auto')) pintarCampana('es');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', automatico);
   else automatico();

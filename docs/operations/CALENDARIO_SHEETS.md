@@ -26,11 +26,12 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
    siempre válida:
 
    ```csv
-   id,tipo,tema,desde,hasta,prioridad,activo,horario,mensaje,mensaje_en,nota
-   encantada-2026,tema,encantada,2026-10-19,2026-11-02,10,Sí,,,,Halloween y Día de los Muertos
-   ejemplo-feriado,cierre,,2026-12-25,2026-12-25,,No,,,,Ejemplo: cerrado por feriado
-   ejemplo-horario,horario_especial,,2026-12-24,2026-12-24,,No,09:00-14:00,,,Ejemplo: Nochebuena solo a la mañana
-   ejemplo-aviso,aviso,,2026-10-20,2026-10-21,,No,,Hoy no hay medialunas,No croissants today,Ejemplo de aviso
+   id,tipo,tema,desde,hasta,prioridad,activo,horario,mensaje,mensaje_en,titulo,titulo_en,nota
+   encantada-2026,tema,encantada,2026-10-19,2026-11-02,10,Sí,,,,,,Halloween y Día de los Muertos
+   ejemplo-feriado,cierre,,2026-12-25,2026-12-25,,No,,,,,,Ejemplo: cerrado por feriado
+   ejemplo-horario,horario_especial,,2026-12-24,2026-12-24,,No,09:00-14:00,,,,,Ejemplo: Nochebuena solo a la mañana
+   ejemplo-aviso,aviso,,2026-10-20,2026-10-21,,No,,Hoy no hay medialunas,No croissants today,,,Ejemplo de aviso
+   ejemplo-campana,campana,,2026-10-13,2026-10-18,20,No,,Domingo 18 de octubre. Tortas enteras y boxes de regalo por encargo.,Sunday 18 October. Whole cakes and gift boxes by order.,Día de la Madre,Mother’s Day,Ejemplo de campaña
    ```
 
    **Tipos de fila:**
@@ -41,16 +42,19 @@ de aviso y lo corrijas. Un calendario roto nunca frena un "agotado por hoy".
    | `cierre` | El local no abre. En el menú el cartel dice "Cerrado hoy" y aparece un aviso. | `mensaje` (opcional) |
    | `horario_especial` | Reemplaza el horario habitual solo en esas fechas; el cartel "Abierto/Cerrado" lo respeta. | `horario` (obligatorio), `mensaje` (opcional) |
    | `aviso` | Un mensaje visible en esas fechas (por ejemplo "hoy no hay medialunas"). | `mensaje` (obligatorio) |
+   | `campana` | Un bloque destacado en la portada y en el menú, con título grande, un texto y un botón "Hacer mi pedido" que abre WhatsApp con el pedido escrito. Aparece y desaparece solo en esas fechas (Día de la Madre, Navidad, Pascuas...). | `titulo` (obligatorio), `titulo_en`, `mensaje`, `mensaje_en` |
 
    **Columnas:**
 
    | Columna | Obligatoria | Qué va |
    |---|---|---|
-   | `tipo` | sí | `tema`, `cierre`, `horario_especial` o `aviso` |
+   | `tipo` | sí | `tema`, `cierre`, `horario_especial`, `aviso` o `campana` |
    | `desde` / `hasta` | sí | fechas **AAAA-MM-DD**, ambas incluidas (un solo día: la misma fecha en las dos) |
    | `tema` | solo en `tipo = tema` | hoy `encantada` (cada tema nuevo se suma en el código) |
    | `horario` | solo en `horario_especial` | de 1 a 3 franjas `HH:MM-HH:MM` separadas por `;`, por ejemplo `09:00-13:00; 17:30-21:00` |
-   | `mensaje` | en `aviso`; opcional en cierre y horario especial | hasta 140 caracteres, sin enlaces ni `< >` |
+   | `mensaje` | en `aviso`; opcional en cierre, horario especial y campaña | hasta 140 caracteres, sin enlaces ni `< >` |
+   | `titulo` | solo en `campana` | el título grande, hasta 40 caracteres, sin enlaces ni `< >` |
+   | `titulo_en` | no | el título en inglés (sin él se muestra el español) |
    | `mensaje_en` | no | el mismo mensaje en inglés (se muestra si el menú está en inglés; sin él se muestra el español) |
    | `prioridad` | no | 0 a 100; si dos filas se pisan gana el mayor |
    | `activo` | no | vacío o `Sí` = vale, `No` = se ignora la fila (sirve para apagar sin borrar) |

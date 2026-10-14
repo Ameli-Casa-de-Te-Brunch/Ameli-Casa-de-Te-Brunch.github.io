@@ -32,9 +32,11 @@ TEMAS_CONOCIDOS = ("encantada",)
 #   cierre            el local no abre en esas fechas
 #   horario_especial  horario distinto al habitual en esas fechas
 #   aviso             un mensaje visible en esas fechas
-# Los tres últimos los lee assets/js/agenda.js (cartel "Abierto/Cerrado" y
-# aviso del día).
-TIPOS_CONOCIDOS = ("tema", "cierre", "horario_especial", "aviso")
+#   campana           un bloque destacado (título + texto + botón de pedido por
+#                     WhatsApp) en la portada y en el menú durante esas fechas
+# Los cuatro últimos los lee assets/js/agenda.js (cartel "Abierto/Cerrado",
+# aviso del día y campaña).
+TIPOS_CONOCIDOS = ("tema", "cierre", "horario_especial", "aviso", "campana")
 
 CAMPOS_RAIZ_PERMITIDOS = ("version", "zona_horaria", "activo", "eventos")
 CAMPOS_COMUNES = ("id", "tipo", "desde", "hasta", "prioridad")
@@ -45,17 +47,20 @@ CAMPOS_PROPIOS = {
     "cierre": ("mensaje", "mensaje_en"),
     "horario_especial": ("horario", "mensaje", "mensaje_en"),
     "aviso": ("mensaje", "mensaje_en"),
+    "campana": ("titulo", "titulo_en", "mensaje", "mensaje_en"),
 }
 CAMPOS_OBLIGATORIOS_PROPIOS = {
     "tema": ("tema",),
     "cierre": (),
     "horario_especial": ("horario",),
     "aviso": ("mensaje",),
+    "campana": ("titulo",),
 }
-CAMPOS_EVENTO_PERMITIDOS = CAMPOS_COMUNES + ("tema", "horario", "mensaje", "mensaje_en")
+CAMPOS_EVENTO_PERMITIDOS = CAMPOS_COMUNES + ("tema", "horario", "mensaje", "mensaje_en", "titulo", "titulo_en")
 CAMPOS_EVENTO_OBLIGATORIOS = ("id", "tipo", "desde", "hasta")
 
 MAX_MENSAJE = 140
+MAX_TITULO = 40
 MAX_FRANJAS = 3
 MAX_EVENTOS = 200
 _RE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
@@ -102,11 +107,11 @@ def horario_canonico(franjas) -> str:
     return "; ".join(f"{a:02d}:{b:02d}-{c:02d}:{d:02d}" for a, b, c, d in franjas)
 
 
-def mensaje_valido(texto) -> bool:
+def mensaje_valido(texto, maximo=MAX_MENSAJE) -> bool:
     """Texto corto, imprimible, sin HTML ni enlaces. Se muestra siempre con
     textContent (nunca como HTML), pero igual se rechaza lo que podría usarse
     para engañar: etiquetas, URLs."""
-    if not isinstance(texto, str) or not texto.strip() or len(texto) > MAX_MENSAJE:
+    if not isinstance(texto, str) or not texto.strip() or len(texto) > maximo:
         return False
     if texto != texto.strip() or not texto.isprintable():
         return False
@@ -181,6 +186,10 @@ def validar(doc) -> list:
             if campo in ev and not mensaje_valido(ev[campo]):
                 errores.append(f"{etiqueta}: '{campo}' tiene que ser un texto de hasta {MAX_MENSAJE} caracteres, "
                                "sin < >, sin enlaces y sin espacios al principio o al final.")
+        for campo in ("titulo", "titulo_en"):
+            if campo in ev and not mensaje_valido(ev[campo], MAX_TITULO):
+                errores.append(f"{etiqueta}: '{campo}' tiene que ser un texto de hasta {MAX_TITULO} caracteres, "
+                               "sin < >, sin enlaces y sin espacios al principio o al final.")
         fechas_ok = True
         for campo in ("desde", "hasta"):
             if campo in ev and not _fecha_valida(ev[campo]):
@@ -222,7 +231,7 @@ def json_embebido(doc: dict) -> str:
             item["tema"] = e["tema"]
         if "horario" in e:
             item["franjas"] = franjas_de_horario(e["horario"])
-        for campo in ("mensaje", "mensaje_en"):
+        for campo in ("titulo", "titulo_en", "mensaje", "mensaje_en"):
             if campo in e:
                 item[campo] = e[campo]
         eventos.append(item)
