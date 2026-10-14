@@ -227,7 +227,8 @@ a:focus-visible, button:focus-visible{
   transition:background .2s ease;
   touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
 }
-.header-menu:hover, .header-menu:focus-visible{background:var(--verde-osc)}
+.header-menu:focus-visible{background:var(--verde-osc)}
+@media (hover:hover) and (pointer:fine){ .header-menu:hover{background:var(--verde-osc)} }
 .header-menu:active{transform:scale(.97); transition:transform 120ms var(--ease-out)}
 
 /* ---------- botón y panel de accesibilidad ---------- */
@@ -1034,7 +1035,8 @@ html[data-lectura="simple"] .indice-num{font-style:normal}
   font-weight:600; letter-spacing:.06em; font-variant-caps:small-caps;
 }
 .header-menu{background:var(--blanco); color:var(--verde-osc)}
-.header-menu:hover,.header-menu:focus-visible{background:var(--crema)}
+.header-menu:focus-visible{background:var(--crema)}
+@media (hover:hover) and (pointer:fine){ .header-menu:hover{background:var(--crema)} }
 .a11y-btn,.nav-btn{background:transparent; color:var(--blanco); border-color:rgba(255,255,255,.7)}
 
 /* Portada estilo foto a sangre completa (referencia: puestodelindio.com
@@ -1807,7 +1809,7 @@ html.js-reveal .sobre-ameli,
 html.js-reveal .sustentabilidad,
 html.js-reveal .preguntas-frecuentes{
   opacity:0; transform:translateY(10px);
-  transition:opacity .5s var(--ease-out), transform .5s var(--ease-out);
+  transition:opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
 }
 html.js-reveal .arquitectura-bloque.visible,
 html.js-reveal .sobre-ameli.visible,
@@ -1851,8 +1853,8 @@ footer::after{
 /* 2. Encabezado fijo con un único botón de acento: "Menú". */
 .site-header{position:sticky; top:0; z-index:30}
 .site-header .header-menu{background:var(--salvia); color:var(--verde-osc)}
-.site-header .header-menu:hover,
 .site-header .header-menu:focus-visible{background:var(--blanco); color:var(--verde-osc)}
+@media (hover:hover) and (pointer:fine){ .site-header .header-menu:hover{background:var(--blanco); color:var(--verde-osc)} }
 main [id]{scroll-margin-top:84px}
 
 /* 3. Leyendas editoriales: 01 · TÍTULO ———— lugar. El número sale de un
@@ -1967,3 +1969,132 @@ main{counter-reset:seccion}
 .campana-mensaje{max-width:46ch; color:rgba(255,253,247,.88); font-size:1.05rem; margin:0 0 26px}
 .campana .btn.campana-cta{background:var(--salvia); color:var(--verde-osc)}
 .campana .btn.campana-cta:hover,.campana .btn.campana-cta:focus-visible{background:var(--blanco)}
+
+
+/* ==================================================================
+   DISEÑO COMBINADO "capítulos" (2026-10-14)
+   Todo cuelga de html[data-estilo="capitulos"]: sin ese atributo en el <html> el
+   sitio vuelve al diseño anterior (así se vuelve atrás sin tocar nada más).
+   Ideas: encabezado mínimo con el logotipo al centro, portada a pantalla completa
+   con el nombre grande abajo, leyendas con el lugar sobre la foto, cinta que corre
+   con el nombre de la casa, capítulos que alternan claro y oscuro (con las curvas de
+   nivel), números grandes en la colección de tés y una barra de pedido fija abajo.
+   Lo de Amelí no cambia: paleta, logotipo, Cormorant + Karla, formas redondeadas,
+   curvas de nivel, campaña y todo el funcionamiento.
+   ================================================================== */
+.cinta,.barra-pedido,.sticker{display:none}
+
+/* 1. Encabezado mínimo: ☰ y Aa a la izquierda, logotipo al centro, Menú (acento) a la derecha. */
+html[data-estilo="capitulos"] .site-header-fila{
+  position:relative; display:flex; flex-wrap:nowrap; align-items:center; gap:10px;
+  max-width:none; padding:12px 20px;
+}
+html[data-estilo="capitulos"] .header-acciones{display:contents}
+html[data-estilo="capitulos"] .nav-btn{order:1}
+html[data-estilo="capitulos"] .a11y-btn{order:2}
+html[data-estilo="capitulos"] .header-menu{order:4; margin-left:auto}
+html[data-estilo="capitulos"] .logo-enlace{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); order:3; white-space:nowrap}
+html[data-estilo="capitulos"] .logo-sub{display:none}
+/* En pantallas muy angostas (320-359 px) el logotipo centrado pisaba el botón Aa: pasa a ir en fila, después de ☰ y Aa. */
+@media (max-width:359px){ html[data-estilo="capitulos"] .logo-enlace{position:static; transform:none} }
+@media (min-width:640px){
+  html[data-estilo="capitulos"] .logo-sub{
+    display:inline; margin-left:.55em; color:var(--salvia); font-style:italic; font-variant-caps:normal;
+    font-weight:400; font-size:.7em; letter-spacing:.02em; text-transform:none;
+  }
+}
+
+/* 2. Portada: pantalla completa, el nombre grande abajo a la izquierda y dos leyendas tipo sticker. */
+html[data-estilo="capitulos"]{--alto-encabezado:72px; --alto-barra:46px}
+html[data-estilo="capitulos"] .portada-hero{
+  min-height:100vh; min-height:calc(100svh - var(--alto-encabezado) - var(--alto-barra));
+  flex-direction:column; align-items:stretch; justify-content:flex-end;
+}
+html[data-estilo="capitulos"] .portada-hero-velo{
+  background:linear-gradient(180deg, rgba(20,27,17,.18) 0%, rgba(20,27,17,.08) 38%, rgba(20,27,17,.82) 100%);
+}
+html[data-estilo="capitulos"] .portada-hero-overlay{
+  width:100%; max-width:none; margin:0; padding:0 24px clamp(28px,5vw,56px); text-align:left;
+}
+html[data-estilo="capitulos"] .portada-emblema,
+html[data-estilo="capitulos"] .portada-hero-overlay .eyebrow-tag{display:none}
+html[data-estilo="capitulos"] .portada-hero-overlay .titulo-marca{
+  font-size:clamp(4.4rem, 20vw, 12rem); line-height:.8; letter-spacing:.01em; margin:0;
+}
+html[data-estilo="capitulos"] .portada-tagline{text-align:left; margin:16px 0 24px; font-size:clamp(1.15rem,2.8vw,1.5rem)}
+html[data-estilo="capitulos"] .portada-hero-overlay .cta-fila{justify-content:flex-start; gap:12px}
+html[data-estilo="capitulos"] .portada-hero-overlay .btn-principal{background:var(--salvia); color:var(--verde-osc)}
+html[data-estilo="capitulos"] .portada-hero-overlay .btn-principal:focus-visible{background:var(--blanco)}
+@media (hover:hover) and (pointer:fine){ html[data-estilo="capitulos"] .portada-hero-overlay .btn-principal:hover{background:var(--blanco)} }
+/* leyendas con el lugar sobre la foto */
+html[data-estilo="capitulos"] .sticker{
+  display:block; position:absolute; z-index:3; margin:0; padding:7px 12px;
+  font-family:var(--font-subhead); font-weight:700; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--blanco); background:rgba(20,27,17,.66); border:1px solid rgba(255,253,247,.6); border-radius:999px;
+}
+html[data-estilo="capitulos"] .sticker-lugar{top:30px; left:32px}
+html[data-estilo="capitulos"] .sticker-coord{top:30px; right:32px; display:none}
+@media (min-width:520px){ html[data-estilo="capitulos"] .sticker-coord{display:block} }
+
+/* 3. Cinta del acento: una barra salvia con el nombre de la casa en cursiva (quieta con "reducir movimiento"). */
+html[data-estilo="capitulos"] .cinta{display:block; overflow:hidden; white-space:nowrap; background:var(--salvia); padding:13px 0 15px;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)}
+.cinta-pista{display:inline-flex; animation:cinta-corre 46s linear infinite; will-change:transform}
+.cinta-grupo{display:inline-flex; flex:none}
+.cinta-grupo span{font-family:var(--font-display); font-style:italic; font-size:1.45rem; line-height:1; color:var(--verde-osc); padding-right:2.6rem}
+@keyframes cinta-corre{to{transform:translateX(-50%)}}
+
+/* 4. Capítulos: títulos grandes, fondos que alternan claro y oscuro con curvas de nivel. */
+html[data-estilo="capitulos"] .titulo-seccion{
+  font-weight:500; letter-spacing:-.022em; line-height:.96; font-size:clamp(2.7rem, 8vw, 5.2rem);
+  text-wrap:balance;
+}
+html[data-estilo="capitulos"] .sobre-ameli{padding-top:72px; padding-bottom:80px; border-bottom:0}
+html[data-estilo="capitulos"] .servicios,
+html[data-estilo="capitulos"] .ubicacion{border-bottom:0}
+
+/* La colección de tés es el capítulo oscuro: galería con números grandes. */
+html[data-estilo="capitulos"] .coleccion-tes{
+  position:relative; isolation:isolate; background:var(--verde-osc); color:var(--blanco);
+  padding-top:72px; padding-bottom:80px; border-bottom:0;
+  box-shadow:0 0 0 100vmax var(--verde-osc); clip-path:inset(0 -100vmax);
+}
+html[data-estilo="capitulos"] .coleccion-tes::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--blanco); opacity:.08;
+  -webkit-mask:url('../img/curvas-nivel.svg') 30% 55% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 30% 55% / cover no-repeat;
+}
+html[data-estilo="capitulos"] .coleccion-tes .titulo-seccion{color:var(--blanco)}
+html[data-estilo="capitulos"] .coleccion-tes .texto-editorial{color:rgba(255,253,247,.82)}
+html[data-estilo="capitulos"] .coleccion-tes .eyebrow{color:var(--salvia)}
+html[data-estilo="capitulos"] .coleccion-tes .eyebrow-editorial::before{color:var(--salvia)}
+html[data-estilo="capitulos"] .coleccion-tes .eyebrow-editorial::after{background:rgba(255,253,247,.28)}
+html[data-estilo="capitulos"] .coleccion-tes .eyebrow-lugar{color:rgba(255,253,247,.7)}
+html[data-estilo="capitulos"] .coleccion-tes .btn-secundario{background:transparent; color:var(--salvia); border-color:var(--salvia)}
+html[data-estilo="capitulos"] .coleccion-tes .btn-secundario:focus-visible{background:var(--salvia); color:var(--verde-osc)}
+@media (hover:hover) and (pointer:fine){ html[data-estilo="capitulos"] .coleccion-tes .btn-secundario:hover{background:var(--salvia); color:var(--verde-osc)} }
+html[data-estilo="capitulos"] .tes-rail{counter-reset:te; scrollbar-color:var(--salvia) transparent}
+html[data-estilo="capitulos"] .te-card{position:relative; counter-increment:te; border-color:transparent}
+html[data-estilo="capitulos"] .te-card::after{
+  content:counter(te, decimal-leading-zero); position:absolute; right:16px; top:10px;
+  font-family:var(--font-display); font-size:4rem; line-height:1; color:transparent;
+  -webkit-text-stroke:1px rgba(62,71,54,.28); pointer-events:none;
+}
+
+/* 5. Barra de pedido fija abajo (reemplaza al botón flotante). */
+html[data-estilo="capitulos"] .whatsapp-flotante{display:none}
+html[data-estilo="capitulos"] body{padding-bottom:calc(var(--alto-barra) + env(safe-area-inset-bottom, 0px))}
+html[data-estilo="capitulos"] .barra-pedido{
+  display:flex; position:fixed; left:0; right:0; bottom:0; z-index:45;
+  justify-content:center; align-items:center; text-align:center;
+  min-height:calc(var(--alto-barra) + env(safe-area-inset-bottom, 0px)); padding:0 16px env(safe-area-inset-bottom, 0px);
+  background:var(--verde-osc); color:var(--salvia); text-decoration:none;
+  font-family:var(--font-subhead); font-weight:700; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+  border-top:1px solid rgba(199,214,166,.35);
+  transition:background-color 200ms ease, color 200ms ease;
+}
+html[data-estilo="capitulos"] .barra-pedido:active{background:var(--verde); transition-duration:80ms}
+html[data-estilo="capitulos"] .barra-pedido:focus-visible{background:var(--salvia); color:var(--verde-osc)}
+@media (hover:hover) and (pointer:fine){ html[data-estilo="capitulos"] .barra-pedido:hover{background:var(--salvia); color:var(--verde-osc)} }

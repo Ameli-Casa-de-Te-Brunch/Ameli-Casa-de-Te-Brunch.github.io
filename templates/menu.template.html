@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-estilo="capitulos">
 <head>
 <meta charset="UTF-8">
 __CSP_META__
@@ -25,7 +25,7 @@ __CSP_META__
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/karla.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/menu.css?v=20261014-1">
+<link rel="stylesheet" href="assets/css/menu.css?v=20261014-70">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): ver build/calendario.py. Bloque JSON de datos
      (la CSP no lo trata como script ejecutable) + script en el head, sin defer, para
@@ -71,6 +71,7 @@ __CSP_META__
      .marco-precision en site.css), para que el menú y la web compartan una
      firma visual reconocible. -->
 <div class="hero-foto">
+  <p class="sticker sticker-lugar" aria-hidden="true">Malargüe, Mendoza</p>
   <img class="hero-foto-contenido" fetchpriority="high" decoding="async" src="assets/img/hero-salon-960.webp" srcset="assets/img/hero-salon-480.webp 480w, assets/img/hero-salon-960.webp 960w" sizes="(min-width: 480px) 480px, 100vw" alt="Salón de Amelí, con mesas y sillas de madera, piso a cuadros, la barra con el logo y la vitrina de pastelería." width="960" height="640" loading="eager" decoding="async">
   <div class="marco-precision" aria-hidden="true">
     <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
@@ -82,6 +83,7 @@ __CSP_META__
   <p class="estado" id="estadoChip"><span class="punto"></span><span id="estadoTexto"></span></p>
   <p class="lugar" id="heroLugar"></p>
 </div>
+<div class="cinta" aria-hidden="true"><div class="cinta-pista"><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div></div></div>
 <div class="hero-texto">
   <p class="saludo" id="heroSaludo"></p>
   <p class="pregunta" id="heroPregunta"></p>
@@ -153,7 +155,7 @@ __CSP_META__
      identificarlo. Antes acá había el logo real de WhatsApp; se
      corrige para que coincida con la página y para no reproducir esa
      marca sin autorización. -->
-<!--WSP_START--><a class="wsp" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener noreferrer" id="wspBtn">
+<!--WSP_START--><a class="barra-pedido" id="barraPedido" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener noreferrer">Hacé tu pedido por WhatsApp</a><a class="wsp" href="https://wa.me/__WSP_NUMBER__?text=Hola%20Amel%C3%AD!" target="_blank" rel="noopener noreferrer" id="wspBtn">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.3-3.6A7.96 7.96 0 0 1 4 12Z"/>
     <circle cx="9" cy="12" r=".6" fill="currentColor" stroke="none"/>

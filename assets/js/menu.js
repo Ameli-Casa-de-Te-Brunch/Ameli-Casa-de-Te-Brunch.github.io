@@ -51,6 +51,7 @@ const UI = {
         fr:'Mardi à samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
         it:'Martedì a sabato · 9:00–13:00 e 17:30–21:00<br>Domenica · 17:30–21:00'},
  wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
+ barraPedido:{es:'Hacé tu pedido por WhatsApp',en:'Order on WhatsApp',pt:'Faça seu pedido pelo WhatsApp',fr:'Commandez sur WhatsApp',it:'Ordina su WhatsApp'},
  title:{es:'Menú | Amelí Casa de Té & Brunch · Malargüe',en:'Menu | Amelí Tea House & Brunch · Malargüe',pt:'Menu | Amelí Casa de Chá & Brunch · Malargüe',fr:'Menu | Amelí Maison de thé & Brunch · Malargüe',it:'Menu | Amelí Casa del tè & Brunch · Malargüe'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
  cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
@@ -581,6 +582,7 @@ function render(){
   $('destEyebrow').textContent=UI.destEyebrow[lang];
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
+  if($('barraPedido')) $('barraPedido').textContent=UI.barraPedido[lang];
   $('footDatos').innerHTML=UI.datos[lang];
   $('homeLink').textContent=UI.inicio[lang];
   $('a11yBtn').setAttribute('aria-label', UI.a11yBtn[lang]);
