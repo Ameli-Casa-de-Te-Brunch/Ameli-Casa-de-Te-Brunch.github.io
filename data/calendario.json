@@ -6,9 +6,9 @@
     {
       "id": "encantada-2026",
       "tipo": "tema",
-      "tema": "encantada",
       "desde": "2026-10-19",
       "hasta": "2026-11-02",
+      "tema": "encantada",
       "prioridad": 10
     },
     {
@@ -16,11 +16,11 @@
       "tipo": "campana",
       "desde": "2026-10-13",
       "hasta": "2026-10-18",
-      "prioridad": 20,
+      "mensaje": "Un desayuno especial o una mini torta inspirada en un ramo de flores. Edición especial, con reserva previa.",
+      "mensaje_en": "A special breakfast or a mini cake inspired by a bouquet of flowers. Special edition, by advance reservation.",
       "titulo": "Día de la Madre",
       "titulo_en": "Mother’s Day",
-      "mensaje": "Un desayuno especial o una mini torta inspirada en un ramo de flores. Edición especial, con reserva previa.",
-      "mensaje_en": "A special breakfast or a mini cake inspired by a bouquet of flowers. Special edition, by advance reservation."
+      "prioridad": 20
     }
   ]
 }
