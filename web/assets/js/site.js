@@ -73,8 +73,10 @@
   function aplicarEstado(estado) {
     if (AFS_VALIDOS.indexOf(String(estado.afs)) !== -1) {
       raiz.style.setProperty('--afs', String(estado.afs));
+      raiz.setAttribute('data-afs', String(estado.afs));
     } else {
       raiz.style.removeProperty('--afs');
+      raiz.removeAttribute('data-afs');
     }
     if (estado.contraste) {
       raiz.setAttribute('data-contraste', 'alto');

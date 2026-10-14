@@ -23,7 +23,7 @@ function guardarA11y(p){
 let a11yPrefs = leerA11y();
 (function aplicarA11yInicial(){
   const html = document.documentElement;
-  html.style.setProperty('--afs', a11yPrefs.afs || 1);
+  html.style.setProperty('--afs', a11yPrefs.afs || 1); html.setAttribute('data-afs', String(a11yPrefs.afs || 1));
   if(a11yPrefs.contraste) html.setAttribute('data-contraste','alto');
   if(a11yPrefs.movimiento) html.setAttribute('data-movimiento','reducido');
   if(a11yPrefs.lectura) html.setAttribute('data-lectura','simple');
@@ -51,6 +51,7 @@ const UI = {
         fr:'Mardi à samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
         it:'Martedì a sabato · 9:00–13:00 e 17:30–21:00<br>Domenica · 17:30–21:00'},
  wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
+ saltar:{es:'Saltar al menú',en:'Skip to menu',pt:'Ir para o cardápio',fr:'Aller au menu',it:'Vai al menu'},
  barraPedido:{es:'Hacé tu pedido por WhatsApp',en:'Order on WhatsApp',pt:'Faça seu pedido pelo WhatsApp',fr:'Commandez sur WhatsApp',it:'Ordina su WhatsApp'},
  title:{es:'Menú | Amelí Casa de Té & Brunch · Malargüe',en:'Menu | Amelí Tea House & Brunch · Malargüe',pt:'Menu | Amelí Casa de Chá & Brunch · Malargüe',fr:'Menu | Amelí Maison de thé & Brunch · Malargüe',it:'Menu | Amelí Casa del tè & Brunch · Malargüe'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
@@ -365,7 +366,7 @@ $('sheetBackdrop').addEventListener('click', cerrarDetalle);
 let a11yFocoPrevio=null;
 function aplicarA11y(){
   const html=document.documentElement;
-  html.style.setProperty('--afs', a11yPrefs.afs || 1);
+  html.style.setProperty('--afs', a11yPrefs.afs || 1); html.setAttribute('data-afs', String(a11yPrefs.afs || 1));
   if(a11yPrefs.contraste) html.setAttribute('data-contraste','alto'); else html.removeAttribute('data-contraste');
   if(a11yPrefs.movimiento) html.setAttribute('data-movimiento','reducido'); else html.removeAttribute('data-movimiento');
   if(a11yPrefs.lectura) html.setAttribute('data-lectura','simple'); else html.removeAttribute('data-lectura');
@@ -422,7 +423,7 @@ function abrirLangs(){
   $('langsBtn').setAttribute('aria-expanded','true');
   document.addEventListener('click', onLangsOutsideClick);
   document.addEventListener('keydown', onLangsKeydown);
-  const actual=$('langsMenu').querySelector('button[aria-selected="true"]');
+  const actual=$('langsMenu').querySelector('button[aria-current="true"]');
   if(actual) actual.focus();
 }
 function cerrarLangs(){
@@ -583,6 +584,7 @@ function render(){
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
   if($('barraPedido')) $('barraPedido').textContent=UI.barraPedido[lang];
+  $('skipLink').textContent=UI.saltar[lang];
   $('footDatos').innerHTML=UI.datos[lang];
   $('homeLink').textContent=UI.inicio[lang];
   $('a11yBtn').setAttribute('aria-label', UI.a11yBtn[lang]);
@@ -601,7 +603,7 @@ function render(){
   /* selector de idioma */
   $('langsBtnTxt').textContent=lang.toUpperCase();
   $('langsBtn').setAttribute('aria-label', `${UI.idioma[lang]}: ${IDIOMA_LABEL[lang]}`);
-  $('langsMenu').innerHTML=LANGS.map(l=>`<li><button type="button" role="option" data-l="${l}" aria-selected="${l===lang}">${esc(IDIOMA_LABEL[l])}</button></li>`).join('');
+  $('langsMenu').innerHTML=LANGS.map(l=>`<li><button type="button" data-l="${l}" aria-current="${l===lang}">${esc(IDIOMA_LABEL[l])}</button></li>`).join('');
   $('langsMenu').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     lang=b.dataset.l; cerrarLangs(); render(); aplicarFiltro();
     if(sheetProdId) abrirDetalle(sheetProdId);  /* si hay un panel de detalle abierto, refrescarlo tambien */

@@ -25,7 +25,7 @@ __CSP_META__
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/karla.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/menu.css?v=20261014-70">
+<link rel="stylesheet" href="assets/css/menu.css?v=20261014-83">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): ver build/calendario.py. Bloque JSON de datos
      (la CSP no lo trata como script ejecutable) + script en el head, sin defer, para
@@ -36,6 +36,8 @@ __CSP_META__
 <!--JSONLD_START--><script type="application/ld+json">__JSONLD__</script><!--JSONLD_END-->
 </head>
 <body>
+<a class="skip-link" id="skipLink" href="#contenido-menu">Saltar al menú</a>
+
 <header class="topbar">
   <!-- Antes texto plano: el menú (/menu/, mismo dominio) no tenía
        ningún enlace de vuelta al sitio institucional -- ver hallazgo
@@ -49,11 +51,11 @@ __CSP_META__
   <div class="topbar-ctrl">
     <a class="header-menu" id="homeLink" href="/">Inicio</a>
     <div class="langs" id="langs">
-      <button class="langs-btn" id="langsBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="langsMenu">
+      <button class="langs-btn" id="langsBtn" aria-expanded="false" aria-controls="langsMenu">
         <span id="langsBtnTxt">ES</span>
         <svg width="9" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <ul class="langs-menu" id="langsMenu" role="listbox" aria-label="Idioma / Language" hidden></ul>
+      <ul class="langs-menu" id="langsMenu" aria-label="Idioma / Language" hidden></ul>
     </div>
     <button class="a11y-btn" id="a11yBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11yPanel">Aa</button>
   </div>
@@ -84,6 +86,7 @@ __CSP_META__
   <p class="lugar" id="heroLugar"></p>
 </div>
 <div class="cinta" aria-hidden="true"><div class="cinta-pista"><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div></div></div>
+<main id="contenido-menu" tabindex="-1">
 <div class="hero-texto">
   <p class="saludo" id="heroSaludo"></p>
   <p class="pregunta" id="heroPregunta"></p>
@@ -133,7 +136,8 @@ __CSP_META__
 </div>
 
 <p class="aviso-moneda" id="avisoMoneda"></p>
-<main id="menu"></main>
+<div id="menu"></div>
+</main>
 
 <footer>
   <svg class="botanica" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 95 C50 60 50 40 50 5 M50 80 C35 75 25 65 22 50 M50 80 C65 75 75 65 78 50 M50 60 C38 56 30 48 28 36 M50 60 C62 56 70 48 72 36 M50 40 C41 37 35 31 33 22 M50 40 C59 37 65 31 67 22" stroke="#9C7B52" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>

@@ -49,5 +49,5 @@ flotante de WhatsApp vuelve solo.
 ## Pendientes conocidos
 
 - La barra de pedido de la portada dice solo "Hacé tu pedido por WhatsApp". "Retiralo en Amelí" queda fuera hasta que se confirme el servicio.
-- Accesibilidad que ya estaba antes: falta un enlace "saltar al contenido" en el menú, los chips y las categorías del menú miden 33 px de alto, y el enlace "información alimentaria" del pie es chico.
+- Accesibilidad (2026-10-14, rama `accesibilidad-2026-10-14`, `tests/test_accesibilidad.py`): enlace "Saltar al menú" y un único `<main>`; anillo de foco salvia/blanco sobre fondos oscuros; chips, categorías y buscador de 44 px o más; selector de idioma con `aria-current` (sin roles listbox); con texto A+/A++ el menú pasa a una columna y los encabezados de menú y portada ponen el logotipo en fila (ambos escriben `data-afs` en `<html>`); "Reducir movimiento" conserva los fundidos de 150 ms. El único objetivo bajo 44 px es el enlace "Más información" dentro de una frase (excepción de enlace en línea de WCAG 2.5.8).
 - La 404 y la página de información alimentaria no usan este diseño.

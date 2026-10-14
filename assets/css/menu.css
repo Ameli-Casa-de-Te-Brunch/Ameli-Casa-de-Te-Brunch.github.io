@@ -114,8 +114,8 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 }
 .langs-menu button{display:flex;width:100%;align-items:center;gap:8px;text-align:left;background:none;border:none;color:var(--tinta);font-family:'Karla',sans-serif;font-size:calc(14px * var(--afs,1));padding:10px 12px;border-radius:9px;cursor:pointer;min-height:48px}
 .langs-menu button:hover,.langs-menu button:focus-visible{background:var(--crema)}
-.langs-menu button[aria-selected="true"]{font-weight:700;color:var(--verde-osc)}
-.langs-menu button[aria-selected="true"]::after{content:'✓';margin-left:auto;color:var(--verde)}
+.langs-menu button[aria-current="true"]{font-weight:700;color:var(--verde-osc)}
+.langs-menu button[aria-current="true"]::after{content:'✓';margin-left:auto;color:var(--verde)}
 
 .aviso-alergias{margin:18px 16px 0;padding:12px 16px;background:var(--stc-bg);border:1px solid var(--stc-border);border-radius:12px;color:var(--stc-color);font-size:calc(13px * var(--afs,1));text-align:center;line-height:1.5}
 .aviso-alergias a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}
@@ -361,7 +361,7 @@ section.cat.sin-resultados .vacio{display:block}
   .wsp{right:calc(50% - 624px)}
 }
 
-@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:opacity 150ms ease,color 150ms ease,background-color 150ms ease,border-color 150ms ease!important}html{scroll-behavior:auto}}
 /* Mismo anillo de foco que el sitio institucional -- 3px/3px/radio 2px,
    antes era 2.5px/2px sin radio acá (mismo color, --marron y --calafate
    son el mismo #8B2F2F con nombre distinto en cada archivo). */
@@ -410,7 +410,7 @@ html[data-contraste="alto"] .sheet-tag,
 html[data-contraste="alto"] .grx{opacity:1}
 
 /* reducir movimiento explícito (además del que ya respeta el SO) */
-html[data-movimiento="reducido"] *{transition:none!important;animation:none!important}
+html[data-movimiento="reducido"] *{animation:none!important;transition:opacity 150ms ease,color 150ms ease,background-color 150ms ease,border-color 150ms ease!important}
 html[data-movimiento="reducido"]{scroll-behavior:auto}
 
 /* lectura simple: menos ornamento, más interlineado, sin serif itálica */
@@ -713,3 +713,44 @@ html[data-estilo="capitulos"] .barra-pedido{
 }
 html[data-estilo="capitulos"] .barra-pedido:active{background:var(--verde); transition-duration:80ms}
 html[data-estilo="capitulos"] footer{padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px))}
+
+/* ==================================================================
+   ACCESIBILIDAD (2026-10-14)
+   Anillo de foco visible sobre fondos oscuros, objetivos táctiles de 44 px,
+   texto agrandado sin desbordes, enlace para saltar al contenido y
+   "reducir movimiento" más gentil (los fundidos que ayudan se conservan).
+   ================================================================== */
+.skip-link{
+  position:absolute; left:0; top:0; transform:translateY(-120%);
+  background:var(--verde-osc); color:var(--blanco); padding:14px 20px; border-radius:0 0 var(--radius-sm) 0;
+  font-weight:700; z-index:100; text-decoration:none; transition:transform .2s var(--ease-out);
+}
+.skip-link:focus{transform:translateY(0)}
+.skip-link:focus-visible{outline:3px solid var(--blanco); outline-offset:-6px}
+main:focus{outline:none}
+
+/* 44 px de alto en lo que se toca (2.5.5) */
+.chip{min-height:44px}
+.buscador{min-height:48px}
+.navcat a{min-height:44px; display:inline-flex; align-items:center}
+.marca-top a{min-height:44px; display:inline-flex; align-items:center}
+footer .datos a{display:inline-block; padding:12px 0}
+
+/* El anillo de foco por defecto es calafate: sobre verde oscuro casi no se ve (1,2:1). En superficies oscuras va en salvia. */
+.topbar a:focus-visible,.topbar button:focus-visible,
+.destacados a:focus-visible,.destacados button:focus-visible,
+.campana a:focus-visible,
+footer a:focus-visible,footer button:focus-visible{outline-color:var(--salvia)}
+html[data-estilo="capitulos"] .barra-pedido:focus-visible{
+  outline:3px solid var(--salvia); outline-offset:-6px; background:var(--verde-osc); color:var(--salvia);
+}
+
+/* Texto agrandado (A+ y A++): una columna, precios que bajan de renglón, logotipo en fila. */
+html[data-afs="1.3"] .lista,html[data-afs="2"] .lista{grid-template-columns:1fr}
+.prod .precio{white-space:normal; overflow-wrap:anywhere}
+@media (max-width:639px){
+  html[data-estilo="capitulos"][data-afs="1.3"] .marca-top,
+  html[data-estilo="capitulos"][data-afs="2"] .marca-top{position:static; transform:none}
+  html[data-estilo="capitulos"][data-afs="1.3"] .topbar-ctrl .header-menu,
+  html[data-estilo="capitulos"][data-afs="2"] .topbar-ctrl .header-menu{display:none}
+}
