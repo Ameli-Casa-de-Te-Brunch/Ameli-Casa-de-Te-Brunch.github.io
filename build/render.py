@@ -90,10 +90,14 @@ def _jsonld(data: dict, url_base_limpia: str) -> str:
     salvo el horario (ver HORARIO_JSONLD arriba)."""
     cfg = data["config"]
     direccion = cfg.get("direccion") or ""
-    # "Malargüe, Mendoza, Argentina" -> localidad, región (nunca calle: no
-    # existe calle y altura confirmadas en ningún lado del maestro, así que
-    # jamás se inventa un streetAddress -- se omite esa clave directamente).
+    # El maestro guarda la dirección como "Calle N, Localidad, Provincia, País"
+    # (con calle desde 2026-09-30) o, antes, "Localidad, Provincia, País". Se saca
+    # el país y se interpreta por cantidad de partes: con 3 la primera es la calle.
+    # Nunca se inventa una calle: si no está en el dato, no se publica streetAddress.
     partes_dir = [p.strip() for p in direccion.split(",") if p.strip()]
+    if partes_dir and partes_dir[-1].lower() == "argentina":
+        partes_dir = partes_dir[:-1]
+    calle = partes_dir.pop(0) if len(partes_dir) >= 3 else None
     localidad = partes_dir[0] if partes_dir else "Malargüe"
     region = partes_dir[1] if len(partes_dir) > 1 else "Mendoza"
 
@@ -137,6 +141,8 @@ def _jsonld(data: dict, url_base_limpia: str) -> str:
             "hasMenuSection": secciones,
         },
     }
+    if calle:
+        obj["address"]["streetAddress"] = calle
     if cfg.get("whatsapp"):
         obj["telephone"] = f"+{cfg['whatsapp']}"
     return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")

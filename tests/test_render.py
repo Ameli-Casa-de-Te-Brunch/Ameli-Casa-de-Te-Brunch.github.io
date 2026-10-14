@@ -56,6 +56,40 @@ class TestJsonLdDireccion(unittest.TestCase):
         self.assertEqual(obj["address"]["addressRegion"], "Mendoza")
 
 
+class TestJsonLdConCalle(unittest.TestCase):
+    """Desde 2026-09-30 el maestro guarda la calle en la dirección: "Calle N,
+    Localidad, Provincia, País". Antes el JSON-LD publicaba la calle como
+    localidad y la ciudad como provincia."""
+
+    def _obj(self, direccion):
+        data = _data_minima(config={**_data_minima()["config"], "direccion": direccion})
+        return json.loads(render._jsonld(data, "https://x.github.io"))["address"]
+
+    def test_con_calle_la_calle_va_en_streetaddress(self):
+        d = self._obj("General Villegas Oeste 48, Malargüe, Mendoza, Argentina")
+        self.assertEqual(d["streetAddress"], "General Villegas Oeste 48")
+        self.assertEqual(d["addressLocality"], "Malargüe")
+        self.assertEqual(d["addressRegion"], "Mendoza")
+        self.assertEqual(d["addressCountry"], "AR")
+
+    def test_con_calle_y_sin_pais(self):
+        d = self._obj("General Villegas Oeste 48, Malargüe, Mendoza")
+        self.assertEqual((d["streetAddress"], d["addressLocality"], d["addressRegion"]),
+                         ("General Villegas Oeste 48", "Malargüe", "Mendoza"))
+
+    def test_sin_calle_no_se_inventa_ninguna(self):
+        d = self._obj("Malargüe, Mendoza, Argentina")
+        self.assertNotIn("streetAddress", d)
+        self.assertEqual((d["addressLocality"], d["addressRegion"]), ("Malargüe", "Mendoza"))
+
+    def test_el_dato_real_del_repo_queda_bien(self):
+        real = json.loads((ROOT / "data" / "menu.json").read_text(encoding="utf-8"))
+        obj = json.loads(render._jsonld(real, "https://amelicasadete.com.ar/menu"))["address"]
+        self.assertEqual(obj["addressLocality"], "Malargüe")
+        self.assertEqual(obj["addressRegion"], "Mendoza")
+        self.assertNotIn(obj["addressLocality"], obj.get("streetAddress", ""))
+
+
 class TestRenderSinPlaceholders(unittest.TestCase):
     def test_render_real_no_deja_marcadores_sin_reemplazar(self):
         template = TEMPLATE_REAL.read_text(encoding="utf-8")
