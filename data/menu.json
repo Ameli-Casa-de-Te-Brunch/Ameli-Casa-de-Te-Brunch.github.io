@@ -1712,6 +1712,31 @@
    "tag": "Especialidad regional"
   },
   {
+   "id": "DEL010",
+   "cat": "DEL",
+   "orden": 32,
+   "dest": true,
+   "n": {
+    "es": "Tostadas francesas",
+    "en": "French Toast",
+    "pt": "French toast",
+    "fr": "Pain perdu",
+    "it": "French toast"
+   },
+   "d": {
+    "es": "Pan dorado en mezcla de huevo y leche, con queso danbo, azúcar impalpable y mermelada de frutos rojos.",
+    "en": "French toast with Danbo cheese, icing sugar and red berry jam.",
+    "pt": "French toast com queijo Danbo, açúcar de confeiteiro e geleia de frutas vermelhas.",
+    "fr": "Pain perdu au fromage Danbo, sucre glace et confiture de fruits rouges.",
+    "it": "French toast con formaggio Danbo, zucchero a velo e confettura ai frutti rossi."
+   },
+   "m": [],
+   "b": [
+    "fav"
+   ],
+   "img": null
+  },
+  {
    "id": "SAT001",
    "cat": "SAT",
    "orden": 36,
@@ -1885,6 +1910,31 @@
    }
   },
   {
+   "id": "SAT006",
+   "cat": "SAT",
+   "orden": 41,
+   "dest": true,
+   "n": {
+    "es": "Sandwich Serrano",
+    "en": "Serrano Sandwich",
+    "pt": "Sanduíche Serrano",
+    "fr": "Sandwich Serrano",
+    "it": "Panino Serrano"
+   },
+   "d": {
+    "es": "Pan de la casa con queso crema especiado, queso danbo, palta, jamón crudo y tomates deshidratados.",
+    "en": "House bread with spiced cream cheese, Danbo cheese, avocado, cured ham and sun-dried tomatoes.",
+    "pt": "Pão da casa com cream cheese temperado, queijo Danbo, abacate, presunto cru e tomates secos.",
+    "fr": "Pain maison, fromage frais aux épices, fromage Danbo, avocat, jambon cru et tomates séchées.",
+    "it": "Pane della casa con formaggio cremoso speziato, Danbo, avocado, prosciutto crudo e pomodori secchi."
+   },
+   "m": [],
+   "b": [
+    "fav"
+   ],
+   "img": null
+  },
+  {
    "id": "TYT003",
    "cat": "TYT",
    "orden": 49,
@@ -1973,8 +2023,7 @@
     "alc": false,
     "caf": true
    },
-   "tag": "Creación de la casa",
-   "disp": "no_disp"
+   "tag": "Creación de la casa"
   },
   {
    "id": "TYT005",
@@ -2898,6 +2947,18 @@
    "usd": "≈ USD 6",
    "eur": "≈ EUR 6",
    "brl": "≈ R$ 33"
+  },
+  "SAT006": {
+   "ars": "$ 18.300",
+   "usd": "≈ USD 12",
+   "eur": "≈ EUR 11",
+   "brl": "≈ R$ 63"
+  },
+  "DEL010": {
+   "ars": "$ 6.200",
+   "usd": "≈ USD 4",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 21"
   }
  },
  "config": {
