@@ -165,5 +165,5 @@ jobs:
     permissions: {}
     steps:
       - run: |
-          echo "::error::Una hoja de la planilla (calendario, precios o productos) tiene errores y NO se aplicó (en productos, solo las filas con error). El sitio se publicó igual, con lo último que era válido. Mirá los pasos 'Aplicar calendario de temas', 'Aplicar precios' y 'Aplicar productos' del job build para ver qué fila corregir."
+          echo "::error::Una hoja de la planilla (calendario, precios o productos) tiene errores y NO se aplicó (en precios y productos, solo las filas con error; las demás sí se aplicaron). El sitio se publicó igual, con lo último que era válido. Mirá los pasos 'Aplicar calendario de temas', 'Aplicar precios' y 'Aplicar productos' del job build para ver qué fila corregir."
           exit 1

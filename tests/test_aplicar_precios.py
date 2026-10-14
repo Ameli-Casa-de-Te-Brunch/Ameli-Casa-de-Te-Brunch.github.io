@@ -225,8 +225,8 @@ class TestArchivoYMain(unittest.TestCase):
 
     def test_hoja_con_cambios_reescribe_solo_lo_que_cambio(self):
         with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("18000", "")})):
-            n = ap.aplicar_a_archivo(URL, self.ruta)
-        self.assertEqual(n, 1)
+            n, omitidos = ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertEqual((n, omitidos), (1, []))
         nuevo = json.loads(self.ruta.read_text(encoding="utf-8"))
         original = json.loads(self.original.decode("utf-8"))
         self.assertEqual(nuevo["precios"]["DYM001"]["ars"], "$ 18.000")
@@ -236,14 +236,56 @@ class TestArchivoYMain(unittest.TestCase):
 
     def test_hoja_igual_al_json_no_reescribe_el_archivo(self):
         with patch.object(ap, "_descargar", return_value=_hoja()):
-            self.assertEqual(ap.aplicar_a_archivo(URL, self.ruta), 0)
+            self.assertEqual(ap.aplicar_a_archivo(URL, self.ruta), (0, []))
         self.assertEqual(self.ruta.read_bytes(), self.original)
 
-    def test_hoja_con_errores_no_toca_nada(self):
-        with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("170000", "")})):
+    def test_hoja_con_un_error_de_estructura_no_toca_nada(self):
+        with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("18000", "")}, quitar=("TASA_USD",))):
             with self.assertRaises(ap.PreciosInvalidos):
                 ap.aplicar_a_archivo(URL, self.ruta)
         self.assertEqual(self.ruta.read_bytes(), self.original)
+
+    def test_una_tasa_mala_frena_todo_aunque_haya_cambios_validos(self):
+        with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("18000", "")}, tasas=(5, 1715, 289))):
+            with self.assertRaises(ap.PreciosInvalidos):
+                ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertEqual(self.ruta.read_bytes(), self.original)
+
+    def test_una_fila_mala_no_frena_a_las_demas(self):
+        # DYM001 con un cero de mas (se omite) y BLE001 con un ajuste razonable (se aplica)
+        hoja = _hoja({"DYM001": ("170000", ""), "BLE001": ("5000", "6000")})
+        with patch.object(ap, "_descargar", return_value=hoja):
+            n, omitidos = ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertEqual(n, 1)
+        self.assertEqual(len(omitidos), 1)
+        self.assertIn("'DYM001'", omitidos[0])
+        nuevo = json.loads(self.ruta.read_text(encoding="utf-8"))
+        original = json.loads(self.original.decode("utf-8"))
+        self.assertEqual(nuevo["precios"]["DYM001"], original["precios"]["DYM001"])  # conserva su precio
+        self.assertNotEqual(nuevo["precios"]["BLE001"], original["precios"]["BLE001"])  # el otro si cambio
+
+    def test_todas_las_filas_malas_no_cambian_nada_y_no_levantan(self):
+        with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("170000", "")})):
+            n, omitidos = ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertEqual((n, len(omitidos)), (0, 1))
+        self.assertEqual(self.ruta.read_bytes(), self.original)
+
+    def test_producto_ausente_o_repetido_conserva_el_precio_y_se_avisa(self):
+        hoja = _hoja({"BLE001": ("5000", "6000")}, quitar=("DYM001",),
+                     agregar=[["DYM002", "x", "", "20000", "", ""]])
+        with patch.object(ap, "_descargar", return_value=hoja):
+            n, omitidos = ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertEqual(n, 1)
+        self.assertTrue(any("'DYM001'" in o for o in omitidos))
+        self.assertTrue(any("'DYM002'" in o and "repetido" in o for o in omitidos))
+
+    def test_los_avisos_citan_fila_e_id_y_nunca_el_texto_de_la_celda(self):
+        secreto = "TEXTO-SECRETO-123"
+        hoja = _hoja({"DYM001": (secreto, "")})
+        with patch.object(ap, "_descargar", return_value=hoja):
+            _, omitidos = ap.aplicar_a_archivo(URL, self.ruta)
+        self.assertTrue(omitidos)
+        self.assertNotIn(secreto, " ".join(omitidos))
 
     def test_comparar_no_escribe_y_lista_las_diferencias(self):
         with patch.object(ap, "_descargar", return_value=_hoja({"DYM001": ("18000", "")})):
@@ -267,9 +309,15 @@ class TestArchivoYMain(unittest.TestCase):
         self.assertIn("precios_ok=true", salida)
 
     def test_main_con_hoja_valida(self):
-        with patch.object(ap, "aplicar_a_archivo", return_value=2):
+        with patch.object(ap, "aplicar_a_archivo", return_value=(2, [])):
             codigo, salida = self._main({"PRECIOS_CSV_URL": URL})
         self.assertEqual((codigo, "precios_ok=true" in salida), (0, True))
+
+    def test_main_con_filas_omitidas_aplica_el_resto_pero_marca_la_corrida(self):
+        with patch.object(ap, "aplicar_a_archivo", return_value=(2, ["Fila 40 ('DEL006'): x"])):
+            codigo, salida = self._main({"PRECIOS_CSV_URL": URL})
+        self.assertEqual(codigo, 0)
+        self.assertIn("precios_ok=false", salida)
 
     def test_main_con_errores_no_frena_el_build_pero_lo_marca(self):
         with patch.object(ap, "aplicar_a_archivo", side_effect=ap.PreciosInvalidos("roto")):
