@@ -153,8 +153,8 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
 .foto img,.sheet-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .stagger-0{transition-delay:0ms}.stagger-1{transition-delay:40ms}.stagger-2{transition-delay:80ms}
 .stagger-3{transition-delay:120ms}.stagger-4{transition-delay:160ms}.stagger-5{transition-delay:200ms}
-.stagger-6{transition-delay:240ms}.stagger-7{transition-delay:280ms}.stagger-8{transition-delay:320ms}
-.stagger-9{transition-delay:360ms}
+.stagger-6{transition-delay:200ms}.stagger-7{transition-delay:200ms}.stagger-8{transition-delay:200ms}
+.stagger-9{transition-delay:200ms}
 .limpiar{display:none;margin:12px auto 0;background:none;border:none;color:var(--marron-texto);font-size:calc(12.5px * var(--afs,1));font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .limpiar.visible{display:block}
 .navcat{position:sticky;top:0;z-index:20;background:var(--navcat-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0 12px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(83,96,57,.12);margin-top:26px;box-shadow:none;transition:box-shadow .25s ease}
@@ -238,7 +238,7 @@ body{font-family:'Karla',sans-serif;background:var(--blanco);color:var(--tinta);
    recorrer (ver mismo comentario arriba). */
 .car-indicador{text-align:center;padding:10px 0 2px;font-family:'Karla',sans-serif;font-size:calc(11.5px * var(--afs,1));font-weight:700;letter-spacing:.08em;color:var(--texto-sec)}
 .car-indicador[hidden]{display:none}
-section.cat{padding:30px 20px 4px;scroll-margin-top:64px;opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+section.cat{padding:30px 20px 4px;scroll-margin-top:64px;opacity:0;transform:translateY(10px);transition:opacity 300ms var(--ease-out),transform 300ms var(--ease-out)}
 section.cat.visible{opacity:1;transform:translateY(0)}
 section.cat header{margin-bottom:14px}
 section.cat h2{font-family:'Cormorant Garamond',serif;font-size:calc(29px * var(--afs,1));font-weight:500;color:var(--verde-osc);line-height:1.05}
@@ -548,7 +548,8 @@ html[data-lectura="simple"] .prod p{line-height:1.85}
   text-decoration:none; touch-action:manipulation; user-select:none; -webkit-user-select:none;
   transition:background .2s ease, transform 120ms var(--ease-out);
 }
-.header-menu:hover,.header-menu:focus-visible{background:var(--blanco)}
+.header-menu:focus-visible{background:var(--blanco)}
+@media (hover:hover) and (pointer:fine){ .header-menu:hover{background:var(--blanco)} }
 .header-menu:active{transform:scale(.97)}
 @media (max-width:339px){ .header-menu{display:none} }
 @media (min-width:900px){ .topbar{padding:14px 40px} }
@@ -632,3 +633,83 @@ footer::after{
 .campana-cta:hover,.campana-cta:focus-visible{background:var(--blanco)}
 .campana-cta:active{transform:scale(.97)}
 @media (min-width:900px){ .campana{margin:20px 40px 0} }
+
+
+/* ==================================================================
+   DISEÑO COMBINADO "capítulos" (2026-10-14)
+   Todo cuelga de html[data-estilo="capitulos"]; sin el atributo, el menú es el anterior.
+   Mismas reglas que la portada: base verde oscura con curvas de nivel y un solo acento
+   (salvia), leyendas con el lugar sobre la foto, cinta y barra de pedido fija abajo.
+   ================================================================== */
+.cinta,.barra-pedido,.sticker{display:none}
+
+/* Encabezado: Inicio a la izquierda, logotipo al centro, idioma y accesibilidad a la derecha. */
+html[data-estilo="capitulos"]{--alto-barra:46px}
+html[data-estilo="capitulos"] .topbar{position:relative}
+html[data-estilo="capitulos"] .marca-top{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%)}
+html[data-estilo="capitulos"] .topbar-ctrl{position:static; margin-left:auto}
+html[data-estilo="capitulos"] .topbar-ctrl .header-menu{position:absolute; left:20px; top:50%; transform:translateY(-50%)}
+html[data-estilo="capitulos"] .topbar-ctrl .header-menu:active{transform:translateY(-50%) scale(.97)}
+/* En pantallas muy angostas (hasta 359 px) el logotipo centrado pisaba el selector de idioma: va a la izquierda y "Inicio" se oculta. */
+@media (max-width:359px){
+  html[data-estilo="capitulos"] .marca-top{position:static; transform:none}
+  html[data-estilo="capitulos"] .topbar-ctrl .header-menu{display:none}
+}
+@media (min-width:900px){ html[data-estilo="capitulos"] .topbar-ctrl .header-menu{left:40px} }
+
+/* Foto más alta con leyendas sobre la foto; saludo con más presencia. */
+html[data-estilo="capitulos"] .hero-foto{height:min(58svh, 500px)}
+html[data-estilo="capitulos"] .sticker{
+  display:block; position:absolute; z-index:3; margin:0; padding:6px 11px;
+  font-family:'Karla',sans-serif; font-weight:700; font-size:calc(10.5px * var(--afs,1)); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--blanco); background:rgba(20,27,17,.66); border:1px solid rgba(255,253,247,.6); border-radius:999px;
+}
+html[data-estilo="capitulos"] .sticker-lugar{top:22px; left:22px}
+html[data-estilo="capitulos"] .hero-texto{max-width:none; text-align:left; padding:34px 20px 8px}
+html[data-estilo="capitulos"] .hero-texto .pregunta{
+  font-weight:500; line-height:.96; letter-spacing:-.022em; font-size:calc(clamp(38px, 10.5vw, 64px) * var(--afs,1));
+}
+html[data-estilo="capitulos"] section.cat h2{
+  font-weight:500; line-height:.96; letter-spacing:-.022em; font-size:calc(clamp(36px, 10vw, 58px) * var(--afs,1));
+  text-wrap:balance;
+}
+
+/* Cinta del acento. */
+html[data-estilo="capitulos"] .cinta{display:block; overflow:hidden; white-space:nowrap; background:var(--salvia); padding:12px 0 14px;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)}
+.cinta-pista{display:inline-flex; animation:cinta-corre 46s linear infinite; will-change:transform}
+.cinta-grupo{display:inline-flex; flex:none}
+.cinta-grupo span{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:calc(22px * var(--afs,1)); line-height:1; color:var(--verde-osc); padding-right:2.4rem}
+@keyframes cinta-corre{to{transform:translateX(-50%)}}
+
+/* Los destacados son el capítulo oscuro del menú. */
+html[data-estilo="capitulos"] .destacados{
+  position:relative; isolation:isolate; background:var(--verde-osc); color:var(--blanco);
+  margin-top:28px; padding-top:34px; padding-bottom:30px;
+  box-shadow:0 0 0 100vmax var(--verde-osc); clip-path:inset(0 -100vmax);
+}
+html[data-estilo="capitulos"] .destacados::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--blanco); opacity:.08;
+  -webkit-mask:url('../img/curvas-nivel.svg') 30% 55% / cover no-repeat;
+  mask:url('../img/curvas-nivel.svg') 30% 55% / cover no-repeat;
+}
+html[data-estilo="capitulos"] .destacados .eyebrow{color:var(--salvia)}
+html[data-estilo="capitulos"] .destacados .eyebrow::after{background:rgba(255,253,247,.28)}
+html[data-estilo="capitulos"] .destacados h2{color:var(--blanco); font-weight:500; line-height:.96; letter-spacing:-.022em; font-size:calc(clamp(36px, 10vw, 58px) * var(--afs,1))}
+html[data-estilo="capitulos"] .destacados .car-indicador{color:rgba(255,253,247,.7)}
+
+/* Barra de pedido fija abajo (reemplaza al botón flotante). */
+html[data-estilo="capitulos"] .wsp{display:none}
+html[data-estilo="capitulos"] .barra-pedido{
+  display:flex; position:fixed; left:0; right:0; bottom:0; z-index:45;
+  justify-content:center; align-items:center; text-align:center;
+  min-height:calc(var(--alto-barra) + env(safe-area-inset-bottom, 0px)); padding:0 16px env(safe-area-inset-bottom, 0px);
+  background:var(--verde-osc); color:var(--salvia); text-decoration:none;
+  font-family:'Karla',sans-serif; font-weight:700; font-size:calc(11.5px * var(--afs,1)); letter-spacing:.16em; text-transform:uppercase;
+  border-top:1px solid rgba(199,214,166,.35);
+  transition:background-color 200ms ease, color 200ms ease;
+}
+html[data-estilo="capitulos"] .barra-pedido:active{background:var(--verde); transition-duration:80ms}
+html[data-estilo="capitulos"] footer{padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px))}

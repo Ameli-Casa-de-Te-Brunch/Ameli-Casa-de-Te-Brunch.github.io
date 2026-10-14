@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-estilo="capitulos">
 <head>
 <meta charset="UTF-8">
 <!-- CSP como <meta> -- mismo tipo de hosting estático que el menú real.
@@ -28,7 +28,7 @@ __SOCIAL_META_TAGS__
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/karla.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261014-1">
+<link rel="stylesheet" href="assets/css/site.css?v=20261014-70">
 <link rel="stylesheet" href="assets/css/temas.css?v=20261008-1">
 <!-- Temas por calendario (2026-10-08): datos del calendario (bloque JSON, no se
      ejecuta) + script que pone html[data-tema]. Va en el head y sin defer para
@@ -44,7 +44,7 @@ __SOCIAL_META_TAGS__
 <header class="site-header">
   <div class="site-header-fila">
     <a class="logo-enlace" href="#contenido" aria-label="Ir al inicio de __MARCA__">
-      <span class="logo-tipografico" aria-hidden="true">__MARCA__</span>
+      <span class="logo-tipografico" aria-hidden="true">__MARCA__<span class="logo-sub"> casa de té</span></span>
     </a>
     <div class="header-acciones">
       <a class="header-menu" href="__MENU_URL__">Menú</a>
@@ -134,11 +134,15 @@ __SOCIAL_META_TAGS__
     <!-- Marco de esquinas: puramente decorativo (sin texto), se queda
          sobre la foto. La ficha técnica con el texto (coordenada +
          localidad) se mudó a .portada-franja, abajo. -->
+    <p class="sticker sticker-lugar" aria-hidden="true">Malargüe, Mendoza</p>
+    <p class="sticker sticker-coord" aria-hidden="true">35.4746° S · 69.5878° W</p>
     <div class="marco-precision" aria-hidden="true">
       <span class="esquina esquina-tl"></span><span class="esquina esquina-tr"></span>
       <span class="esquina esquina-bl"></span><span class="esquina esquina-br"></span>
     </div>
   </section>
+
+  <div class="cinta" aria-hidden="true"><div class="cinta-pista"><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div><div class="cinta-grupo"><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span><span>amelí ✻ casa de té &amp; brunch ✻</span></div></div></div>
 
   <!-- Franja secundaria: coordenada real, localidad y horario -- el
        mismo contenido que antes competía por espacio en el primer
@@ -470,6 +474,8 @@ __SOCIAL_META_TAGS__
      Apple/Waze): son marcas de terceros y no hay autorización para
      reproducir su símbolo, el enlace alcanza para identificar el
      destino. -->
+<a class="barra-pedido" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">Hacé tu pedido por WhatsApp<span class="solo-lectores"> (se abre en una pestaña nueva)</span></a>
+
 <a class="whatsapp-flotante" href="https://wa.me/__WHATSAPP_E164__" target="_blank" rel="noopener noreferrer">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.3-3.6A7.96 7.96 0 0 1 4 12Z"/>
