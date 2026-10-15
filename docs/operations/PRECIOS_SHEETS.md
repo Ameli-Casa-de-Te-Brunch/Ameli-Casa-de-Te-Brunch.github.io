@@ -8,15 +8,22 @@ disponibilidad ("agotado por hoy") y el calendario.
 Cómo funciona: en cada publicación, `build/aplicar_precios.py` lee la pestaña
 publicada (CSV), la valida y recalcula los precios de `data/menu.json` con las
 mismas funciones que usa el extractor del Excel. Un precio mal cargado es peor
-que un precio viejo, por eso **ante cualquier duda no se aplica nada**: el sitio
-se publica igual con los precios que ya tenía, y la corrida de GitHub queda en
-rojo (job `avisar-hojas`) para que llegue el mail de aviso. Un error de precios
-nunca frena un "agotado por hoy".
+que un precio viejo, por eso **una fila dudosa no se aplica**: ese producto
+conserva el precio que ya tenía. Desde 2026-10-14 **cada fila es independiente**:
+una fila mala no frena a las demás, que sí se aplican. Cuando alguna fila se
+saltea, el sitio se publica igual y la corrida de GitHub queda en rojo (job
+`avisar-hojas`) para que llegue el mail de aviso y se corrija esa fila. Un error
+de precios nunca frena un "agotado por hoy".
 
-## Qué se valida (todo o nada)
+**Sigue siendo todo o nada** lo estructural: encabezado incorrecto, hoja vacía o
+con más de 500 filas, y las tres filas de tipo de cambio (si una tasa falla, todos
+los equivalentes en otras monedas quedarían mal).
+
+## Qué se valida
 
 - **Todos** los productos con precio tienen que estar en la hoja, y ninguno
-  desconocido. Una fila ausente nunca significa "dejar el precio como estaba".
+  desconocido. Una fila ausente nunca significa un cambio: el producto conserva
+  su precio y se avisa. Un producto repetido: no se aplica ninguna de las dos filas.
 - Cada precio es un número **entero** de pesos entre 500 y 200.000. Se aceptan
   `4800`, `4.800` y `$ 4.800`; no `4,8` ni `4800.50`.
 - **No se puede agregar ni quitar un tamaño** (Chico/Grande, Vaso/Jarra) desde la
@@ -76,9 +83,11 @@ nunca frena un "agotado por hoy".
 - **Ver qué cambiaría sin publicar:**
   `PRECIOS_CSV_URL=<enlace> python build/aplicar_precios.py --comparar` (solo
   lectura).
-- Si llega el mail "avisar-hojas falló": una fila tiene un error. El paso
-  "Aplicar precios" dice qué fila y qué regla. El sitio sigue con los precios
-  anteriores.
+- Si llega el mail "avisar-hojas falló": una o más filas tienen un error. El paso
+  "Aplicar precios" dice qué fila, qué producto y qué regla. **Esas filas
+  conservan el precio anterior; las demás filas sí se aplicaron.** Corregí la
+  celda (si el cambio es real y supera el 60 %, también hay que corregirlo en el
+  Excel maestro y en `data/menu.json`).
 
 ## El Excel maestro y los precios
 
