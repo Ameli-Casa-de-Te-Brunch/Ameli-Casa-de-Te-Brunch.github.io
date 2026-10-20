@@ -2251,6 +2251,31 @@
    "tag": "Producto insignia"
   },
   {
+   "id": "TYT008",
+   "cat": "TYT",
+   "orden": 56,
+   "dest": false,
+   "n": {
+    "es": "Torta Matilda",
+    "en": "Matilda Chocolate Cake",
+    "pt": "Bolo Matilda",
+    "fr": "Gâteau Matilda",
+    "it": "Torta Matilda"
+   },
+   "d": {
+    "es": "Bizcochuelo de chocolate, relleno con dulce de leche y cobertura de ganache de chocolate semiamargo.",
+    "en": "Chocolate sponge filled with dulce de leche and covered in a bittersweet chocolate ganache.",
+    "pt": "Pão de ló de chocolate recheado com doce de leite e coberto com ganache de chocolate meio amargo.",
+    "fr": "Génoise au chocolat fourrée au dulce de leche et nappée d’une ganache au chocolat mi-amer.",
+    "it": "Pan di Spagna al cioccolato farcito con dulce de leche e ricoperto di ganache al cioccolato fondente."
+   },
+   "m": [
+    "compartir"
+   ],
+   "b": [],
+   "img": null
+  },
+  {
    "id": "STC004",
    "cat": "STC",
    "orden": 41,
@@ -2947,6 +2972,12 @@
    "usd": "≈ USD 6",
    "eur": "≈ EUR 6",
    "brl": "≈ R$ 33"
+  },
+  "TYT008": {
+   "ars": "$ 11.000",
+   "usd": "≈ USD 7",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 38"
   },
   "SAT006": {
    "ars": "$ 18.300",
