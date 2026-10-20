@@ -91,27 +91,31 @@ class TestParsearYValidar(unittest.TestCase):
         _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
         self.assertEqual(problemas, [])
 
-    def test_id_desconocido(self):
+    def test_id_desconocido_se_ignora_y_no_frena(self):
+        """Desde 2026-10-19: la fila de un producto no publicado (en pausa, o mal escrito)
+        se ignora con un aviso; ya no es un problema que frene la publicación."""
         contenido = _csv([
             ["ID", "Disponibilidad"],
-            ["BEB001", ""],
+            ["BEB001", "Agotado por hoy"],
             ["BEB002", ""],
             ["TYT001", ""],
-            ["ZZZ999", ""],
+            ["ZZZ999", "Agotado por hoy"],
         ])
-        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
-        self.assertTrue(any("ningún producto activo" in p for p in problemas))
-        self.assertFalse(any("ZZZ999" in p for p in problemas))  # el ID desconocido nunca se reproduce
+        disp, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self.assertEqual(problemas, [])
+        self.assertEqual(disp, {"BEB001": "agotado"})  # la fila ignorada no aplica nada
 
-    def test_producto_activo_ausente(self):
+    def test_producto_activo_sin_fila_se_toma_como_disponible_y_no_frena(self):
         contenido = _csv([
             ["ID", "Disponibilidad"],
-            ["BEB001", ""],
+            ["BEB001", "Agotado por hoy"],
             ["BEB002", ""],
             # falta TYT001 por completo
         ])
-        _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
-        self.assertTrue(any("TYT001" in p and "no tiene ninguna fila" in p for p in problemas))
+        disp, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self.assertEqual(problemas, [])
+        self.assertNotIn("TYT001", disp)
+        self.assertEqual(disp.get("BEB001"), "agotado")
 
     def test_hoja_vacia(self):
         disp, problemas = ad._parsear_y_validar("", IDS_ACTIVOS)
@@ -138,7 +142,7 @@ class TestModoEstrictoVsNoEstricto(unittest.TestCase):
         return patch.object(ad, "_descargar", return_value=contenido)
 
     def test_estricto_levanta_con_problemas(self):
-        contenido = _csv([["ID", "Disponibilidad"], ["ZZZ999", ""]])
+        contenido = _csv([["ID", "Disponibilidad"], ["BEB001", "sin stock"]])
         with self._stub_descarga(contenido):
             with self.assertRaises(ad.DisponibilidadInvalida):
                 ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=True)
@@ -147,7 +151,7 @@ class TestModoEstrictoVsNoEstricto(unittest.TestCase):
         contenido = _csv([
             ["ID", "Disponibilidad"],
             ["BEB001", "Agotado por hoy"],
-            ["ZZZ999", ""],
+            ["BEB002", "sin stock"],
         ])
         with self._stub_descarga(contenido):
             disp, problemas = ad.leer_csv("https://docs.google.com/x", ids_activos_esperados=IDS_ACTIVOS, estricto=False)
@@ -253,14 +257,14 @@ class TestAtomicidadModoNoEstricto(unittest.TestCase):
         self.assertEqual(resultado, -1)
         self.assertEqual(prods, estado_original)  # ni un solo producto cambió
 
-    def test_producto_activo_ausente_tambien_bloquea_todo_en_no_estricto(self):
+    def test_producto_activo_sin_fila_ya_no_bloquea_y_se_toma_como_disponible(self):
         contenido = _csv([["ID", "Disponibilidad"], ["BEB001", "Agotado por hoy"]])
         prods = [{"id": "BEB001"}, {"id": "BEB002", "disp": "agotado"}, {"id": "TYT001"}]
-        estado_original = [dict(p) for p in prods]
         with patch.object(ad, "_descargar", return_value=contenido):
             resultado = ad.aplicar_a_prods(prods, "https://docs.google.com/x", estricto=False)
-        self.assertEqual(resultado, -1)
-        self.assertEqual(prods, estado_original)
+        self.assertNotEqual(resultado, -1)
+        self.assertEqual(prods[0]["disp"], "agotado")
+        self.assertNotIn("disp", prods[1])  # sin fila = disponible
 
     def test_sin_problemas_si_aplica_normalmente(self):
         contenido = _csv([["ID", "Disponibilidad"], ["BEB001", "Agotado por hoy"], ["BEB002", ""], ["TYT001", ""]])
@@ -375,7 +379,21 @@ class TestNuncaImprimeDatosNoConfiables(unittest.TestCase):
         ])
         _, problemas = ad._parsear_y_validar(contenido, IDS_ACTIVOS)
         self._sin_sentinel(*problemas)
-        self.assertTrue(any("no corresponde a ningún producto activo" in p for p in problemas))
+        self.assertEqual(problemas, [])  # se ignora la fila (no es problema)
+
+    def test_el_aviso_de_fila_ignorada_no_reproduce_el_id(self):
+        import io as _io
+        from contextlib import redirect_stdout
+        contenido = _csv([
+            ["ID", "Disponibilidad"],
+            ["BEB001", ""], ["BEB002", ""], ["TYT001", ""],
+            [SENTINEL, ""],
+        ])
+        salida = _io.StringIO()
+        with redirect_stdout(salida):
+            ad._parsear_y_validar(contenido, IDS_ACTIVOS)
+        self.assertNotIn(SENTINEL, salida.getvalue())
+        self.assertIn("filas 5", salida.getvalue())
 
     def test_id_duplicado_desconocido_no_se_reproduce(self):
         contenido = _csv([

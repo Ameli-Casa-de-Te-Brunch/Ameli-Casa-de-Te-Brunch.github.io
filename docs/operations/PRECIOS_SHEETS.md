@@ -106,3 +106,11 @@ commitea). Dos consecuencias:
 El costeo, los márgenes, las recetas, las descripciones, las traducciones y los
 alérgenos **siguen en el Excel maestro**: no se pasan a la hoja a propósito
 (5 idiomas y riesgo sanitario y legal).
+
+## Sin interferencias con el maestro (2026-10-19)
+
+Precios, disponibilidad y activo/destacado/etiquetas viven en la planilla; en el maestro son solo el valor inicial (columnas en gris con comentario). Para que un desfasaje no frene la publicación:
+
+- **Disponibilidad**: una fila de un producto no publicado (p. ej. uno en pausa) se **ignora con un aviso**; un producto publicado **sin fila** se muestra como disponible, con aviso. Siguen frenando los valores inválidos, los IDs repetidos y las filas sin ID (la lista desplegable de la columna C los previene).
+- Qué pasó: el 17/10 se activó la Torta Matilda en la planilla (en pausa en el maestro) y el paso estricto de disponibilidad cortó el build; no se publicó nada hasta corregirlo.
+

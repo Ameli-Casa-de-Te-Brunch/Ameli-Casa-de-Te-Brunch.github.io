@@ -159,6 +159,7 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
 
     disponibilidad: dict[str, str | None] = {}
     vistos: dict[str, int] = {}
+    ignoradas: list[int] = []
     for numero_fila, fila in enumerate(filas_datos, start=2):
         idv = fila[col_id].strip() if len(fila) > col_id else ""
         disp_crudo = fila[col_disp].strip() if len(fila) > col_disp else ""
@@ -180,6 +181,15 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
         # crudo de la celda tal cual llegó, que podría no serlo.
         id_conocido = ids_activos_esperados is not None and idv in ids_activos_esperados
 
+        if ids_activos_esperados is not None and not id_conocido:
+            # Fila de un producto que no está publicado (en pausa en el maestro, o un ID mal
+            # escrito): se ignora y se avisa, ya no frena la publicación. Un ID mal escrito
+            # igual se detecta por el otro lado: el producto real quedaría sin fila (ver abajo).
+            # Nunca idv acá: no es uno de nuestros IDs conocidos, así que no hay garantía de
+            # qué contiene esa celda.
+            ignoradas.append(numero_fila)
+            continue
+
         if idv in vistos:
             if id_conocido:
                 problemas.append(
@@ -191,14 +201,6 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
                 )
             continue
         vistos[idv] = numero_fila
-
-        if ids_activos_esperados is not None and not id_conocido:
-            # Nunca idv acá: no es uno de nuestros IDs conocidos, así que
-            # no hay garantía de qué contiene esa celda.
-            problemas.append(
-                f"Fila {numero_fila}: contiene un ID que no corresponde a ningún producto activo publicado."
-            )
-            continue
 
         if disp_crudo not in ESTADOS_VALIDOS:
             # Nunca disp_crudo (el valor recibido) -- solo la fila y, si
@@ -218,14 +220,16 @@ def _parsear_y_validar(contenido: str, ids_activos_esperados: set | None) -> tup
         if codigo is not None:
             disponibilidad[idv] = codigo
 
+    if ignoradas:
+        print(f"::warning::Disponibilidad en vivo: {len(ignoradas)} fila(s) ignoradas por no ser de un producto "
+              f"publicado (filas {', '.join(str(n) for n in ignoradas)}). No frenan la publicación.")
     if ids_activos_esperados is not None:
         ausentes = sorted(ids_activos_esperados - vistos.keys())
-        for idv in ausentes:
-            problemas.append(
-                f"El producto activo '{idv}' no tiene ninguna fila en la hoja de disponibilidad "
-                "(una fila ausente no se interpreta como disponible: tiene que estar presente, "
-                "aunque sea vacía)."
-            )
+        if ausentes:
+            # Desde 2026-10-19 un producto publicado sin fila ya no frena la publicación:
+            # se muestra como disponible y se avisa. Sumar su fila en la planilla.
+            print("::warning::Disponibilidad en vivo: sin fila en la hoja, se muestran como disponibles: "
+                  + ", ".join(ausentes))
 
     return disponibilidad, problemas
 
@@ -238,10 +242,11 @@ def leer_csv(url: str, ids_activos_esperados: set | None = None, estricto: bool 
     - problemas: lista de mensajes de integridad (vacía si todo está bien).
 
     ids_activos_esperados: set opcional de IDs de productos activos. Si se
-    pasa, TODOS tienen que aparecer como fila (una fila ausente es un
-    problema, nunca "disponible por omisión"), y cualquier ID de fila que
-    no esté en ese conjunto es un problema (fila de un producto
-    desconocido).
+    pasa, las filas de IDs que no estén en ese conjunto se ignoran con un
+    aviso, y un producto activo sin fila se toma como disponible con un
+    aviso (desde 2026-10-19: ninguna de las dos cosas frena ya la
+    publicación; antes eran errores). Los valores inválidos, los IDs
+    repetidos y las filas sin ID siguen siendo problemas.
 
     estricto=True (el default, y el único modo del camino de CI): si
     `problemas` no está vacía, levanta DisponibilidadInvalida en vez de
