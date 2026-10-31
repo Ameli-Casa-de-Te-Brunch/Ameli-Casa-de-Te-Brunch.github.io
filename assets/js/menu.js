@@ -705,7 +705,7 @@ function render(){
      La tarjeta muestra categoría + nombre + precio, no la descripción
      truncada con puntos suspensivos -- la descripción completa vive en
      la ficha (abrirDetalle), a un toque de distancia. */
-  const MAX_DESTACADOS_CARRUSEL = 4;
+  const MAX_DESTACADOS_CARRUSEL = 6;
   $('carrusel').innerHTML=PRODS.filter(p=>p.dest).slice(0, MAX_DESTACADOS_CARRUSEL).map((p,i)=>{
     const cat=CATS.find(c=>c.cod===p.cat);
     const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
