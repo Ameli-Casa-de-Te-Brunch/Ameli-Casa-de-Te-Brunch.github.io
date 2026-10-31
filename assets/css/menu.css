@@ -767,3 +767,11 @@ html[data-afs="1.3"] .lista,html[data-afs="2"] .lista{grid-template-columns:1fr}
 }
 .prod.compacta .foto .mas b,
 .dcard .foto .mas b{font-size:calc(16px * var(--afs,1)); font-weight:700; line-height:.9}
+
+/* Botón para pausar el avance automático de los destacados (2026-10-31). */
+.car-auto{
+  display:block; margin:2px auto 0; min-height:44px; padding:0 18px; background:none; border:none;
+  color:rgba(255,253,247,.8); font-family:'Karla',sans-serif; font-weight:700; font-size:calc(12px * var(--afs,1));
+  letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-underline-offset:3px;
+}
+.car-auto:focus-visible{outline:2px solid var(--salvia); outline-offset:2px; border-radius:6px}

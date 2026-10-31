@@ -62,6 +62,9 @@ const UI = {
  pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
  verMas:{es:'Ver más',en:'See more',pt:'Ver mais',fr:'Voir plus',it:'Scopri'},
  pistaDetalle:{es:'Tocá cada opción para ver ingredientes, alérgenos y pedirla',en:'Tap any item to see ingredients, allergens and to order',pt:'Toque em cada opção para ver ingredientes, alérgenos e pedir',fr:'Touchez une option pour voir les ingrédients, les allergènes et commander',it:'Tocca ogni opzione per vedere ingredienti, allergeni e ordinare'},
+ carPausar:{es:'Pausar',en:'Pause',pt:'Pausar',fr:'Pause',it:'Pausa'},
+ carReanudar:{es:'Reanudar',en:'Play',pt:'Retomar',fr:'Reprendre',it:'Riprendi'},
+ carAutoLabel:{es:'Pausar o reanudar el avance automático de los destacados',en:'Pause or resume the automatic movement of the highlights',pt:'Pausar ou retomar o avanço automático dos destaques',fr:'Mettre en pause ou reprendre le défilement automatique des spécialités',it:'Metti in pausa o riprendi lo scorrimento automatico dei preferiti'},
  verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de',fr:'Voir le détail de',it:'Vedi dettagli di'},
  anterior:{es:'Anterior',en:'Previous',pt:'Anterior',fr:'Précédent',it:'Precedente'},
  siguiente:{es:'Siguiente',en:'Next',pt:'Próximo',fr:'Suivant',it:'Successivo'},
@@ -569,6 +572,63 @@ function initCarrusel(){
   car.addEventListener('pointerup', terminarArrastre);
   car.addEventListener('pointercancel', terminarArrastre);
   car.addEventListener('pointerleave', terminarArrastre);
+  iniciarAvanceAutomatico(car);
+}
+
+/* ---------- avance automático de los destacados (2026-10-31) ----------
+   Los destacados estaban quietos y nadie veía que había más tarjetas. Ahora avanzan
+   solas cada ~4,5 s (una tarjeta), con estas reglas:
+   - solo mientras el carrusel se ve en pantalla y la pestaña está abierta;
+   - se frena con el dedo/mouse encima, con el foco adentro y unos segundos después
+     de cualquier gesto o clic en las flechas;
+   - no se mueve con "Reducir movimiento" (control de la página o preferencia del sistema);
+   - el botón "Pausar" lo detiene del todo (WCAG 2.2.2) y recuerda la elección. */
+const AUTO_PASO_MS=4500, AUTO_ESPERA_TRAS_GESTO_MS=9000;
+let autoPausadoPorUsuario=false, autoEncima=false, autoVisible=false, autoUltimoGesto=0;
+try{ autoPausadoPorUsuario = localStorage.getItem('ameli_car_pausa')==='1'; }catch(e){}
+function movimientoReducido(){
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.getAttribute('data-movimiento')==='reducido';
+}
+function textoBotonAuto(){
+  const b=$('carAuto'); if(!b) return;
+  b.textContent = autoPausadoPorUsuario ? UI.carReanudar[lang] : UI.carPausar[lang];
+  b.setAttribute('aria-pressed', autoPausadoPorUsuario ? 'true' : 'false');
+  b.setAttribute('aria-label', UI.carAutoLabel[lang]);
+}
+function iniciarAvanceAutomatico(car){
+  if(car.dataset.autoInit) return;
+  car.dataset.autoInit='1';
+  const marcarGesto=()=>{ autoUltimoGesto=Date.now(); };
+  ['touchstart','pointerdown','wheel','keydown'].forEach(ev=>car.addEventListener(ev, marcarGesto, {passive:true}));
+  $('carPrev').addEventListener('click', marcarGesto);
+  $('carNext').addEventListener('click', marcarGesto);
+  car.addEventListener('mouseenter', ()=>{ autoEncima=true; });
+  car.addEventListener('mouseleave', ()=>{ autoEncima=false; });
+  car.addEventListener('focusin', ()=>{ autoEncima=true; });
+  car.addEventListener('focusout', ()=>{ autoEncima=false; });
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{ autoVisible=es[0].isIntersecting; }, {threshold:.6}).observe(car);
+  }
+  const boton=$('carAuto');
+  if(boton) boton.addEventListener('click', ()=>{
+    autoPausadoPorUsuario=!autoPausadoPorUsuario;
+    try{ localStorage.setItem('ameli_car_pausa', autoPausadoPorUsuario?'1':'0'); }catch(e){}
+    textoBotonAuto();
+  });
+  textoBotonAuto();
+  setInterval(()=>{
+    if(autoPausadoPorUsuario || autoEncima || !autoVisible || document.hidden || movimientoReducido()) return;
+    if(Date.now()-autoUltimoGesto < AUTO_ESPERA_TRAS_GESTO_MS) return;
+    if(car.scrollWidth <= car.clientWidth + 1 || !carruselCards.length) return;
+    const alFinal = car.scrollLeft + car.clientWidth >= car.scrollWidth - 2;
+    if(alFinal){ car.scrollTo({left:0, behavior:'smooth'}); return; }
+    const centro=car.scrollLeft+car.clientWidth/2;
+    let idx=0, mejor=Infinity;
+    carruselCards.forEach((c,i)=>{ const d=Math.abs((c.offsetLeft+c.clientWidth/2)-centro); if(d<mejor){mejor=d;idx=i;} });
+    const sig=carruselCards[Math.min(idx+1, carruselCards.length-1)];
+    car.scrollTo({left:Math.max(0, sig.offsetLeft - (carruselCards[0].offsetLeft)), behavior:'smooth'});
+  }, AUTO_PASO_MS);
 }
 
 /* ---------- render principal ---------- */
@@ -619,6 +679,7 @@ function render(){
   $('buscarInput').placeholder=UI.buscarPlaceholder[lang];
   $('buscarLabel').textContent=UI.buscarLabel[lang];
   $('pistaDetalle').textContent=UI.pistaDetalle[lang];
+  textoBotonAuto();
   $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
   /* chips */
   /* aria-pressed sincronizado con .activo en el mismo template string --
