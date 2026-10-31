@@ -28,10 +28,18 @@ html[data-tema="encantada"]:not([data-contraste="alto"]){
 /* Papel picado en el borde superior. La barra de arriba se baja lo justo
    para que el adorno no tape el logo ni los controles. */
 html[data-tema="encantada"]:not([data-contraste="alto"]) body::before{
-  content:""; position:absolute; top:0; left:0; right:0; height:38px; z-index:5;
+  content:""; position:absolute; top:0; left:0; right:0; height:38px; z-index:31;
   background:url("../img/tema-encantada-papel-picado.svg") repeat-x left top / auto 38px;
   pointer-events:none;
 }
 html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar{
   padding-top:50px;
+}
+/* Con el padding de arriba más grande, el centro de la barra baja: Inicio y el logotipo (que se
+   centran con top:50%) quedaban más arriba que idioma y Aa. Se compensa la mitad de la diferencia. */
+html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar .marca-top,
+html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar .header-menu{top:calc(50% + 19px)}
+@media (min-width:900px){
+  html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar .marca-top,
+  html[data-tema="encantada"]:not([data-contraste="alto"]) .topbar .header-menu{top:calc(50% + 18px)}
 }
