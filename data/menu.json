@@ -309,18 +309,102 @@
    "orden": 45,
    "dest": false,
    "n": {
-    "es": "Té en hebras",
-    "en": "Loose-Leaf Tea Selection",
-    "pt": "Seleção de chás de folhas soltas",
-    "fr": "Sélection de thés en feuilles",
-    "it": "Selezione di tè in foglia"
+    "es": "Té negro",
+    "en": "Black Tea",
+    "pt": "Chá preto",
+    "fr": "Thé noir",
+    "it": "Tè nero"
    },
    "d": {
-    "es": "Selección de té negro, rojo o verde en hebras, infusionado al momento.",
-    "en": "A selection of loose-leaf black, red or green tea, freshly brewed to order.",
-    "pt": "Seleção de chá preto, vermelho ou verde em folhas, preparado na hora.",
-    "fr": "Sélection de thé noir, rouge ou vert en feuilles, infusé à la commande.",
-    "it": "Selezione di tè nero, rosso o verde in foglia, infuso al momento."
+    "es": "Té negro en hebras, infusionado al momento.",
+    "en": "Loose-leaf black tea, freshly brewed to order.",
+    "pt": "Chá preto em folhas, preparado na hora.",
+    "fr": "Thé noir en feuilles, infusé à la commande.",
+    "it": "Tè nero in foglia, infuso al momento."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
+  },
+  {
+   "id": "TEH002",
+   "cat": "TEH",
+   "orden": 46,
+   "dest": false,
+   "n": {
+    "es": "Té rojo",
+    "en": "Red Tea",
+    "pt": "Chá vermelho",
+    "fr": "Thé rouge",
+    "it": "Tè rosso"
+   },
+   "d": {
+    "es": "Té rojo en hebras, infusionado al momento.",
+    "en": "Loose-leaf red tea, freshly brewed to order.",
+    "pt": "Chá vermelho em folhas, preparado na hora.",
+    "fr": "Thé rouge en feuilles, infusé à la commande.",
+    "it": "Tè rosso in foglia, infuso al momento."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null,
+   "alerg": {
+    "veg": true,
+    "vgn": true,
+    "tacc": true,
+    "lac": true,
+    "glu": false,
+    "lech": false,
+    "huev": false,
+    "soja": false,
+    "mani": false,
+    "fsec": false,
+    "ses": false,
+    "pesc": false,
+    "mar": false,
+    "alc": false,
+    "caf": true
+   }
+  },
+  {
+   "id": "TEH003",
+   "cat": "TEH",
+   "orden": 47,
+   "dest": false,
+   "n": {
+    "es": "Té verde",
+    "en": "Green Tea",
+    "pt": "Chá verde",
+    "fr": "Thé vert",
+    "it": "Tè verde"
+   },
+   "d": {
+    "es": "Té verde en hebras, infusionado al momento.",
+    "en": "Loose-leaf green tea, freshly brewed to order.",
+    "pt": "Chá verde em folhas, preparado na hora.",
+    "fr": "Thé vert en feuilles, infusé à la commande.",
+    "it": "Tè verde in foglia, infuso al momento."
    },
    "m": [
     "calentito"
@@ -1935,6 +2019,31 @@
    "img": null
   },
   {
+   "id": "SAT010",
+   "cat": "SAT",
+   "orden": 42,
+   "dest": false,
+   "n": {
+    "es": "Chipá flat",
+    "en": "Chipá Flat",
+    "pt": "Chipá Flat",
+    "fr": "Chipá Flat",
+    "it": "Chipá Flat"
+   },
+   "d": {
+    "es": "Sandwich de chipá prensado relleno de jamón y queso cheddar.",
+    "en": "Pressed chipá (cheese bread) sandwich filled with ham and cheddar.",
+    "pt": "Sanduíche de chipá prensado recheado com presunto e queijo cheddar.",
+    "fr": "Sandwich de chipá (pain au fromage) pressé, garni de jambon et de cheddar.",
+    "it": "Panino di chipá (pane al formaggio) pressato, farcito con prosciutto e cheddar."
+   },
+   "m": [
+    "calentito"
+   ],
+   "b": [],
+   "img": null
+  },
+  {
    "id": "TYT003",
    "cat": "TYT",
    "orden": 49,
@@ -2411,6 +2520,61 @@
     "alc": false,
     "caf": false
    }
+  },
+  {
+   "id": "STC007",
+   "cat": "STC",
+   "orden": 44,
+   "dest": false,
+   "n": {
+    "es": "Mini torta sin TACC",
+    "en": "Gluten-Free Mini Cake",
+    "pt": "Minitorta sem glúten",
+    "fr": "Mini gâteau sans gluten",
+    "it": "Mini torta senza glutine"
+   },
+   "d": {
+    "es": "Mini torta sin TACC a elección: key lime pie o marquise. Consultar disponibilidad y condiciones de manipulación.",
+    "en": "Gluten-free mini cake of your choice: key lime pie or marquise. Please ask about availability and handling.",
+    "pt": "Minitorta sem glúten à escolha: key lime pie ou marquise. Consulte disponibilidade e condições de manipulação.",
+    "fr": "Mini gâteau sans gluten au choix : key lime pie ou marquise. Se renseigner sur la disponibilité et la manipulation.",
+    "it": "Mini torta senza glutine a scelta: key lime pie o marquise. Chiedere disponibilità e condizioni di manipolazione."
+   },
+   "m": [
+    "fresco",
+    "llevar"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null
+  },
+  {
+   "id": "STC006",
+   "cat": "STC",
+   "orden": 45,
+   "dest": false,
+   "n": {
+    "es": "Crumb cake sin TACC",
+    "en": "Gluten-Free Crumb Cake",
+    "pt": "Crumb cake sem glúten",
+    "fr": "Crumb cake sans gluten",
+    "it": "Crumb cake senza glutine"
+   },
+   "d": {
+    "es": "Crumb cake sin TACC a elección: frambuesa o cítricos. Consultar disponibilidad y condiciones de manipulación.",
+    "en": "Gluten-free crumb cake, raspberry or citrus. Please ask about availability and handling.",
+    "pt": "Crumb cake sem glúten, de framboesa ou cítricos. Consulte disponibilidade e condições de manipulação.",
+    "fr": "Crumb cake sans gluten, framboise ou agrumes. Se renseigner sur la disponibilité et la manipulation.",
+    "it": "Crumb cake senza glutine, ai lamponi o agli agrumi. Chiedere disponibilità e condizioni di manipolazione."
+   },
+   "m": [
+    "llevar"
+   ],
+   "b": [
+    "sintacc"
+   ],
+   "img": null
   }
  ],
  "precios": {
@@ -2938,6 +3102,62 @@
    "usd": "≈ USD 9",
    "eur": "≈ EUR 8",
    "brl": "≈ R$ 47"
+  },
+  "STC006": {
+   "ars": "$ 5.000",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17"
+  },
+  "SAT010": {
+   "ars": "$ 7.000",
+   "usd": "≈ USD 5",
+   "eur": "≈ EUR 4",
+   "brl": "≈ R$ 24"
+  },
+  "STC007": {
+   "ars": "$ 9.500",
+   "usd": "≈ USD 6",
+   "eur": "≈ EUR 6",
+   "brl": "≈ R$ 33"
+  },
+  "TEH002": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
+  },
+  "TEH003": {
+   "ars": "Chico $ 4.800 · Grande $ 5.600",
+   "usd": "≈ USD 3",
+   "eur": "≈ EUR 3",
+   "brl": "≈ R$ 17",
+   "niveles": [
+    {
+     "etiqueta": "Chico",
+     "ars": "$ 4.800",
+     "usd": "≈ USD 3",
+     "eur": "≈ EUR 3",
+     "brl": "≈ R$ 17"
+    },
+    {
+     "etiqueta": "Grande",
+     "ars": "$ 5.600"
+    }
+   ]
   }
  },
  "config": {
