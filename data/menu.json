@@ -2379,11 +2379,11 @@
     "it": "Dolci senza glutine"
    },
    "d": {
-    "es": "Selección sin TACC según disponibilidad: cheesecake, lemon pie o chocotorta. Producto tercerizado; consultar condiciones de manipulación.",
-    "en": "A rotating gluten-free selection of cheesecake, lemon pie or chocotorta. Sourced from a third party; please ask about handling.",
-    "pt": "Seleção sem glúten conforme disponibilidade: cheesecake, lemon pie ou chocotorta. Produto terceirizado; consulte as condições de manipulação.",
-    "fr": "Sélection sans gluten selon disponibilité : cheesecake, tarte au citron ou chocotorta. Produit fourni par un tiers ; se renseigner sur la manipulation.",
-    "it": "Selezione senza glutine secondo disponibilità: cheesecake, lemon pie o chocotorta. Prodotto di terzi; chiedere informazioni sulla manipolazione."
+    "es": "Selección sin TACC según disponibilidad: tiramisú, chocotorta o patagonia. Producto tercerizado; consultar condiciones de manipulación.",
+    "en": "A rotating gluten-free selection of tiramisu, chocotorta or Patagonia. Sourced from a third party; please ask about handling.",
+    "pt": "Seleção sem glúten conforme disponibilidade: tiramisu, chocotorta ou Patagonia. Produto terceirizado; consulte as condições de manipulação.",
+    "fr": "Sélection sans gluten selon disponibilité : tiramisu, chocotorta ou Patagonia. Produit fourni par un tiers ; se renseigner sur la manipulation.",
+    "it": "Selezione senza glutine secondo disponibilità: tiramisù, chocotorta o Patagonia. Prodotto di terzi; chiedere informazioni sulla manipolazione."
    },
    "m": [
     "fresco",
@@ -2402,52 +2402,6 @@
     "glu": false,
     "lech": false,
     "huev": false,
-    "soja": false,
-    "mani": false,
-    "fsec": false,
-    "ses": false,
-    "pesc": false,
-    "mar": false,
-    "alc": false,
-    "caf": false
-   }
-  },
-  {
-   "id": "STC003",
-   "cat": "STC",
-   "orden": 44,
-   "dest": false,
-   "n": {
-    "es": "Tarta de coco y dulce de leche sin TACC",
-    "en": "Gluten-Free Coconut & Dulce de Leche Tart",
-    "pt": "Torta de coco e doce de leite sem glúten",
-    "fr": "Tarte coco et dulce de leche sans gluten",
-    "it": "Torta al cocco e dulce de leche senza glutine"
-   },
-   "d": {
-    "es": "Masa dulce sin TACC con dulce de leche y coco. Producto tercerizado; consultar disponibilidad y condiciones de manipulación.",
-    "en": "Gluten-free sweet pastry with dulce de leche and coconut. Sourced from a third party; please ask about availability and handling.",
-    "pt": "Massa doce sem glúten com doce de leite e coco. Produto terceirizado; consulte disponibilidade e condições de manipulação.",
-    "fr": "Pâte sucrée sans gluten, dulce de leche et noix de coco. Produit fourni par un tiers ; se renseigner sur la disponibilité et la manipulation.",
-    "it": "Pasta dolce senza glutine con dulce de leche e cocco. Prodotto di terzi; chiedere disponibilità e condizioni di manipolazione."
-   },
-   "m": [
-    "fresco",
-    "llevar",
-    "dulce"
-   ],
-   "b": [
-    "sintacc"
-   ],
-   "img": null,
-   "alerg": {
-    "veg": true,
-    "vgn": false,
-    "tacc": true,
-    "lac": false,
-    "glu": false,
-    "lech": false,
-    "huev": true,
     "soja": false,
     "mani": false,
     "fsec": false,
@@ -2848,12 +2802,6 @@
    "usd": "≈ USD 4",
    "eur": "≈ EUR 4",
    "brl": "≈ R$ 22"
-  },
-  "STC003": {
-   "ars": "$ 7.000",
-   "usd": "≈ USD 5",
-   "eur": "≈ EUR 4",
-   "brl": "≈ R$ 24"
   },
   "TEH001": {
    "ars": "Chico $ 4.800 · Grande $ 5.600",
