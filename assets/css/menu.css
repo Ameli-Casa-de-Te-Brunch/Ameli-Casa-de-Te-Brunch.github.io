@@ -526,8 +526,15 @@ html[data-lectura="simple"] .prod p{line-height:1.85}
 .topbar{
   background:var(--verde-osc);
   padding:12px 20px;
-  box-shadow:0 0 0 100vmax var(--verde-osc);
-  clip-path:inset(0 -100vmax);
+  /* El encabezado va por encima de la foto: el desplegable de idiomas se abre hacia abajo y
+     antes quedaba tapado (la foto, que viene después, se pintaba encima). */
+  position:relative; z-index:30; isolation:isolate;
+}
+/* La banda a todo el ancho va en un pseudoelemento: el recorte (clip-path) le toca solo a ella
+   y ya no le corta el desplegable al encabezado. */
+.topbar::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  box-shadow:0 0 0 100vmax var(--verde-osc); clip-path:inset(0 -100vmax);
 }
 .marca-top{color:var(--blanco); font-size:calc(30px * var(--afs,1))}
 .topbar-ctrl .langs-btn,
@@ -639,9 +646,9 @@ footer::after{
    DISEÑO COMBINADO "capítulos" (2026-10-14)
    Todo cuelga de html[data-estilo="capitulos"]; sin el atributo, el menú es el anterior.
    Mismas reglas que la portada: base verde oscura con curvas de nivel y un solo acento
-   (salvia), leyendas con el lugar sobre la foto, cinta y barra de pedido fija abajo.
+   (salvia), leyendas con el lugar sobre la foto, y barra de pedido fija abajo.
    ================================================================== */
-.cinta,.barra-pedido,.sticker{display:none}
+.barra-pedido,.sticker{display:none}
 
 /* Encabezado: Inicio a la izquierda, logotipo al centro, idioma y accesibilidad a la derecha. */
 html[data-estilo="capitulos"]{--alto-barra:46px}
@@ -673,15 +680,6 @@ html[data-estilo="capitulos"] section.cat h2{
   font-weight:500; line-height:.96; letter-spacing:-.022em; font-size:calc(clamp(36px, 10vw, 58px) * var(--afs,1));
   text-wrap:balance;
 }
-
-/* Cinta del acento. */
-html[data-estilo="capitulos"] .cinta{display:block; overflow:hidden; white-space:nowrap; background:var(--salvia); padding:12px 0 14px;
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)}
-.cinta-pista{display:inline-flex; animation:cinta-corre 46s linear infinite; will-change:transform}
-.cinta-grupo{display:inline-flex; flex:none}
-.cinta-grupo span{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:calc(22px * var(--afs,1)); line-height:1; color:var(--verde-osc); padding-right:2.4rem}
-@keyframes cinta-corre{to{transform:translateX(-50%)}}
 
 /* Los destacados son el capítulo oscuro del menú. */
 html[data-estilo="capitulos"] .destacados{
@@ -754,3 +752,18 @@ html[data-afs="1.3"] .lista,html[data-afs="2"] .lista{grid-template-columns:1fr}
   html[data-estilo="capitulos"][data-afs="1.3"] .topbar-ctrl .header-menu,
   html[data-estilo="capitulos"][data-afs="2"] .topbar-ctrl .header-menu{display:none}
 }
+
+
+/* Invitación a abrir la ficha (2026-10-31): la gente no tocaba las tarjetas para leer la descripción.
+   Cada tarjeta compacta lleva una píldora "+ Ver más" sobre la foto; arriba, una pista con texto. */
+.pista-detalle{margin:10px 20px 0; text-align:center; font-size:calc(13px * var(--afs,1)); line-height:1.4; color:var(--texto-sec)}
+.prod.compacta .foto .mas,
+.dcard .foto .mas{
+  position:absolute; right:8px; bottom:8px; z-index:1; padding:5px 10px 5px 8px; border-radius:999px;
+  display:flex; align-items:center; gap:5px;
+  background:rgba(255,253,247,.94); color:var(--verde-osc);
+  font-family:'Karla',sans-serif; font-weight:700; font-size:calc(12px * var(--afs,1)); line-height:1; letter-spacing:.02em;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.prod.compacta .foto .mas b,
+.dcard .foto .mas b{font-size:calc(16px * var(--afs,1)); font-weight:700; line-height:.9}

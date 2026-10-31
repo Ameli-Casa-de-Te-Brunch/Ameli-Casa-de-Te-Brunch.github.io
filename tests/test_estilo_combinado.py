@@ -26,16 +26,16 @@ class TestAtributoYPiezasDecorativas(unittest.TestCase):
         for nombre, tpl in (("web", TPL_WEB), ("menú", TPL_MENU)):
             self.assertIn('<html lang="es" data-estilo="capitulos">', tpl, nombre)
 
-    def test_cinta_y_leyendas_son_decorativas_para_lectores_de_pantalla(self):
+    def test_las_leyendas_son_decorativas_para_lectores_de_pantalla(self):
         for nombre, tpl in (("web", TPL_WEB), ("menú", TPL_MENU)):
-            self.assertIn('<div class="cinta" aria-hidden="true">', tpl, nombre)
+            self.assertNotIn('class="cinta"', tpl, nombre)  # la cinta se sacó (2026-10-31)
             for m in re.findall(r'<p class="sticker[^"]*"([^>]*)>', tpl):
                 self.assertIn('aria-hidden="true"', m, nombre)
             self.assertGreaterEqual(tpl.count('class="sticker '), 1, nombre)
 
     def test_sin_el_atributo_las_piezas_nuevas_estan_ocultas(self):
         for nombre, bloque in BLOQUES.items():
-            self.assertIn(".cinta,.barra-pedido,.sticker{display:none}", bloque, nombre)
+            self.assertIn(".barra-pedido,.sticker{display:none}", bloque, nombre)
 
     def test_las_dos_paginas_tienen_barra_de_pedido_de_whatsapp(self):
         self.assertRegex(TPL_WEB, r'<a class="barra-pedido" href="https://wa\.me/__WHATSAPP_E164__"')
@@ -79,10 +79,9 @@ class TestCssDelDisenoCombinado(unittest.TestCase):
             self.assertIsNotNone(m, nombre)
             self.assertGreaterEqual(float(m.group(1)), 0.62, f"{nombre}: fondo de la leyenda demasiado transparente")
 
-    def test_la_cinta_corre_en_linear_y_se_detiene_con_reducir_movimiento(self):
-        for nombre, bloque in BLOQUES.items():
-            self.assertRegex(bloque, r"\.cinta-pista\{[^}]*animation:cinta-corre \d+s linear infinite", nombre)
+    def test_se_detiene_todo_con_reducir_movimiento(self):
         for nombre, css in (("web", CSS_WEB), ("menú", CSS_MENU)):
+            self.assertNotIn("cinta", css, nombre)
             self.assertIn('html[data-movimiento="reducido"] *{', css.replace("\n", ""), nombre)
             self.assertIn("prefers-reduced-motion", css, nombre)
 

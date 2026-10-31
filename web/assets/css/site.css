@@ -1976,13 +1976,13 @@ main{counter-reset:seccion}
    Todo cuelga de html[data-estilo="capitulos"]: sin ese atributo en el <html> el
    sitio vuelve al diseño anterior (así se vuelve atrás sin tocar nada más).
    Ideas: encabezado mínimo con el logotipo al centro, portada a pantalla completa
-   con el nombre grande abajo, leyendas con el lugar sobre la foto, cinta que corre
-   con el nombre de la casa, capítulos que alternan claro y oscuro (con las curvas de
+   con el nombre grande abajo, leyendas con el lugar sobre la foto,
+   capítulos que alternan claro y oscuro (con las curvas de
    nivel), números grandes en la colección de tés y una barra de pedido fija abajo.
    Lo de Amelí no cambia: paleta, logotipo, Cormorant + Karla, formas redondeadas,
    curvas de nivel, campaña y todo el funcionamiento.
    ================================================================== */
-.cinta,.barra-pedido,.sticker{display:none}
+.barra-pedido,.sticker{display:none}
 
 /* 1. Encabezado mínimo: ☰ y Aa a la izquierda, logotipo al centro, Menú (acento) a la derecha. */
 html[data-estilo="capitulos"] .site-header-fila{
@@ -2049,15 +2049,6 @@ html[data-estilo="capitulos"] .sticker{
 html[data-estilo="capitulos"] .sticker-lugar{top:30px; left:32px}
 html[data-estilo="capitulos"] .sticker-coord{top:30px; right:32px; display:none}
 @media (min-width:520px){ html[data-estilo="capitulos"] .sticker-coord{display:block} }
-
-/* 3. Cinta del acento: una barra salvia con el nombre de la casa en cursiva (quieta con "reducir movimiento"). */
-html[data-estilo="capitulos"] .cinta{display:block; overflow:hidden; white-space:nowrap; background:var(--salvia); padding:13px 0 15px;
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)}
-.cinta-pista{display:inline-flex; animation:cinta-corre 46s linear infinite; will-change:transform}
-.cinta-grupo{display:inline-flex; flex:none}
-.cinta-grupo span{font-family:var(--font-display); font-style:italic; font-size:1.45rem; line-height:1; color:var(--verde-osc); padding-right:2.6rem}
-@keyframes cinta-corre{to{transform:translateX(-50%)}}
 
 /* 4. Capítulos: títulos grandes, fondos que alternan claro y oscuro con curvas de nivel. */
 html[data-estilo="capitulos"] .titulo-seccion{

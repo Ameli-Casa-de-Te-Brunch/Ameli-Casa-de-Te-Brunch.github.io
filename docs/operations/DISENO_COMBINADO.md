@@ -2,7 +2,7 @@
 
 Desde 2026-10-14 la portada y el menú comparten un mismo lenguaje visual:
 encabezado mínimo con el logotipo al centro, portada a pantalla completa con
-leyendas sobre la foto, cinta con el nombre de la casa, capítulos que alternan
+leyendas sobre la foto, capítulos que alternan
 claro y oscuro (con las curvas de nivel), números grandes en la colección de tés
 y los destacados del menú, y una barra de pedido fija abajo.
 
@@ -19,7 +19,7 @@ Todo el diseño cuelga de un atributo en la etiqueta `<html>` de los dos templat
 
 **Rollback sin revertir código:** sacar `data-estilo="capitulos"` de los dos
 templates y publicar. Sin el atributo, los estilos nuevos no se aplican y las
-piezas nuevas (`.cinta`, `.barra-pedido`, `.sticker`) quedan ocultas. El botón
+piezas nuevas (`.barra-pedido`, `.sticker`) quedan ocultas. El botón
 flotante de WhatsApp vuelve solo.
 
 **Rollback completo:** revertir el merge del PR (un solo commit).
@@ -40,7 +40,7 @@ flotante de WhatsApp vuelve solo.
 - Formas del resto del sitio: botones píldora, tarjetas redondeadas.
 - Los `:hover` van dentro de `@media (hover:hover) and (pointer:fine)` (en el celular quedaban pegados).
 - Las bandas a todo el ancho se hacen con `box-shadow` + `clip-path`; **nunca** con capas más anchas que la pantalla (`inset` negativo): agrandan el viewport en el celular.
-- La cinta corre en `linear` y se detiene con "Reducir movimiento" (control de la página y preferencia del sistema).
+- La cinta se sacó del todo el 2026-10-31 (no gustó).
 - Las alturas fijas salen de `--alto-encabezado` y `--alto-barra`, no de números sueltos.
 - La leyenda sobre la foto necesita fondo ≥ 62 % para cumplir el contraste.
 - Al cambiar CSS, subir el `?v=` del `<link>` en el template (si no, el navegador usa la versión en caché).
