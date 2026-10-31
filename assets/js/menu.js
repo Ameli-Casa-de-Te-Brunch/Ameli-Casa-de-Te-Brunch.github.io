@@ -60,6 +60,8 @@ const UI = {
  abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
  cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar',fr:'Fermer',it:'Chiudi'},
  pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
+ verMas:{es:'Ver más',en:'See more',pt:'Ver mais',fr:'Voir plus',it:'Scopri'},
+ pistaDetalle:{es:'Tocá cada opción para ver ingredientes, alérgenos y pedirla',en:'Tap any item to see ingredients, allergens and to order',pt:'Toque em cada opção para ver ingredientes, alérgenos e pedir',fr:'Touchez une option pour voir les ingrédients, les allergènes et commander',it:'Tocca ogni opzione per vedere ingredienti, allergeni e ordinare'},
  verDetalle:{es:'Ver detalle de',en:'View details for',pt:'Ver detalhes de',fr:'Voir le détail de',it:'Vedi dettagli di'},
  anterior:{es:'Anterior',en:'Previous',pt:'Anterior',fr:'Précédent',it:'Precedente'},
  siguiente:{es:'Siguiente',en:'Next',pt:'Próximo',fr:'Suivant',it:'Successivo'},
@@ -616,6 +618,7 @@ function render(){
   $('avisoMoneda').textContent=UI.avisoMoneda[lang];
   $('buscarInput').placeholder=UI.buscarPlaceholder[lang];
   $('buscarLabel').textContent=UI.buscarLabel[lang];
+  $('pistaDetalle').textContent=UI.pistaDetalle[lang];
   $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
   /* chips */
   /* aria-pressed sincronizado con .activo en el mismo template string --
@@ -650,7 +653,7 @@ function render(){
       ? `<img src="${esc(p.img)}" alt="${esc(altProducto(p))}" loading="lazy">`
       : `<span class="inicial">${esc(p.n[lang].charAt(0))}</span>`;
     return `<article class="dcard" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}">
-      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}</div>
+      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoContenido}<span class="mas" aria-hidden="true"><b>+</b> ${esc(UI.verMas[lang])}</span></div>
       <div class="cuerpo">${bd}${cat?`<p class="dcard-cat">${esc(cat.nom[lang])}</p>`:''}<h3>${esc(p.n[lang])}</h3>${precio}</div></article>`;
   }).join('');
   document.querySelectorAll('.dcard').forEach(card=>{
@@ -665,7 +668,7 @@ function render(){
     const nota=CAT_NOTAS[cat.cod]?`<p class="desc-cat">${esc(CAT_NOTAS[cat.cod][lang])}</p>`:'';
     /* el primer producto marcado "Destacado" de la categoría se muestra
        como panel grande (foto + descripción); el resto va en la grilla
-       compacta de 2 columnas, sin descripción (se ve al abrir la ficha) */
+       compacta de 2 columnas, sin descripción (se ve al abrir la ficha); lleva un "+ Ver más" que invita a abrirla */
     const destacado=items.find(p=>p.dest);
     const resto=destacado?items.filter(p=>p!==destacado):items;
     const panel=destacado?renderDestacadoCategoria(destacado, cat):'';
@@ -705,7 +708,7 @@ function renderCardCompacta(p, cat, i){
   const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
   return `<article class="prod compacta stagger-${Math.min(i,9)}" data-moods="${esc(p.m.join(','))}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
     <div class="prod-inner">
-      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoOInicial(p)}</div>
+      <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoOInicial(p)}<span class="mas" aria-hidden="true"><b>+</b> ${esc(UI.verMas[lang])}</span></div>
       <div class="cont"><h3>${esc(p.n[lang])}</h3>${precio}${bd?`<div class="etiquetas">${bd}</div>`:''}</div>
     </div></article>`;
 }
