@@ -603,10 +603,11 @@ function iniciarAvanceAutomatico(car){
   ['touchstart','pointerdown','wheel','keydown'].forEach(ev=>car.addEventListener(ev, marcarGesto, {passive:true}));
   $('carPrev').addEventListener('click', marcarGesto);
   $('carNext').addEventListener('click', marcarGesto);
-  car.addEventListener('mouseenter', ()=>{ autoEncima=true; });
-  car.addEventListener('mouseleave', ()=>{ autoEncima=false; });
-  car.addEventListener('focusin', ()=>{ autoEncima=true; });
-  car.addEventListener('focusout', ()=>{ autoEncima=false; });
+  /* "encima" solo vale para un mouse real: en el celular el navegador simula mouseenter al tocar
+     y nunca manda mouseleave, y el avance quedaba frenado para siempre. El foco solo cuenta si es
+     de teclado (:focus-visible), por la misma razón. */
+  car.addEventListener('pointerenter', e=>{ if(e.pointerType==='mouse') autoEncima=true; });
+  car.addEventListener('pointerleave', e=>{ if(e.pointerType==='mouse') autoEncima=false; });
   if('IntersectionObserver' in window){
     new IntersectionObserver(es=>{ autoVisible=es[0].isIntersecting; }, {threshold:.6}).observe(car);
   }
@@ -618,17 +619,24 @@ function iniciarAvanceAutomatico(car){
   });
   textoBotonAuto();
   setInterval(()=>{
-    if(autoPausadoPorUsuario || autoEncima || !autoVisible || document.hidden || movimientoReducido()) return;
+    let foco=false; try{ foco = car.contains(document.activeElement) && document.activeElement.matches(':focus-visible'); }catch(e){}
+    if(autoPausadoPorUsuario || autoEncima || foco || !autoVisible || document.hidden || movimientoReducido()) return;
     if(Date.now()-autoUltimoGesto < AUTO_ESPERA_TRAS_GESTO_MS) return;
     if(car.scrollWidth <= car.clientWidth + 1 || !carruselCards.length) return;
     const alFinal = car.scrollLeft + car.clientWidth >= car.scrollWidth - 2;
-    if(alFinal){ car.scrollTo({left:0, behavior:'smooth'}); return; }
+    if(alFinal){ moverCarrusel(car, 0); return; }
     const centro=car.scrollLeft+car.clientWidth/2;
     let idx=0, mejor=Infinity;
     carruselCards.forEach((c,i)=>{ const d=Math.abs((c.offsetLeft+c.clientWidth/2)-centro); if(d<mejor){mejor=d;idx=i;} });
     const sig=carruselCards[Math.min(idx+1, carruselCards.length-1)];
-    car.scrollTo({left:Math.max(0, sig.offsetLeft - (carruselCards[0].offsetLeft)), behavior:'smooth'});
+    moverCarrusel(car, Math.max(0, sig.offsetLeft - (carruselCards[0].offsetLeft)));
   }, AUTO_PASO_MS);
+}
+/* Desplazamiento suave; si el navegador (algunos celulares con scroll-snap) no lo ejecuta, se salta directo. */
+function moverCarrusel(car, izq){
+  const antes=car.scrollLeft;
+  car.scrollTo({left:izq, behavior:'smooth'});
+  setTimeout(()=>{ if(Math.abs(car.scrollLeft-antes)<2 && Math.abs(izq-antes)>=2) car.scrollLeft=izq; }, 900);
 }
 
 /* ---------- render principal ---------- */
