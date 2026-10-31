@@ -125,19 +125,19 @@ class TestTarjetasCarruselAbrenFicha(unittest.TestCase):
 
 class TestCarruselMuestraCuatroSinTruncar(unittest.TestCase):
     """Puntos 5 y 8 de la ronda de unificación visual: el carrusel muestra
-    4 destacados (no 7) en el orden actual, sin inventar ni reordenar
+    6 destacados (no 7) en el orden actual, sin inventar ni reordenar
     productos, y sus tarjetas muestran categoría + nombre + precio en vez
     de una descripción cortada con -webkit-line-clamp."""
 
     def setUp(self):
         self.js = MENU_JS.read_text(encoding="utf-8")
 
-    def test_recorta_a_cuatro_en_el_orden_actual_sin_reordenar(self):
+    def test_recorta_a_seis_en_el_orden_actual_sin_reordenar(self):
         match = re.search(
             r"const MAX_DESTACADOS_CARRUSEL\s*=\s*(\d+);", self.js,
         )
         self.assertIsNotNone(match, "falta la constante MAX_DESTACADOS_CARRUSEL")
-        self.assertEqual(match.group(1), "4")
+        self.assertEqual(match.group(1), "6")
         self.assertRegex(
             self.js,
             r"PRODS\.filter\(p=>p\.dest\)\.slice\(0,\s*MAX_DESTACADOS_CARRUSEL\)",
