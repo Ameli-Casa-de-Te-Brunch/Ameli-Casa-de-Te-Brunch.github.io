@@ -45,9 +45,8 @@ class TestUnificacionMenu(unittest.TestCase):
         self.assertNotIn("fixed", topbar)
         self.assertRegex(CSS, r"\.navcat\{position:sticky;top:0")
 
-    def test_boton_flotante_circular_con_texto_para_lectores_de_pantalla(self):
-        self.assertIn('<span class="sr-only">WhatsApp</span>', PLANTILLA)
-        self.assertRegex(CSS, r"\.wsp\{width:56px; height:56px;[^}]*border-radius:50%")
+    def test_el_menu_ya_no_tiene_el_boton_flotante_de_whatsapp(self):
+        self.assertNotIn('class="wsp"', PLANTILLA)  # se sacó el 2026-11-09
 
 
 if __name__ == "__main__":

@@ -113,11 +113,16 @@ class TestJsYPlantillas(unittest.TestCase):
 
     def test_la_portada_y_el_menu_tienen_el_contenedor_oculto_con_el_boton_de_whatsapp(self):
         for nombre, tpl, patron in (("web", TPL_WEB, r"https://wa\.me/__WHATSAPP_E164__"),
-                                    ("menú", TPL_MENU, r"https://wa\.me/__WSP_NUMBER__")):
+                                    ("menú", TPL_MENU, None)):
             m = re.search(r'<section class="campana" id="campanaDia"[^>]*hidden>(.*?)</section>', tpl, re.S)
             self.assertIsNotNone(m, nombre)
-            self.assertRegex(m.group(1), patron)
-            for clase in ("campana-etiqueta", "campana-titulo", "campana-mensaje", "campana-cta-texto"):
+            clases = ["campana-etiqueta", "campana-titulo", "campana-mensaje"]
+            if patron:
+                self.assertRegex(m.group(1), patron)
+                clases.append("campana-cta-texto")
+            else:  # el menú no ofrece pedir por WhatsApp (2026-11-09)
+                self.assertNotIn("wa.me", m.group(1), nombre)
+            for clase in clases:
                 self.assertIn(clase, m.group(1), f"{nombre}: falta {clase}")
         self.assertIn("data-auto", re.search(r'<section class="campana"[^>]*>', TPL_WEB).group(0))
 

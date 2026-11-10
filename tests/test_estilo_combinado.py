@@ -37,27 +37,15 @@ class TestAtributoYPiezasDecorativas(unittest.TestCase):
         for nombre, bloque in BLOQUES.items():
             self.assertIn(".barra-pedido,.sticker{display:none}", bloque, nombre)
 
-    def test_las_dos_paginas_tienen_barra_de_pedido_de_whatsapp(self):
+    def test_la_portada_tiene_barra_de_pedido_de_whatsapp_y_el_menu_no(self):
         self.assertRegex(TPL_WEB, r'<a class="barra-pedido" href="https://wa\.me/__WHATSAPP_E164__"')
-        self.assertRegex(TPL_MENU, r'<a class="barra-pedido" id="barraPedido" href="https://wa\.me/__WSP_NUMBER__')
-        # el botón de WhatsApp del menú vive dentro del bloque opcional: sin número no hay barra
-        bloques = re.findall(r"<!--WSP_START-->(.*?)<!--WSP_END-->", TPL_MENU, re.S)
-        self.assertTrue(any('class="barra-pedido"' in x for x in bloques))
+        # el menú no tiene botón de pedido por WhatsApp (se sacó el 2026-11-09: la gente se confundía)
+        self.assertNotIn("barra-pedido", TPL_MENU)
+        self.assertNotIn("wa.me", TPL_MENU)
 
     def test_la_portada_no_afirma_retiro_en_el_local_hasta_confirmarlo(self):
         self.assertNotIn("retiralo", TPL_WEB.lower())
         self.assertNotIn("retiralo", TPL_MENU.lower())
-
-
-class TestBarraDePedidoEnCincoIdiomas(unittest.TestCase):
-    def test_textos_en_los_cinco_idiomas_y_se_escriben_con_textcontent(self):
-        m = re.search(r" barraPedido:\{(.*?)\},\n", MENU_JS)
-        self.assertIsNotNone(m, "falta UI.barraPedido")
-        for idioma in ("es", "en", "pt", "fr", "it"):
-            self.assertRegex(m.group(1), idioma + r":'[^']+'")
-        self.assertIn("$('barraPedido').textContent=UI.barraPedido[lang]", MENU_JS)
-        # si el menú se arma sin número de WhatsApp, no hay barra y el script no falla
-        self.assertIn("if($('barraPedido'))", MENU_JS)
 
 
 class TestCssDelDisenoCombinado(unittest.TestCase):

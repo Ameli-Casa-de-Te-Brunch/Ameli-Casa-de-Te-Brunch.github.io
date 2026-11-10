@@ -37,9 +37,6 @@ const UI = {
  buenasTardes:{es:'Buenas tardes',en:'Good afternoon',pt:'Boa tarde',fr:'Bon après-midi',it:'Buon pomeriggio'},
  buenasNoches:{es:'Buenas noches',en:'Good evening',pt:'Boa noite',fr:'Bonsoir',it:'Buonasera'},
  antojoHoy:{es:'¿Qué se te antoja hoy?',en:'What are you craving today?',pt:'O que você está com vontade hoje?',fr:'Qu’avez-vous envie de déguster aujourd’hui ?',it:'Cosa ti va di gustare oggi?'},
- momTitle:{es:'Elegí tu <em>momento</em> Amelí',en:'Choose your Amelí <em>moment</em>',pt:'Escolha o seu <em>momento</em> Amelí',fr:'Choisissez votre <em>moment</em> Amelí',it:'Scegli il tuo <em>momento</em> Amelí'},
- momHint:{es:'Tocá uno y el menú se acomoda a tu antojo',en:'Tap one and the menu adapts to your craving',pt:'Toque em um e o menu se adapta à sua vontade',fr:'Touchez-en un et le menu s’adapte à votre envie',it:'Tocca uno e il menu si adatta alla tua voglia'},
- limpiar:{es:'✕ Ver todo el menú',en:'✕ See the full menu',pt:'✕ Ver o menu completo',fr:'✕ Voir tout le menu',it:'✕ Vedi tutto il menu'},
  destEyebrow:{es:'Hoy en Amelí',en:'Today at Amelí',pt:'Hoje na Amelí',fr:'Aujourd’hui chez Amelí',it:'Oggi da Amelí'},
  destTitle:{es:'Los destacados de la casa',en:'House highlights',pt:'Os destaques da casa',fr:'Les incontournables de la maison',it:'Le specialità della casa'},
  productoDestacado:{es:'Producto destacado',en:'Featured product',pt:'Produto em destaque',fr:'Produit vedette',it:'Prodotto in evidenza'},
@@ -50,16 +47,13 @@ const UI = {
         pt:'Terça a sábado · 9h–13h e 17h30–21h<br>Domingo · 17h30–21h',
         fr:'Mardi à samedi · 9h–13h et 17h30–21h<br>Dimanche · 17h30–21h',
         it:'Martedì a sabato · 9:00–13:00 e 17:30–21:00<br>Domenica · 17:30–21:00'},
- wsp:{es:'Pedir',en:'Order',pt:'Pedir',fr:'Commander',it:'Ordina'},
  saltar:{es:'Saltar al menú',en:'Skip to menu',pt:'Ir para o cardápio',fr:'Aller au menu',it:'Vai al menu'},
- barraPedido:{es:'Hacé tu pedido por WhatsApp',en:'Order on WhatsApp',pt:'Faça seu pedido pelo WhatsApp',fr:'Commandez sur WhatsApp',it:'Ordina su WhatsApp'},
  title:{es:'Menú | Amelí Casa de Té & Brunch · Malargüe',en:'Menu | Amelí Tea House & Brunch · Malargüe',pt:'Menu | Amelí Casa de Chá & Brunch · Malargüe',fr:'Menu | Amelí Maison de thé & Brunch · Malargüe',it:'Menu | Amelí Casa del tè & Brunch · Malargüe'},
  abierto:{es:'Abierto ahora',en:'Open now',pt:'Aberto agora',fr:'Ouvert maintenant',it:'Aperto ora'},
  cerrado:{es:'Cerrado ahora',en:'Closed now',pt:'Fechado agora',fr:'Fermé maintenant',it:'Chiuso ora'},
  cerradoHoy:{es:'Cerrado hoy',en:'Closed today',pt:'Fechado hoje',fr:'Fermé aujourd’hui',it:'Chiuso oggi'},
  abreALas:{es:'Abre a las',en:'Opens at',pt:'Abre às',fr:'Ouvre à',it:'Apre alle'},
  cerrarSheet:{es:'Cerrar',en:'Close',pt:'Fechar',fr:'Fermer',it:'Chiudi'},
- pedirMensaje:{es:'Hola Amelí! Quiero pedir: ',en:'Hi Amelí! I’d like to order: ',pt:'Olá Amelí! Quero pedir: ',fr:'Bonjour Amelí ! Je voudrais commander : ',it:'Ciao Amelí! Vorrei ordinare: '},
  verMas:{es:'Ver más',en:'See more',pt:'Ver mais',fr:'Voir plus',it:'Scopri'},
  pistaDetalle:{es:'Tocá cada opción para ver ingredientes, alérgenos y pedirla',en:'Tap any item to see ingredients, allergens and to order',pt:'Toque em cada opção para ver ingredientes, alérgenos e pedir',fr:'Touchez une option pour voir les ingrédients, les allergènes et commander',it:'Tocca ogni opzione per vedere ingredienti, allergeni e ordinare'},
  carPausar:{es:'Pausar',en:'Pause',pt:'Pausar',fr:'Pause',it:'Pausa'},
@@ -100,13 +94,6 @@ const UI = {
  ultimasPorciones:{es:'Últimas porciones',en:'Last portions',pt:'Últimas porções',fr:'Dernières portions',it:'Ultime porzioni'},
 };
 const IDIOMA_LABEL = {es:'Español',en:'English',pt:'Português',fr:'Français',it:'Italiano'};
-const CHIPS = [
- {m:'dulce', t:{es:'Algo dulce',en:'Something sweet',pt:'Algo doce',fr:'Quelque chose de sucré',it:'Qualcosa di dolce'}},
- {m:'fresco', t:{es:'Algo fresco',en:'Something fresh',pt:'Algo fresco',fr:'Quelque chose de frais',it:'Qualcosa di fresco'}},
- {m:'compartir', t:{es:'Para compartir',en:'To share',pt:'Para compartilhar',fr:'À partager',it:'Da condividere'}},
- {m:'calentito', t:{es:'Algo calentito',en:'Something warm',pt:'Algo quentinho',fr:'Quelque chose de chaud',it:'Qualcosa di caldo'}},
- {m:'llevar', t:{es:'Para llevar',en:'To go',pt:'Para levar',fr:'À emporter',it:'Da asporto'}},
-];
 const BADGES = {
  fav:{c:'fav', t:{es:'Favorito de la casa',en:'House favourite',pt:'Favorito da casa',fr:'Favori de la maison',it:'Preferito della casa'}},
  reco:{c:'reco', t:{es:'Recomendado',en:'Recommended',pt:'Recomendado',fr:'Recommandé',it:'Consigliato'}},
@@ -171,7 +158,7 @@ const BANDERAS = {
  it:`<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><clipPath id="cIT"><circle cx="10" cy="10" r="9.5"/></clipPath><g clip-path="url(#cIT)"><rect width="6.7" height="20" fill="#009246"/><rect x="6.7" width="6.6" height="20" fill="#FFFFFF"/><rect x="13.3" width="6.7" height="20" fill="#CE2B37"/></g><circle cx="10" cy="10" r="9.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
 };
 
-let lang='es', moodActivo=null, sheetProdId=null, terminoBusqueda='';
+let lang='es', sheetProdId=null, terminoBusqueda='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -295,18 +282,6 @@ function abrirDetalle(id){
     foto.classList.add(`grad-${Math.abs(hashId(p.id))%3}`);
     $('sheetInicial').hidden = false;
     $('sheetInicial').textContent=p.n[lang].charAt(0);
-  }
-  /* si está agotado o no disponible, no tiene sentido ofrecer pedirlo por
-     WhatsApp -- el badge ya explica por qué. "Últimas porciones" sigue
-     disponible, así que ahí el botón se mantiene. */
-  const noPedible = p.disp==='agotado' || p.disp==='no_disp';
-  if(WSP_NUMBER && !noPedible){
-    const msg = encodeURIComponent(UI.pedirMensaje[lang]+p.n[lang]);
-    $('sheetPedir').href = `https://wa.me/${WSP_NUMBER}?text=${msg}`;
-    $('sheetPedirTxt').textContent = UI.wsp[lang];
-    $('sheetPedir').hidden = false;
-  } else {
-    $('sheetPedir').hidden = true;
   }
   $('sheetCerrar').setAttribute('aria-label', UI.cerrarSheet[lang]);
 
@@ -647,13 +622,9 @@ function render(){
   $('heroLugar').textContent=UI.lugar[lang];
   $('heroSaludo').textContent=saludoHorario();
   $('heroPregunta').textContent=UI.antojoHoy[lang];
-  $('momTitle').innerHTML=UI.momTitle[lang];
-  $('momHint').textContent=UI.momHint[lang];
-  $('limpiar').textContent=UI.limpiar[lang];
   $('destEyebrow').textContent=UI.destEyebrow[lang];
   $('destTitle').textContent=UI.destTitle[lang];
   $('footGrx').textContent=UI.grx[lang];
-  if($('barraPedido')) $('barraPedido').textContent=UI.barraPedido[lang];
   $('skipLink').textContent=UI.saltar[lang];
   $('footDatos').innerHTML=UI.datos[lang];
   $('homeLink').textContent=UI.inicio[lang];
@@ -689,19 +660,6 @@ function render(){
   $('pistaDetalle').textContent=UI.pistaDetalle[lang];
   textoBotonAuto();
   $('buscarLimpiar').setAttribute('aria-label', UI.buscarLimpiar[lang]);
-  /* chips */
-  /* aria-pressed sincronizado con .activo en el mismo template string --
-     como los chips se regeneran enteros en cada render() (cambio de
-     idioma, click de chip, limpiar), y esas tres acciones ya llaman a
-     render() después de actualizar moodActivo, el valor siempre queda
-     al día sin lógica aparte que pueda desincronizarse. */
-  $('chips').innerHTML=CHIPS.map(ch=>`<button class="chip ${moodActivo===ch.m?'activo':''}" data-mood="${ch.m}" aria-pressed="${moodActivo===ch.m}">${ch.t[lang]}</button>`).join('');
-  document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
-    moodActivo = moodActivo===ch.dataset.mood ? null : ch.dataset.mood;
-    render(); aplicarFiltro();
-    if(moodActivo) $('menu').scrollIntoView({behavior:'smooth',block:'start'});
-  }));
-  $('limpiar').onclick=()=>{moodActivo=null;render();aplicarFiltro();};
   $('navcat').innerHTML=CATS.map(c=>`<a href="#${esc(c.cod)}">${esc(c.nom[lang])}</a>`).join('');
   /* carrusel destacados -- 4 tarjetas, no 7 (ver dirección de
      simplificación editorial): los primeros 4 en el orden actual de
@@ -766,7 +724,7 @@ function fotoOInicial(p){
 function renderDestacadoCategoria(p, cat){
   const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
   const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-  return `<article class="prod destacado-cat" data-moods="${esc(p.m.join(','))}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+  return `<article class="prod destacado-cat" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
     <div class="prod-inner">
       <div class="foto ${p.img?'':`grad-${Math.abs(hashId(p.id))%3}`}">${fotoOInicial(p)}</div>
       <div class="cont"><p class="eyebrow-cat">${esc(UI.productoDestacado[lang])}</p><h3>${esc(p.n[lang])}</h3><p class="desc">${esc(p.d[lang])}</p><div class="fila">${precio}${bd}</div></div>
@@ -775,7 +733,7 @@ function renderDestacadoCategoria(p, cat){
 function renderCardCompacta(p, cat, i){
   const bd=p.b.map(k=>`<span class="badge ${BADGES[k].c}">${BADGES[k].t[lang]}</span>`).join('') + dispBadge(p);
   const precio=PRECIOS[p.id]?`<span class="precio">${textoPrecio(PRECIOS[p.id])}</span>`:'';
-  return `<article class="prod compacta stagger-${Math.min(i,9)}" data-moods="${esc(p.m.join(','))}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
+  return `<article class="prod compacta stagger-${Math.min(i,9)}" data-haystack="${esc(haystackProducto(p, cat))}" data-id="${esc(p.id)}" role="button" tabindex="0" aria-label="${esc(UI.verDetalle[lang])} ${esc(p.n[lang])}${p.disp?', '+esc(dispTexto(p)):''}">
     <div class="prod-inner">
       <div class="foto ${p.img?'':`grad-${i%3}`}">${fotoOInicial(p)}<span class="mas" aria-hidden="true"><b>+</b> ${esc(UI.verMas[lang])}</span></div>
       <div class="cont"><h3>${esc(p.n[lang])}</h3>${precio}${bd?`<div class="etiquetas">${bd}</div>`:''}</div>
@@ -813,10 +771,7 @@ function haystackProducto(p, cat){
 function aplicarFiltro(){
   const termino=normalizar(terminoBusqueda);
   document.querySelectorAll('.prod').forEach(p=>{
-    const moods=(p.dataset.moods||'').split(',');
-    const moodOk=!moodActivo || moods.includes(moodActivo);
-    const textoOk=!termino || (p.dataset.haystack||'').includes(termino);
-    const visible=moodOk && textoOk;
+    const visible=!termino || (p.dataset.haystack||'').includes(termino);
     p.classList.toggle('oculto', !visible);
     if(visible){
       p.removeAttribute('inert');
@@ -831,7 +786,6 @@ function aplicarFiltro(){
   document.querySelectorAll('section.cat').forEach(sec=>{
     sec.classList.toggle('sin-resultados', sec.querySelectorAll('.prod:not(.oculto)').length===0);
   });
-  $('limpiar').classList.toggle('visible', !!moodActivo);
   actualizarResultadosBusqueda();
 }
 function actualizarResultadosBusqueda(){

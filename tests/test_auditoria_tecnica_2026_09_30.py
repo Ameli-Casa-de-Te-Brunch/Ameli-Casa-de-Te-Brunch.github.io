@@ -81,37 +81,6 @@ class TestFiltroSacaProductosOcultosDeTodo(unittest.TestCase):
         self.assertIn(".prod:not(.oculto)", self.cuerpo)
 
 
-class TestChipsAnuncianEstadoPresionado(unittest.TestCase):
-    """Punto 3 de la auditoría: cada botón de "momento" debe llevar
-    aria-pressed sincronizado con su estado visual (.activo), incluso
-    después de cambiar de idioma, activar, desactivar o limpiar el
-    filtro."""
-
-    def setUp(self):
-        self.js = MENU_JS.read_text(encoding="utf-8")
-
-    def test_boton_de_chip_incluye_aria_pressed_booleano(self):
-        match = re.search(r"\$\('chips'\)\.innerHTML=CHIPS\.map\(ch=>`([^`]*)`\)", self.js)
-        self.assertIsNotNone(match, "no se encontró el template de los chips")
-        template = match.group(1)
-        self.assertIn('aria-pressed="${moodActivo===ch.m}"', template)
-
-    def test_aria_pressed_se_recalcula_en_las_tres_acciones_que_tocan_moodactivo(self):
-        """Los chips se regeneran enteros (innerHTML) en cada render(),
-        así que aria-pressed queda al día automáticamente en cualquier
-        camino que actualice moodActivo y después llame a render() --
-        se verifica que los tres caminos reales sigan haciendo eso."""
-        # 1) click de un chip
-        self.assertRegex(
-            self.js,
-            r"moodActivo\s*=\s*moodActivo===ch\.dataset\.mood\s*\?\s*null\s*:\s*ch\.dataset\.mood;\s*\n\s*render\(\);",
-        )
-        # 2) botón "limpiar"
-        self.assertRegex(self.js, r"\$\('limpiar'\)\.onclick=\(\)=>\{moodActivo=null;render\(\);")
-        # 3) cambio de idioma (moodActivo no cambia, pero el chip se re-renderiza igual)
-        self.assertRegex(self.js, r"lang=b\.dataset\.l;\s*cerrarLangs\(\);\s*render\(\);")
-
-
 class TestCarruselEstadoCoherenteSinScroll(unittest.TestCase):
     """Puntos 4 de la auditoría: si scrollWidth<=clientWidth no hay
     nada para desplazar -- las flechas deben quedar deshabilitadas y el
